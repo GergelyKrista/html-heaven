@@ -12,7 +12,7 @@ type Step = "upload" | "metadata" | "preview" | "submitting" | "done";
 export function SubmitForm() {
   const [step, setStep] = useState<Step>("upload");
   const [htmlFile, setHtmlFile] = useState<File | null>(null);
-  const [htmlPreviewUrl, setHtmlPreviewUrl] = useState("");
+  const [htmlContent, setHtmlContent] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -29,7 +29,7 @@ export function SubmitForm() {
     }
     setError("");
     setHtmlFile(file);
-    setHtmlPreviewUrl(URL.createObjectURL(file));
+    file.text().then(setHtmlContent);
   }
 
   function toggleTag(tag: string) {
@@ -182,7 +182,7 @@ export function SubmitForm() {
               <span className="h-2 w-2 rounded-full bg-border-light" />
               <span className="ml-1 text-[11px] text-muted">{title}</span>
             </div>
-            <iframe src={htmlPreviewUrl} title="Preview" sandbox="allow-scripts" className="h-[350px] w-full bg-white" />
+            <iframe srcDoc={htmlContent} title="Preview" sandbox="allow-scripts" className="h-[350px] w-full bg-white" />
           </div>
           <div className="rounded-lg border border-border bg-surface p-3">
             <p className="text-[14px] font-medium">{title}</p>
