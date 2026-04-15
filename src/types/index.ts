@@ -8,3 +8,19 @@ export interface AppMeta {
   thumbnail: string;
   featured: boolean;
 }
+
+export interface Comment {
+  id: number;
+  userName: string;
+  userAvatar: string | null;
+  appSlug: string;
+  text: string;
+  createdAt: string;
+}
+
+export interface AppStats {
+  likeCount: number;
+  favoriteCount: number;
+  liked: boolean;
+  favorited: boolean;
+}
