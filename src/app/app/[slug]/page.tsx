@@ -6,7 +6,6 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { LikeButton } from "@/components/LikeButton";
 import { ShareButton } from "@/components/ShareButton";
 import { CommentsSection } from "@/components/CommentsSection";
-import { SessionProvider } from "@/components/SessionProvider";
 
 export function generateStaticParams() {
   return getAllApps().map((app) => ({ slug: app.slug }));
@@ -42,8 +41,7 @@ export default async function AppPage({
   });
 
   return (
-    <SessionProvider>
-      <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+    <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6">
         <div className="mb-4 flex items-center gap-2 text-[13px] text-muted">
           <Link href="/browse" className="transition-colors hover:text-foreground">
             Browse
@@ -99,7 +97,6 @@ export default async function AppPage({
             </div>
           </div>
         </div>
-      </div>
-    </SessionProvider>
+    </div>
   );
 }
