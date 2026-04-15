@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbán Viktor Kifogás Generátor</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --hu-red: #CE2939;
+    --hu-green: #477050;
+    --hu-dark: #1a1a1a;
+    --hu-cream: #f5f0e8;
+    --hu-gold: #c9a94e;
+    --hu-orange: #e67e22;
+    --slot-bg: #0d0d0d;
+    --card-bg: #222;
+    --glow: rgba(206, 41, 57, 0.3);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--hu-dark);
+    color: var(--hu-cream);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 40px,
+        rgba(206, 41, 57, 0.03) 40px,
+        rgba(206, 41, 57, 0.03) 41px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent,
+        transparent 40px,
+        rgba(71, 112, 80, 0.03) 40px,
+        rgba(71, 112, 80, 0.03) 41px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    position: relative;
+  }
+
+  .flag-bar {
+    display: flex;
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 12px rgba(206, 41, 57, 0.2);
+  }
+  .flag-bar span { flex: 1; }
+  .flag-bar span:nth-child(1) { background: var(--hu-red); }
+  .flag-bar span:nth-child(2) { background: #fff; }
+  .flag-bar span:nth-child(3) { background: var(--hu-green); }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2rem, 6vw, 3.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--hu-cream) 0%, var(--hu-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--hu-red);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 0.75rem;
+    opacity: 0.9;
+  }
+
+  .header .emoji-row {
+    font-size: 1.8rem;
+    margin-top: 0.5rem;
+    letter-spacing: 0.3em;
+  }
+
+  /* Kifogás Display */
+  .kifogás-machine {
+    background: var(--slot-bg);
+    border: 2px solid rgba(206, 41, 57, 0.25);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 0 40px rgba(206, 41, 57, 0.08),
+      inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+
+  .kifogás-machine::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at 50% 50%, rgba(206, 41, 57, 0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .slot-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: rgba(245, 240, 232, 0.35);
+    margin-bottom: 0.5rem;
+    padding-left: 0.25rem;
+  }
+
+  .slot-row {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+    min-height: 3.2rem;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .slot-row:hover {
+    border-color: rgba(206, 41, 57, 0.3);
+  }
+
+  .slot-row .text {
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.4;
+    position: relative;
+    z-index: 1;
+  }
+
+  .slot-row.spinning .text {
+    animation: slotBlur 0.08s infinite alternate;
+    filter: blur(2px);
+    opacity: 0.5;
+  }
+
+  @keyframes slotBlur {
+    0% { transform: translateY(-3px); }
+    100% { transform: translateY(3px); }
+  }
+
+  .slot-row.landed .text {
+    animation: slotLand 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    filter: blur(0);
+    opacity: 1;
+  }
+
+  @keyframes slotLand {
+    0% { transform: translateY(-8px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .slot-row .accent-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+
+  .slot-row:nth-child(2) .accent-dot { background: var(--hu-red); box-shadow: 0 0 8px var(--hu-red); }
+  .slot-row:nth-child(4) .accent-dot { background: #fff; box-shadow: 0 0 8px rgba(255,255,255,0.5); }
+  .slot-row:nth-child(6) .accent-dot { background: var(--hu-green); box-shadow: 0 0 8px var(--hu-green); }
+
+  /* Full kifogás display */
+  .full-kifogás {
+    background: linear-gradient(135deg, rgba(206, 41, 57, 0.08), rgba(71, 112, 80, 0.08));
+    border: 1px solid rgba(201, 169, 78, 0.2);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .full-kifogás.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .full-kifogás .quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    color: var(--hu-gold);
+    line-height: 1;
+    opacity: 0.5;
+  }
+
+  .full-kifogás .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    font-weight: 700;
+    line-height: 1.5;
+    color: var(--hu-cream);
+    margin: 0.5rem 0;
+    font-style: italic;
+  }
+
+  .full-kifogás .attribution {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--hu-gold);
+    letter-spacing: 0.15em;
+    margin-top: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  /* Button */
+  .btn-container {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .generate-btn {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #fff;
+    background: linear-gradient(135deg, var(--hu-red), #a01f2d);
+    border: none;
+    border-radius: 12px;
+    padding: 1rem 3rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(206, 41, 57, 0.3);
+  }
+
+  .generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(206, 41, 57, 0.45);
+  }
+
+  .generate-btn:active {
+    transform: translateY(0);
+  }
+
+  .generate-btn.spinning {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  .generate-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+  }
+
+  .generate-btn:hover::after {
+    transform: translateX(100%);
+  }
+
+  /* Counter & Stats */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat .num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--hu-gold);
+  }
+
+  .stat .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: rgba(245, 240, 232, 0.4);
+    margin-top: 0.25rem;
+  }
+
+  /* History */
+  .history {
+    margin-top: 2rem;
+  }
+
+  .history-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.25em;
+    color: rgba(245, 240, 232, 0.35);
+    margin-bottom: 1rem;
+    padding-left: 0.25rem;
+  }
+
+  .history-item {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: rgba(245, 240, 232, 0.6);
+    font-style: italic;
+    animation: fadeIn 0.4s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .history-item .history-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--hu-red);
+    opacity: 0.6;
+    flex-shrink: 0;
+    padding-top: 0.15rem;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Share button */
+  .share-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(245, 240, 232, 0.5);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+  }
+
+  .share-btn:hover {
+    color: var(--hu-cream);
+    border-color: var(--hu-gold);
+    background: rgba(201, 169, 78, 0.1);
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .footer p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: rgba(245, 240, 232, 0.25);
+    letter-spacing: 0.1em;
+  }
+
+  .footer .disclaimer {
+    margin-top: 0.5rem;
+    font-style: italic;
+    color: rgba(245, 240, 232, 0.15);
+  }
+
+  /* Mobile */
+  @media (max-width: 600px) {
+    .app { padding: 1.5rem 1rem 3rem; }
+    .kifogás-machine { padding: 1.5rem 1rem; }
+    .generate-btn { padding: 0.85rem 2rem; width: 100%; }
+    .stats-bar { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="flag-bar"><span></span><span></span><span></span></div>
+    <h1>Kifogás<br>Generátor</h1>
+    <div class="subtitle">Orbán Viktor Edition™</div>
+    <div class="emoji-row">🇭🇺 🎰 🇭🇺</div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="num" id="totalCombos">—</div>
+      <div class="label">Lehetséges kifogás</div>
+    </div>
+    <div class="stat">
+      <div class="num" id="generatedCount">0</div>
+      <div class="label">Generált</div>
+    </div>
+    <div class="stat">
+      <div class="num" id="credibilityScore">100%</div>
+      <div class="label">Hitelesség</div>
+    </div>
+  </div>
+
+  <div class="kifogás-machine">
+    <div class="slot-label">① Alany / Ki a hibás</div>
+    <div class="slot-row" id="slot1">
+      <div class="accent-dot"></div>
+      <div class="text">Nyomj a gombra...</div>
+    </div>
+
+    <div class="slot-label">② Állítmány / Mit csinált</div>
+    <div class="slot-row" id="slot2">
+      <div class="accent-dot"></div>
+      <div class="text">...hogy generálj...</div>
+    </div>
+
+    <div class="slot-label">③ Kifogás / Miért nem mi tehetünk róla</div>
+    <div class="slot-row" id="slot3">
+      <div class="accent-dot"></div>
+      <div class="text">...egy kifogást!</div>
+    </div>
+
+    <div class="full-kifogás" id="fullQuote">
+      <div class="quote-mark">„</div>
+      <div class="quote-text" id="quoteText"></div>
+      <div class="quote-mark" style="transform: rotate(180deg);">„</div>
+      <div class="attribution">— Miniszterelnöki Kabinetiroda, valószínűleg</div>
+    </div>
+  </div>
+
+  <div class="btn-container">
+    <button class="generate-btn" id="generateBtn" onclick="generate()">
+      🎰 &nbsp;Új Kifogás &nbsp;🎰
+    </button>
+    <br>
+    <button class="share-btn" id="shareBtn" onclick="copyToClipboard()" style="display:none;">
+      📋 Másolás vágólapra
+    </button>
+  </div>
+
+  <div class="history" id="historySection" style="display:none;">
+    <div class="history-title">📜 Kifogás Archívum</div>
+    <div id="historyList"></div>
+  </div>
+
+  <div class="footer">
+    <p>Ez szatíra. Semmi sem valós. Minden egybeesés a valósággal teljesen szándékos.</p>
+    <p class="disclaimer">v1.0 — A Nemzeti Kifogás Adatbázis</p>
+  </div>
+</div>
+
+<script>
+const subjects = [
+  "Brüsszel",
+  "Soros György",
+  "A brüsszeli bürokraták",
+  "A balliberális média",
+  "A külföldi ügynökök",
+  "NGO-k százai",
+  "A háttérhatalom",
+  "A baloldal",
+  "A spekulánsok",
+  "A Gyurcsány-féle koalíció",
+  "Gyurcsány felesége",
+  "A woke ideológia",
+  "A genderpropaganda terjesztői",
+  "A migránsok",
+  "A brüsszeli elit",
+  "Nemzetközi pénzügyi körök",
+  "A Momentum és a DK",
+  "Az EP képviselők",
+  "A liberális mainstream",
+  "Ukrajna támogatói",
+  "A szankciós politika kitalálói",
+  "A globalista hálózat",
+  "A baloldali álcivil szervezetek",
+  "Márki-Zay Péter",
+  "A dollárbaloldal",
+  "A fake news gyárosok",
+  "A nemzetközi sajtó",
+];
+
+const actions = [
+  "meg akarja semmisíteni a magyar családokat",
+  "aláássa a nemzeti szuverenitást",
+  "migránsokat akar betelepíteni",
+  "támadja a keresztény értékeinket",
+  "háborúba akarja sodorni Európát",
+  "tönkre akarja tenni a magyar gazdaságot",
+  "el akarja venni a rezsicsökkentést",
+  "meg akarja szüntetni a magyar kultúrát",
+  "gyermekeink jövőjét veszélyezteti",
+  "genderideológiát akar tanítani az iskolákban",
+  "szankciókkal bünteti a magyar embereket",
+  "el akarja adni az országot",
+  "meg akarja szüntetni a békét",
+  "hazugságokkal eteti a közvéleményt",
+  "a magyar gazdákat akarja ellehetetleníteni",
+  "titkos tervet sző Magyarország ellen",
+  "el akarja törölni a nemzeti identitásunkat",
+  "a magyar emberek pénzét akarja ellopni",
+  "nyomást gyakorol a szuverén nemzetekre",
+  "a háborúpárti politikát erőlteti ránk",
+];
+
+const excuses = [
+  "de mi megvédjük a magyar embereket!",
+  "ezért kell nemet mondanunk Brüsszelnek!",
+  "de a magyar kormány éberen figyel!",
+  "viszont a magyar emberek bölcsebbek ennél!",
+  "ám a békepárti politikánk győzni fog!",
+  "ezért küzdünk minden nap a Parlamentben!",
+  "de a Jóisten és a magyar nép velünk van!",
+  "pont ezért kell nemzeti konzultációt tartani!",
+  "de mi nem hagyjuk magunkat!",
+  "ezért építettük meg a kerítést!",
+  "ám a rezsicsökkentés marad!",
+  "de a válaszunk egyértelmű: NEM!",
+  "mi azonban a béke oldalán állunk!",
+  "ezért kell összefognunk, mint 2010 óta mindig!",
+  "de a magyar emberek erősebbek minden támadásnál!",
+  "a kormány ezért cselekedett azonnal!",
+  "ezért van szükség erős vezetésre!",
+  "de nekünk Magyarország az első!",
+  "mi viszont a családokat választjuk!",
+  "ezért kellett vétóznunk az EU-ban!",
+];
+
+let generatedCount = 0;
+let history = [];
+let isSpinning = false;
+
+// Calculate total combos
+document.getElementById('totalCombos').textContent =
+  (subjects.length * actions.length * excuses.length).toLocaleString('hu-HU');
+
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generate() {
+  if (isSpinning) return;
+  isSpinning = true;
+
+  const btn = document.getElementById('generateBtn');
+  btn.classList.add('spinning');
+
+  const slots = [
+    document.getElementById('slot1'),
+    document.getElementById('slot2'),
+    document.getElementById('slot3'),
+  ];
+
+  const fullQuote = document.getElementById('fullQuote');
+  fullQuote.classList.remove('visible');
+
+  // Start spinning all slots
+  slots.forEach(slot => {
+    slot.classList.remove('landed');
+    slot.classList.add('spinning');
+  });
+
+  const chosen = [pick(subjects), pick(actions), pick(excuses)];
+
+  // Cascade landing
+  const delays = [600, 1100, 1600];
+  slots.forEach((slot, i) => {
+    // Rapid text cycling
+    const interval = setInterval(() => {
+      const pool = [subjects, actions, excuses][i];
+      slot.querySelector('.text').textContent = pick(pool);
+    }, 60);
+
+    setTimeout(() => {
+      clearInterval(interval);
+      slot.classList.remove('spinning');
+      slot.classList.add('landed');
+      slot.querySelector('.text').textContent = chosen[i];
+    }, delays[i]);
+  });
+
+  // Show full quote after all slots land
+  setTimeout(() => {
+    const fullText = `${chosen[0]} ${chosen[1]}, ${chosen[2]}`;
+    document.getElementById('quoteText').textContent = fullText;
+    fullQuote.classList.add('visible');
+
+    generatedCount++;
+    document.getElementById('generatedCount').textContent = generatedCount;
+
+    // Decrease credibility humorously
+    const cred = Math.max(0, 100 - generatedCount * 3);
+    document.getElementById('credibilityScore').textContent = cred + '%';
+
+    // Add to history
+    history.unshift(fullText);
+    if (history.length > 10) history.pop();
+    renderHistory();
+
+    document.getElementById('shareBtn').style.display = 'inline-block';
+
+    btn.classList.remove('spinning');
+    isSpinning = false;
+  }, 2000);
+}
+
+function renderHistory() {
+  const section = document.getElementById('historySection');
+  const list = document.getElementById('historyList');
+  section.style.display = 'block';
+
+  list.innerHTML = history.map((item, i) =>
+    `<div class="history-item">
+      <span class="history-num">#${generatedCount - i}</span>
+      <span>„${item}"</span>
+    </div>`
+  ).join('');
+}
+
+function copyToClipboard() {
+  const text = document.getElementById('quoteText').textContent;
+  const full = `„${text}"\n— Orbán Viktor Kifogás Generátor 🇭🇺🎰`;
+
+  navigator.clipboard.writeText(full).then(() => {
+    const btn = document.getElementById('shareBtn');
+    btn.textContent = '✅ Másolva!';
+    setTimeout(() => { btn.textContent = '📋 Másolás vágólapra'; }, 2000);
+  });
+}
+
+// Auto-generate first one on load
+setTimeout(generate, 500);
+</script>
+</body>
+</html>
