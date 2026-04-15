@@ -1,0 +1,1710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Marble Dust Playbook — Historical Wisdom for Managing Up</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface-2: #242836;
+            --surface-3: #2e3344;
+            --border: #363b4e;
+            --text: #e4e6f0;
+            --text-dim: #9499b3;
+            --text-faint: #6b7094;
+            --accent: #c9a55a;
+            --accent-glow: #c9a55a33;
+            --accent-dim: #a6863f;
+            --red: #d4615e;
+            --green: #6ec87a;
+            --blue: #5e9fd4;
+            --purple: #9b7ed4;
+            --orange: #d49a5e;
+            --teal: #5ec4b8;
+            --radius: 12px;
+            --radius-sm: 8px;
+            --shadow: 0 4px 24px rgba(0,0,0,.4);
+            --transition: .3s cubic-bezier(.4,0,.2,1);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+        /* ── Navigation ── */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            background: rgba(15,17,23,.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        nav.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.5); }
+        .nav-inner {
+            max-width: 1200px; margin: 0 auto;
+            padding: 0 24px;
+            display: flex; align-items: center; justify-content: space-between;
+            height: 64px;
+        }
+        .nav-brand {
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--accent);
+            letter-spacing: .02em;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .nav-brand svg { width: 28px; height: 28px; }
+        .nav-links { display: flex; gap: 8px; align-items: center; }
+        .nav-links a {
+            color: var(--text-dim); text-decoration: none;
+            padding: 8px 16px; border-radius: var(--radius-sm);
+            font-size: .9rem; font-weight: 500;
+            transition: var(--transition);
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent); background: var(--accent-glow);
+        }
+        .hamburger {
+            display: none; background: none; border: none;
+            color: var(--text); cursor: pointer; padding: 8px;
+        }
+        .hamburger svg { width: 24px; height: 24px; }
+
+        /* ── Hero ── */
+        .hero {
+            min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 50% 30%, var(--accent-glow), transparent),
+                radial-gradient(ellipse 60% 40% at 20% 70%, rgba(94,159,212,.08), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(155,126,212,.06), transparent);
+            pointer-events: none;
+        }
+        .hero-content { position: relative; max-width: 800px; }
+        .hero-badge {
+            display: inline-block;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 6px 20px;
+            font-size: .8rem;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 32px;
+        }
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4.2rem);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        .hero-cta {
+            display: inline-flex; align-items: center; gap: 10px;
+            background: var(--accent);
+            color: var(--bg);
+            padding: 14px 32px;
+            border-radius: var(--radius);
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none; cursor: pointer;
+        }
+        .hero-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+        .hero-cta svg { width: 20px; height: 20px; }
+
+        .hero-stats {
+            display: flex; justify-content: center; gap: 48px;
+            margin-top: 64px; padding-top: 48px;
+            border-top: 1px solid var(--border);
+        }
+        .hero-stat h3 {
+            font-size: 2rem; color: var(--accent); font-weight: 800;
+        }
+        .hero-stat p {
+            font-size: .85rem; color: var(--text-faint);
+            margin: 0;
+        }
+
+        /* Floating marble dust particles */
+        .particles {
+            position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 3px; height: 3px;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0;
+            animation: drift linear infinite;
+        }
+        @keyframes drift {
+            0% { opacity: 0; transform: translateY(0) rotate(0deg); }
+            10% { opacity: .6; }
+            90% { opacity: .3; }
+            100% { opacity: 0; transform: translateY(-100vh) rotate(360deg); }
+        }
+
+        /* ── Section Layout ── */
+        section { padding: 100px 24px; }
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 64px;
+        }
+        .section-header .overline {
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .section-header h2 {
+            font-size: clamp(1.8rem, 4vw, 2.6rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+        }
+        .section-header p {
+            color: var(--text-dim);
+            font-size: 1.05rem;
+        }
+
+        /* ── Category Filters ── */
+        .filters {
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 10px; margin-bottom: 48px;
+        }
+        .filter-btn {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 8px 20px;
+            border-radius: 24px;
+            font-size: .85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .filter-btn:hover { border-color: var(--accent); color: var(--text); }
+        .filter-btn.active {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+        }
+
+        /* ── Story Cards ── */
+        .stories-grid {
+            max-width: 1200px; margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 24px;
+        }
+        .story-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+        .story-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 40px rgba(0,0,0,.4);
+        }
+        .story-card.hidden {
+            display: none;
+        }
+        .card-era {
+            position: absolute; top: 16px; right: 16px;
+            background: rgba(15,17,23,.7);
+            backdrop-filter: blur(10px);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: .7rem;
+            font-weight: 700;
+            color: var(--text-faint);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+        .card-visual {
+            height: 200px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+        .card-visual::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 60px;
+            background: linear-gradient(transparent, var(--surface));
+        }
+        .card-body { padding: 24px; }
+        .card-category {
+            display: inline-block;
+            font-size: .7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        .card-body h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .card-body .subtitle {
+            font-size: .9rem;
+            color: var(--accent-dim);
+            margin-bottom: 12px;
+            font-style: italic;
+        }
+        .card-body p {
+            color: var(--text-dim);
+            font-size: .9rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border);
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+        .card-tag {
+            font-size: .7rem;
+            color: var(--text-faint);
+            background: var(--surface-2);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .card-arrow {
+            color: var(--accent);
+            font-size: 1.2rem;
+            transition: var(--transition);
+        }
+        .story-card:hover .card-arrow { transform: translateX(4px); }
+
+        /* Category colors */
+        .cat-criticism { background: rgba(212,97,94,.15); color: var(--red); }
+        .cat-criticism-vis { background: linear-gradient(135deg, rgba(212,97,94,.12), rgba(212,97,94,.03)); }
+        .cat-persuasion { background: rgba(94,159,212,.15); color: var(--blue); }
+        .cat-persuasion-vis { background: linear-gradient(135deg, rgba(94,159,212,.12), rgba(94,159,212,.03)); }
+        .cat-strategy { background: rgba(155,126,212,.15); color: var(--purple); }
+        .cat-strategy-vis { background: linear-gradient(135deg, rgba(155,126,212,.12), rgba(155,126,212,.03)); }
+        .cat-conflict { background: rgba(212,154,94,.15); color: var(--orange); }
+        .cat-conflict-vis { background: linear-gradient(135deg, rgba(212,154,94,.12), rgba(212,154,94,.03)); }
+        .cat-alliance { background: rgba(94,196,184,.15); color: var(--teal); }
+        .cat-alliance-vis { background: linear-gradient(135deg, rgba(94,196,184,.12), rgba(94,196,184,.03)); }
+        .cat-resilience { background: rgba(110,200,122,.15); color: var(--green); }
+        .cat-resilience-vis { background: linear-gradient(135deg, rgba(110,200,122,.12), rgba(110,200,122,.03)); }
+
+        /* ── Story Modal ── */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 200;
+            background: rgba(0,0,0,.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 80px 24px 40px;
+            overflow-y: auto;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            animation: modalIn .3s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(20px) scale(.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-close {
+            position: absolute; top: 16px; right: 16px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem;
+            z-index: 10;
+            transition: var(--transition);
+        }
+        .modal-close:hover { background: var(--surface-3); }
+        .modal-hero {
+            height: 180px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 5rem;
+            position: relative;
+        }
+        .modal-hero::after {
+            content: '';
+            position: absolute; bottom: 0; left: 0; right: 0;
+            height: 80px;
+            background: linear-gradient(transparent, var(--surface));
+        }
+        .modal-content { padding: 32px 40px 40px; }
+        .modal-content .overline {
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .modal-content h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .modal-content .subtitle {
+            color: var(--accent-dim);
+            font-style: italic;
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+        .modal-meta {
+            display: flex; gap: 24px; flex-wrap: wrap;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+        .modal-meta-item {
+            display: flex; align-items: center; gap: 8px;
+            font-size: .85rem; color: var(--text-dim);
+        }
+        .modal-meta-item svg { width: 16px; height: 16px; color: var(--accent); }
+
+        .modal-section { margin-bottom: 32px; }
+        .modal-section h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--accent);
+            margin-bottom: 12px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .modal-section h3 svg { width: 18px; height: 18px; }
+        .modal-section p, .modal-section li {
+            color: var(--text-dim);
+            font-size: .95rem;
+            line-height: 1.8;
+        }
+        .modal-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .modal-section ul li {
+            padding: 8px 0 8px 24px;
+            position: relative;
+        }
+        .modal-section ul li::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 16px;
+            width: 8px; height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+        .modal-quote {
+            background: var(--surface-2);
+            border-left: 3px solid var(--accent);
+            padding: 20px 24px;
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            margin: 20px 0;
+            font-style: italic;
+            color: var(--text);
+        }
+        .modal-quote cite {
+            display: block;
+            margin-top: 8px;
+            font-style: normal;
+            font-size: .8rem;
+            color: var(--text-faint);
+        }
+
+        .scenario-box {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 24px;
+            margin-top: 16px;
+        }
+        .scenario-box h4 {
+            font-size: .9rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+        .scenario-box p {
+            color: var(--text-dim);
+            font-size: .9rem;
+        }
+
+        /* ── Principles Section ── */
+        #principles { background: var(--surface); }
+        .principles-grid {
+            max-width: 1200px; margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .principle-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            transition: var(--transition);
+        }
+        .principle-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        .principle-icon {
+            width: 48px; height: 48px;
+            background: var(--accent-glow);
+            border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+        .principle-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .principle-card p {
+            color: var(--text-dim);
+            font-size: .9rem;
+        }
+
+        /* ── Scenario Practice ── */
+        .scenario-practice {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .scenario-prompt {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 40px;
+            margin-bottom: 24px;
+        }
+        .scenario-prompt .context-label {
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            color: var(--accent);
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        .scenario-prompt h3 {
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+        }
+        .scenario-prompt p {
+            color: var(--text-dim);
+            margin-bottom: 24px;
+        }
+        .scenario-options { display: flex; flex-direction: column; gap: 12px; }
+        .scenario-option {
+            background: var(--surface-2);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 16px 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: left;
+            color: var(--text);
+            font-size: .95rem;
+            display: flex; gap: 12px; align-items: flex-start;
+        }
+        .scenario-option:hover {
+            border-color: var(--accent);
+            background: var(--surface-3);
+        }
+        .scenario-option.selected { border-color: var(--accent); }
+        .scenario-option.correct {
+            border-color: var(--green);
+            background: rgba(110,200,122,.08);
+        }
+        .scenario-option.incorrect {
+            border-color: var(--red);
+            background: rgba(212,97,94,.08);
+        }
+        .option-letter {
+            flex-shrink: 0;
+            width: 28px; height: 28px;
+            background: var(--surface-3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700;
+            font-size: .8rem;
+            color: var(--text-dim);
+        }
+        .scenario-option.correct .option-letter {
+            background: var(--green); color: var(--bg);
+        }
+        .scenario-option.incorrect .option-letter {
+            background: var(--red); color: var(--bg);
+        }
+        .scenario-feedback {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 32px;
+            display: none;
+        }
+        .scenario-feedback.show { display: block; }
+        .scenario-feedback h4 {
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 12px;
+        }
+        .scenario-feedback p {
+            color: var(--text-dim);
+            font-size: .95rem;
+        }
+        .scenario-nav {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 24px;
+        }
+        .scenario-counter {
+            font-size: .85rem; color: var(--text-faint);
+        }
+        .btn {
+            background: var(--accent);
+            color: var(--bg);
+            border: none;
+            padding: 10px 24px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: .9rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px var(--accent-glow); }
+        .btn:disabled { opacity: .4; cursor: default; transform: none; box-shadow: none; }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .btn-outline:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: none;
+        }
+
+        /* ── Timeline ── */
+        #timeline-section { background: var(--surface); }
+        .timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            padding-left: 40px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 15px; top: 0; bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+            padding: 20px 24px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .timeline-item:hover {
+            border-color: var(--accent);
+            transform: translateX(4px);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -33px; top: 28px;
+            width: 12px; height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 3px solid var(--bg);
+        }
+        .timeline-date {
+            font-size: .75rem;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+        .timeline-item h3 {
+            font-size: 1.05rem;
+            margin: 4px 0 6px;
+        }
+        .timeline-item p {
+            font-size: .85rem;
+            color: var(--text-dim);
+        }
+
+        /* ── Quotes Carousel ── */
+        .quotes-carousel {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            min-height: 200px;
+        }
+        .carousel-quote {
+            display: none;
+            animation: fadeIn .5s ease;
+        }
+        .carousel-quote.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .carousel-quote blockquote {
+            font-size: 1.4rem;
+            font-style: italic;
+            line-height: 1.6;
+            color: var(--text);
+            margin-bottom: 16px;
+        }
+        .carousel-quote cite {
+            color: var(--accent);
+            font-style: normal;
+            font-weight: 600;
+        }
+        .carousel-dots {
+            display: flex; justify-content: center; gap: 8px;
+            margin-top: 32px;
+        }
+        .carousel-dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .carousel-dot.active { background: var(--accent); width: 24px; border-radius: 4px; }
+
+        /* ── Search ── */
+        .search-wrap {
+            max-width: 500px;
+            margin: 0 auto 40px;
+            position: relative;
+        }
+        .search-wrap input {
+            width: 100%;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 14px 20px 14px 48px;
+            color: var(--text);
+            font-size: 1rem;
+            outline: none;
+            transition: var(--transition);
+        }
+        .search-wrap input::placeholder { color: var(--text-faint); }
+        .search-wrap input:focus { border-color: var(--accent); }
+        .search-wrap svg {
+            position: absolute;
+            left: 16px; top: 50%; transform: translateY(-50%);
+            width: 20px; height: 20px;
+            color: var(--text-faint);
+        }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 48px 24px;
+            text-align: center;
+        }
+        footer p {
+            color: var(--text-faint);
+            font-size: .85rem;
+        }
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-links.open {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 64px; left: 0; right: 0;
+                background: var(--surface);
+                border-bottom: 1px solid var(--border);
+                padding: 16px;
+            }
+            .hamburger { display: block; }
+            .stories-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-stats { flex-direction: column; gap: 24px; }
+            .modal-content { padding: 24px; }
+            .principles-grid { grid-template-columns: 1fr; }
+            .hero-stat h3 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="navbar">
+    <div class="nav-inner">
+        <div class="nav-brand">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                <path d="M2 17l10 5 10-5"/>
+                <path d="M2 12l10 5 10-5"/>
+            </svg>
+            The Marble Dust Playbook
+        </div>
+        <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+        </button>
+        <div class="nav-links" id="navLinks">
+            <a href="#stories" class="active">Stories</a>
+            <a href="#principles">Principles</a>
+            <a href="#timeline-section">Timeline</a>
+            <a href="#practice">Practice</a>
+            <a href="#wisdom">Wisdom</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="hero" id="hero">
+    <div class="particles" id="particles"></div>
+    <div class="hero-content">
+        <div class="hero-badge">Historical Wisdom for Modern Professionals</div>
+        <h1>Master the Art of Managing Up</h1>
+        <p>Learn from history's greatest diplomats, artists, and leaders. Twelve timeless stories that reveal how to navigate power, handle criticism, and build influence from any position.</p>
+        <a href="#stories" class="hero-cta">
+            Explore the Stories
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M6 9l6 6 6-6"/>
+            </svg>
+        </a>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <h3>12</h3>
+                <p>Historical Stories</p>
+            </div>
+            <div class="hero-stat">
+                <h3>2,500+</h3>
+                <p>Years of Wisdom</p>
+            </div>
+            <div class="hero-stat">
+                <h3>6</h3>
+                <p>Core Strategies</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stories Section -->
+<section id="stories">
+    <div class="section-header">
+        <div class="overline">The Collection</div>
+        <h2>Stories That Changed the Game</h2>
+        <p>Each story is a masterclass in influence, diplomacy, and the art of working with those above you.</p>
+    </div>
+
+    <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search stories, lessons, themes..." oninput="filterStories()">
+    </div>
+
+    <div class="filters" id="filters">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All Stories</button>
+        <button class="filter-btn" data-filter="criticism" onclick="setFilter('criticism', this)">Handling Criticism</button>
+        <button class="filter-btn" data-filter="persuasion" onclick="setFilter('persuasion', this)">Persuasion</button>
+        <button class="filter-btn" data-filter="strategy" onclick="setFilter('strategy', this)">Strategic Thinking</button>
+        <button class="filter-btn" data-filter="conflict" onclick="setFilter('conflict', this)">Managing Conflict</button>
+        <button class="filter-btn" data-filter="alliance" onclick="setFilter('alliance', this)">Building Alliances</button>
+        <button class="filter-btn" data-filter="resilience" onclick="setFilter('resilience', this)">Resilience</button>
+    </div>
+
+    <div class="stories-grid" id="storiesGrid"></div>
+</section>
+
+<!-- Principles Section -->
+<section id="principles">
+    <div class="section-header">
+        <div class="overline">Core Framework</div>
+        <h2>Six Principles of Managing Up</h2>
+        <p>Distilled from centuries of historical wisdom, these principles form the foundation of effective upward influence.</p>
+    </div>
+    <div class="principles-grid">
+        <div class="principle-card">
+            <div class="principle-icon">&#x1f3ad;</div>
+            <h3>Preserve Their Dignity</h3>
+            <p>Like Michelangelo with the nose, let others believe improvement was their idea. Never make a superior feel foolish, even when they are wrong. The goal is the right outcome, not credit.</p>
+        </div>
+        <div class="principle-card">
+            <div class="principle-icon">&#x1f9ed;</div>
+            <h3>Speak Their Language</h3>
+            <p>Franklin's "humble opinion" technique worked because he framed his ideas in terms his audience valued. Translate your expertise into the concerns of those above you.</p>
+        </div>
+        <div class="principle-card">
+            <div class="principle-icon">&#x231b;</div>
+            <h3>Master Your Timing</h3>
+            <p>Lincoln's unsent letters show that the right response at the wrong time is the wrong response. Learn when to act, when to wait, and when to let silence speak.</p>
+        </div>
+        <div class="principle-card">
+            <div class="principle-icon">&#x265f;&#xfe0f;</div>
+            <h3>Think Three Moves Ahead</h3>
+            <p>Like Zhuge Liang's empty fort, strategic positioning means arranging circumstances so that the desired outcome appears to be the natural — and only — choice.</p>
+        </div>
+        <div class="principle-card">
+            <div class="principle-icon">&#x1f91d;</div>
+            <h3>Build Quiet Alliances</h3>
+            <p>Eleanor Roosevelt transformed influence without authority into lasting institutional change. Build your network before you need it. Make allies, not adversaries.</p>
+        </div>
+        <div class="principle-card">
+            <div class="principle-icon">&#x1f30a;</div>
+            <h3>Bend, Don't Break</h3>
+            <p>Galileo, Scheherazade, and Hatshepsut all survived hostile power structures by adapting their approach without abandoning their core purpose. Flexibility preserves integrity.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Timeline Section -->
+<section id="timeline-section">
+    <div class="section-header">
+        <div class="overline">Through the Ages</div>
+        <h2>A Timeline of Influence</h2>
+        <p>These strategies span civilizations and centuries, proving that the dynamics of power and persuasion are universal.</p>
+    </div>
+    <div class="timeline" id="timeline"></div>
+</section>
+
+<!-- Practice Section -->
+<section id="practice">
+    <div class="section-header">
+        <div class="overline">Apply the Wisdom</div>
+        <h2>What Would You Do?</h2>
+        <p>Test your instincts with modern workplace scenarios inspired by these historical lessons.</p>
+    </div>
+    <div class="scenario-practice" id="scenarioPractice"></div>
+</section>
+
+<!-- Wisdom Quotes -->
+<section id="wisdom">
+    <div class="section-header">
+        <div class="overline">Timeless Words</div>
+        <h2>Wisdom from the Masters</h2>
+    </div>
+    <div class="quotes-carousel" id="quotesCarousel"></div>
+</section>
+
+<footer>
+    <p>The Marble Dust Playbook &mdash; Historical wisdom for navigating the modern workplace.</p>
+    <p style="margin-top:8px">Inspired by Michelangelo's gentle deception and centuries of human ingenuity.</p>
+</footer>
+
+<!-- Story Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modal" onclick="event.stopPropagation()">
+        <button class="modal-close" onclick="closeModalDirect()">&times;</button>
+        <div class="modal-hero" id="modalHero"></div>
+        <div class="modal-content" id="modalContent"></div>
+    </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+
+const stories = [
+    {
+        id: 'michelangelo',
+        title: "Michelangelo's Marble Dust",
+        subtitle: "Florence, 1504",
+        emoji: "\u{1f3db}\ufe0f",
+        era: "Renaissance",
+        year: 1504,
+        category: "criticism",
+        categoryLabel: "Handling Criticism",
+        tags: ["Art", "Patronage", "Perception"],
+        summary: "When Florence's leader criticized David's nose, Michelangelo pretended to fix it — tapping his chisel while secretly dropping marble dust — fooling the critic into praising the 'improvement.'",
+        context: "By 1504, the 29-year-old Michelangelo had spent over two years sculpting David from a massive block of marble that two previous sculptors had abandoned. The 17-foot statue was a masterpiece. Piero Soderini, the Gonfaloniere (head of state) of Florence, came to inspect the nearly completed work.",
+        story: "Soderini studied the statue and declared that the nose was too large. Rather than arguing with the man who controlled public commissions in Florence, Michelangelo climbed the scaffolding with his chisel in one hand — and a hidden handful of marble dust in the other. He tapped lightly on the stone, letting the dust drift down convincingly. He changed nothing. When he descended, Soderini beamed: the nose was now perfect, he said. The statue seemed to have 'come alive.' Michelangelo thanked him for the guidance.",
+        quote: { text: "I have only to show you that the statue has now come to life.", source: "Giorgio Vasari, Lives of the Artists (1550)" },
+        lessons: [
+            "Sometimes the wisest response to misguided criticism is the appearance of compliance rather than confrontation.",
+            "Preserving a superior's dignity costs nothing and gains everything — Soderini left feeling like a valued collaborator.",
+            "Expertise doesn't require proving others wrong. The statue survived intact; so did the relationship.",
+            "The 'marble dust technique' — creating the illusion of change to satisfy a critic — remains one of the most elegant conflict resolution tools ever devised."
+        ],
+        modernApplication: {
+            title: "The Unnecessary Revision Request",
+            text: "Your VP reviews your slide deck and insists on rearranging two slides that are already in the optimal order. Instead of debating presentation theory, swap the slides before the meeting, then casually mention the flow feels off. The VP suggests swapping them back, pleased with their own insight. Your original work is preserved, and the VP feels heard."
+        }
+    },
+    {
+        id: 'franklin',
+        title: "Franklin's Humble Opinion",
+        subtitle: "Philadelphia, 1787",
+        emoji: "\u{1f4dc}",
+        era: "Enlightenment",
+        year: 1787,
+        category: "persuasion",
+        categoryLabel: "Persuasion",
+        tags: ["Politics", "Rhetoric", "Influence"],
+        summary: "Benjamin Franklin mastered the art of persuasion by systematically removing certainty from his language — never asserting, always suggesting — making his ideas irresistible.",
+        context: "By the time of the Constitutional Convention, the 81-year-old Franklin was the most famous American alive and a legendary diplomat. Yet his greatest political weapon wasn't authority — it was studied humility. He had spent decades refining a rhetorical technique that made disagreement with him feel almost rude.",
+        story: "Franklin deliberately purged words like 'certainly' and 'undoubtedly' from his vocabulary, replacing them with 'I conceive,' 'I apprehend,' and 'it appears to me.' When proposing a crucial compromise at the Convention, he opened not with authority but with vulnerability: 'I confess that there are several parts of this constitution which I do not at present approve, but I am not sure I shall never approve them.' This disarming honesty made delegates more receptive to his actual proposal — which carried the day.",
+        quote: { text: "I wish the rest of the delegates would have the good sense to doubt a little of their own infallibility.", source: "Benjamin Franklin, Speech at the Constitutional Convention (1787)" },
+        lessons: [
+            "Hedging language ('I might be wrong, but...') paradoxically increases persuasive power because it lowers the listener's defenses.",
+            "Admitting uncertainty about your own position makes others more willing to move toward it.",
+            "The technique works because it shifts the dynamic from debate (win/lose) to joint exploration (collaborative).",
+            "Franklin's method is particularly effective when managing up: it lets a superior feel like they arrived at your conclusion independently."
+        ],
+        modernApplication: {
+            title: "Pitching Against the Grain",
+            text: "Your CTO is committed to building a feature in-house, but you believe a third-party integration is better. Instead of presenting a counter-argument, say: 'I was initially leaning toward building it ourselves too, but I ran into some numbers that gave me pause — could I share what confused me?' The CTO becomes a fellow investigator rather than a defendant."
+        }
+    },
+    {
+        id: 'zhuge-liang',
+        title: "Zhuge Liang's Empty Fort",
+        subtitle: "Shu Han, 228 CE",
+        emoji: "\u{1f3ef}",
+        era: "Three Kingdoms",
+        year: 228,
+        category: "strategy",
+        categoryLabel: "Strategic Thinking",
+        tags: ["Military", "Bluff", "Reputation"],
+        summary: "Facing an overwhelming army with an empty city, the legendary strategist Zhuge Liang opened the gates and played the lute on the walls — his reputation alone made the enemy retreat.",
+        context: "Zhuge Liang, the Prime Minister and master strategist of Shu Han, found himself trapped in the city of Xicheng with only a handful of civilians and no military garrison. The Wei general Sima Yi was approaching with 150,000 troops. Retreat was impossible; defense was hopeless.",
+        story: "Instead of panicking, Zhuge Liang ordered the city gates thrown open. He had soldiers disguised as civilians sweep the streets calmly. Then he climbed to the top of the city wall, lit incense, and began playing his lute with perfect composure. When Sima Yi's scouts reported the scene, the general hesitated. Zhuge Liang's reputation for brilliant traps was legendary — surely this was an ambush. Sima Yi ordered a full retreat. The city was saved by nothing but reputation and nerve.",
+        quote: { text: "In war, the supreme excellence is not winning every battle, but breaking the enemy's resistance without fighting.", source: "Adapted from Sun Tzu, invoked by Zhuge Liang's strategy" },
+        lessons: [
+            "Your professional reputation is a strategic asset — invest in it before you need to spend it.",
+            "Projecting calm confidence under pressure can be more effective than any technical argument.",
+            "Sometimes the boldest move is the one that looks most effortless. Desperation invites attack; composure invites caution.",
+            "When you lack resources, leverage perception. What others believe about your capabilities matters as much as the capabilities themselves."
+        ],
+        modernApplication: {
+            title: "The Under-Resourced Project",
+            text: "Your team lost two engineers mid-sprint, but stakeholders don't know yet. Instead of sending a panicked email about delays, present a calm, restructured timeline at the standup: 'We've optimized the delivery sequence to front-load the highest-impact items.' Your composure prevents escalation and buys time to backfill."
+        }
+    },
+    {
+        id: 'lincoln-letters',
+        title: "Lincoln's Unsent Letters",
+        subtitle: "Washington, 1863",
+        emoji: "\u{1f4dd}",
+        era: "Civil War",
+        year: 1863,
+        category: "conflict",
+        categoryLabel: "Managing Conflict",
+        tags: ["Leadership", "Emotion", "Restraint"],
+        summary: "Abraham Lincoln wrote scathing letters to underperforming generals — then filed them away unsent. He channeled rage into writing and wisdom into silence.",
+        context: "After the Battle of Gettysburg in July 1863, General Meade failed to pursue Lee's retreating army, potentially prolonging the Civil War by years. Lincoln was furious. He sat down and wrote one of the most blistering letters in presidential history.",
+        story: "Lincoln's letter to Meade was devastating: 'I do not believe you appreciate the magnitude of the misfortune involved in Lee's escape. He was within your easy grasp, and to have closed upon him would, in connection with our other late successes, have ended the war. As it is, the war will be prolonged indefinitely.' The letter was found in Lincoln's papers after his death, marked: 'To Gen. Meade, never sent, or signed.' Lincoln had learned that venting on paper was cathartic, but sending the letter would demoralize a general he still needed. He chose the relationship over the release.",
+        quote: { text: "I decided to put it aside, cool down, and think of what good it would do. I concluded it would do no good at all.", source: "Abraham Lincoln (attributed)" },
+        lessons: [
+            "Write the angry email. Then delete it. The act of writing processes the emotion; sending it creates a new problem.",
+            "Distinguishing between what feels satisfying and what is strategically useful is a hallmark of mature leadership.",
+            "Lincoln still needed Meade to command the Army. Destroying that relationship for momentary catharsis would have been self-defeating.",
+            "This technique — writing unsent letters — is now a well-documented psychological tool for processing intense workplace frustrations."
+        ],
+        modernApplication: {
+            title: "The Infuriating Slack Message",
+            text: "Your manager publicly credits someone else for your architecture proposal. You draft a reply-all correcting the record. Before sending, close the window and write the message you actually want in a notes app. Let it sit overnight. By morning, you realize a private 1:1 conversation achieves the correction without the public confrontation."
+        }
+    },
+    {
+        id: 'scheherazade',
+        title: "Scheherazade's 1,001 Nights",
+        subtitle: "Persia, c. 800 CE",
+        emoji: "\u{1f319}",
+        era: "Medieval",
+        year: 800,
+        category: "strategy",
+        categoryLabel: "Strategic Thinking",
+        tags: ["Narrative", "Survival", "Timing"],
+        summary: "Facing execution each dawn, Scheherazade survived by never finishing her story — making the king's curiosity more powerful than his cruelty.",
+        context: "In the frame story of One Thousand and One Nights, King Shahryar, betrayed by his wife, vows to marry a new woman each day and execute her the next morning. Scheherazade, the vizier's daughter, volunteers to marry the king — armed with a plan.",
+        story: "Each night, Scheherazade told the king a captivating story but stopped at a cliffhanger just before dawn. The king, desperate to hear the ending, postponed her execution by one day. This continued for 1,001 nights. Over nearly three years, the stories gradually shifted from adventure tales to moral parables about mercy, trust, and wisdom. By the end, the king had been transformed — not by argument, but by narrative. He abandoned his cruel decree entirely.",
+        quote: { text: "She had read the books of literature, philosophy, and medicine. She knew poetry by heart, had studied historical reports, and was acquainted with the sayings of men and the maxims of sages.", source: "One Thousand and One Nights, Introduction" },
+        lessons: [
+            "When confronting power directly would be fatal, create ongoing value that makes your presence indispensable.",
+            "Incremental influence is more durable than dramatic confrontation. Scheherazade changed the king's worldview over 1,001 nights, not in one argument.",
+            "Stories and narrative are more persuasive than logic when dealing with emotional decision-makers.",
+            "The cliffhanger technique — leaving things unfinished — creates psychological investment that buys time and goodwill."
+        ],
+        modernApplication: {
+            title: "The Project on the Chopping Block",
+            text: "Your project is up for cancellation in quarterly reviews. Instead of presenting all results at once, share a compelling partial insight each week with your skip-level: 'We just found something interesting in the data — I'll have the full picture next week.' Each preview creates investment in seeing the conclusion, buying your project time to prove its value."
+        }
+    },
+    {
+        id: 'talleyrand',
+        title: "Talleyrand's Survival",
+        subtitle: "France, 1789–1838",
+        emoji: "\u{2696}\ufe0f",
+        era: "Post-Revolution",
+        year: 1800,
+        category: "alliance",
+        categoryLabel: "Building Alliances",
+        tags: ["Diplomacy", "Adaptability", "Power"],
+        summary: "Charles-Maurice de Talleyrand served every French regime for 50 years — from Louis XVI through the Revolution, Napoleon, the Restoration, and beyond — by being indispensable to each.",
+        context: "Talleyrand held high office under radically opposed governments: the Ancien Régime, the Revolution, the Directory, Napoleon's Empire, and the restored Bourbon monarchy. While nearly every other politician of his era was executed, exiled, or marginalized, Talleyrand thrived under all of them.",
+        story: "Talleyrand's secret was positioning himself as the person who understood what others didn't. When Napoleon was ascending, Talleyrand provided diplomatic expertise that the military genius lacked. When Napoleon overreached, Talleyrand quietly built relationships with the allies who would replace him. He famously told Tsar Alexander: 'Sire, I am perhaps the only man in France who can tell you the truth.' He told the truth — but always in a way that made him essential to the listener. He never burned a bridge he might need to cross again.",
+        quote: { text: "I have never abandoned a government before it abandoned itself.", source: "Charles-Maurice de Talleyrand" },
+        lessons: [
+            "Be the person who provides what the current leader lacks — and make sure they know it.",
+            "Loyalty to principles (stability, peace) rather than persons allows you to navigate regime changes with integrity intact.",
+            "Never burn bridges. The person you alienate today may be your boss — or your lifeline — tomorrow.",
+            "Position yourself at the intersection of information and decision-making. Being indispensable is the ultimate job security."
+        ],
+        modernApplication: {
+            title: "The Reorg Survivor",
+            text: "Your company is reorganizing and your current VP is likely being moved. Instead of panicking or politicking, become the person who understands the cross-functional dependencies better than anyone. Brief both the current and incoming leaders. When the dust settles, both sides see you as essential continuity."
+        }
+    },
+    {
+        id: 'hatshepsut',
+        title: "Hatshepsut's Reframing",
+        subtitle: "Egypt, c. 1478 BCE",
+        emoji: "\u{1f3db}\ufe0f",
+        era: "Ancient Egypt",
+        year: -1478,
+        category: "strategy",
+        categoryLabel: "Strategic Thinking",
+        tags: ["Authority", "Framing", "Legacy"],
+        summary: "When tradition barred her from ruling, Hatshepsut didn't fight the system — she reframed herself within it, eventually being depicted as a male pharaoh to legitimize her unprecedented power.",
+        context: "When Thutmose II died around 1479 BCE, his son Thutmose III was too young to rule. Hatshepsut, the queen and royal daughter, became regent. But she had ambitions beyond regency — she wanted to rule as pharaoh in her own right, something no woman had fully done.",
+        story: "Rather than challenging the patriarchal system head-on, Hatshepsut worked within its logic. She first emphasized her royal bloodline — daughter of Thutmose I — as superior to her stepson's claim. She had herself depicted in increasingly masculine regalia, eventually wearing the false beard and full pharaonic dress. She commissioned propaganda claiming the god Amun himself had ordained her rule. She didn't ask permission to rule; she made her rule appear divinely inevitable. She reigned successfully for over 20 years, launching grand building projects and profitable trading expeditions.",
+        quote: { text: "I have restored that which was ruined. I have raised up that which was formerly destroyed.", source: "Hatshepsut, inscribed at Deir el-Bahari" },
+        lessons: [
+            "When the system's rules work against you, don't fight the rules — reframe your position to fit within them.",
+            "Legitimacy is partly a matter of presentation. How you frame your authority shapes whether others accept it.",
+            "Gradual escalation (regent to co-ruler to full pharaoh) is more sustainable than sudden power grabs.",
+            "Hatshepsut's approach shows that working within constraints can achieve more than rebelling against them."
+        ],
+        modernApplication: {
+            title: "The IC with Leadership Ideas",
+            text: "As a senior individual contributor, you have a vision for the team's direction but no formal authority. Instead of proposing a new strategy (which might threaten your manager), start by writing influential design documents that shape thinking. Volunteer for cross-team coordination. Gradually, your de facto influence becomes recognized authority — or earns you the title to match."
+        }
+    },
+    {
+        id: 'eleanor-roosevelt',
+        title: "Eleanor Roosevelt's Parallel Power",
+        subtitle: "Washington, 1933–1945",
+        emoji: "\u{1f5fd}",
+        era: "Modern",
+        year: 1938,
+        category: "alliance",
+        categoryLabel: "Building Alliances",
+        tags: ["Advocacy", "Influence", "Networks"],
+        summary: "With no official power, Eleanor Roosevelt built a parallel influence network through press conferences, her newspaper column, and strategic ally-building — reshaping American policy from a ceremonial role.",
+        context: "The role of First Lady in the 1930s was purely ceremonial and social. Eleanor Roosevelt had strong policy views on civil rights, labor, and poverty, but the political system offered her no formal channel. Her husband's advisors saw her activism as a liability.",
+        story: "Eleanor created her own channels. She held press conferences exclusively for female journalists — guaranteeing that news organizations had to hire women to cover the White House. She wrote a daily newspaper column, 'My Day,' reaching millions directly. She traveled to coal mines, sharecropper communities, and segregated schools, then reported what she saw directly to FDR and the public. She built alliances with advocacy groups, labor leaders, and minority communities. When FDR's advisors blocked her policy access, she went around them — not by confrontation, but by making her own platform so powerful it couldn't be ignored.",
+        quote: { text: "Do what you feel in your heart to be right — for you'll be criticized anyway.", source: "Eleanor Roosevelt" },
+        lessons: [
+            "When formal channels are blocked, build your own. Influence doesn't require a title.",
+            "Creating value for others (female journalists, advocacy groups) builds a loyal support network that amplifies your voice.",
+            "Going directly to information sources (visiting communities) gives you credibility that secondhand reports never can.",
+            "Persistence in building parallel influence eventually forces the formal system to accommodate you."
+        ],
+        modernApplication: {
+            title: "The Blocked Initiative",
+            text: "Your proposal keeps getting deprioritized in planning meetings. Instead of escalating, start a weekly internal blog sharing insights from customer research. Invite interested people from other teams to a casual working group. When your ideas gain momentum from the grassroots, leadership comes to you to formalize what's already happening."
+        }
+    },
+    {
+        id: 'odysseus',
+        title: "Odysseus and the Cyclops",
+        subtitle: "Ancient Greece, c. 700 BCE",
+        emoji: "\u{1f40f}",
+        era: "Ancient Greece",
+        year: -700,
+        category: "conflict",
+        categoryLabel: "Managing Conflict",
+        tags: ["Cunning", "Identity", "Escape"],
+        summary: "Trapped in a cave with a man-eating giant, Odysseus called himself 'Nobody' — so when the blinded Cyclops cried for help, his allies heard 'Nobody is hurting me' and stayed away.",
+        context: "In Homer's Odyssey, Odysseus and his men are trapped in the cave of Polyphemus, a Cyclops who has already eaten several of the crew. The cave is sealed by a boulder only the Cyclops can move. Brute force is impossible; they need the monster alive to move the stone.",
+        story: "When Polyphemus asked his name, Odysseus answered 'Nobody' (Outis in Greek). After getting the Cyclops drunk on wine, Odysseus and his men drove a sharpened stake into his single eye. Polyphemus screamed for help from the neighboring Cyclopes. 'Who is harming you?' they called. 'Nobody!' he bellowed. His allies shrugged and left. The next morning, Odysseus's men escaped by clinging to the undersides of the Cyclops's sheep as they filed out to graze — literally hiding in the system the giant himself maintained.",
+        quote: { text: "My name is Nobody: mother, father, and friends, everyone calls me Nobody.", source: "Homer, The Odyssey, Book IX" },
+        lessons: [
+            "Strategic anonymity can be a powerful tool. Not every situation requires you to claim credit or assert identity.",
+            "Use the systems and structures that already exist — even those controlled by your opponent — to achieve your goals.",
+            "When dealing with overwhelming force, cleverness beats confrontation every time.",
+            "The 'Nobody' technique: sometimes the best way to manage up is to be invisible until you're free."
+        ],
+        modernApplication: {
+            title: "The Political Minefield",
+            text: "Two VPs are in a turf war over your project's ownership. Instead of picking a side (and making an enemy), structure your updates to be useful to both without championing either. Let them fight over the credit while you do the work. By the time it resolves, you're the one person both sides trust."
+        }
+    },
+    {
+        id: 'galileo',
+        title: "Galileo's Dialogue",
+        subtitle: "Florence, 1632",
+        emoji: "\u{1f52d}",
+        era: "Renaissance",
+        year: 1632,
+        category: "persuasion",
+        categoryLabel: "Persuasion",
+        tags: ["Science", "Censorship", "Framing"],
+        summary: "Forbidden from advocating heliocentrism, Galileo wrote a 'dialogue' where the sun-centered argument was technically presented by a character — technically obeying while fundamentally subverting.",
+        context: "In 1616, the Catholic Church declared heliocentrism (the sun-centered model) 'formally heretical.' Galileo, who had strong telescopic evidence supporting it, was ordered not to 'hold or defend' the Copernican view. For 16 years, he complied — outwardly.",
+        story: "In 1632, Galileo published Dialogue Concerning the Two Chief World Systems, structured as a conversation between three characters. The Copernican view was argued by Salviati (brilliant and persuasive), the Ptolemaic geocentric view by Simplicio (whose name suggests 'simpleton'), and a neutral moderator. Galileo could technically claim he was merely presenting both sides. But the structure made it overwhelmingly clear which side was right. The book was a sensation across Europe. The Church eventually saw through the device and put Galileo on trial, but by then the ideas had spread irreversibly.",
+        quote: { text: "I do not feel obliged to believe that the same God who has endowed us with sense, reason, and intellect has intended us to forgo their use.", source: "Galileo Galilei" },
+        lessons: [
+            "When direct advocacy is forbidden, let the structure of your argument do the persuading.",
+            "The 'dialogue format' — presenting your idea as one option among several — can be more persuasive than direct assertion because it invites the audience to reach the conclusion themselves.",
+            "Even under censorship, creative framing can spread ideas further than open advocacy. Constraint breeds invention.",
+            "The risk is real: Galileo did face consequences. Calculate whether the idea's importance justifies the personal cost."
+        ],
+        modernApplication: {
+            title: "The Unpopular Data",
+            text: "Your analysis shows the CEO's pet project is underperforming, but directly presenting this would be career suicide. Instead, create a 'competitive landscape analysis' that shows industry benchmarks alongside your internal numbers. Let the comparison speak. Offer three strategic options — the one backed by data happens to be the most compelling. The CEO draws the conclusion without feeling attacked."
+        }
+    },
+    {
+        id: 'tokugawa',
+        title: "Tokugawa's Patient Wait",
+        subtitle: "Japan, 1600",
+        emoji: "\u{1f3af}",
+        era: "Sengoku",
+        year: 1600,
+        category: "resilience",
+        categoryLabel: "Resilience",
+        tags: ["Patience", "Timing", "Endurance"],
+        summary: "While rivals fought for power, Tokugawa Ieyasu waited for decades — surviving, building alliances, and positioning himself until the perfect moment to unify Japan under 250 years of peace.",
+        context: "During Japan's brutal Sengoku ('Warring States') period, three men are credited with unifying the country. Oda Nobunaga conquered by force, Toyotomi Hideyoshi by brilliance — and Tokugawa Ieyasu by patience. A famous Japanese proverb contrasts them: if a bird won't sing, Nobunaga kills it, Hideyoshi makes it want to sing, and Tokugawa waits for it to sing.",
+        story: "Tokugawa spent decades as a subordinate ally — first to Nobunaga, then to Hideyoshi. He endured humiliations, relocated his domain when ordered, and sent family members as hostages to prove loyalty. But he never stopped building. He cultivated the largest and most loyal army in Japan, formed quiet alliances with other patient lords, and kept his domain prosperous. When Hideyoshi died in 1598 and left a child heir, Tokugawa was perfectly positioned. At the Battle of Sekigahara in 1600, his patient alliance-building paid off: many 'enemy' lords switched sides mid-battle. He won decisively and established a shogunate that would keep peace for 250 years.",
+        quote: { text: "Life is like a long journey carrying a heavy burden. Do not hurry.", source: "Tokugawa Ieyasu" },
+        lessons: [
+            "Strategic patience — building capability while others exhaust themselves — is itself a form of action.",
+            "Being a reliable subordinate builds trust and access that can be leveraged when the moment arrives.",
+            "Enduring short-term indignity for long-term positioning is a sign of strength, not weakness.",
+            "When the environment is chaotic, the person who maintains stability and alliances often outlasts the most aggressive competitors."
+        ],
+        modernApplication: {
+            title: "The Volatile Startup",
+            text: "Your startup is on its third pivot and second CEO. Colleagues are jumping ship. Instead of panicking or politicking, keep delivering excellent work, maintain relationships across every faction, and document everything you've built. When the dust settles — whether through acquisition, new leadership, or stabilization — you're the institutional knowledge everyone needs."
+        }
+    },
+    {
+        id: 'bismarck-ems',
+        title: "Bismarck's Ems Dispatch",
+        subtitle: "Prussia, 1870",
+        emoji: "\u{1f4e8}",
+        era: "19th Century",
+        year: 1870,
+        category: "persuasion",
+        categoryLabel: "Persuasion",
+        tags: ["Editing", "Framing", "Communication"],
+        summary: "Bismarck didn't fabricate a diplomatic telegram — he simply edited it. By cutting conciliatory phrases, he made a polite exchange read as a deliberate insult, triggering exactly the war he wanted.",
+        context: "Otto von Bismarck, the Prussian Chancellor, wanted a war with France to complete German unification. But he needed France to be the aggressor so that the southern German states would rally to Prussia's side. A diplomatic exchange between the Prussian King and the French ambassador at Ems provided the raw material.",
+        story: "The original telegram from Ems described a cordial diplomatic meeting. Bismarck took the telegram and, without adding a single false word, edited it to remove all the polite, conciliatory language. The shortened version made it appear that the Prussian King had curtly dismissed the French ambassador. Bismarck leaked this edited version to the press. The French public was outraged; Napoleon III declared war. The southern German states, seeing French aggression, joined Prussia. Bismarck got exactly the war he wanted, on exactly the terms he wanted, by doing nothing more than editing.",
+        quote: { text: "This text will have the effect of a red rag on the Gallic bull.", source: "Otto von Bismarck, upon editing the dispatch" },
+        lessons: [
+            "How information is framed matters as much as its content. The same facts, presented differently, lead to completely different conclusions.",
+            "Editing — what you remove — can be more powerful than what you add. This applies to emails, reports, and presentations.",
+            "Be alert to this technique being used on you: always ask what context might be missing from a provocative summary.",
+            "The ethically cautionary side: Bismarck's genius was also manipulation. Use framing power responsibly."
+        ],
+        modernApplication: {
+            title: "The Status Report",
+            text: "You need executive support for a struggling project. The raw data includes both alarming and promising metrics. Rather than hiding problems, sequence the narrative: lead with the trend line (improving), then the current state (behind target), then the specific actions underway. Same facts, but the frame of 'recovery in progress' reads completely differently from 'project failing.' Just be honest — never fabricate or omit material facts."
+        }
+    }
+];
+
+const scenarios = [
+    {
+        context: "Inspired by: Michelangelo's Marble Dust",
+        question: "Your director insists that the dashboard should use pie charts, but your UX research clearly shows users prefer bar charts. The director is presenting to the board next week. What do you do?",
+        options: [
+            { letter: "A", text: "Send a detailed email with research papers explaining why pie charts are inferior for data comparison.", correct: false },
+            { letter: "B", text: "Build both versions. Show the director the bar chart version as 'another option we mocked up' and let them compare side by side.", correct: true },
+            { letter: "C", text: "Escalate to the VP of Product with the UX research data.", correct: false },
+            { letter: "D", text: "Use pie charts as requested. It's not worth the battle.", correct: false }
+        ],
+        explanation: "Like Michelangelo, the goal is to preserve the director's dignity while achieving the right outcome. Showing 'another option' lets them feel like they're choosing, not being corrected. Option A makes them defensive, C creates political enemies, and D abandons your expertise entirely."
+    },
+    {
+        context: "Inspired by: Lincoln's Unsent Letters",
+        question: "A colleague takes credit for your work in an all-hands meeting. Your manager was in the room. You're furious. What's your next move?",
+        options: [
+            { letter: "A", text: "Write a detailed Slack message to the colleague explaining that they misrepresented the work's origins.", correct: false },
+            { letter: "B", text: "Draft the angry message, then close it. Schedule a private 1:1 with your manager to discuss contribution clarity going forward.", correct: true },
+            { letter: "C", text: "Reply-all to the meeting notes, politely adding context about who did what.", correct: false },
+            { letter: "D", text: "Let it go — karma will sort it out.", correct: false }
+        ],
+        explanation: "Lincoln knew the difference between catharsis and strategy. Writing (and not sending) the angry message processes the emotion. The private conversation with your manager addresses the real issue — future credit attribution — without creating a public spectacle or burning the colleague relationship."
+    },
+    {
+        context: "Inspired by: Scheherazade's 1,001 Nights",
+        question: "Your experimental project is up for cancellation in next month's portfolio review. You have promising but incomplete results. What's your approach?",
+        options: [
+            { letter: "A", text: "Request a formal meeting to present your full findings before the review.", correct: false },
+            { letter: "B", text: "Accept the cancellation gracefully and propose restarting it next quarter.", correct: false },
+            { letter: "C", text: "Share one compelling insight per week with decision-makers, each ending with 'and we're about to test something even more interesting.'", correct: true },
+            { letter: "D", text: "Prepare a detailed ROI projection showing the project's long-term potential.", correct: false }
+        ],
+        explanation: "Scheherazade's genius was making her audience invest in the next chapter. Dripping compelling partial results creates curiosity and ongoing investment from stakeholders. A single formal pitch is one chance to succeed or fail. Weekly teasers build a narrative of momentum that makes cancellation feel like leaving a story unfinished."
+    },
+    {
+        context: "Inspired by: Talleyrand's Survival",
+        question: "Your company is being acquired. Your current VP and the acquiring company's VP both want you on their team during integration. How do you play this?",
+        options: [
+            { letter: "A", text: "Immediately align with the acquiring company's VP — they'll have more power post-merger.", correct: false },
+            { letter: "B", text: "Stay loyal to your current VP no matter what.", correct: false },
+            { letter: "C", text: "Position yourself as the bridge between both teams, offering integration expertise that makes you valuable to whoever ends up in charge.", correct: true },
+            { letter: "D", text: "Start interviewing externally while things are uncertain.", correct: false }
+        ],
+        explanation: "Talleyrand survived every French regime by being indispensable to whoever held power. By becoming the bridge — the person who understands both organizations — you're valuable regardless of who wins. Picking sides risks betting wrong; hedging externally abandons a strong position."
+    },
+    {
+        context: "Inspired by: Galileo's Dialogue",
+        question: "Your data shows the CEO's strategic bet isn't working, but nobody in leadership wants to hear it. How do you surface the truth?",
+        options: [
+            { letter: "A", text: "Present the data directly to the CEO in a 1:1 with clear recommendations.", correct: false },
+            { letter: "B", text: "Create a 'market landscape analysis' that includes competitor benchmarks alongside your internal metrics, and present three strategic options where the data-supported one is most compelling.", correct: true },
+            { letter: "C", text: "Share the data privately with a board member you trust.", correct: false },
+            { letter: "D", text: "Wait for the numbers to get bad enough that leadership can't ignore them.", correct: false }
+        ],
+        explanation: "Like Galileo's Dialogue, the key is structuring the argument so the audience reaches the right conclusion themselves. A 'landscape analysis' reframes uncomfortable internal data as market context. Presenting options (not a verdict) preserves the CEO's agency. Direct confrontation triggers defensiveness; going to the board creates enemies; waiting causes harm."
+    },
+    {
+        context: "Inspired by: Franklin's Humble Opinion",
+        question: "You believe the team should switch from REST to GraphQL for the new API, but your tech lead is firmly in the REST camp. How do you make your case?",
+        options: [
+            { letter: "A", text: "Write a detailed technical comparison document proving GraphQL's superiority for your use case.", correct: false },
+            { letter: "B", text: "Say: 'I was leaning REST too, but I hit something in the performance tests that surprised me — mind if I walk through what confused me?'", correct: true },
+            { letter: "C", text: "Build a GraphQL proof-of-concept on your own time and present it as a fait accompli.", correct: false },
+            { letter: "D", text: "Suggest the team vote on it at the next architecture review.", correct: false }
+        ],
+        explanation: "Franklin's method works because it transforms debate into joint investigation. Starting with 'I thought the same as you' creates alignment. 'Something confused me' invites curiosity rather than defensiveness. The tech lead becomes a fellow explorer rather than someone being proven wrong."
+    }
+];
+
+const quotes = [
+    { text: "Tact is the ability to tell someone to go to hell in such a way that they look forward to the trip.", author: "Winston Churchill" },
+    { text: "The supreme art of war is to subdue the enemy without fighting.", author: "Sun Tzu" },
+    { text: "Speak softly and carry a big stick; you will go far.", author: "Theodore Roosevelt" },
+    { text: "Diplomacy is the art of letting someone else have your way.", author: "Daniele Vare" },
+    { text: "Nearly all men can stand adversity, but if you want to test a man's character, give him power.", author: "Abraham Lincoln" },
+    { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein" },
+    { text: "The wise warrior avoids the battle.", author: "Sun Tzu" },
+    { text: "You catch more flies with honey than with vinegar.", author: "English Proverb" },
+    { text: "It is better to lead from behind and to put others in front, especially when nice things occur.", author: "Nelson Mandela" },
+    { text: "He who knows when he can fight and when he cannot will be victorious.", author: "Sun Tzu" }
+];
+
+
+// ═══════════════════════════════════════════════
+// INITIALIZATION
+// ═══════════════════════════════════════════════
+
+let currentFilter = 'all';
+let currentScenario = 0;
+let scenarioAnswered = false;
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderStories();
+    renderTimeline();
+    renderScenario();
+    renderQuotes();
+    createParticles();
+    initNavScroll();
+    initNavHighlight();
+});
+
+// ═══════════════════════════════════════════════
+// STORIES
+// ═══════════════════════════════════════════════
+
+function renderStories() {
+    const grid = document.getElementById('storiesGrid');
+    grid.innerHTML = stories.map(s => `
+        <div class="story-card" data-category="${s.category}" data-search="${(s.title + ' ' + s.subtitle + ' ' + s.summary + ' ' + s.tags.join(' ') + ' ' + s.categoryLabel).toLowerCase()}" onclick="openStory('${s.id}')">
+            <div class="card-visual cat-${s.category}-vis">
+                <span class="card-era">${s.era}</span>
+                ${s.emoji}
+            </div>
+            <div class="card-body">
+                <span class="card-category cat-${s.category}">${s.categoryLabel}</span>
+                <h3>${s.title}</h3>
+                <div class="subtitle">${s.subtitle}</div>
+                <p>${s.summary}</p>
+            </div>
+            <div class="card-footer">
+                <div class="card-tags">
+                    ${s.tags.map(t => `<span class="card-tag">${t}</span>`).join('')}
+                </div>
+                <span class="card-arrow">&rarr;</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+function setFilter(category, btn) {
+    currentFilter = category;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterStories();
+}
+
+function filterStories() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    document.querySelectorAll('.story-card').forEach(card => {
+        const matchesFilter = currentFilter === 'all' || card.dataset.category === currentFilter;
+        const matchesSearch = !search || card.dataset.search.includes(search);
+        card.classList.toggle('hidden', !(matchesFilter && matchesSearch));
+    });
+}
+
+function openStory(id) {
+    const s = stories.find(x => x.id === id);
+    if (!s) return;
+
+    document.getElementById('modalHero').className = `modal-hero cat-${s.category}-vis`;
+    document.getElementById('modalHero').innerHTML = `<span style="position:relative;z-index:1">${s.emoji}</span>`;
+
+    document.getElementById('modalContent').innerHTML = `
+        <div class="overline" style="color: var(--${getCatColor(s.category)})">${s.categoryLabel}</div>
+        <h2>${s.title}</h2>
+        <div class="subtitle">${s.subtitle}</div>
+        <div class="modal-meta">
+            <div class="modal-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                ${s.year < 0 ? Math.abs(s.year) + ' BCE' : s.year + ' CE'}
+            </div>
+            <div class="modal-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>
+                ${s.era}
+            </div>
+            <div class="modal-meta-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                ${s.tags.join(', ')}
+            </div>
+        </div>
+
+        <div class="modal-section">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                Historical Context
+            </h3>
+            <p>${s.context}</p>
+        </div>
+
+        <div class="modal-section">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+                The Story
+            </h3>
+            <p>${s.story}</p>
+            <div class="modal-quote">
+                "${s.quote.text}"
+                <cite>${s.quote.source}</cite>
+            </div>
+        </div>
+
+        <div class="modal-section">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+                Key Lessons
+            </h3>
+            <ul>
+                ${s.lessons.map(l => `<li>${l}</li>`).join('')}
+            </ul>
+        </div>
+
+        <div class="modal-section">
+            <h3>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Modern Application
+            </h3>
+            <div class="scenario-box">
+                <h4>${s.modernApplication.title}</h4>
+                <p>${s.modernApplication.text}</p>
+            </div>
+        </div>
+    `;
+
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+    if (e.target === document.getElementById('modalOverlay')) {
+        closeModalDirect();
+    }
+}
+
+function closeModalDirect() {
+    document.getElementById('modalOverlay').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+function getCatColor(cat) {
+    const map = { criticism: 'red', persuasion: 'blue', strategy: 'purple', conflict: 'orange', alliance: 'teal', resilience: 'green' };
+    return map[cat] || 'accent';
+}
+
+// ═══════════════════════════════════════════════
+// TIMELINE
+// ═══════════════════════════════════════════════
+
+function renderTimeline() {
+    const sorted = [...stories].sort((a, b) => a.year - b.year);
+    document.getElementById('timeline').innerHTML = sorted.map(s => `
+        <div class="timeline-item" onclick="openStory('${s.id}')">
+            <div class="timeline-date">${s.year < 0 ? Math.abs(s.year) + ' BCE' : s.year + ' CE'} &mdash; ${s.era}</div>
+            <h3>${s.title}</h3>
+            <p>${s.summary.substring(0, 120)}...</p>
+        </div>
+    `).join('');
+}
+
+// ═══════════════════════════════════════════════
+// SCENARIOS
+// ═══════════════════════════════════════════════
+
+function renderScenario() {
+    const s = scenarios[currentScenario];
+    scenarioAnswered = false;
+    document.getElementById('scenarioPractice').innerHTML = `
+        <div class="scenario-prompt">
+            <div class="context-label">${s.context}</div>
+            <h3>${s.question}</h3>
+            <div class="scenario-options" id="scenarioOptions">
+                ${s.options.map((o, i) => `
+                    <button class="scenario-option" onclick="selectOption(${i})" id="option-${i}">
+                        <span class="option-letter">${o.letter}</span>
+                        <span>${o.text}</span>
+                    </button>
+                `).join('')}
+            </div>
+        </div>
+        <div class="scenario-feedback" id="scenarioFeedback">
+            <h4></h4>
+            <p>${s.explanation}</p>
+        </div>
+        <div class="scenario-nav">
+            <span class="scenario-counter">Scenario ${currentScenario + 1} of ${scenarios.length}</span>
+            <div style="display:flex;gap:8px">
+                <button class="btn btn-outline" onclick="prevScenario()" ${currentScenario === 0 ? 'disabled' : ''}>Previous</button>
+                <button class="btn" onclick="nextScenario()" ${currentScenario === scenarios.length - 1 ? 'disabled' : ''}>Next</button>
+            </div>
+        </div>
+    `;
+}
+
+function selectOption(index) {
+    if (scenarioAnswered) return;
+    scenarioAnswered = true;
+    const s = scenarios[currentScenario];
+
+    s.options.forEach((o, i) => {
+        const el = document.getElementById(`option-${i}`);
+        if (o.correct) el.classList.add('correct');
+        else if (i === index && !o.correct) el.classList.add('incorrect');
+    });
+
+    const feedback = document.getElementById('scenarioFeedback');
+    const isCorrect = s.options[index].correct;
+    feedback.querySelector('h4').innerHTML = isCorrect
+        ? '<span style="color:var(--green)">&#x2713;</span> Excellent instinct!'
+        : '<span style="color:var(--red)">&#x2717;</span> Not quite — here\'s the reasoning:';
+    feedback.classList.add('show');
+}
+
+function nextScenario() {
+    if (currentScenario < scenarios.length - 1) {
+        currentScenario++;
+        renderScenario();
+        document.getElementById('scenarioPractice').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function prevScenario() {
+    if (currentScenario > 0) {
+        currentScenario--;
+        renderScenario();
+        document.getElementById('scenarioPractice').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+// ═══════════════════════════════════════════════
+// QUOTES CAROUSEL
+// ═══════════════════════════════════════════════
+
+let currentQuote = 0;
+let quoteInterval;
+
+function renderQuotes() {
+    const carousel = document.getElementById('quotesCarousel');
+    carousel.innerHTML = `
+        ${quotes.map((q, i) => `
+            <div class="carousel-quote ${i === 0 ? 'active' : ''}">
+                <blockquote>"${q.text}"</blockquote>
+                <cite>— ${q.author}</cite>
+            </div>
+        `).join('')}
+        <div class="carousel-dots">
+            ${quotes.map((_, i) => `<button class="carousel-dot ${i === 0 ? 'active' : ''}" onclick="goToQuote(${i})"></button>`).join('')}
+        </div>
+    `;
+    quoteInterval = setInterval(nextQuote, 6000);
+}
+
+function nextQuote() {
+    currentQuote = (currentQuote + 1) % quotes.length;
+    updateQuote();
+}
+
+function goToQuote(i) {
+    currentQuote = i;
+    updateQuote();
+    clearInterval(quoteInterval);
+    quoteInterval = setInterval(nextQuote, 6000);
+}
+
+function updateQuote() {
+    document.querySelectorAll('.carousel-quote').forEach((q, i) => {
+        q.classList.toggle('active', i === currentQuote);
+    });
+    document.querySelectorAll('.carousel-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === currentQuote);
+    });
+}
+
+// ═══════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════
+
+function createParticles() {
+    const container = document.getElementById('particles');
+    for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.bottom = '-10px';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = (Math.random() * 10) + 's';
+        p.style.width = (2 + Math.random() * 3) + 'px';
+        p.style.height = p.style.width;
+        p.style.opacity = 0;
+        container.appendChild(p);
+    }
+}
+
+// ═══════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════
+
+function initNavScroll() {
+    window.addEventListener('scroll', () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+}
+
+function initNavHighlight() {
+    const sections = ['stories', 'principles', 'timeline-section', 'practice', 'wisdom'];
+    const links = document.querySelectorAll('.nav-links a');
+
+    window.addEventListener('scroll', () => {
+        let current = '';
+        sections.forEach(id => {
+            const el = document.getElementById(id);
+            if (el && el.offsetTop - 200 <= window.scrollY) {
+                current = id;
+            }
+        });
+        links.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+        });
+    });
+}
+
+function toggleMobileNav() {
+    document.getElementById('navLinks').classList.toggle('open');
+}
+
+// Close modal on Escape
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModalDirect();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "title": "Random Quote Generator",
+  "slug": "random-quote-generator",
+  "description": "Get inspired with random quotes from great thinkers, writers, and leaders.",
+  "author": "HTML Heaven",
+  "tags": ["fun", "education"],
+  "dateAdded": "2026-04-14",
+  "thumbnail": "thumbnail.png",
+  "featured": true
+}

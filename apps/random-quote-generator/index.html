@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Quote Generator</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f0f1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  .container {
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 2.5rem;
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .quote-card {
+    background: #1a1a2e;
+    border-radius: 20px;
+    padding: 3rem 2.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .quote-mark {
+    font-size: 5rem;
+    line-height: 1;
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0.3;
+    position: absolute;
+    top: 10px;
+    left: 24px;
+  }
+  .quote-text {
+    font-size: 1.4rem;
+    line-height: 1.6;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeIn 0.6s forwards;
+  }
+  .quote-author {
+    font-size: 1rem;
+    color: #fbbf24;
+    font-weight: 600;
+    opacity: 0;
+    animation: fadeIn 0.6s 0.2s forwards;
+  }
+  @keyframes fadeIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .buttons { display: flex; gap: 1rem; justify-content: center; }
+  button {
+    padding: 12px 28px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  button:hover { transform: translateY(-2px); }
+  .btn-primary {
+    background: linear-gradient(135deg, #fbbf24, #f97316);
+    color: #1a1a2e;
+  }
+  .btn-primary:hover { box-shadow: 0 6px 20px rgba(251,191,36,0.4); }
+  .btn-secondary {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    border: 1px solid #333;
+  }
+  .category-pills {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  .pill {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1px solid #333;
+    background: #1a1a2e;
+    color: #aaa;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+  .pill.active { background: #f97316; color: white; border-color: transparent; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Random Quote Generator</h1>
+  <div class="category-pills" id="pills"></div>
+  <div class="quote-card">
+    <span class="quote-mark">"</span>
+    <div class="quote-text" id="quote"></div>
+    <div class="quote-author" id="author"></div>
+  </div>
+  <div class="buttons">
+    <button class="btn-primary" onclick="newQuote()">New Quote</button>
+    <button class="btn-secondary" onclick="copyQuote()">Copy</button>
+  </div>
+</div>
+<script>
+const quotes = [
+  { text: "The only way to do great work is to love what you do.", author: "Steve Jobs", cat: "Motivation" },
+  { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs", cat: "Innovation" },
+  { text: "Stay hungry, stay foolish.", author: "Steve Jobs", cat: "Motivation" },
+  { text: "Life is what happens when you're busy making other plans.", author: "John Lennon", cat: "Life" },
+  { text: "The purpose of our lives is to be happy.", author: "Dalai Lama", cat: "Life" },
+  { text: "Get busy living or get busy dying.", author: "Stephen King", cat: "Life" },
+  { text: "You only live once, but if you do it right, once is enough.", author: "Mae West", cat: "Life" },
+  { text: "In the middle of every difficulty lies opportunity.", author: "Albert Einstein", cat: "Motivation" },
+  { text: "Imagination is more important than knowledge.", author: "Albert Einstein", cat: "Innovation" },
+  { text: "The best way to predict the future is to invent it.", author: "Alan Kay", cat: "Innovation" },
+  { text: "Simplicity is the ultimate sophistication.", author: "Leonardo da Vinci", cat: "Innovation" },
+  { text: "Act as if what you do makes a difference. It does.", author: "William James", cat: "Motivation" },
+  { text: "The only impossible journey is the one you never begin.", author: "Tony Robbins", cat: "Motivation" },
+  { text: "Everything you can imagine is real.", author: "Pablo Picasso", cat: "Innovation" },
+  { text: "What we think, we become.", author: "Buddha", cat: "Life" },
+  { text: "The mind is everything. What you think you become.", author: "Buddha", cat: "Life" },
+  { text: "Strive not to be a success, but rather to be of value.", author: "Albert Einstein", cat: "Motivation" },
+  { text: "The secret of getting ahead is getting started.", author: "Mark Twain", cat: "Motivation" },
+  { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius", cat: "Motivation" },
+  { text: "Creativity is intelligence having fun.", author: "Albert Einstein", cat: "Innovation" }
+];
+
+let currentCat = 'All';
+const cats = ['All', ...new Set(quotes.map(q => q.cat))];
+
+function renderPills() {
+  const el = document.getElementById('pills');
+  el.innerHTML = cats.map(c =>
+    `<span class="pill${c === currentCat ? ' active' : ''}" onclick="setCat('${c}')">${c}</span>`
+  ).join('');
+}
+
+function setCat(c) { currentCat = c; renderPills(); newQuote(); }
+
+function getFiltered() {
+  return currentCat === 'All' ? quotes : quotes.filter(q => q.cat === currentCat);
+}
+
+function newQuote() {
+  const filtered = getFiltered();
+  const q = filtered[Math.floor(Math.random() * filtered.length)];
+  const quoteEl = document.getElementById('quote');
+  const authorEl = document.getElementById('author');
+  quoteEl.style.animation = 'none';
+  authorEl.style.animation = 'none';
+  void quoteEl.offsetWidth;
+  quoteEl.style.animation = 'fadeIn 0.6s forwards';
+  authorEl.style.animation = 'fadeIn 0.6s 0.2s forwards';
+  quoteEl.textContent = q.text;
+  authorEl.textContent = `— ${q.author}`;
+}
+
+function copyQuote() {
+  const text = `"${document.getElementById('quote').textContent}" — ${document.getElementById('author').textContent.replace('— ', '')}`;
+  navigator.clipboard.writeText(text).catch(() => {});
+}
+
+document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); newQuote(); } });
+renderPills();
+newQuote();
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Palette Generator</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #0f0f1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+  }
+  h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #a78bfa, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle { color: #888; margin-bottom: 2rem; font-size: 0.95rem; }
+  .palette {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+    width: 100%;
+    max-width: 700px;
+  }
+  .swatch {
+    width: 120px;
+    height: 160px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+  .swatch:hover { transform: scale(1.05); box-shadow: 0 8px 30px rgba(0,0,0,0.4); }
+  .swatch span {
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(4px);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-family: monospace;
+    letter-spacing: 0.5px;
+  }
+  .copied {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0,0,0,0.7);
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    animation: fadeOut 1s forwards;
+  }
+  @keyframes fadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
+  button {
+    background: linear-gradient(135deg, #7c3aed, #3b82f6);
+    color: white;
+    border: none;
+    padding: 14px 32px;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-weight: 600;
+  }
+  button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(124,58,237,0.4); }
+  .hint { color: #666; font-size: 0.8rem; margin-top: 1.5rem; }
+</style>
+</head>
+<body>
+<h1>Color Palette Generator</h1>
+<p class="subtitle">Click a swatch to copy its hex code</p>
+<div class="palette" id="palette"></div>
+<button onclick="generate()">Generate New Palette</button>
+<p class="hint">Press spacebar for a new palette</p>
+<script>
+function hslToHex(h, s, l) {
+  s /= 100; l /= 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = n => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
+}
+
+function generate() {
+  const palette = document.getElementById('palette');
+  palette.innerHTML = '';
+  const baseHue = Math.random() * 360;
+  const harmony = Math.floor(Math.random() * 3);
+  for (let i = 0; i < 5; i++) {
+    let hue;
+    if (harmony === 0) hue = (baseHue + i * 30) % 360;
+    else if (harmony === 1) hue = (baseHue + i * 72) % 360;
+    else hue = (baseHue + (i % 2 === 0 ? 0 : 180) + i * 15) % 360;
+    const sat = 55 + Math.random() * 35;
+    const light = 40 + Math.random() * 30;
+    const hex = hslToHex(hue, sat, light);
+    const swatch = document.createElement('div');
+    swatch.className = 'swatch';
+    swatch.style.background = hex;
+    swatch.innerHTML = `<span>${hex.toUpperCase()}</span>`;
+    swatch.onclick = () => {
+      navigator.clipboard.writeText(hex.toUpperCase()).catch(() => {});
+      const msg = document.createElement('div');
+      msg.className = 'copied';
+      msg.textContent = 'Copied!';
+      swatch.appendChild(msg);
+      setTimeout(() => msg.remove(), 1000);
+    };
+    palette.appendChild(swatch);
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.code === 'Space') { e.preventDefault(); generate(); } });
+generate();
+</script>
+</body>
+</html>

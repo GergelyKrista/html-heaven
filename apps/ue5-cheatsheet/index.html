@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unreal Engine 5 — Comprehensive Cheatsheet</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f12;
+    --bg-card: #13161b;
+    --bg-card-hover: #191d24;
+    --border: #1e2330;
+    --border-accent: #2a3040;
+    --text: #c8cdd8;
+    --text-muted: #6b7280;
+    --text-heading: #eef0f4;
+    --accent-blue: #4d8bff;
+    --accent-cyan: #22d3ee;
+    --accent-purple: #a78bfa;
+    --accent-orange: #fb923c;
+    --accent-green: #34d399;
+    --accent-red: #f87171;
+    --accent-yellow: #facc15;
+    --accent-pink: #f472b6;
+    --ue-blue: #0048e5;
+    --code-bg: #0a0c0f;
+    --tag: #1a1f2a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── HEADER ── */
+  .hero {
+    position: relative;
+    padding: 60px 40px 50px;
+    text-align: center;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+    background:
+      radial-gradient(ellipse 80% 50% at 50% 0%, rgba(0,72,229,.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 100%, rgba(167,139,250,.08) 0%, transparent 50%),
+      var(--bg);
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    font-weight: 800;
+    color: var(--text-heading);
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+  .hero h1 span { color: var(--accent-blue); }
+  .hero p {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    font-weight: 300;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .hero .badge {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem;
+    background: rgba(77,139,255,.12);
+    color: var(--accent-blue);
+    border: 1px solid rgba(77,139,255,.2);
+  }
+
+  /* ── NAV / TOC ── */
+  .toc {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,15,18,.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+  }
+  .toc a {
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 5px 12px;
+    border-radius: 6px;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .toc a:hover {
+    color: var(--accent-blue);
+    background: rgba(77,139,255,.08);
+  }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 30px 20px 80px;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 44px;
+  }
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-heading);
+    margin-bottom: 18px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title .icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .85rem;
+    flex-shrink: 0;
+  }
+
+  /* ── CARD GRID ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 14px;
+  }
+  @media(max-width:480px){ .card-grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    transition: background .2s, border-color .2s;
+  }
+  .card:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-accent);
+  }
+  .card h3 {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--text-heading);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h3 .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .card ul li {
+    position: relative;
+    padding: 4px 0 4px 18px;
+    font-size: .87rem;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  .card ul li::before {
+    content: '›';
+    position: absolute;
+    left: 2px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  code, .kbd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    color: var(--accent-cyan);
+  }
+  .kbd {
+    color: var(--accent-orange);
+    background: rgba(251,146,60,.06);
+    border-color: rgba(251,146,60,.15);
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: .68rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    background: var(--tag);
+    color: var(--text-muted);
+    margin-left: 6px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .tag.bp { background: rgba(77,139,255,.1); color: var(--accent-blue); }
+  .tag.cpp { background: rgba(167,139,250,.1); color: var(--accent-purple); }
+  .tag.new5 { background: rgba(52,211,153,.1); color: var(--accent-green); }
+  .tag.hot { background: rgba(248,113,113,.1); color: var(--accent-red); }
+
+  /* ── SHORTCUT TABLE ── */
+  .shortcut-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .85rem;
+  }
+  .shortcut-table th {
+    text-align: left;
+    padding: 8px 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: .75rem;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .shortcut-table td {
+    padding: 7px 12px;
+    border-bottom: 1px solid rgba(30,35,48,.5);
+  }
+  .shortcut-table tr:hover td { background: rgba(77,139,255,.03); }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 30px;
+    color: var(--text-muted);
+    font-size: .78rem;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border-accent); border-radius: 4px; }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    max-width: 480px;
+    margin: 0 auto 30px;
+    position: relative;
+  }
+  .search-wrap input {
+    width: 100%;
+    padding: 12px 18px 12px 42px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-heading);
+    font-family: 'Outfit', sans-serif;
+    font-size: .92rem;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .search-wrap input::placeholder { color: var(--text-muted); }
+  .search-wrap input:focus { border-color: var(--accent-blue); }
+  .search-wrap .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 1rem;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<div class="hero">
+  <h1>Unreal Engine <span>5</span> Cheatsheet</h1>
+  <p>A comprehensive quick-reference covering editor navigation, Blueprints, C++, materials, Nanite, Lumen, Niagara, audio, optimization & more.</p>
+  <div class="badge">UE 5.x &nbsp;·&nbsp; Updated 2026</div>
+</div>
+
+<!-- ═══════════════ TOC ═══════════════ -->
+<nav class="toc" id="toc">
+  <a href="#shortcuts">Shortcuts</a>
+  <a href="#editor">Editor Basics</a>
+  <a href="#viewport">Viewport</a>
+  <a href="#actors">Actors & Components</a>
+  <a href="#blueprints">Blueprints</a>
+  <a href="#cpp">C++ Essentials</a>
+  <a href="#materials">Materials</a>
+  <a href="#nanite">Nanite</a>
+  <a href="#lumen">Lumen</a>
+  <a href="#lighting">Lighting</a>
+  <a href="#niagara">Niagara VFX</a>
+  <a href="#animation">Animation</a>
+  <a href="#physics">Physics</a>
+  <a href="#audio">Audio</a>
+  <a href="#ui">UMG / UI</a>
+  <a href="#ai">AI & Behavior</a>
+  <a href="#networking">Networking</a>
+  <a href="#worldpart">World Partition</a>
+  <a href="#pcg">PCG</a>
+  <a href="#optimization">Optimization</a>
+  <a href="#packaging">Packaging</a>
+  <a href="#console">Console Commands</a>
+</nav>
+
+<!-- ═══════════════ CONTENT ═══════════════ -->
+<div class="container">
+
+  <!-- SEARCH -->
+  <div class="search-wrap">
+    <span class="search-icon">⌕</span>
+    <input type="text" id="search" placeholder="Search topics, nodes, commands…" autocomplete="off">
+  </div>
+
+  <!-- ── KEYBOARD SHORTCUTS ── -->
+  <div class="section" id="shortcuts">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(251,146,60,.12);color:var(--accent-orange);">⌨</span>
+      Essential Keyboard Shortcuts
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-orange)"></span>Viewport Navigation</h3>
+        <table class="shortcut-table">
+          <tr><th>Action</th><th>Key</th></tr>
+          <tr><td>Orbit / Tumble</td><td><span class="kbd">Alt + LMB</span></td></tr>
+          <tr><td>Pan</td><td><span class="kbd">MMB Drag</span></td></tr>
+          <tr><td>Zoom</td><td><span class="kbd">Scroll</span> or <span class="kbd">Alt + RMB</span></td></tr>
+          <tr><td>Fly Mode (hold)</td><td><span class="kbd">RMB + WASD</span></td></tr>
+          <tr><td>Fly Speed</td><td><span class="kbd">RMB + Scroll</span></td></tr>
+          <tr><td>Focus Selection</td><td><span class="kbd">F</span></td></tr>
+          <tr><td>Pilot Camera to Actor</td><td><span class="kbd">Ctrl + Shift + P</span></td></tr>
+          <tr><td>Toggle Game View</td><td><span class="kbd">G</span></td></tr>
+          <tr><td>Toggle Wireframe</td><td><span class="kbd">Alt + 2</span></td></tr>
+          <tr><td>Toggle Unlit</td><td><span class="kbd">Alt + 3</span></td></tr>
+          <tr><td>Toggle Lit</td><td><span class="kbd">Alt + 4</span></td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-orange)"></span>Transform & Selection</h3>
+        <table class="shortcut-table">
+          <tr><th>Action</th><th>Key</th></tr>
+          <tr><td>Translate</td><td><span class="kbd">W</span></td></tr>
+          <tr><td>Rotate</td><td><span class="kbd">E</span></td></tr>
+          <tr><td>Scale</td><td><span class="kbd">R</span></td></tr>
+          <tr><td>Cycle Transform Space</td><td><span class="kbd">~</span> (tilde)</td></tr>
+          <tr><td>Toggle Snap</td><td><span class="kbd">Hold Ctrl</span> while dragging</td></tr>
+          <tr><td>Duplicate</td><td><span class="kbd">Ctrl + W</span> or <span class="kbd">Alt + Drag</span></td></tr>
+          <tr><td>Delete</td><td><span class="kbd">Del</span></td></tr>
+          <tr><td>Group / Ungroup</td><td><span class="kbd">Ctrl + G</span> / <span class="kbd">Shift + G</span></td></tr>
+          <tr><td>Hide Selection</td><td><span class="kbd">H</span></td></tr>
+          <tr><td>Unhide All</td><td><span class="kbd">Ctrl + H</span></td></tr>
+          <tr><td>Select All of Type</td><td><span class="kbd">Shift + Click</span> in Outliner</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-orange)"></span>Editor General</h3>
+        <table class="shortcut-table">
+          <tr><th>Action</th><th>Key</th></tr>
+          <tr><td>Save All</td><td><span class="kbd">Ctrl + Shift + S</span></td></tr>
+          <tr><td>Save Current Level</td><td><span class="kbd">Ctrl + S</span></td></tr>
+          <tr><td>Undo / Redo</td><td><span class="kbd">Ctrl + Z</span> / <span class="kbd">Ctrl + Y</span></td></tr>
+          <tr><td>Content Browser</td><td><span class="kbd">Ctrl + Space</span></td></tr>
+          <tr><td>Play in Editor</td><td><span class="kbd">Alt + P</span></td></tr>
+          <tr><td>Simulate</td><td><span class="kbd">Alt + S</span></td></tr>
+          <tr><td>Eject from Play</td><td><span class="kbd">F8</span></td></tr>
+          <tr><td>Stop Play</td><td><span class="kbd">Esc</span></td></tr>
+          <tr><td>Open Blueprint</td><td><span class="kbd">Double-click</span> actor</td></tr>
+          <tr><td>Find in Content Browser</td><td><span class="kbd">Ctrl + B</span></td></tr>
+          <tr><td>Output Log</td><td><span class="kbd">Window → Output Log</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── EDITOR BASICS ── -->
+  <div class="section" id="editor">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(77,139,255,.12);color:var(--accent-blue);">◎</span>
+      Editor Layout & Core Panels
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>Key Panels</h3>
+        <ul>
+          <li><strong>Content Browser</strong> — Asset library; organise with folders, filters, collections. Supports drag-and-drop into viewport.</li>
+          <li><strong>Outliner</strong> — Hierarchical list of all actors in current level. Right-click for grouping, folders, visibility toggles.</li>
+          <li><strong>Details Panel</strong> — Property inspector for selected actor/component. Search bar filters properties.</li>
+          <li><strong>World Settings</strong> — Level-wide settings: GameMode override, Lightmass, World Partition, Kill-Z, gravity.</li>
+          <li><strong>Modes Panel</strong> — Switch between Place, Paint, Landscape, Foliage, Geometry editing modes.</li>
+          <li><strong>Output Log</strong> — Runtime logs, warnings, errors. Essential for debugging.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>Project Structure</h3>
+        <ul>
+          <li><code>/Content</code> — All game assets (meshes, textures, Blueprints, maps)</li>
+          <li><code>/Config</code> — .ini config files (DefaultEngine, DefaultGame, DefaultInput)</li>
+          <li><code>/Source</code> — C++ source files (only in C++ projects)</li>
+          <li><code>/Plugins</code> — Project-level plugins</li>
+          <li><code>/Saved</code> — Autosaves, logs, screenshots, local configs</li>
+          <li><code>/Intermediate</code> — Build artifacts (safe to delete)</li>
+          <li><code>/Binaries</code> — Compiled binaries</li>
+          <li><code>.uproject</code> — Project descriptor file</li>
+          <li><code>.uasset</code> — Binary asset format</li>
+          <li><code>.umap</code> — Level / map file</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>Asset Naming Conventions</h3>
+        <ul>
+          <li><code>SM_</code> — Static Mesh</li>
+          <li><code>SK_</code> — Skeletal Mesh</li>
+          <li><code>M_</code> — Material</li>
+          <li><code>MI_</code> — Material Instance</li>
+          <li><code>T_</code> — Texture</li>
+          <li><code>BP_</code> — Blueprint</li>
+          <li><code>WBP_</code> — Widget Blueprint</li>
+          <li><code>ABP_</code> — Animation Blueprint</li>
+          <li><code>AM_</code> — Animation Montage</li>
+          <li><code>NS_</code> — Niagara System</li>
+          <li><code>NE_</code> — Niagara Emitter</li>
+          <li><code>DA_</code> — Data Asset</li>
+          <li><code>DT_</code> — Data Table</li>
+          <li><code>S_</code> — Sound (Cue / Wave)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── VIEWPORT ── -->
+  <div class="section" id="viewport">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(34,211,238,.12);color:var(--accent-cyan);">◈</span>
+      Viewport & View Modes
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-cyan)"></span>View Modes</h3>
+        <ul>
+          <li><strong>Lit</strong> — Full lighting and materials (default)</li>
+          <li><strong>Unlit</strong> — No lighting, base color only; good for UV/texture checks</li>
+          <li><strong>Wireframe</strong> — Mesh edges only; check poly density</li>
+          <li><strong>Detail Lighting</strong> — Neutral material, lighting only</li>
+          <li><strong>Lighting Only</strong> — Greyscale light contribution</li>
+          <li><strong>Player Collision</strong> — Visualise collision hulls</li>
+          <li><strong>Buffer Visualization</strong> — View individual GBuffers (BaseColor, Roughness, Metallic, World Normal, AO)</li>
+          <li><strong>Nanite Visualization</strong> — Triangle count, overdraw, fallback meshes <span class="tag new5">UE5</span></li>
+          <li><strong>Lumen Scene</strong> — Debug Lumen probe data <span class="tag new5">UE5</span></li>
+          <li><strong>Virtual Shadow Map</strong> — Visualise VSM pages <span class="tag new5">UE5</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-cyan)"></span>Show Flags & Scalability</h3>
+        <ul>
+          <li><strong>Show → Volumes</strong> — Toggle visibility of Blocking, Trigger, Post-Process, Audio volumes</li>
+          <li><strong>Show → Navigation</strong> — Visualise NavMesh</li>
+          <li><strong>Show → Collision</strong> — Show collision primitives</li>
+          <li><strong>Show → Bounds</strong> — Actor bounding boxes</li>
+          <li><strong>Scalability Settings</strong> — Quick toggle (Low/Med/High/Epic/Cinematic) for shadows, effects, textures, foliage, view distance</li>
+          <li><strong>Real-time toggle</strong> — <span class="kbd">Ctrl + R</span> to pause viewport rendering (saves GPU during non-visual work)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ACTORS & COMPONENTS ── -->
+  <div class="section" id="actors">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(52,211,153,.12);color:var(--accent-green);">◆</span>
+      Actors & Components
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-green)"></span>Core Actor Types</h3>
+        <ul>
+          <li><strong>Actor</strong> — Base class; any object placeable in a level</li>
+          <li><strong>Pawn</strong> — Actor that can be "possessed" by a Controller</li>
+          <li><strong>Character</strong> — Pawn with CharacterMovementComponent (walk, jump, swim, fly)</li>
+          <li><strong>PlayerController</strong> — Represents human player input/logic</li>
+          <li><strong>AIController</strong> — Controls AI-driven Pawns</li>
+          <li><strong>GameMode</strong> — Server-authoritative rules: default Pawn, HUD class, match state</li>
+          <li><strong>GameState</strong> — Replicated game-wide state (score, timer)</li>
+          <li><strong>PlayerState</strong> — Replicated per-player state (name, score)</li>
+          <li><strong>HUD</strong> — Legacy canvas drawing class (prefer UMG)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-green)"></span>Common Components</h3>
+        <ul>
+          <li><strong>StaticMeshComponent</strong> — Renders a static mesh</li>
+          <li><strong>SkeletalMeshComponent</strong> — Renders a skeletal mesh with animations</li>
+          <li><strong>CameraComponent</strong> — Camera viewpoint</li>
+          <li><strong>SpringArmComponent</strong> — Camera boom with collision/lag</li>
+          <li><strong>CapsuleComponent</strong> — Common collision for characters</li>
+          <li><strong>BoxComponent / SphereComponent</strong> — Overlap & trigger volumes</li>
+          <li><strong>AudioComponent</strong> — Plays sounds spatially</li>
+          <li><strong>PointLightComponent</strong> — Attaches a light to an actor</li>
+          <li><strong>NiagaraComponent</strong> — Attaches a VFX system</li>
+          <li><strong>WidgetComponent</strong> — Renders UMG in 3D world space</li>
+          <li><strong>SceneComponent</strong> — Transform-only; used as attachment roots</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-green)"></span>Actor Lifecycle</h3>
+        <ul>
+          <li><code>Constructor</code> — Set defaults (CDO). No world context!</li>
+          <li><code>PostInitializeComponents</code> — All components initialized</li>
+          <li><code>BeginPlay</code> — Level started, actor is in world</li>
+          <li><code>Tick(DeltaTime)</code> — Called every frame (can disable)</li>
+          <li><code>EndPlay</code> — Actor removed or level unloaded</li>
+          <li><code>Destroyed</code> — Final cleanup</li>
+          <li><strong>Spawn flow:</strong> SpawnActor → Constructor → PostInit → BeginPlay</li>
+          <li><strong>Tip:</strong> Use <code>SetActorTickEnabled(false)</code> for actors that don't need per-frame updates</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── BLUEPRINTS ── -->
+  <div class="section" id="blueprints">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(77,139,255,.12);color:var(--accent-blue);">⬡</span>
+      Blueprints <span class="tag bp">Visual Scripting</span>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>Blueprint Types</h3>
+        <ul>
+          <li><strong>Actor Blueprint</strong> — Blueprint placed in levels (most common)</li>
+          <li><strong>Level Blueprint</strong> — Per-level scripting; avoid for reusability</li>
+          <li><strong>Widget Blueprint</strong> — UMG UI layout & logic</li>
+          <li><strong>Animation Blueprint</strong> — State machines for skeletal meshes</li>
+          <li><strong>GameMode Blueprint</strong> — Match rules, default classes</li>
+          <li><strong>Blueprint Interface</strong> — Define callable functions across unrelated BPs</li>
+          <li><strong>Blueprint Function Library</strong> — Static utility functions</li>
+          <li><strong>Blueprint Macro Library</strong> — Reusable node graphs (inlined at compile)</li>
+          <li><strong>Struct</strong> — Custom data structures (like C structs)</li>
+          <li><strong>Enum</strong> — Named constant lists</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>Essential Nodes</h3>
+        <ul>
+          <li><code>BeginPlay</code> — Fires once when actor starts</li>
+          <li><code>Tick</code> — Fires every frame (use sparingly!)</li>
+          <li><code>Branch</code> — If/else (bool input)</li>
+          <li><code>Switch on Int/String/Enum</code> — Multi-way branching</li>
+          <li><code>ForEachLoop</code> — Iterate arrays</li>
+          <li><code>Timeline</code> — Animate values over time with curves</li>
+          <li><code>Delay</code> — Wait N seconds (latent node)</li>
+          <li><code>Gate / FlipFlop / DoOnce</code> — Flow control</li>
+          <li><code>SpawnActor</code> — Instantiate actor at runtime</li>
+          <li><code>Cast To</code> — Type check + downcast (avoid in Tick!)</li>
+          <li><code>Get / Set</code> — Variable access</li>
+          <li><code>Custom Event</code> — Reusable event entry point</li>
+          <li><code>Event Dispatcher</code> — Observer pattern / delegates</li>
+          <li><code>Interface Message</code> — Call BP Interface function</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>Blueprint Best Practices</h3>
+        <ul>
+          <li>Keep Event Graph clean — move logic into <strong>Functions</strong></li>
+          <li>Use <strong>Collapsed Graphs</strong> or <strong>Comments</strong> to organise</li>
+          <li>Avoid Cast To in Tick — cache the reference in BeginPlay</li>
+          <li>Prefer <strong>Event Dispatchers</strong> over direct references for loose coupling</li>
+          <li>Prefer <strong>Interfaces</strong> over Cast To for polymorphic calls</li>
+          <li>Use <strong>Timelines</strong> instead of Tick for interpolation</li>
+          <li>Set <strong>Replication</strong> flags in variable details (Replicated, RepNotify)</li>
+          <li>Mark pure functions as <strong>Const</strong></li>
+          <li>Use <strong>Data Tables</strong> and <strong>Data Assets</strong> for designer-tweakable data</li>
+          <li>Reparent to C++ base classes for performance-critical code <span class="tag cpp">C++</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>BP Editor Shortcuts</h3>
+        <table class="shortcut-table">
+          <tr><td>Add Comment</td><td><span class="kbd">C</span></td></tr>
+          <tr><td>Quick-add Branch</td><td><span class="kbd">B + Click</span></td></tr>
+          <tr><td>Quick-add Delay</td><td><span class="kbd">D + Click</span></td></tr>
+          <tr><td>Quick-add Sequence</td><td><span class="kbd">S + Click</span></td></tr>
+          <tr><td>Quick-add ForEach</td><td><span class="kbd">F + Click</span></td></tr>
+          <tr><td>Search All BPs</td><td><span class="kbd">Ctrl + Shift + F</span></td></tr>
+          <tr><td>Compile</td><td><span class="kbd">F7</span></td></tr>
+          <tr><td>Align Nodes</td><td><span class="kbd">Q</span></td></tr>
+          <tr><td>Straighten Wires</td><td><span class="kbd">Alt + Click wire</span></td></tr>
+          <tr><td>Reroute Node</td><td><span class="kbd">Double-click wire</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── C++ ESSENTIALS ── -->
+  <div class="section" id="cpp">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(167,139,250,.12);color:var(--accent-purple);">λ</span>
+      C++ Essentials <span class="tag cpp">C++</span>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-purple)"></span>Core Macros</h3>
+        <ul>
+          <li><code>UCLASS()</code> — Expose class to UE reflection (before class declaration)</li>
+          <li><code>UPROPERTY()</code> — Expose variable (EditAnywhere, BlueprintReadWrite, Replicated, etc.)</li>
+          <li><code>UFUNCTION()</code> — Expose function (BlueprintCallable, Server, Client, NetMulticast)</li>
+          <li><code>USTRUCT()</code> — Expose struct to reflection</li>
+          <li><code>UENUM()</code> — Expose enum</li>
+          <li><code>GENERATED_BODY()</code> — Required inside UCLASS/USTRUCT</li>
+          <li><code>UPARAM(ref)</code> — Pass by reference to Blueprint</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-purple)"></span>UPROPERTY Specifiers</h3>
+        <ul>
+          <li><code>EditAnywhere</code> — Editable in Details panel</li>
+          <li><code>VisibleAnywhere</code> — Shown but not editable</li>
+          <li><code>BlueprintReadOnly</code> — Read in BP graph</li>
+          <li><code>BlueprintReadWrite</code> — Read + write in BP</li>
+          <li><code>Category = "Name"</code> — Group in Details panel</li>
+          <li><code>Replicated</code> — Auto-sync to clients</li>
+          <li><code>ReplicatedUsing = OnRep_Func</code> — Sync + callback</li>
+          <li><code>Transient</code> — Not serialised/saved</li>
+          <li><code>SaveGame</code> — Include in save data</li>
+          <li><code>meta=(ClampMin, ClampMax)</code> — Range limits in editor</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-purple)"></span>Common C++ Patterns</h3>
+        <ul>
+          <li><code>GetWorld()->SpawnActor&lt;T&gt;(Class, Transform)</code> — Spawn at runtime</li>
+          <li><code>Cast&lt;AMyActor&gt;(OtherActor)</code> — Safe downcast</li>
+          <li><code>FindComponentByClass&lt;T&gt;()</code> — Get component</li>
+          <li><code>TArray&lt;T&gt;</code> — Dynamic array</li>
+          <li><code>TMap&lt;K,V&gt;</code> — Hash map</li>
+          <li><code>TSet&lt;T&gt;</code> — Unique value set</li>
+          <li><code>FString / FName / FText</code> — String types (FText for UI localisation)</li>
+          <li><code>UE_LOG(LogTemp, Warning, TEXT("msg %s"), *Str)</code> — Logging</li>
+          <li><code>check() / ensure() / verify()</code> — Assertions</li>
+          <li><code>DECLARE_DYNAMIC_MULTICAST_DELEGATE</code> — Event dispatchers from C++</li>
+          <li><code>CreateDefaultSubobject&lt;T&gt;()</code> — Create component in constructor</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-purple)"></span>Gameplay Framework Classes</h3>
+        <ul>
+          <li><code>AGameModeBase</code> — Rules, default pawn, HUD (server only)</li>
+          <li><code>AGameStateBase</code> — Game-wide replicated state</li>
+          <li><code>APlayerState</code> — Per-player replicated state</li>
+          <li><code>APlayerController</code> — Input, camera, HUD ownership</li>
+          <li><code>APawn / ACharacter</code> — Player/NPC body</li>
+          <li><code>UGameInstance</code> — Persists across level loads</li>
+          <li><code>UGameplayStatics</code> — Static helpers (line traces, spawn, play sound)</li>
+          <li><code>UKismetMathLibrary</code> — BP-exposed math utilities</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MATERIALS ── -->
+  <div class="section" id="materials">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(244,114,182,.12);color:var(--accent-pink);">◐</span>
+      Materials & Shading
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-pink)"></span>Material Inputs</h3>
+        <ul>
+          <li><strong>Base Color</strong> — Albedo (RGB, 0–1). No lighting info!</li>
+          <li><strong>Metallic</strong> — 0 = dielectric, 1 = metal (binary in practice)</li>
+          <li><strong>Roughness</strong> — 0 = mirror, 1 = matte</li>
+          <li><strong>Specular</strong> — Override Fresnel reflectance (default 0.5)</li>
+          <li><strong>Normal</strong> — Tangent-space normal map</li>
+          <li><strong>Emissive Color</strong> — Self-illumination (drives Bloom & Lumen)</li>
+          <li><strong>Opacity / Opacity Mask</strong> — Transparency (Translucent / Masked blend mode)</li>
+          <li><strong>World Position Offset</strong> — Vertex displacement in shader</li>
+          <li><strong>Ambient Occlusion</strong> — Cavity shadows (multiplies indirect light)</li>
+          <li><strong>Subsurface Color</strong> — For Subsurface shading model (skin, wax)</li>
+          <li><strong>Pixel Depth Offset</strong> — Push depth buffer (contact shadows, decal blending)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-pink)"></span>Shading Models</h3>
+        <ul>
+          <li><strong>Default Lit</strong> — Standard PBR</li>
+          <li><strong>Unlit</strong> — No lighting (UI, custom post)</li>
+          <li><strong>Subsurface</strong> — Wax, skin, leaves</li>
+          <li><strong>Subsurface Profile</strong> — Higher quality skin</li>
+          <li><strong>Clear Coat</strong> — Car paint, lacquered wood</li>
+          <li><strong>Two-Sided Foliage</strong> — Leaves with backface transmission</li>
+          <li><strong>Hair</strong> — Strand-based shading</li>
+          <li><strong>Eye</strong> — Specialised eye refraction</li>
+          <li><strong>Cloth</strong> — Fabric sheen</li>
+          <li><strong>Thin Translucent</strong> — Glass, colored film</li>
+          <li><strong>Strata</strong> — UE5.4+ material layering system <span class="tag new5">NEW</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-pink)"></span>Material Tips</h3>
+        <ul>
+          <li>Always use <strong>Material Instances</strong> for per-asset variation (cheaper than new materials)</li>
+          <li>Use <strong>Material Functions</strong> for reusable node subgraphs</li>
+          <li>Use <strong>Material Parameter Collections</strong> for global values (time of day, wind)</li>
+          <li>Keep instruction count low — check <code>Stats</code> in material editor</li>
+          <li>Use <strong>Texture Packing</strong>: pack Roughness/Metallic/AO into RGB channels of one texture</li>
+          <li>Use <strong>Virtual Textures</strong> for large landscapes <span class="tag new5">UE5</span></li>
+          <li><strong>Masked</strong> blend mode is cheaper than <strong>Translucent</strong></li>
+          <li>Avoid Translucent where possible — breaks deferred rendering, no Nanite</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NANITE ── -->
+  <div class="section" id="nanite">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(52,211,153,.12);color:var(--accent-green);">▲</span>
+      Nanite <span class="tag new5">UE5</span>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-green)"></span>What is Nanite?</h3>
+        <ul>
+          <li>Virtualised micro-polygon geometry system — renders billions of triangles</li>
+          <li>Automatic LOD — no manual LOD chain needed</li>
+          <li>GPU-driven rendering: visibility buffer, software rasteriser for small triangles</li>
+          <li>Enable per-mesh: Static Mesh → Details → Enable Nanite Support</li>
+          <li>Converts to internal cluster hierarchy at import/build time</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-green)"></span>Nanite Support & Limits</h3>
+        <ul>
+          <li><strong>✅ Supported:</strong> Static Meshes, Instanced Static Meshes, foliage, Masked materials (5.4+), World Position Offset (5.4+)</li>
+          <li><strong>❌ Not supported:</strong> Skeletal Meshes, Translucent materials, morph targets</li>
+          <li>Fallback meshes used where Nanite can't render (debug with Nanite Visualization)</li>
+          <li>Best for: hard-surface, organic environments, foliage, rocks, architecture</li>
+          <li>Displacement mapping via Nanite tessellation (5.4+) <span class="tag new5">NEW</span></li>
+          <li>Nanite streaming — only loads visible clusters from disk</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LUMEN ── -->
+  <div class="section" id="lumen">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(250,204,21,.12);color:var(--accent-yellow);">☀</span>
+      Lumen <span class="tag new5">UE5</span>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-yellow)"></span>Lumen Global Illumination</h3>
+        <ul>
+          <li>Fully dynamic GI — no lightmap baking required</li>
+          <li>Traced against simplified scene: Mesh Distance Fields + Surface Cache</li>
+          <li>Software ray tracing (default) or Hardware RT (higher quality, more GPU)</li>
+          <li>Enable: Project Settings → Rendering → Global Illumination → Lumen</li>
+          <li>Bounces driven by <strong>Emissive materials</strong> — lights can come from any surface</li>
+          <li>Multi-bounce indirect lighting updates in real-time</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-yellow)"></span>Lumen Reflections</h3>
+        <ul>
+          <li>Replaces SSR & planar reflections with ray-traced reflections</li>
+          <li>Enable: Project Settings → Rendering → Reflections → Lumen</li>
+          <li>Works off same Surface Cache as GI</li>
+          <li>Quality/performance controlled via PostProcess Volume: Lumen Reflections Quality</li>
+          <li>Hardware RT reflections for mirror-quality surfaces</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-yellow)"></span>Lumen Best Practices</h3>
+        <ul>
+          <li>Keep meshes <strong>watertight</strong> — gaps cause light leaks</li>
+          <li>Use <strong>Mesh Distance Fields</strong> (auto-generated for static meshes)</li>
+          <li>Large flat surfaces benefit from <strong>Lumen Surface Cache</strong> detail</li>
+          <li>Avoid very thin geometry — causes Surface Cache artefacts</li>
+          <li>Use <strong>r.Lumen.Visualize</strong> console commands for debugging</li>
+          <li>Emissive surfaces need <strong>Emissive boost</strong> multiplied into material for strong bounce</li>
+          <li>Combine with <strong>Virtual Shadow Maps</strong> for consistent shadowing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LIGHTING ── -->
+  <div class="section" id="lighting">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(250,204,21,.12);color:var(--accent-yellow);">💡</span>
+      Lighting
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-yellow)"></span>Light Types</h3>
+        <ul>
+          <li><strong>Directional Light</strong> — Sun/moon; infinite distance, parallel rays</li>
+          <li><strong>Point Light</strong> — Omni-directional (light bulb)</li>
+          <li><strong>Spot Light</strong> — Cone-shaped (flashlight, lamp)</li>
+          <li><strong>Rect Light</strong> — Area light (TV screen, window); soft shadows</li>
+          <li><strong>Sky Light</strong> — Ambient from cubemap or sky; drives IBL</li>
+          <li><strong>Sky Atmosphere</strong> — Physically-based sky & aerial perspective</li>
+          <li><strong>Exponential Height Fog</strong> — Atmosphere & volumetric fog</li>
+          <li><strong>Volumetric Cloud</strong> — Dynamic cloud layer</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-yellow)"></span>Shadow Systems</h3>
+        <ul>
+          <li><strong>Virtual Shadow Maps (VSM)</strong> — Default in UE5; per-pixel resolution, works with Nanite <span class="tag new5">UE5</span></li>
+          <li><strong>Cascaded Shadow Maps (CSM)</strong> — Legacy; still useful for mobile</li>
+          <li><strong>Ray-Traced Shadows</strong> — Pixel-perfect; requires HW RT</li>
+          <li><strong>Contact Shadows</strong> — Screen-space detail shadows (enable in light settings)</li>
+          <li><strong>Distance Field Shadows</strong> — Long-distance soft shadows from Directional Light</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-yellow)"></span>Post-Process Volume</h3>
+        <ul>
+          <li><strong>Bloom</strong> — Glow from bright areas; Convolution Bloom for cinematic</li>
+          <li><strong>Exposure</strong> — Auto or manual; set Min/Max Brightness</li>
+          <li><strong>Tone Mapping</strong> — ACES, custom curves</li>
+          <li><strong>Color Grading</strong> — Temperature, tint, saturation, LUT</li>
+          <li><strong>Ambient Occlusion</strong> — GTAO (default) or SSAO</li>
+          <li><strong>DOF</strong> — Cinematic / Gaussian / Circle (Bokeh)</li>
+          <li><strong>Motion Blur</strong> — Per-object and camera</li>
+          <li><strong>Screen Space Reflections</strong> — Supplement Lumen reflections</li>
+          <li><strong>Chromatic Aberration</strong> — Lens fringe</li>
+          <li><strong>Vignette</strong> — Darken edges</li>
+          <li><strong>Film Grain</strong> — Noise overlay</li>
+          <li><strong>Path Tracing</strong> — Reference mode, offline quality <span class="tag new5">UE5</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NIAGARA ── -->
+  <div class="section" id="niagara">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(248,113,113,.12);color:var(--accent-red);">✦</span>
+      Niagara VFX
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-red)"></span>Niagara Architecture</h3>
+        <ul>
+          <li><strong>System</strong> — Container holding one or more Emitters</li>
+          <li><strong>Emitter</strong> — Individual particle source (spawns, updates, renders)</li>
+          <li><strong>Module</strong> — Building block: a chunk of logic (position, velocity, color)</li>
+          <li><strong>Stages:</strong> System Spawn/Update → Emitter Spawn/Update → Particle Spawn/Update → Render</li>
+          <li><strong>Parameters:</strong> System, Emitter, Particle, User namespace scoping</li>
+          <li>GPU Sim available for millions of particles</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-red)"></span>Common Modules</h3>
+        <ul>
+          <li><code>Initialize Particle</code> — Set lifetime, mass, sprite size, color</li>
+          <li><code>Add Velocity</code> — Launch direction & speed</li>
+          <li><code>Gravity Force</code> — World-space gravity</li>
+          <li><code>Curl Noise Force</code> — Organic swirling motion</li>
+          <li><code>Drag</code> — Air resistance</li>
+          <li><code>Scale Color / Size Over Life</code> — Fade/grow/shrink curves</li>
+          <li><code>Collision</code> — Scene depth, distance field, or analytic collision</li>
+          <li><code>Spawn Rate / Burst</code> — Emission control</li>
+          <li><code>Mesh Renderer</code> — Render meshes instead of sprites</li>
+          <li><code>Ribbon Renderer</code> — Trails (sword swipes, smoke)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ANIMATION ── -->
+  <div class="section" id="animation">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(167,139,250,.12);color:var(--accent-purple);">♺</span>
+      Animation
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-purple)"></span>Animation Assets</h3>
+        <ul>
+          <li><strong>Skeleton</strong> — Bone hierarchy (shared across meshes)</li>
+          <li><strong>Skeletal Mesh</strong> — Mesh bound to skeleton</li>
+          <li><strong>Animation Sequence</strong> — Single animation clip</li>
+          <li><strong>Animation Montage</strong> — Composite: sections, notifies, blending</li>
+          <li><strong>Blend Space (1D / 2D)</strong> — Blend clips by input axes (speed, direction)</li>
+          <li><strong>Animation Blueprint (ABP)</strong> — State machine + logic</li>
+          <li><strong>Anim Notifies</strong> — Events at specific frames (footstep, VFX, sound)</li>
+          <li><strong>Control Rig</strong> — Procedural runtime rigging & IK <span class="tag new5">UE5</span></li>
+          <li><strong>IK Rig / IK Retargeter</strong> — Retarget animations across skeletons <span class="tag new5">UE5</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-purple)"></span>State Machine Basics</h3>
+        <ul>
+          <li>Create states (Idle, Walk, Run, Jump, Fall) in ABP → AnimGraph</li>
+          <li>Define <strong>Transition Rules</strong> between states (bool conditions)</li>
+          <li>Use <strong>Blend Space</strong> inside states for smooth locomotion</li>
+          <li><strong>Cached Pose</strong> — Save a pose to reuse in multiple branches</li>
+          <li><strong>Layered Blend per Bone</strong> — Upper/lower body split</li>
+          <li><strong>Slot Node</strong> — Play Montages on top of state machine</li>
+          <li>Access variables via <code>Try Get Pawn Owner</code> → Cast</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PHYSICS ── -->
+  <div class="section" id="physics">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(251,146,60,.12);color:var(--accent-orange);">⚡</span>
+      Physics & Collision
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-orange)"></span>Chaos Physics <span class="tag new5">UE5</span></h3>
+        <ul>
+          <li><strong>Chaos</strong> is UE5's physics engine (replaced PhysX)</li>
+          <li>Rigid Body simulation, constraints, joints</li>
+          <li><strong>Chaos Destruction</strong> — Fracture meshes for destructible environments</li>
+          <li><strong>Chaos Cloth</strong> — Cloth simulation on skeletal meshes</li>
+          <li><strong>Chaos Vehicles</strong> — Vehicle physics model</li>
+          <li>Physics Assets — per-bone collision for skeletal meshes (ragdoll)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-orange)"></span>Collision & Traces</h3>
+        <ul>
+          <li><strong>Collision Channels</strong> — WorldStatic, WorldDynamic, Pawn, PhysicsBody, etc.</li>
+          <li><strong>Collision Presets</strong> — BlockAll, OverlapAll, NoCollision, Custom</li>
+          <li><strong>Object vs Trace channels</strong> — Object = what I am; Trace = what I look for</li>
+          <li><strong>Line Trace</strong> — Raycast (single or multi hit)</li>
+          <li><strong>Shape Trace</strong> — Sweep sphere / box / capsule</li>
+          <li><strong>Overlap</strong> — Test shape for overlapping actors</li>
+          <li><code>OnComponentBeginOverlap</code> / <code>OnComponentHit</code> — Event delegates</li>
+          <li>Always use <strong>Collision Complexity</strong>: Simple for gameplay, Complex for traces when needed</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── AUDIO ── -->
+  <div class="section" id="audio">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(34,211,238,.12);color:var(--accent-cyan);">♪</span>
+      Audio (MetaSounds)
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-cyan)"></span>Audio System</h3>
+        <ul>
+          <li><strong>Sound Wave</strong> — Raw audio asset (.wav import)</li>
+          <li><strong>Sound Cue</strong> — Node-based mixing (random, concatenate, modulate)</li>
+          <li><strong>MetaSound</strong> — Procedural audio graph; replaces Sound Cue for new projects <span class="tag new5">UE5</span></li>
+          <li><strong>Sound Class</strong> — Category (Music, SFX, Dialogue) with volume control</li>
+          <li><strong>Sound Mix</strong> — Adjusts Sound Classes (duck music during dialogue)</li>
+          <li><strong>Attenuation</strong> — Spatial falloff, shape, spatialization (3D panning)</li>
+          <li><strong>Sound Concurrency</strong> — Limit simultaneous instances of same sound</li>
+          <li><strong>Audio Volume</strong> — Region-based reverb & ambient zones</li>
+          <li><strong>Submix</strong> — Routing bus for group effects (EQ, reverb, compression)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── UMG / UI ── -->
+  <div class="section" id="ui">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(244,114,182,.12);color:var(--accent-pink);">☐</span>
+      UMG — UI System
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-pink)"></span>UMG Widgets</h3>
+        <ul>
+          <li><strong>Canvas Panel</strong> — Absolute positioning (use sparingly)</li>
+          <li><strong>Horizontal / Vertical Box</strong> — Linear layout</li>
+          <li><strong>Overlay</strong> — Stack children on top of each other</li>
+          <li><strong>Grid Panel</strong> — Row/column layout</li>
+          <li><strong>Size Box</strong> — Override child size</li>
+          <li><strong>Scale Box</strong> — Scale child to fill</li>
+          <li><strong>Scroll Box</strong> — Scrollable container</li>
+          <li><strong>Text Block</strong> — Display text (bind to variable)</li>
+          <li><strong>Image</strong> — Texture/material display</li>
+          <li><strong>Button</strong> — Clickable; OnClicked event</li>
+          <li><strong>Progress Bar</strong> — Health/mana bars</li>
+          <li><strong>Spacer</strong> — Empty space</li>
+          <li><strong>Named Slot</strong> — For reusable user widget templates</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-pink)"></span>UMG Tips</h3>
+        <ul>
+          <li>Use <strong>Anchors</strong> to handle different resolutions</li>
+          <li>Create/remove UI: <code>Create Widget</code> → <code>Add to Viewport</code> / <code>Remove from Parent</code></li>
+          <li>Use <strong>Bindings</strong> sparingly (they tick every frame!) — prefer Event-Driven updates</li>
+          <li>For world-space UI: <code>WidgetComponent</code> on an Actor</li>
+          <li><strong>Widget Switcher</strong> — Swap between child widgets (tabs, screens)</li>
+          <li>Input: use <code>Set Input Mode UI Only</code> / <code>Game Only</code> / <code>Game And UI</code></li>
+          <li><strong>CommonUI</strong> plugin for gamepad/MKB input routing <span class="tag new5">UE5</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── AI ── -->
+  <div class="section" id="ai">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(52,211,153,.12);color:var(--accent-green);">🧠</span>
+      AI & Navigation
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-green)"></span>AI Framework</h3>
+        <ul>
+          <li><strong>AIController</strong> — Brain of AI pawn; runs Behavior Tree or custom logic</li>
+          <li><strong>Behavior Tree (BT)</strong> — Hierarchical task execution</li>
+          <li><strong>Blackboard</strong> — Shared data store for BT (target actor, patrol index, etc.)</li>
+          <li><strong>BT Nodes:</strong> Selector (OR), Sequence (AND), Decorator (condition), Service (periodic update), Task (action)</li>
+          <li><strong>EQS (Environment Query System)</strong> — Spatial queries: "find best cover point within 10m"</li>
+          <li><strong>AI Perception</strong> — Sight, hearing, damage senses with radius & angle</li>
+          <li><strong>Smart Objects</strong> — World-placed interaction points for AI <span class="tag new5">UE5</span></li>
+          <li><strong>Mass Entity / StateTree</strong> — Scalable AI for crowds <span class="tag new5">UE5</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-green)"></span>Navigation</h3>
+        <ul>
+          <li><strong>NavMesh Bounds Volume</strong> — Define area for pathfinding</li>
+          <li><strong>RecastNavMesh</strong> — Default navmesh generation</li>
+          <li><strong>Nav Modifiers</strong> — Areas with cost (water = slow, road = fast)</li>
+          <li><strong>Nav Links</strong> — Jump/fall connections between navmesh islands</li>
+          <li><code>AI MoveTo</code> — Navigate pawn to location / actor</li>
+          <li>Debug: <span class="kbd">P</span> key in editor to show NavMesh, or <code>'show Navigation</code></li>
+          <li><strong>Navigation Invokers</strong> — Dynamic navmesh generation around moving actors <span class="tag new5">UE5</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── NETWORKING ── -->
+  <div class="section" id="networking">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(77,139,255,.12);color:var(--accent-blue);">⇄</span>
+      Networking & Replication
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>Replication Basics</h3>
+        <ul>
+          <li>UE uses <strong>server-authoritative</strong> model</li>
+          <li><strong>bReplicates = true</strong> on Actor to enable replication</li>
+          <li><code>UPROPERTY(Replicated)</code> — Auto-sync variable to clients</li>
+          <li><code>ReplicatedUsing = OnRep_Func</code> — Callback when value changes on client</li>
+          <li><strong>RPCs:</strong> Server (client → server), Client (server → client), NetMulticast (server → all)</li>
+          <li><code>UFUNCTION(Server, Reliable)</code> — Guaranteed delivery server RPC</li>
+          <li><code>UFUNCTION(Client, Unreliable)</code> — Fire-and-forget client RPC</li>
+          <li><strong>Relevancy</strong> — Actors only replicate to nearby clients (NetCullDistance)</li>
+          <li><strong>Network Role:</strong> Authority (server), AutonomousProxy (owning client), SimulatedProxy (other clients)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>Testing Multiplayer</h3>
+        <ul>
+          <li><strong>PIE Multiplayer:</strong> Play → Number of Players = 2+</li>
+          <li><span class="kbd">Net Mode</span> dropdown: Play As Listen Server / Client</li>
+          <li>Use <code>HasAuthority()</code> to check if running on server</li>
+          <li>Use <code>IsLocallyControlled()</code> for owning player checks</li>
+          <li>GameState & PlayerState replicate automatically</li>
+          <li>GameMode runs <strong>only on server</strong></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── WORLD PARTITION ── -->
+  <div class="section" id="worldpart">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(52,211,153,.12);color:var(--accent-green);">🌍</span>
+      World Partition & Streaming <span class="tag new5">UE5</span>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-green)"></span>World Partition</h3>
+        <ul>
+          <li>Replaces sub-level streaming with automatic grid-based loading</li>
+          <li><strong>One Persistent Level</strong> — actors auto-assigned to grid cells</li>
+          <li><strong>HLOD (Hierarchical LOD)</strong> — Auto-generated imposters for distant cells</li>
+          <li><strong>Data Layers</strong> — Tag actors for conditional loading (day/night, quest states)</li>
+          <li>Supports <strong>One File Per Actor (OFPA)</strong> — better source control, less merge conflicts</li>
+          <li><strong>Streaming Sources</strong> — Define what loads around player</li>
+          <li>Enable: World Settings → World Partition → Enable</li>
+          <li>Editor: only loads cells near camera (saves memory for huge worlds)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PCG ── -->
+  <div class="section" id="pcg">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(167,139,250,.12);color:var(--accent-purple);">🌲</span>
+      PCG (Procedural Content Generation) <span class="tag new5">UE5.3+</span>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-purple)"></span>PCG Framework</h3>
+        <ul>
+          <li><strong>PCG Graph</strong> — Node-based procedural placement system</li>
+          <li>Scatter foliage, props, entire biomes based on rules</li>
+          <li><strong>Surface Sampler</strong> — Generate points on landscape or meshes</li>
+          <li><strong>Density Filter</strong> — Control point distribution</li>
+          <li><strong>Spline-based</strong> — Use splines to define roads, rivers, boundaries</li>
+          <li><strong>Attribute-driven</strong> — Filter/transform points by slope, height, biome tag</li>
+          <li>Deterministic by default (seed-based)</li>
+          <li>Can combine with World Partition for huge worlds</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── OPTIMIZATION ── -->
+  <div class="section" id="optimization">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(248,113,113,.12);color:var(--accent-red);">📊</span>
+      Optimization & Profiling
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-red)"></span>Profiling Tools</h3>
+        <ul>
+          <li><code>stat fps</code> — Frame rate & frame time</li>
+          <li><code>stat unit</code> — Game, Draw, GPU, RHI thread timings</li>
+          <li><code>stat unitgraph</code> — Real-time graph overlay</li>
+          <li><code>stat gpu</code> — Per-pass GPU cost</li>
+          <li><code>stat scenerendering</code> — Draw call counts</li>
+          <li><code>stat memory</code> — Memory usage overview</li>
+          <li><code>profilegpu</code> — Single-frame GPU capture</li>
+          <li><strong>Unreal Insights</strong> — Trace-based profiler (CPU, GPU, memory, loading)</li>
+          <li><strong>RenderDoc</strong> / <strong>PIX</strong> / <strong>NSight</strong> — GPU capture tools</li>
+          <li><strong>Session Frontend</strong> → Profiler for CPU traces</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-red)"></span>Performance Tips</h3>
+        <ul>
+          <li>Use <strong>Nanite</strong> for high-poly static meshes (no manual LOD)</li>
+          <li>Use <strong>Lumen</strong> in Software mode for wider GPU support</li>
+          <li>Disable <strong>Tick</strong> on actors that don't need per-frame updates</li>
+          <li>Use <strong>Timers</strong> instead of Tick for periodic logic</li>
+          <li>Pool spawned actors (projectiles, effects) — avoid Spawn/Destroy churn</li>
+          <li>Reduce <strong>Draw Calls</strong>: merge meshes, use instancing, HISMs</li>
+          <li>Use <strong>LODs</strong> for non-Nanite meshes and Skeletal Meshes</li>
+          <li>Texture streaming: don't load max res for everything</li>
+          <li>Cull: <code>r.SetNearClipPlane</code>, occlusion settings, per-actor render distance</li>
+          <li>Limit <strong>Translucent</strong> & <strong>Overdraw</strong> (esp. particles)</li>
+          <li>Use <strong>Significance Manager</strong> for adaptive quality on distant AI/effects</li>
+          <li>Compress textures: BC7 (quality), BC5 (normal maps), BC1 (rough/metal)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PACKAGING ── -->
+  <div class="section" id="packaging">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(77,139,255,.12);color:var(--accent-blue);">📦</span>
+      Packaging & Shipping
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>Build & Package</h3>
+        <ul>
+          <li><strong>Development Build</strong> — Debug symbols, console commands (for internal testing)</li>
+          <li><strong>Shipping Build</strong> — Optimised, no console, no editor features (final release)</li>
+          <li><strong>Test Build</strong> — Like Shipping but keeps console for QA</li>
+          <li>Package: File → Package Project → target platform</li>
+          <li>Cook content separately: <code>Project Launcher</code> for custom cook profiles</li>
+          <li>Set <strong>Maps to Include</strong> in Project Settings → Packaging</li>
+          <li>Exclude editor-only content & unused plugins to reduce build size</li>
+          <li>Use <strong>Pak file encryption</strong> to protect assets</li>
+          <li>Steam: Steamworks SDK plugin, configure App ID, upload via SteamPipe</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-blue)"></span>Platform Notes</h3>
+        <ul>
+          <li><strong>Windows</strong> — DX12 default; DX11 fallback. Nanite/Lumen require DX12</li>
+          <li><strong>Linux</strong> — Vulkan renderer</li>
+          <li><strong>Console</strong> — Requires dev kits & NDA platform SDKs</li>
+          <li><strong>Mobile</strong> — Vulkan (Android), Metal (iOS). No Nanite/Lumen</li>
+          <li>Set <strong>Target Hardware</strong> profile (Desktop, Mobile) in Project Settings</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONSOLE COMMANDS ── -->
+  <div class="section" id="console">
+    <div class="section-title">
+      <span class="icon" style="background:rgba(34,211,238,.12);color:var(--accent-cyan);">></span>
+      Useful Console Commands
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-cyan)"></span>Rendering & Debug</h3>
+        <ul>
+          <li><code>stat fps</code> — Framerate overlay</li>
+          <li><code>stat unit</code> — Thread timings</li>
+          <li><code>stat gpu</code> — GPU pass costs</li>
+          <li><code>stat scenerendering</code> — Draw call count</li>
+          <li><code>r.ScreenPercentage 50–200</code> — Internal resolution scale</li>
+          <li><code>r.SetNearClipPlane 1</code> — Adjust near clip</li>
+          <li><code>show CollisionPawn</code> — Visualise pawn collision</li>
+          <li><code>show Bounds</code> — Actor bounding boxes</li>
+          <li><code>freezerendering</code> — Freeze culling (debug occlusion)</li>
+          <li><code>slomo 0.5</code> — Slow-motion (0.1 to 10)</li>
+          <li><code>t.MaxFPS 60</code> — Cap framerate</li>
+          <li><code>r.Lumen.ScreenProbeGather.ScreenSpaceBentNormal 1</code> — Lumen tweak</li>
+          <li><code>r.Nanite.Visualize.OverdrawMode 1</code> — Nanite debug</li>
+          <li><code>r.VirtualShadowMap.Visualize 1</code> — VSM debug</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--accent-cyan)"></span>Gameplay & Misc</h3>
+        <ul>
+          <li><code>open MapName</code> — Load a map</li>
+          <li><code>restartlevel</code> — Restart current level</li>
+          <li><code>disconnect</code> — Leave multiplayer session</li>
+          <li><code>ce EventName</code> — Trigger Console Event in level BP</li>
+          <li><code>log LogTemp Warning</code> — Set log verbosity</li>
+          <li><code>obj list</code> — List all UObjects in memory</li>
+          <li><code>memreport -full</code> — Detailed memory report</li>
+          <li><code>gc.CollectGarbageEveryFrame 1</code> — Force GC (debug leaks)</li>
+          <li><code>p.VisualizeWorldQueries 1</code> — Draw physics traces</li>
+          <li><code>ai.debug</code> — AI debug overlay</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<div class="footer">
+  Unreal Engine 5 Cheatsheet — Remanom Games · Built with care, not hallucination
+</div>
+
+<script>
+  // ── SEARCH FILTER ──
+  const searchInput = document.getElementById('search');
+  searchInput.addEventListener('input', function() {
+    const q = this.value.toLowerCase().trim();
+    document.querySelectorAll('.card').forEach(card => {
+      const text = card.textContent.toLowerCase();
+      card.style.display = q === '' || text.includes(q) ? '' : 'none';
+    });
+    document.querySelectorAll('.section').forEach(sec => {
+      const visibleCards = sec.querySelectorAll('.card:not([style*="display: none"])');
+      sec.style.display = q === '' || visibleCards.length > 0 ? '' : 'none';
+    });
+  });
+
+  // ── SMOOTH SCROLL ──
+  document.querySelectorAll('.toc a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const el = document.querySelector(a.getAttribute('href'));
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+
+</body>
+</html>

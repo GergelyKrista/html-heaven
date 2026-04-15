@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Drawing Canvas</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f0f1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1rem;
+  }
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #f472b6, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .toolbar {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1rem;
+    padding: 0.75rem 1.5rem;
+    background: #1a1a2e;
+    border-radius: 12px;
+  }
+  .toolbar label { font-size: 0.85rem; color: #aaa; }
+  .toolbar input[type="color"] {
+    width: 36px; height: 36px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    cursor: pointer;
+    background: none;
+    padding: 2px;
+  }
+  .toolbar input[type="range"] {
+    width: 100px;
+    accent-color: #a78bfa;
+  }
+  .toolbar button {
+    background: #2a2a3e;
+    color: #e0e0e0;
+    border: 1px solid #444;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+  }
+  .toolbar button:hover { background: #3a3a5e; }
+  .toolbar .size-display {
+    font-size: 0.8rem;
+    color: #aaa;
+    min-width: 30px;
+    text-align: center;
+  }
+  canvas {
+    border-radius: 12px;
+    cursor: crosshair;
+    background: #ffffff;
+    max-width: 100%;
+  }
+</style>
+</head>
+<body>
+<h1>Drawing Canvas</h1>
+<div class="toolbar">
+  <label>Color</label>
+  <input type="color" id="color" value="#7c3aed">
+  <label>Size</label>
+  <input type="range" id="size" min="1" max="50" value="4">
+  <span class="size-display" id="sizeDisplay">4</span>
+  <button id="eraser">Eraser</button>
+  <button id="clear">Clear</button>
+  <button id="save">Save</button>
+</div>
+<canvas id="canvas" width="700" height="460"></canvas>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const colorInput = document.getElementById('color');
+const sizeInput = document.getElementById('size');
+const sizeDisplay = document.getElementById('sizeDisplay');
+let drawing = false;
+let lastX = 0, lastY = 0;
+let isEraser = false;
+
+ctx.fillStyle = '#ffffff';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+ctx.lineCap = 'round';
+ctx.lineJoin = 'round';
+
+function getPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  if (e.touches) {
+    return { x: (e.touches[0].clientX - rect.left) * scaleX, y: (e.touches[0].clientY - rect.top) * scaleY };
+  }
+  return { x: (e.clientX - rect.left) * scaleX, y: (e.clientY - rect.top) * scaleY };
+}
+
+function startDraw(e) {
+  e.preventDefault();
+  drawing = true;
+  const pos = getPos(e);
+  lastX = pos.x;
+  lastY = pos.y;
+}
+
+function draw(e) {
+  if (!drawing) return;
+  e.preventDefault();
+  const pos = getPos(e);
+  ctx.beginPath();
+  ctx.strokeStyle = isEraser ? '#ffffff' : colorInput.value;
+  ctx.lineWidth = sizeInput.value;
+  ctx.moveTo(lastX, lastY);
+  ctx.lineTo(pos.x, pos.y);
+  ctx.stroke();
+  lastX = pos.x;
+  lastY = pos.y;
+}
+
+function stopDraw() { drawing = false; }
+
+canvas.addEventListener('mousedown', startDraw);
+canvas.addEventListener('mousemove', draw);
+canvas.addEventListener('mouseup', stopDraw);
+canvas.addEventListener('mouseleave', stopDraw);
+canvas.addEventListener('touchstart', startDraw, { passive: false });
+canvas.addEventListener('touchmove', draw, { passive: false });
+canvas.addEventListener('touchend', stopDraw);
+
+sizeInput.addEventListener('input', () => { sizeDisplay.textContent = sizeInput.value; });
+
+document.getElementById('eraser').addEventListener('click', function() {
+  isEraser = !isEraser;
+  this.style.background = isEraser ? '#7c3aed' : '#2a2a3e';
+  this.style.color = isEraser ? '#fff' : '#e0e0e0';
+});
+
+document.getElementById('clear').addEventListener('click', () => {
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+});
+
+document.getElementById('save').addEventListener('click', () => {
+  const link = document.createElement('a');
+  link.download = 'drawing.png';
+  link.href = canvas.toDataURL();
+  link.click();
+});
+</script>
+</body>
+</html>

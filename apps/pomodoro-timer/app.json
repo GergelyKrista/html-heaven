@@ -1,0 +1,10 @@
+{
+  "title": "Pomodoro Timer",
+  "slug": "pomodoro-timer",
+  "description": "Stay focused with this clean pomodoro timer. Work 25 minutes, break 5.",
+  "author": "HTML Heaven",
+  "tags": ["productivity", "utilities"],
+  "dateAdded": "2026-04-12",
+  "thumbnail": "thumbnail.png",
+  "featured": true
+}

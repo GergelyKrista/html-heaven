@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pomodoro Timer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f0f1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  h1 {
+    font-size: 1.6rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(135deg, #f97316, #ef4444);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .timer-ring {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    margin-bottom: 2rem;
+  }
+  .timer-ring svg { transform: rotate(-90deg); }
+  .timer-ring circle {
+    fill: none;
+    stroke-width: 8;
+  }
+  .bg-ring { stroke: #1a1a2e; }
+  .progress-ring {
+    stroke: #ef4444;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear, stroke 0.5s;
+  }
+  .timer-display {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .time {
+    font-size: 3.5rem;
+    font-weight: 300;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 2px;
+  }
+  .phase {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  .controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  button {
+    padding: 12px 28px;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  button:hover { transform: translateY(-2px); }
+  .btn-primary {
+    background: linear-gradient(135deg, #ef4444, #f97316);
+    color: white;
+  }
+  .btn-primary:hover { box-shadow: 0 6px 20px rgba(239,68,68,0.4); }
+  .btn-secondary {
+    background: #1a1a2e;
+    color: #e0e0e0;
+    border: 1px solid #333;
+  }
+  .modes {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .modes button {
+    padding: 8px 18px;
+    font-size: 0.85rem;
+    background: #1a1a2e;
+    color: #aaa;
+    border: 1px solid #333;
+  }
+  .modes button.active {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+  }
+  .session-count {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: #666;
+  }
+</style>
+</head>
+<body>
+<h1>Pomodoro Timer</h1>
+<div class="modes">
+  <button class="active" onclick="setMode('work')">Work</button>
+  <button onclick="setMode('short')">Short Break</button>
+  <button onclick="setMode('long')">Long Break</button>
+</div>
+<div class="timer-ring">
+  <svg width="280" height="280">
+    <circle class="bg-ring" cx="140" cy="140" r="130"/>
+    <circle class="progress-ring" id="progress" cx="140" cy="140" r="130"
+      stroke-dasharray="816.81" stroke-dashoffset="0"/>
+  </svg>
+  <div class="timer-display">
+    <div class="time" id="display">25:00</div>
+    <div class="phase" id="phase">Work</div>
+  </div>
+</div>
+<div class="controls">
+  <button class="btn-primary" id="startBtn" onclick="toggleTimer()">Start</button>
+  <button class="btn-secondary" onclick="resetTimer()">Reset</button>
+</div>
+<div class="session-count" id="sessions">Sessions completed: 0</div>
+<script>
+const MODES = { work: 25 * 60, short: 5 * 60, long: 15 * 60 };
+const LABELS = { work: 'Work', short: 'Short Break', long: 'Long Break' };
+const COLORS = { work: '#ef4444', short: '#22c55e', long: '#3b82f6' };
+const circumference = 2 * Math.PI * 130;
+let mode = 'work', timeLeft = MODES.work, totalTime = MODES.work;
+let running = false, interval = null, sessions = 0;
+
+function updateDisplay() {
+  const min = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+  const sec = (timeLeft % 60).toString().padStart(2, '0');
+  document.getElementById('display').textContent = `${min}:${sec}`;
+  const offset = circumference * (1 - timeLeft / totalTime);
+  document.getElementById('progress').style.strokeDashoffset = offset;
+  document.title = `${min}:${sec} — Pomodoro`;
+}
+
+function toggleTimer() {
+  if (running) {
+    clearInterval(interval);
+    running = false;
+    document.getElementById('startBtn').textContent = 'Start';
+  } else {
+    running = true;
+    document.getElementById('startBtn').textContent = 'Pause';
+    interval = setInterval(() => {
+      timeLeft--;
+      updateDisplay();
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        running = false;
+        document.getElementById('startBtn').textContent = 'Start';
+        if (mode === 'work') {
+          sessions++;
+          document.getElementById('sessions').textContent = `Sessions completed: ${sessions}`;
+        }
+        try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ==').play(); } catch(e) {}
+      }
+    }, 1000);
+  }
+}
+
+function resetTimer() {
+  clearInterval(interval);
+  running = false;
+  timeLeft = totalTime;
+  document.getElementById('startBtn').textContent = 'Start';
+  updateDisplay();
+}
+
+function setMode(m) {
+  mode = m;
+  totalTime = MODES[m];
+  timeLeft = totalTime;
+  clearInterval(interval);
+  running = false;
+  document.getElementById('startBtn').textContent = 'Start';
+  document.getElementById('phase').textContent = LABELS[m];
+  document.getElementById('progress').style.stroke = COLORS[m];
+  document.querySelectorAll('.modes button').forEach((btn, i) => {
+    btn.className = Object.keys(MODES)[i] === m ? 'active' : '';
+  });
+  updateDisplay();
+}
+
+updateDisplay();
+</script>
+</body>
+</html>

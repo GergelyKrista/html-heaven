@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iroh's Care Guide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --warm-cream: #faf6f1;
+            --warm-sand: #f0e6d8;
+            --terracotta: #c2703b;
+            --terracotta-dark: #a85a2a;
+            --forest: #2d4a3e;
+            --forest-light: #3d6a54;
+            --amber: #d4a03c;
+            --soft-coral: #e8a89a;
+            --text-dark: #2c2c2c;
+            --text-muted: #5a5a5a;
+            --white: #ffffff;
+            --shadow-soft: 0 4px 20px rgba(45, 74, 62, 0.08);
+            --shadow-medium: 0 8px 30px rgba(45, 74, 62, 0.12);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 24px;
+            background: var(--warm-cream);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: 24px;
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--forest) 0%, var(--forest-light) 100%);
+            color: var(--white);
+            padding: 40px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header h1 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.02em;
+            position: relative;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .quick-nav {
+            background: var(--warm-sand);
+            padding: 20px 24px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            border-bottom: 1px solid rgba(45, 74, 62, 0.1);
+        }
+
+        .nav-btn {
+            background: var(--white);
+            color: var(--forest);
+            padding: 10px 16px;
+            border: 2px solid transparent;
+            border-radius: 100px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .nav-btn:hover {
+            background: var(--forest);
+            color: var(--white);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .section {
+            border-bottom: 1px solid rgba(45, 74, 62, 0.08);
+        }
+
+        .section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-header {
+            background: var(--white);
+            padding: 20px 28px;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            text-align: left;
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        .section-header:hover {
+            background: var(--warm-cream);
+        }
+
+        .section-header span {
+            width: 28px;
+            height: 28px;
+            background: var(--warm-sand);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--forest);
+            transition: all 0.2s ease;
+        }
+
+        .section-content {
+            padding: 0 28px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+
+        .section-content.active {
+            padding: 8px 28px 32px;
+            max-height: 4000px;
+        }
+
+        .info-block, .time-block, .command-block, .warning-block, .behavior-block {
+            padding: 20px 24px;
+            margin: 16px 0;
+            border-radius: 16px;
+        }
+
+        .time-block {
+            background: linear-gradient(135deg, #fff8e8 0%, #fff3d6 100%);
+            border-left: 4px solid var(--amber);
+        }
+
+        .command-block {
+            background: linear-gradient(135deg, #e8f5e9 0%, #dcedc8 100%);
+            border-left: 4px solid var(--forest-light);
+        }
+
+        .warning-block {
+            background: linear-gradient(135deg, #fff0ed 0%, #ffe4df 100%);
+            border-left: 4px solid var(--terracotta);
+        }
+
+        .info-block {
+            background: linear-gradient(135deg, #e3f2fd 0%, #e1f5fe 100%);
+            border-left: 4px solid #5c9dc4;
+        }
+
+        .behavior-block {
+            background: linear-gradient(135deg, #f3e5f5 0%, #ede7f6 100%);
+            border-left: 4px solid #8e6aa8;
+        }
+
+        h3 {
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0 0 12px 0;
+            color: var(--text-dark);
+        }
+
+        ul {
+            padding-left: 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        li {
+            margin: 10px 0;
+            padding-left: 24px;
+            position: relative;
+            color: var(--text-muted);
+        }
+
+        li::before {
+            content: '•';
+            position: absolute;
+            left: 8px;
+            color: var(--terracotta);
+            font-weight: bold;
+        }
+
+        li strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .emergency {
+            background: linear-gradient(135deg, var(--terracotta) 0%, var(--terracotta-dark) 100%);
+            color: var(--white);
+            padding: 24px;
+            border-radius: 16px;
+            margin: 16px 0;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .emergency a {
+            color: var(--white);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .header {
+                padding: 32px 20px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .quick-nav {
+                padding: 16px;
+                gap: 8px;
+            }
+
+            .nav-btn {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+
+            .section-content {
+                max-height: none !important;
+                padding: 8px 20px 24px !important;
+                overflow: visible !important;
+            }
+
+            .section-header {
+                pointer-events: none;
+                background: var(--forest);
+                color: var(--white);
+                padding: 16px 20px;
+            }
+
+            .section-header span {
+                display: none;
+            }
+
+            .info-block, .time-block, .command-block, .warning-block, .behavior-block {
+                padding: 16px 18px;
+                margin: 12px 0;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+            }
+
+            .quick-nav {
+                display: none;
+            }
+
+            .section-content {
+                max-height: none !important;
+                padding: 8px 28px 32px !important;
+                overflow: visible !important;
+            }
+
+            .section-header {
+                background: var(--forest) !important;
+                color: var(--white) !important;
+            }
+
+            .section-header span {
+                display: none;
+            }
+
+            .section {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🐩 Iroh's Care Guide</h1>
+            <p>2-year-old Standard Poodle · 25kg</p>
+        </div>
+
+        <div class="quick-nav">
+            <a href="#daily-routine" class="nav-btn">📅 Daily Routine</a>
+            <a href="#emergency" class="nav-btn">🚨 Emergency</a>
+            <a href="#medical" class="nav-btn">🏥 Medical</a>
+            <a href="#behavior" class="nav-btn">🐕 Behavior</a>
+            <a href="#outdoor" class="nav-btn">🌳 Outdoor</a>
+            <a href="#indoor" class="nav-btn">🏠 Indoor</a>
+            <a href="#parks" class="nav-btn">🏞️ Parks</a>
+        </div>
+
+        <div class="section" id="daily-routine">
+            <button class="section-header" aria-expanded="false" onclick="toggleSection('routine-content')">
+                📅 Daily Routine
+                <span>+</span>
+            </button>
+            <div class="section-content" id="routine-content">
+                <div class="info-block">
+                    <h3>🍽️ Feeding Summary</h3>
+                    <ul>
+                        <li><strong>Per meal:</strong> 3 sections of wet food + add water to the food</li>
+                        <li><strong>Meals per day:</strong> 2 (morning + afternoon/evening)</li>
+                        <li><strong>Hydration:</strong> If he hasn't drunk enough, give coconut water before last walk</li>
+                        <li><strong>Rule:</strong> ONLY feed AFTER walks, no play for 40+ mins after eating</li>
+                    </ul>
+                </div>
+
+                <div class="time-block">
+                    <h3>🌅 Morning (7:30-8:30am)</h3>
+                    <ul>
+                        <li>Walk: 30-60 mins, off lead in park</li>
+                        <li>Inhaler: 1 puff, 8-10 breaths</li>
+                        <li>Breakfast: 3 sections of wet food + water added</li>
+                        <li>Say "good morning" when you wake up - he likes this!</li>
+                        <li>He can sleep in easily - no rush</li>
+                    </ul>
+                </div>
+
+                <div class="time-block">
+                    <h3>🌞 Lunch (12:00-14:00)</h3>
+                    <ul>
+                        <li>Walk: 15-30 mins, on lead around block OR off lead in park</li>
+                    </ul>
+                </div>
+
+                <div class="time-block">
+                    <h3>🌆 Afternoon (17:00-19:00)</h3>
+                    <ul>
+                        <li>Walk: 15-30 mins, on lead around block OR off lead in park</li>
+                        <li>Dinner: 3 sections of wet food + water added</li>
+                    </ul>
+                </div>
+
+                <div class="time-block">
+                    <h3>🌙 Evening (21:00-22:00)</h3>
+                    <ul>
+                        <li>Final toilet walk: 10 mins - school and back is enough</li>
+                        <li>Inhaler: 1 puff, 8-10 breaths</li>
+                        <li>Sleep in same room with you - he likes company</li>
+                        <li>If leaving door open, close the baby gate</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="emergency">
+            <button class="section-header" aria-expanded="false" onclick="toggleSection('emergency-content')">
+                🚨 Emergency
+                <span>+</span>
+            </button>
+            <div class="section-content" id="emergency-content">
+                <div class="emergency">
+                    If you need immediate help, call [YOUR PHONE NUMBER]
+                </div>
+                
+                <div class="warning-block">
+                    <h3>⚠️ Watch Out For</h3>
+                    <ul>
+                        <li>Will absolutely murder a squirrel if he catches one</li>
+                        <li>Picks up chicken bones/street food - use "drop it"</li>
+                        <li>Swallows socks and clothes</li>
+                        <li>Gets excited around female dogs, especially in heat</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="medical">
+            <button class="section-header" aria-expanded="false" onclick="toggleSection('medical-content')">
+                🏥 Medical
+                <span>+</span>
+            </button>
+            <div class="section-content" id="medical-content">
+                <div class="emergency">
+                    24/7 Emergency Vet: Medivet Camberwell<br>
+                    📞 02038161010<br>
+                    📍 7 Kenbury St, London SE5 9BS<br>
+                    <a href="https://www.medivetgroup.com/24-hour-emergency-vet/24-hour-camberwell/?utm_source=google&utm_medium=organic&utm_campaign=google_lpm_camberwell">Website</a>
+                </div>
+
+                <div class="warning-block">
+                    <h3>🫁 Asthma Care</h3>
+                    <ul>
+                        <li><strong>Has doggy asthma</strong> - needs inhaler twice daily</li>
+                        <li><strong>Watch for coughing</strong> after running or getting too excited</li>
+                        <li><strong>If he starts coughing:</strong> stop activity and give him gentle pets to calm down</li>
+                        <li>Let him rest and breathe normally before continuing</li>
+                    </ul>
+                </div>
+
+                <div class="info-block">
+                    <h3>👁️ Eye Care</h3>
+                    <ul>
+                        <li><strong>Eyes can get a bit gunky</strong> - this is normal for him</li>
+                        <li><strong>Clean gently with a wet towel</strong> when needed</li>
+                        <li>Just wipe away any discharge around the eye area</li>
+                    </ul>
+                </div>
+
+                <div class="info-block">
+                    <h3>💊 Daily Medical</h3>
+                    <ul>
+                        <li>Inhaler: 1 puff, 8-10 breaths, twice daily (morning & evening)</li>
+                        <li>25kg, 2 years old, male poodle</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="behavior">
+            <button class="section-header" aria-expanded="false" onclick="toggleSection('behavior-content')">
+                🐕 Behavior
+                <span>+</span>
+            </button>
+            <div class="section-content" id="behavior-content">
+                <div class="behavior-block">
+                    <h3>🚽 Toilet Habits</h3>
+                    <ul>
+                        <li><strong>Frequency:</strong> 2-4 poos per day (completely normal)</li>
+                        <li><strong>Signals:</strong> Licks your elbow and stares when needs toilet</li>
+                        <li>Generally good at holding it, but watch for his signals</li>
+                    </ul>
+                </div>
+
+                <div class="behavior-block">
+                    <h3>🎾 Social & Play Behavior</h3>
+                    <ul>
+                        <li><strong>Loves to play with anyone</strong> - very social and friendly</li>
+                        <li><strong>Never tells off other dogs</strong> - very gentle and non-aggressive</li>
+                        <li>Gets excited around female dogs, especially those in heat</li>
+                        <li>Good with other dogs off-lead but avoid on-lead greetings</li>
+                    </ul>
+                </div>
+
+                <div class="behavior-block">
+                    <h3>🧸 Excitement & Attention-Seeking</h3>
+                    <ul>
+                        <li><strong>Steals pillows when excited</strong> or wanting attention</li>
+                        <li><strong>Also steals clothing</strong> - keep clothes away as he'll swallow socks!</li>
+                        <li><strong>Gets very excited when you arrive home</strong> or first arrive</li>
+                        <li>If over-excited: put him in hallway until he calms down</li>
+                        <li>Use "Leave it" command when he's being too grabby</li>
+                    </ul>
+                </div>
+
+                <div class="warning-block">
+                    <h3>🍽️ CRITICAL: Eating & Exercise Rules</h3>
+                    <ul>
+                        <li><strong>ONLY feed AFTER walks</strong> - never before exercise</li>
+                        <li><strong>NO play for 40+ minutes after eating</strong> - prevents bloat</li>
+                        <li><strong>He might initiate play but should be settled</strong> - redirect to calm activities</li>
+                        <li><strong>Let him rest quietly after meals</strong> - very important!</li>
+                    </ul>
+                </div>
+
+                <div class="behavior-block">
+                    <h3>🍽️ Eating Habits</h3>
+                    <ul>
+                        <li><strong>Not super excited about meals</strong> - this is normal for him</li>
+                        <li><strong>May walk away and come back to finish</strong> - don't worry!</li>
+                        <li><strong>Cheese trick:</strong> Add a tiny bit of cheese to encourage eating</li>
+                        <li>Don't feed from the table - he'll become pushy</li>
+                    </ul>
+                </div>
+
+                <div class="command-block">
+                    <h3>🗣️ Key Commands</h3>
+                    <ul>
+                        <li><strong>"Leave it"</strong> - Most used! For anything, especially when over excited</li>
+                        <li><strong>"Drop it"</strong> - For chicken bones/street finds (he WILL drop it)</li>
+                        <li><strong>"Touch"</strong> - Extend arm down, he'll come boop your hand</li>
+                        <li><strong>"Sit" & "Down"</strong> - He knows these but will listen to you</li>
+                        <li><strong>"Search"</strong> - Use when scattering treats for calming</li>
+                        <li><strong>"Ready"</strong> - Emergency recall: say "ready", pull out tug toy, run in opposite direction</li>
+                    </ul>
+                </div>
+
+                <div class="info-block">
+                    <h3>🔍 His Signals to You</h3>
+                    <ul>
+                        <li><strong>Licks elbow + stares:</strong> Needs toilet OR wants cuddles</li>
+                        <li><strong>Barks at window/balcony:</strong> Say "thank you", close curtains if continues</li>
+                    </ul>
+                </div>
+
+                <div class="info-block">
+                    <h3>💡 General Personality</h3>
+                    <ul>
+                        <li>Generally well-behaved but can be <strong>cheeky and pushy</strong></li>
+                        <li>Takes his time with commands - say them ONCE and be patient</li>
+                        <li>Likes company and sleeping in the same room as you</li>
+                        <li>Enjoys being greeted with "good morning" when you wake up</li>
+                        <li>Can sleep in easily - no rush in the mornings</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="outdoor">
+            <button class="section-header" aria-expanded="false" onclick="toggleSection('outdoor-content')">
+                🌳 Outdoor
+                <span>+</span>
+            </button>
+            <div class="section-content" id="outdoor-content">
+                <div class="info-block">
+                    <h3>🚶‍♀️ Walking Basics</h3>
+                    <ul>
+                        <li>Use FRONT clip of harness</li>
+                        <li>No on-lead dog greetings - short lead and treats to pass other dogs</li>
+                        <li>Good recall off-lead, backup: say "ready" then pull out tug toy</li>
+                        <li><strong>AVOID using the ball</strong></li>
+                    </ul>
+                </div>
+
+                <div class="warning-block">
+                    <h3>⚠️ Off-Lead Precautions</h3>
+                    <ul>
+                        <li><strong>Keep away from dogs on lead</strong> - he licks female pee/dogs</li>
+                        <li><strong>No off-lead near roads</strong> - he chases squirrels intensely</li>
+                        <li>He won't run away but gets very focused on squirrels</li>
+                        <li>With ball: he'll return but hard to get ball from him</li>
+                    </ul>
+                </div>
+
+                <div class="info-block">
+                    <h3>🌱 Walking Notes</h3>
+                    <ul>
+                        <li><strong>Eats grass when thirsty</strong> - give him water</li>
+                        <li>His water bottle is in the cupboard, or there's a collapsible water bowl in his bag</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="indoor">
+            <button class="section-header" aria-expanded="false" onclick="toggleSection('indoor-content')">
+                🏠 Indoor
+                <span>+</span>
+            </button>
+            <div class="section-content" id="indoor-content">
+                <div class="warning-block">
+                    <h3>⚠️ Important Indoor Rules</h3>
+                    <ul>
+                        <li>Keep clothes away - he'll swallow socks!</li>
+                        <li>Don't feed from the table</li>
+                        <li>If over excited: put in hallway until he calms down</li>
+                    </ul>
+                </div>
+
+                <div class="info-block">
+                    <h3>Daily Indoor Care</h3>
+                    <ul>
+                        <li>Scatter/hide treats for enrichment</li>
+                        <li>For window barking: say "thank you", close curtains if needed</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="parks">
+            <button class="section-header" aria-expanded="false" onclick="toggleSection('parks-content')">
+                🏞️ Parks
+                <span>+</span>
+            </button>
+            <div class="section-content" id="parks-content">
+                <div class="info-block">
+                    <h3>🏞️ Local Parks</h3>
+                    <ul>
+                        <li><strong>Myatt's Fields Park:</strong> Main area better than Burgess Park</li>
+                        <li><strong>Myatt's Fields doggy park:</strong> Has reactive dogs - might not be usable</li>
+                        <li><strong>Kennington Park:</strong> Has a great, very big doggy park</li>
+                        <li>Some owners bring dogs in heat - watch for his behavior</li>
+                        <li>🍕 Great Neapolitan pizza place near Kennington Park!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSection(contentId) {
+            const content = document.getElementById(contentId);
+            const header = content.previousElementSibling;
+            const span = header.querySelector('span');
+
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                header.setAttribute('aria-expanded', 'false');
+                span.textContent = '+';
+            } else {
+                // Close all other sections
+                document.querySelectorAll('.section-content').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.querySelectorAll('.section-header').forEach(h => {
+                    h.setAttribute('aria-expanded', 'false');
+                });
+                document.querySelectorAll('.section-header span').forEach(s => {
+                    s.textContent = '+';
+                });
+
+                // Open clicked section
+                content.classList.add('active');
+                header.setAttribute('aria-expanded', 'true');
+                span.textContent = '−';
+            }
+        }
+
+        // Quick navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1) + '-content';
+                const target = document.getElementById(targetId);
+                if (target) {
+                    // Close all sections first
+                    document.querySelectorAll('.section-content').forEach(section => {
+                        section.classList.remove('active');
+                    });
+                    document.querySelectorAll('.section-header span').forEach(s => {
+                        s.textContent = '+';
+                    });
+                    
+                    // Open target section
+                    target.classList.add('active');
+                    target.previousElementSibling.querySelector('span').textContent = '−';
+                    
+                    // Scroll to section
+                    target.parentElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Open daily routine by default
+        document.getElementById('routine-content').classList.add('active');
+        const defaultHeader = document.querySelector('#daily-routine .section-header');
+        defaultHeader.querySelector('span').textContent = '−';
+        defaultHeader.setAttribute('aria-expanded', 'true');
+    </script>
+</body>
+</html>

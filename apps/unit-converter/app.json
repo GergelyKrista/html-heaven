@@ -1,0 +1,10 @@
+{
+  "title": "Unit Converter",
+  "slug": "unit-converter",
+  "description": "Convert between units of length, weight, temperature, and more.",
+  "author": "HTML Heaven",
+  "tags": ["utilities", "education"],
+  "dateAdded": "2026-04-13",
+  "thumbnail": "thumbnail.png",
+  "featured": false
+}
