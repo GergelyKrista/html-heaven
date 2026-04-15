@@ -2,19 +2,39 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import type { AppMeta } from "@/types";
 import { getFavorites } from "@/lib/favorites";
 import { AppCard } from "@/components/AppCard";
 
 export function FavoritesView({ allApps }: { allApps: AppMeta[] }) {
+  const { data: session } = useSession();
   const [favoriteApps, setFavoriteApps] = useState<AppMeta[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const slugs = getFavorites();
-    setFavoriteApps(allApps.filter((app) => slugs.includes(app.slug)));
-    setLoaded(true);
-  }, [allApps]);
+    if (session?.user) {
+      // Fetch from server
+      fetch("/api/favorites")
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.favorites) {
+            setFavoriteApps(allApps.filter((app) => data.favorites.includes(app.slug)));
+          }
+          setLoaded(true);
+        })
+        .catch(() => {
+          // Fallback to localStorage
+          const slugs = getFavorites();
+          setFavoriteApps(allApps.filter((app) => slugs.includes(app.slug)));
+          setLoaded(true);
+        });
+    } else {
+      const slugs = getFavorites();
+      setFavoriteApps(allApps.filter((app) => slugs.includes(app.slug)));
+      setLoaded(true);
+    }
+  }, [allApps, session]);
 
   if (!loaded) {
     return <div className="mt-8 text-[13px] text-muted">Loading...</div>;

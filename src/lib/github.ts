@@ -99,3 +99,29 @@ export async function createSubmissionPR(data: SubmissionData): Promise<string> 
 
   return pr.html_url;
 }
+
+export async function postCommentToPR(slug: string, comment: string, userName: string): Promise<void> {
+  const pat = process.env.GITHUB_PAT;
+  const owner = process.env.GITHUB_OWNER;
+  const repo = process.env.GITHUB_REPO;
+  if (!pat || !owner || !repo) return;
+
+  const octokit = new Octokit({ auth: pat });
+
+  // Search for the PR that added this app
+  const { data: searchResult } = await octokit.search.issuesAndPullRequests({
+    q: `repo:${owner}/${repo} "[New App]" "${slug}" is:pr`,
+    per_page: 1,
+  });
+
+  if (searchResult.total_count === 0) return;
+
+  const prNumber = searchResult.items[0].number;
+
+  await octokit.issues.createComment({
+    owner,
+    repo,
+    issue_number: prNumber,
+    body: `**Feedback from ${userName}:**\n\n${comment}\n\n---\n*Posted via [HTML Heaven](https://htmlheaven.com/app/${slug})*`,
+  });
+}
