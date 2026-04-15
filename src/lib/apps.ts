@@ -1,14 +1,10 @@
-import fs from "fs";
-import path from "path";
 import type { AppMeta } from "@/types";
 
-function loadManifest(): AppMeta[] {
-  const manifestPath = path.join(process.cwd(), "manifest.json");
-  const data = fs.readFileSync(manifestPath, "utf-8");
-  return JSON.parse(data);
-}
+// Import manifest statically — works on both Node.js and Cloudflare Workers.
+// The generate-manifest script creates this file at build time.
+import manifest from "@/generated/manifest.json";
 
-const apps: AppMeta[] = loadManifest();
+const apps: AppMeta[] = manifest as AppMeta[];
 
 export function getAllApps(): AppMeta[] {
   return apps;

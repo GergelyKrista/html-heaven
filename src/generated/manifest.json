@@ -1,0 +1,120 @@
+[
+  {
+    "title": "The Marble Dust Playbook",
+    "slug": "managing-up-playbook",
+    "description": "Historical wisdom for managing up — strategies and principles from history's greatest advisors.",
+    "author": "Gergely Krista",
+    "tags": [
+      "education"
+    ],
+    "dateAdded": "2026-04-15",
+    "thumbnail": "thumbnail.png",
+    "featured": true
+  },
+  {
+    "title": "Random Quote Generator",
+    "slug": "random-quote-generator",
+    "description": "Get inspired with random quotes from great thinkers, writers, and leaders.",
+    "author": "HTML Heaven",
+    "tags": [
+      "fun",
+      "education"
+    ],
+    "dateAdded": "2026-04-14",
+    "thumbnail": "thumbnail.png",
+    "featured": true
+  },
+  {
+    "title": "Unreal Engine 5 Cheatsheet",
+    "slug": "ue5-cheatsheet",
+    "description": "Comprehensive UE5 reference — shortcuts, editor basics, Blueprints, and more.",
+    "author": "Gergely Krista",
+    "tags": [
+      "education",
+      "tools"
+    ],
+    "dateAdded": "2026-04-13",
+    "thumbnail": "thumbnail.png",
+    "featured": true
+  },
+  {
+    "title": "Unit Converter",
+    "slug": "unit-converter",
+    "description": "Convert between units of length, weight, temperature, and more.",
+    "author": "HTML Heaven",
+    "tags": [
+      "utilities",
+      "education"
+    ],
+    "dateAdded": "2026-04-13",
+    "thumbnail": "thumbnail.png",
+    "featured": false
+  },
+  {
+    "title": "Pomodoro Timer",
+    "slug": "pomodoro-timer",
+    "description": "Stay focused with this clean pomodoro timer. Work 25 minutes, break 5.",
+    "author": "HTML Heaven",
+    "tags": [
+      "productivity",
+      "utilities"
+    ],
+    "dateAdded": "2026-04-12",
+    "thumbnail": "thumbnail.png",
+    "featured": true
+  },
+  {
+    "title": "Drawing Canvas",
+    "slug": "drawing-canvas",
+    "description": "A simple yet powerful drawing canvas. Pick colors, adjust brush size, and create art.",
+    "author": "HTML Heaven",
+    "tags": [
+      "creative",
+      "art",
+      "tools"
+    ],
+    "dateAdded": "2026-04-11",
+    "thumbnail": "thumbnail.png",
+    "featured": true
+  },
+  {
+    "title": "Color Palette Generator",
+    "slug": "color-palette-generator",
+    "description": "Generate beautiful color palettes with a click. Copy hex codes instantly.",
+    "author": "HTML Heaven",
+    "tags": [
+      "creative",
+      "tools",
+      "design"
+    ],
+    "dateAdded": "2026-04-10",
+    "thumbnail": "thumbnail.png",
+    "featured": true
+  },
+  {
+    "title": "Coding Cheat Sheet",
+    "slug": "coding-cheatsheet",
+    "description": "All-in-one coding reference with syntax highlighting for multiple languages.",
+    "author": "Gergely Krista",
+    "tags": [
+      "education",
+      "tools"
+    ],
+    "dateAdded": "2026-02-08",
+    "thumbnail": "thumbnail.png",
+    "featured": false
+  },
+  {
+    "title": "Iroh's Care Guide",
+    "slug": "iroh-care-guide",
+    "description": "A beautiful, detailed care guide for Iroh with daily routines, tips, and schedules.",
+    "author": "Gergely Krista",
+    "tags": [
+      "utilities",
+      "education"
+    ],
+    "dateAdded": "2026-01-29",
+    "thumbnail": "thumbnail.png",
+    "featured": true
+  }
+]

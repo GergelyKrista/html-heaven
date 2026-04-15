@@ -14,11 +14,15 @@ interface AppMeta {
 
 const appsDir = path.join(__dirname, "..", "apps");
 const publicAppsDir = path.join(__dirname, "..", "public", "apps");
-const manifestPath = path.join(__dirname, "..", "manifest.json");
+const generatedDir = path.join(__dirname, "..", "src", "generated");
+const manifestPath = path.join(generatedDir, "manifest.json");
 
-// Ensure public/apps directory exists
+// Ensure output directories exist
 if (!fs.existsSync(publicAppsDir)) {
   fs.mkdirSync(publicAppsDir, { recursive: true });
+}
+if (!fs.existsSync(generatedDir)) {
+  fs.mkdirSync(generatedDir, { recursive: true });
 }
 
 const entries = fs.readdirSync(appsDir, { withFileTypes: true });
