@@ -27,14 +27,14 @@ jobs:
       - name: Generate manifest
         run: npm run generate-manifest
 
-      - name: Build with next-on-pages
-        run: npx @cloudflare/next-on-pages
+      - name: Build
+        run: npx opennextjs-cloudflare build
         env:
           NODE_ENV: production
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .vercel/output/static --project-name=html-heaven
+          command: deploy
