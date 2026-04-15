@@ -27,8 +27,10 @@ jobs:
       - name: Generate manifest
         run: npm run generate-manifest
 
-      - name: Build
+      - name: Build with next-on-pages
         run: npx @cloudflare/next-on-pages
+        env:
+          NODE_ENV: production
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
