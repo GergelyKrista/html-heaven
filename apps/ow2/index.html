@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OW2 Counter Picker</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131a;
+      --border: #1e1e2a;
+      --text: #e8e8f0;
+      --text-dim: #6b6b80;
+      --accent: #f97316;
+      --accent-glow: #f9731640;
+      --tank: #2563eb;
+      --tank-bg: #2563eb18;
+      --dps: #dc2626;
+      --dps-bg: #dc262618;
+      --support: #16a34a;
+      --support-bg: #16a34a18;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    header { text-align: center; margin-bottom: 2.5rem; }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      background: linear-gradient(135deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle { color: var(--text-dim); margin-top: 0.4rem; font-size: 0.95rem; }
+
+    /* Role filter tabs */
+    .role-filters {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .role-tab {
+      padding: 0.45rem 1rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .role-tab:hover { border-color: #444; color: var(--text); }
+    .role-tab.active { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+    .role-tab[data-role="Tank"].active { border-color: var(--tank); color: var(--tank); background: var(--tank-bg); }
+    .role-tab[data-role="DPS"].active { border-color: var(--dps); color: var(--dps); background: var(--dps-bg); }
+    .role-tab[data-role="Support"].active { border-color: var(--support); color: var(--support); background: var(--support-bg); }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      margin-bottom: 0.75rem;
+    }
+
+    /* Hero grid */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-btn {
+      padding: 0.6rem 0.4rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      text-align: center;
+      line-height: 1.2;
+    }
+
+    .hero-btn:hover { border-color: #555; transform: translateY(-1px); }
+
+    .hero-btn.selected {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+      color: #fff;
+      box-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .hero-btn .role-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+
+    .hero-btn .role-dot.Tank { background: var(--tank); }
+    .hero-btn .role-dot.DPS { background: var(--dps); }
+    .hero-btn .role-dot.Support { background: var(--support); }
+    .hero-btn.hidden { display: none; }
+
+    /* Selected display */
+    .selected-display {
+      text-align: center;
+      margin-bottom: 1rem;
+      min-height: 2rem;
+    }
+
+    .selected-display span { font-size: 1rem; color: var(--text-dim); }
+    .selected-display .enemy-name { color: var(--accent); font-weight: 800; font-size: 1.2rem; }
+
+    /* Role lock */
+    .role-lock {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .role-lock-label { font-size: 0.85rem; color: var(--text-dim); font-weight: 600; }
+
+    .role-lock-btn {
+      padding: 0.4rem 0.9rem;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .role-lock-btn:hover { border-color: #444; color: var(--text); }
+    .role-lock-btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-glow); }
+
+    /* Counter button */
+    .counter-btn-wrap { text-align: center; margin-bottom: 2.5rem; }
+
+    .counter-btn {
+      padding: 0.85rem 2.5rem;
+      border-radius: 10px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), #ea580c);
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+    }
+
+    .counter-btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px var(--accent-glow);
+    }
+
+    .counter-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* Results */
+    .results { display: none; }
+    .results.visible { display: block; animation: fadeUp 0.4s ease; }
+
+    .roast-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      font-size: 1.05rem;
+      line-height: 1.5;
+      font-style: italic;
+      color: var(--text-dim);
+      border-left: 3px solid var(--accent);
+    }
+
+    .counter-cards { display: grid; gap: 1rem; }
+
+    .counter-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      animation: fadeUp 0.4s ease backwards;
+    }
+
+    .counter-card:nth-child(1) { animation-delay: 0.1s; }
+    .counter-card:nth-child(2) { animation-delay: 0.2s; }
+    .counter-card:nth-child(3) { animation-delay: 0.3s; }
+
+    .counter-card .rank {
+      font-size: 1.8rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      min-width: 2rem;
+    }
+
+    .counter-card .info { flex: 1; }
+    .counter-card .hero-name { font-size: 1.15rem; font-weight: 800; margin-bottom: 0.15rem; }
+
+    .counter-card .role-badge {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      margin-bottom: 0.5rem;
+    }
+
+    .role-badge.Tank { background: var(--tank-bg); color: var(--tank); border: 1px solid var(--tank); }
+    .role-badge.DPS { background: var(--dps-bg); color: var(--dps); border: 1px solid var(--dps); }
+    .role-badge.Support { background: var(--support-bg); color: var(--support); border: 1px solid var(--support); }
+
+    .counter-card .reason { color: var(--text-dim); font-size: 0.9rem; line-height: 1.4; }
+
+    .no-counters {
+      text-align: center;
+      color: var(--text-dim);
+      padding: 2rem;
+      font-style: italic;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #fff4;
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      .hero-grid { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); }
+      .counter-card { flex-direction: column; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>COUNTER PICKER</h1>
+      <p class="subtitle">Stop feeding. Start winning.</p>
+    </header>
+
+    <div class="role-filters">
+      <button class="role-tab active" data-role="All">All Heroes</button>
+      <button class="role-tab" data-role="Tank">Tank</button>
+      <button class="role-tab" data-role="DPS">DPS</button>
+      <button class="role-tab" data-role="Support">Support</button>
+    </div>
+
+    <p class="section-label">Who's destroying you?</p>
+    <div class="hero-grid" id="heroGrid"></div>
+
+    <div class="selected-display" id="selectedDisplay">
+      <span>Pick an enemy hero above</span>
+    </div>
+
+    <div class="role-lock">
+      <span class="role-lock-label">I only play:</span>
+      <button class="role-lock-btn active" data-lock="Any">Any</button>
+      <button class="role-lock-btn" data-lock="Tank">Tank</button>
+      <button class="role-lock-btn" data-lock="DPS">DPS</button>
+      <button class="role-lock-btn" data-lock="Support">Support</button>
+    </div>
+
+    <div class="counter-btn-wrap">
+      <button class="counter-btn" id="counterBtn" disabled>COUNTER ME</button>
+    </div>
+
+    <div class="results" id="results">
+      <div class="roast-card" id="roast"></div>
+      <div class="counter-cards" id="counterCards"></div>
+    </div>
+
+    <footer>Works offline &middot; No API needed &middot; Not affiliated with Blizzard</footer>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════
+    //  HERO LIST
+    // ═══════════════════════════════════════════════════
+    const HEROES = [
+      { name: "D.Va", role: "Tank" },
+      { name: "Doomfist", role: "Tank" },
+      { name: "Junker Queen", role: "Tank" },
+      { name: "Mauga", role: "Tank" },
+      { name: "Orisa", role: "Tank" },
+      { name: "Ramattra", role: "Tank" },
+      { name: "Reinhardt", role: "Tank" },
+      { name: "Roadhog", role: "Tank" },
+      { name: "Sigma", role: "Tank" },
+      { name: "Winston", role: "Tank" },
+      { name: "Wrecking Ball", role: "Tank" },
+      { name: "Zarya", role: "Tank" },
+      { name: "Hazard", role: "Tank" },
+      { name: "Ashe", role: "DPS" },
+      { name: "Bastion", role: "DPS" },
+      { name: "Cassidy", role: "DPS" },
+      { name: "Echo", role: "DPS" },
+      { name: "Genji", role: "DPS" },
+      { name: "Hanzo", role: "DPS" },
+      { name: "Junkrat", role: "DPS" },
+      { name: "Mei", role: "DPS" },
+      { name: "Pharah", role: "DPS" },
+      { name: "Reaper", role: "DPS" },
+      { name: "Sojourn", role: "DPS" },
+      { name: "Soldier: 76", role: "DPS" },
+      { name: "Sombra", role: "DPS" },
+      { name: "Symmetra", role: "DPS" },
+      { name: "Torbjorn", role: "DPS" },
+      { name: "Tracer", role: "DPS" },
+      { name: "Venture", role: "DPS" },
+      { name: "Widowmaker", role: "DPS" },
+      { name: "Ana", role: "Support" },
+      { name: "Baptiste", role: "Support" },
+      { name: "Brigitte", role: "Support" },
+      { name: "Illari", role: "Support" },
+      { name: "Juno", role: "Support" },
+      { name: "Kiriko", role: "Support" },
+      { name: "Lifeweaver", role: "Support" },
+      { name: "Lucio", role: "Support" },
+      { name: "Mercy", role: "Support" },
+      { name: "Moira", role: "Support" },
+      { name: "Zenyatta", role: "Support" },
+    ];
+
+    // ═══════════════════════════════════════════════════
+    //  COUNTER DATABASE — every hero's worst nightmares
+    // ═══════════════════════════════════════════════════
+    const COUNTERS = {
+      "D.Va": {
+        roast: "D.Va players think eating one ultimate makes them a pro. Congrats, you pressed one button and fed the rest of the fight.",
+        counters: [
+          { hero: "Zarya", role: "Tank", reason: "Her beam goes straight through Defense Matrix like it doesn't exist — because to Zarya, it doesn't." },
+          { hero: "Symmetra", role: "DPS", reason: "Turrets melt mech, beam ignores matrix, and she charges up for free on D.Va's massive hitbox." },
+          { hero: "Echo", role: "DPS", reason: "She's too fast to chase, stickies bypass matrix, and she can duplicate your own tank to ruin your day." },
+          { hero: "Sombra", role: "DPS", reason: "One hack and you're a walking mech with no boosters, no matrix — just a fat target." },
+          { hero: "Roadhog", role: "Tank", reason: "Hooks you out of mech like pulling a kid off a ride, then one-shots baby D.Va for dessert." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade your entire team through matrix, sleep you out of bomb, and you're too big to miss." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord makes your massive mech melt in seconds and you can't eat the orb." },
+        ]
+      },
+      "Doomfist": {
+        roast: "Doomfist players have two modes: feeding or typing 'my team sucks' in chat. There is no third option.",
+        counters: [
+          { hero: "Sombra", role: "DPS", reason: "One hack and Doomfist is just a large man standing in the open with a glove — zero abilities, zero hope." },
+          { hero: "Bastion", role: "DPS", reason: "You can't punch what melts you in 0.5 seconds — Bastion ends Doom's combos before they start." },
+          { hero: "Cassidy", role: "DPS", reason: "Magnetic grenade hinders him mid-slam and then you just shoot the giant floating hitbox." },
+          { hero: "Roadhog", role: "Tank", reason: "Hook interrupts every single ability Doom has and one-shot combo sends him back to spawn." },
+          { hero: "Ana", role: "Support", reason: "Sleep dart the giant man flying at you in a straight line — it's the easiest sleep in the game." },
+          { hero: "Brigitte", role: "Support", reason: "Shield bash interrupts his punch, whip shot boops him away, and rally armor keeps your team alive through his dives." },
+          { hero: "Kiriko", role: "Support", reason: "Suzu cleanses his slam slow and teleport means he can never finish a kill on your backline." },
+        ]
+      },
+      "Junker Queen": {
+        roast: "Junker Queen mains think they're playing a fighting game. You're holding M1 and pressing shift — calm down.",
+        counters: [
+          { hero: "Ana", role: "Support", reason: "Anti-nade deletes ALL of Junker Queen's healing — her entire kit is lifesteal, and you just turned it off." },
+          { hero: "Roadhog", role: "Tank", reason: "Out-sustains her in every brawl, hook pulls her out of her team, and she can't out-damage breather." },
+          { hero: "Widowmaker", role: "DPS", reason: "Junker Queen needs to be in your face to do anything — a Widow 50 meters away is her worst nightmare." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord orb makes the brawler melt before she can close the gap, and she's too big to miss volleys on." },
+          { hero: "Bastion", role: "DPS", reason: "Burns her down faster than her bleed can heal — raw DPS wins against lifesteal every time." },
+          { hero: "Sigma", role: "Tank", reason: "Accretion stuns her out of commanding shout, rock keeps her at range where she's useless." },
+        ]
+      },
+      "Mauga": {
+        roast: "Mauga players hold W and both mouse buttons and genuinely think they're outplaying you. Your hero plays itself.",
+        counters: [
+          { hero: "Ana", role: "Support", reason: "Anti-nade turns Mauga from an unkillable monster into the biggest ult battery in the game — zero lifesteal." },
+          { hero: "Bastion", role: "DPS", reason: "Out-damages Mauga's healing at every range and melts through cage like it's made of paper." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord on that enormous hitbox means your whole team deletes him before cardiac overdrive matters." },
+          { hero: "Roadhog", role: "Tank", reason: "Hook pulls him out of his team and he's too fat to dodge — breather outheals Mauga's damage up close." },
+          { hero: "Sombra", role: "DPS", reason: "Hack shuts off cardiac overdrive and overrun — suddenly he's just a guy with two guns and no plan." },
+          { hero: "Sigma", role: "Tank", reason: "Absorb his bullet spam for free shield, accretion him out of cage, and outplay him at every range." },
+        ]
+      },
+      "Orisa": {
+        roast: "Orisa players just stand there... menacingly. That's it. That's the entire hero.",
+        counters: [
+          { hero: "Bastion", role: "DPS", reason: "Melts through fortify and javelin spin like they're not even there — raw DPS is Orisa's kryptonite." },
+          { hero: "Junkrat", role: "DPS", reason: "Splash damage goes around her javelin spin, mines displace her, and she's too slow to avoid the spam." },
+          { hero: "Sigma", role: "Tank", reason: "Rock stuns through javelin spin, absorbs her projectiles, and outranges her at every angle." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade goes right through javelin spin timing and fortify without healing is just being slow with extra steps." },
+          { hero: "Symmetra", role: "DPS", reason: "Beam ramps up on Orisa's massive hitbox even through fortify — she literally charges you up." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord on the slow-moving javelin horse makes your whole team melt her through fortify." },
+        ]
+      },
+      "Ramattra": {
+        roast: "Ramattra mains swapped from Rein when they realized pressing E lets them become everyone else's problem with zero skill.",
+        counters: [
+          { hero: "Bastion", role: "DPS", reason: "Burns through nemesis form faster than Ramattra can sustain — you just melt the omnic." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade on nemesis form is devastating, sleep dart interrupts annihilation, and he's massive." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord in nemesis form means he takes insane damage and his huge hitbox eats every volley." },
+          { hero: "Reaper", role: "DPS", reason: "Close range shotguns absolutely shred both forms and wraith escapes the vortex." },
+          { hero: "Roadhog", role: "Tank", reason: "Hook drags him out of nemesis form, breather outheals his damage, and he can't block hook." },
+          { hero: "Sigma", role: "Tank", reason: "Absorbs his staff projectiles, rocks him out of nemesis, and plays the range game better." },
+        ]
+      },
+      "Reinhardt": {
+        roast: "Reinhardt players charge in solo, die, then blame their healers. Every. Single. Time.",
+        counters: [
+          { hero: "Bastion", role: "DPS", reason: "Eats that shield for breakfast in two seconds flat — Rein without shield is just a melee hero in a gun game." },
+          { hero: "Junkrat", role: "DPS", reason: "Spam goes around and over the shield, mines displace him, and trap catches every predictable charge." },
+          { hero: "Reaper", role: "DPS", reason: "Walks through shield, shotguns his face, and wraiths out — Rein can't touch you." },
+          { hero: "Ana", role: "Support", reason: "Sleep the charge for a free kill, anti-nade behind the shield, and he's the easiest sleep target in the game." },
+          { hero: "Sigma", role: "Tank", reason: "Accretion goes over the shield, hyperspheres bounce behind it, and you outrange him completely." },
+          { hero: "Lucio", role: "Support", reason: "Speed boost lets your whole team kite the slow rectangle man and boop him off every edge." },
+        ]
+      },
+      "Roadhog": {
+        roast: "Roadhog is the hero for people who want to cosplay a DPS but are too scared to leave the tank queue.",
+        counters: [
+          { hero: "Ana", role: "Support", reason: "Anti-nade on breather is a death sentence — suddenly the fat man can't heal and he's just feeding." },
+          { hero: "Reaper", role: "DPS", reason: "Close range lifesteal duel that Hog ALWAYS loses — you outheal, outdamage, and wraith his hook." },
+          { hero: "D.Va", role: "Tank", reason: "Eat the hook, eat the follow-up, fly in his face — Hog can't do anything against matrix." },
+          { hero: "Bastion", role: "DPS", reason: "Burns him down before breather matters and he's too fat to miss a single bullet." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord orb turns Roadhog into the biggest ult battery in Overwatch — your DPS will thank you." },
+          { hero: "Kiriko", role: "Support", reason: "Suzu cleanses hook combo on your teammates and kunai headshots melt his giant head hitbox." },
+        ]
+      },
+      "Sigma": {
+        roast: "Sigma players think they're galaxy brain but they're just spam-clicking M1 and hoping the geometry works out.",
+        counters: [
+          { hero: "Sombra", role: "DPS", reason: "Hack removes kinetic grasp, barrier, AND accretion — Sigma without abilities is just a floating man in sandals." },
+          { hero: "Reaper", role: "DPS", reason: "Walks right through grasp, shotguns his face, and wraiths the rock — close range is Sigma's hell." },
+          { hero: "Doomfist", role: "Tank", reason: "Punches through grasp, slams over barrier, and Sigma can't peel himself from a Doom combo." },
+          { hero: "Symmetra", role: "DPS", reason: "Beam goes through grasp, turrets ignore his barrier, and she ramps up for free on his hitbox." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade goes through when grasp is down, sleep interrupts gravitic flux, and he's an easy target." },
+          { hero: "Moira", role: "Support", reason: "Damage orb ignores grasp, her beam goes right through it, and fade dodges every rock." },
+        ]
+      },
+      "Winston": {
+        roast: "Winston players jump in, tickle everyone with their Tesla cannon, then panic-bubble and die anyway.",
+        counters: [
+          { hero: "Reaper", role: "DPS", reason: "Close range shotguns absolutely destroy Winston — he dives into you and just dies." },
+          { hero: "Bastion", role: "DPS", reason: "Melts the monkey before he can even finish his jump arc — winston evaporates." },
+          { hero: "Roadhog", role: "Tank", reason: "Hook the monkey out of his bubble and one-shot combo — Winston feeds Hog for free." },
+          { hero: "Ana", role: "Support", reason: "Sleep the giant leaping monkey (easiest sleep ever), anti-nade in bubble, and he just dies." },
+          { hero: "Brigitte", role: "Support", reason: "Shield bash interrupts his damage, armor counters his tickle gun, and whip shot yeets him away." },
+          { hero: "Moira", role: "Support", reason: "Fade escapes his dive, damage orb in his bubble hurts him, and she outsustains his tickle damage." },
+        ]
+      },
+      "Wrecking Ball": {
+        roast: "Wrecking Ball mains spend 90% of the game rolling around doing nothing and genuinely call it 'creating space.'",
+        counters: [
+          { hero: "Sombra", role: "DPS", reason: "Hack stops ALL movement abilities instantly — the hamster goes from wrecking ball to sitting duck." },
+          { hero: "Bastion", role: "DPS", reason: "Shreds ball form in seconds and he can't roll away fast enough from that kind of DPS." },
+          { hero: "Roadhog", role: "Tank", reason: "Hook the rolling hamster out of the air and he's too fat to miss — free picks all game." },
+          { hero: "Ana", role: "Support", reason: "Sleep dart the giant rolling hitbox, anti his adaptive shields, and he's the easiest target in the game." },
+          { hero: "Brigitte", role: "Support", reason: "Bash interrupts his roll, whip shot boops him away, and armor keeps your team alive through piledriver." },
+          { hero: "Mei", role: "DPS", reason: "Wall blocks his rollouts completely and slow makes the hamster a sitting target for your whole team." },
+        ]
+      },
+      "Zarya": {
+        roast: "Zarya players get to max charge once per game and act like they solo-carried. You have 14 deaths, sit down.",
+        counters: [
+          { hero: "Reaper", role: "DPS", reason: "Close range damage that she can't bubble fast enough — once bubbles are down, shotguns shred her." },
+          { hero: "Pharah", role: "DPS", reason: "Splash damage from the sky she can't beam down, and rocket spam forces bubbles on cooldown." },
+          { hero: "Echo", role: "DPS", reason: "Aerial damage completely avoids her beam range and stickies force panic bubbles." },
+          { hero: "D.Va", role: "Tank", reason: "Eat her right-click grenades, fly out of beam range, and she can't build charge off matrix." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade when bubbles are down is devastating and sleep stops her from capitalizing on high charge." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord when bubble is down melts her, and you can bait bubbles with charged volleys." },
+        ]
+      },
+      "Hazard": {
+        roast: "Hazard players picked the newest tank and still can't carry. At least learn the kit before you feed.",
+        counters: [
+          { hero: "Reaper", role: "DPS", reason: "Close range shotguns shred Hazard regardless of what abilities he throws out." },
+          { hero: "Bastion", role: "DPS", reason: "Raw DPS melts through everything Hazard has — he can't sustain against that kind of damage." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade shuts down his sustain completely and sleep dart is easy on his hitbox." },
+          { hero: "Sombra", role: "DPS", reason: "Hack removes all his mobility and utility, leaving him stranded with no escape." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord orb makes him paper-thin and he's too big to dodge charged volleys." },
+          { hero: "Roadhog", role: "Tank", reason: "Hook drags him out of position and one-shot combo ends the fight before it starts." },
+        ]
+      },
+      "Ashe": {
+        roast: "Ashe players are just Widowmaker mains who couldn't aim, so they gave themselves dynamite and a robot butler to do the work.",
+        counters: [
+          { hero: "Winston", role: "Tank", reason: "Jump on her, Tesla goes through B.O.B., and she has no escape once you're in her face." },
+          { hero: "D.Va", role: "Tank", reason: "Fly in her face, eat dynamite with matrix, and she can't coach gun away from boost." },
+          { hero: "Genji", role: "DPS", reason: "Deflect dynamite and coach gun, then dash through her — she can't deal with you up close." },
+          { hero: "Sombra", role: "DPS", reason: "Hack removes coach gun escape, then she's just an immobile sniper getting shot in the back." },
+          { hero: "Ana", role: "Support", reason: "Sleep dart the immobile scoping Ashe and anti-nade makes B.O.B. a useless hunk of metal." },
+          { hero: "Kiriko", role: "Support", reason: "Suzu cleanses dynamite burn from your team and teleport dodges every shot." },
+        ]
+      },
+      "Bastion": {
+        roast: "Bastion players really said 'I want zero mechanical skill and maximum toxicity' and Blizzard just... let them.",
+        counters: [
+          { hero: "Genji", role: "DPS", reason: "Deflect sends his own insane damage right back into his face — he literally kills himself." },
+          { hero: "Sombra", role: "DPS", reason: "Hack pulls him out of turret form and he's just a slow guy with a bad gun." },
+          { hero: "Widowmaker", role: "DPS", reason: "One headshot from outside his effective range and the turret is dead — he can't reposition fast enough." },
+          { hero: "D.Va", role: "Tank", reason: "Fly in his face, matrix his entire clip, and boost him into a wall — Bastion hates mobility." },
+          { hero: "Ana", role: "Support", reason: "Sleep the stationary turret (it's literally not moving) and anti-nade removes his self-heal." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord the turret and call the target — he melts in seconds from any focus fire." },
+        ]
+      },
+      "Cassidy": {
+        roast: "Cassidy mains fan-the-hammer at point blank and call it 'mechanical skill.' You're pressing one button, cowboy.",
+        counters: [
+          { hero: "Widowmaker", role: "DPS", reason: "Outranges him at every sightline — his revolver tickles at her range while she one-shots him." },
+          { hero: "Pharah", role: "DPS", reason: "Flying above his effective range and he can't fan-the-hammer the sky, no matter how hard he tries." },
+          { hero: "Echo", role: "DPS", reason: "Too mobile for his hitscan to track, stickies force his roll, and she can beam him down." },
+          { hero: "D.Va", role: "Tank", reason: "Dive him, eat his shots with matrix, and he can't magnetic grenade his way out of a mech in his face." },
+          { hero: "Ana", role: "Support", reason: "Sleep the cowboy mid-deadeye for the comedy gold and anti-nade his healing in duels." },
+          { hero: "Kiriko", role: "Support", reason: "Suzu cleanses magnetic grenade from teammates and kunai headshots two-tap him." },
+        ]
+      },
+      "Echo": {
+        roast: "Echo players hit one sticky volley from across the map and think they're the best player alive. Check your accuracy — it's 22%.",
+        counters: [
+          { hero: "Widowmaker", role: "DPS", reason: "Hitscan headshot deletes the flying target — Echo's air movement is predictable for a good Widow." },
+          { hero: "Soldier: 76", role: "DPS", reason: "Sustained hitscan pressure forces Echo out of the sky and she can't dodge a full tracking beam." },
+          { hero: "D.Va", role: "Tank", reason: "Chase her through the air, eat stickies with matrix, and she can't out-fly your boosters." },
+          { hero: "Cassidy", role: "DPS", reason: "Hitscan plus magnetic grenade grounds her — hinder makes her a floating pigeon." },
+          { hero: "Ana", role: "Support", reason: "Sleep dart the large flying hitbox and hitscan scoped shots chunk her from safety." },
+          { hero: "Baptiste", role: "Support", reason: "Hitscan tracks her in the air and lamp saves your team from her duplicate ultimate." },
+        ]
+      },
+      "Genji": {
+        roast: "Every Genji player thinks they're the anime protagonist of the match. You're 0-and-6 with blade — sit down, Naruto.",
+        counters: [
+          { hero: "Winston", role: "Tank", reason: "Tesla auto-aim ignores deflect completely and Genji can't dash away from a scientist on his head." },
+          { hero: "Symmetra", role: "DPS", reason: "Turrets can't be deflected, beam can't be deflected — Genji's entire kit is useless against her." },
+          { hero: "Moira", role: "Support", reason: "Auto-track beam ignores deflect, fade escapes dash, and damage orb chases him through walls." },
+          { hero: "Zarya", role: "Tank", reason: "Beam goes through deflect, bubble absorbs dash for free charge, and high energy melts him instantly." },
+          { hero: "Brigitte", role: "Support", reason: "Bash interrupts blade, whip shot boops him away, armor makes his shurikens tickle, and mace ignores deflect." },
+          { hero: "Torbjorn", role: "DPS", reason: "Turret can't be deflected, overload wins every duel, and Genji has to leave or die." },
+        ]
+      },
+      "Hanzo": {
+        roast: "Hanzo mains miss 19 arrows, land one random headshot, and type 'ez' in chat. The audacity.",
+        counters: [
+          { hero: "Winston", role: "Tank", reason: "Dive the sniper perch — Hanzo can't consistently headshot a monkey shocking him in the face." },
+          { hero: "D.Va", role: "Tank", reason: "Fly in his face and matrix — he can't storm arrow through Defense Matrix." },
+          { hero: "Genji", role: "DPS", reason: "Deflect sends his own arrows back and dash gap-closes before he can react." },
+          { hero: "Widowmaker", role: "DPS", reason: "Counter-snipe with hitscan — his arrows have travel time, your bullet doesn't." },
+          { hero: "Sombra", role: "DPS", reason: "Hack removes wall climb and storm arrow, then he's an immobile archer on the ground." },
+          { hero: "Ana", role: "Support", reason: "Sleep the sniper on his perch, he's standing still half the time anyway." },
+        ]
+      },
+      "Junkrat": {
+        roast: "Junkrat is the hero for people who think 'aim' is a suggestion, not a requirement.",
+        counters: [
+          { hero: "Pharah", role: "DPS", reason: "Airborne and completely immune to ground spam — Junkrat literally cannot hit you in the sky." },
+          { hero: "Echo", role: "DPS", reason: "Flying above his grenades and stickies kill him before he can spam enough to matter." },
+          { hero: "Widowmaker", role: "DPS", reason: "Snipe the spam rat from across the map — his grenades can't reach her sightlines." },
+          { hero: "D.Va", role: "Tank", reason: "Eat grenades with matrix, fly over his spam, and dive him — he can't handle mobility." },
+          { hero: "Ana", role: "Support", reason: "Sleep the predictable spam rat and anti-nade him when he's low — he has no sustain." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord the Junkrat and your hitscan deletes him — he's squishy with a huge hitbox." },
+        ]
+      },
+      "Mei": {
+        roast: "Mei mains have one joy in life and it's ruining everyone else's fun. Your teammates included — we've all been walled in.",
+        counters: [
+          { hero: "Pharah", role: "DPS", reason: "Fly above the ice — Mei can't freeze or wall what she can't reach, and rockets rain down." },
+          { hero: "Reaper", role: "DPS", reason: "Out-damages her up close, wraith through freeze, and she can't ice block if she's already dead." },
+          { hero: "Widowmaker", role: "DPS", reason: "Snipe the slow, predictable ice lady from range where her freeze is useless." },
+          { hero: "D.Va", role: "Tank", reason: "Boost out of freeze range, matrix her icicles, and she can't wall what's flying over her." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade when she ice-blocks to deny the heal, sleep when she comes out — timed perfectly." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord her fat hitbox and volley headshots chunk her before she gets in freeze range." },
+        ]
+      },
+      "Pharah": {
+        roast: "Pharah players in low ranks think they're untouchable. In any rank above Gold, you're basically a flying pigeon on a clay range.",
+        counters: [
+          { hero: "Widowmaker", role: "DPS", reason: "One hitscan headshot and the pharah is a falling corpse — she's the biggest target in the sky." },
+          { hero: "Soldier: 76", role: "DPS", reason: "Sustained hitscan auto-aim with visor makes Pharah's life hell — just hold M1 and look up." },
+          { hero: "Cassidy", role: "DPS", reason: "Hitscan revolver plus magnetic grenade grounds her — hinder in the air is a death sentence." },
+          { hero: "D.Va", role: "Tank", reason: "Fly up and contest her airspace, eat rockets with matrix — Pharah hates a mech in her face." },
+          { hero: "Ana", role: "Support", reason: "Hitscan scoped shots chunk her from the ground and sleep dart knocks her out of the sky." },
+          { hero: "Baptiste", role: "Support", reason: "Hitscan primary tracks her in the air, lamp saves team from barrage, and he can actually aim up." },
+        ]
+      },
+      "Reaper": {
+        roast: "Reaper mains walk through a teleporter, hold M1 in someone's face, and call it a 'flank.' That's not flanking, that's walking.",
+        counters: [
+          { hero: "Pharah", role: "DPS", reason: "Fly above shotgun range and rain rockets — Reaper can't shoot what's 30 meters in the air." },
+          { hero: "Widowmaker", role: "DPS", reason: "One headshot from across the map before he can close distance — shotguns don't reach snipers." },
+          { hero: "Ana", role: "Support", reason: "Sleep dart the flanking edgelord, anti-nade removes his lifesteal, and he just dies." },
+          { hero: "Brigitte", role: "Support", reason: "Bash interrupts his damage, whip shot creates distance, and armor makes his shotguns tickle." },
+          { hero: "D.Va", role: "Tank", reason: "Boost away from close range, matrix his shots, and contest him — he can't lifesteal off matrix." },
+          { hero: "Sigma", role: "Tank", reason: "Absorb his shotgun damage for free shields and rock him when he wraiths out — range wins." },
+        ]
+      },
+      "Sojourn": {
+        roast: "Sojourn players are just playing Soldier: 76 with a cheat code for one-shots. At least Widow has to scope.",
+        counters: [
+          { hero: "Winston", role: "Tank", reason: "Dive her — she can't railgun a monkey in her face and she has no close-range answer to Tesla." },
+          { hero: "D.Va", role: "Tank", reason: "Matrix eats the railgun and she's useless without her one-shot — boosters close the gap instantly." },
+          { hero: "Genji", role: "DPS", reason: "Deflect sends the railgun right back and dash closes distance before she can charge another." },
+          { hero: "Sombra", role: "DPS", reason: "Hack removes power slide escape and she's just an immobile hitscan with no mobility." },
+          { hero: "Ana", role: "Support", reason: "Sleep the grounded Sojourn and she can't slide away unconscious." },
+          { hero: "Kiriko", role: "Support", reason: "Suzu cleanses the railgun one-shot on your teammate and teleport dodges her tracking." },
+        ]
+      },
+      "Soldier: 76": {
+        roast: "Soldier: 76 is what you pick when you accidentally installed Overwatch instead of Call of Duty and refused to adapt.",
+        counters: [
+          { hero: "Widowmaker", role: "DPS", reason: "Outranges him at every sightline — his spread tickles at her range while she one-shots him." },
+          { hero: "Genji", role: "DPS", reason: "Deflect his entire clip back into his face and dash through him — Soldier can't handle mobility." },
+          { hero: "D.Va", role: "Tank", reason: "Fly in, matrix his entire damage output, and he's just running in circles with sprint." },
+          { hero: "Sombra", role: "DPS", reason: "Hack removes sprint, helix, AND biotic field — he's a sitting duck with a mediocre gun." },
+          { hero: "Ana", role: "Support", reason: "Sleep dart him off high ground, anti-nade his biotic field, and outrange his damage falloff." },
+          { hero: "Moira", role: "Support", reason: "Fade escapes his damage, orb outpaces his biotic field, and she outsustains him in every duel." },
+        ]
+      },
+      "Sombra": {
+        roast: "Sombra mains think going invisible and shooting someone in the back qualifies as skill. It absolutely doesn't.",
+        counters: [
+          { hero: "Torbjorn", role: "DPS", reason: "Turret auto-aims through stealth and reveals her — she can't hack what's already shooting her." },
+          { hero: "Brigitte", role: "Support", reason: "Armor prevents one-clips, bash interrupts hack, and inspire keeps healing through her damage." },
+          { hero: "Moira", role: "Support", reason: "Fade breaks hack, damage orb tracks her through stealth, and beam auto-aims the pest." },
+          { hero: "Winston", role: "Tank", reason: "Tesla auto-aim finds her even through translocate and she can't hack through 800HP of barrier." },
+          { hero: "Hanzo", role: "DPS", reason: "Sonic arrow reveals stealth and storm arrows shred her tiny HP pool before hack completes." },
+          { hero: "Zarya", role: "Tank", reason: "Bubble cleanses hack, beam tracks her out of stealth, and high charge melts her instantly." },
+        ]
+      },
+      "Symmetra": {
+        roast: "Symmetra players really said 'I don't want to aim' and committed to that lifestyle permanently.",
+        counters: [
+          { hero: "Pharah", role: "DPS", reason: "Fly above turrets and beam range — Symmetra can literally do nothing to a Pharah in the sky." },
+          { hero: "Widowmaker", role: "DPS", reason: "Snipe her before she ramps beam charge — her effective range is your dead zone." },
+          { hero: "Junkrat", role: "DPS", reason: "Splash damage destroys turret nests instantly and grenades outrange her beam." },
+          { hero: "Winston", role: "Tank", reason: "Tesla clears turrets in one second and barrier blocks beam long enough to kill her." },
+          { hero: "Ana", role: "Support", reason: "Sleep dart the beam user charging at you and outrange her completely." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord and volley headshots delete her before she can ramp beam to dangerous levels." },
+        ]
+      },
+      "Torbjorn": {
+        roast: "Torbjorn mains place a turret, press overload, and go AFK. That's not strategy, that's outsourcing your job.",
+        counters: [
+          { hero: "Pharah", role: "DPS", reason: "Splash damage kills the turret from outside its range and Torb is just a short man without it." },
+          { hero: "Widowmaker", role: "DPS", reason: "Snipe the turret from across the map, then snipe the dwarf — he can't do anything at your range." },
+          { hero: "Echo", role: "DPS", reason: "Fly above turret angle, sticky it from the air, and Torb has no anti-air answer." },
+          { hero: "D.Va", role: "Tank", reason: "Dive the turret, eat its shots with matrix, and contest Torb — he can't overload through a mech." },
+          { hero: "Sigma", role: "Tank", reason: "Absorb turret damage for free shields and hyperspheres splash the turret from safety." },
+          { hero: "Ana", role: "Support", reason: "Sleep the overloading dwarf and anti-nade makes his armor pack useless." },
+        ]
+      },
+      "Tracer": {
+        roast: "Tracer players blink around like a caffeinated housefly and recall out of every mistake. If only you could recall your SR.",
+        counters: [
+          { hero: "Brigitte", role: "Support", reason: "Armor pack absorbs her chip damage, bash interrupts her blinks, and whip shot one-taps her HP." },
+          { hero: "Torbjorn", role: "DPS", reason: "Turret auto-tracks her through blinks and overload makes her one-clip impossible." },
+          { hero: "Winston", role: "Tank", reason: "Auto-aim Tesla doesn't care about blinks and she can't one-clip 800HP." },
+          { hero: "Moira", role: "Support", reason: "Auto-track beam follows her through blinks, fade escapes pulse bomb, and orb chases her everywhere." },
+          { hero: "Roadhog", role: "Tank", reason: "Hook the blinking pest — one good read and she's instantly dead, no recall possible." },
+          { hero: "Mei", role: "DPS", reason: "Slow makes blinks useless, wall blocks her escapes, and freeze means she can't recall." },
+        ]
+      },
+      "Venture": {
+        roast: "Venture players drill into your team, do 40 damage, then burrow away acting like they did something meaningful.",
+        counters: [
+          { hero: "Zarya", role: "Tank", reason: "Beam tracks through drill and burrow exit — Venture can't escape a high-charge Zarya." },
+          { hero: "Brigitte", role: "Support", reason: "Bash interrupts drill, armor absorbs their burst, and whip shot punishes every surface." },
+          { hero: "Roadhog", role: "Tank", reason: "Hook them the instant they surface from burrow — they're a free kill every time they pop up." },
+          { hero: "Junkrat", role: "DPS", reason: "Trap catches the burrow exit point and they walk into grenades every time they surface." },
+          { hero: "Ana", role: "Support", reason: "Sleep dart on burrow exit is free and anti-nade means they can't sustain through your team." },
+          { hero: "Moira", role: "Support", reason: "Damage orb follows them through burrow and beam auto-tracks their chaotic movement." },
+        ]
+      },
+      "Widowmaker": {
+        roast: "Widowmaker mains have two states: carrying the game or AFK on a ledge missing every shot. There is zero in-between.",
+        counters: [
+          { hero: "Winston", role: "Tank", reason: "Jump on her perch and Tesla — she can't grapple away from a monkey already on her face." },
+          { hero: "D.Va", role: "Tank", reason: "Fly in her face and matrix — she literally cannot shoot through Defense Matrix." },
+          { hero: "Genji", role: "DPS", reason: "Deflect her shot back, dash to her perch, and she panics — Widow hates close range." },
+          { hero: "Sombra", role: "DPS", reason: "Hack removes grapple escape and she's just a scoped-in sitting duck for you to unload on." },
+          { hero: "Tracer", role: "DPS", reason: "Blink into her face from impossible angles — she can't scope on something that close." },
+          { hero: "Ana", role: "Support", reason: "Counter-snipe her from safety — you can sleep her if she's scoped and trade shots at range." },
+        ]
+      },
+      "Ana": {
+        roast: "Ana players hit one sleep dart per game, clip it, and post it online. The other 47 miss everything including the Roadhog.",
+        counters: [
+          { hero: "Winston", role: "Tank", reason: "Dive her — Ana has zero escape abilities and Tesla doesn't care about her tiny hitbox." },
+          { hero: "D.Va", role: "Tank", reason: "Fly in her face, eat her nade and sleep with matrix — she has nothing left." },
+          { hero: "Genji", role: "DPS", reason: "Deflect nade back, dash through her, and she can't sleep what's double-jumping above her." },
+          { hero: "Tracer", role: "DPS", reason: "Way too fast to sleep, blink through nade, and one-clip the immobile grandma." },
+          { hero: "Sombra", role: "DPS", reason: "Hack removes sleep, nade, AND nano — Ana without abilities is just a scoped sniper with no escape." },
+          { hero: "Lucio", role: "Support", reason: "Speed boost makes your team too fast to sleep or anti and boop peels her off your backline." },
+        ]
+      },
+      "Baptiste": {
+        roast: "Baptiste players throw down lamp and think they're playing 4D chess. Brother, you pressed one ability.",
+        counters: [
+          { hero: "Sombra", role: "DPS", reason: "Hack through lamp, disable exo boots, and he's just a guy standing next to a lamppost." },
+          { hero: "Sigma", role: "Tank", reason: "Eat lamp health with absorb, accretion stuns him in place, and rock ignores lamp." },
+          { hero: "D.Va", role: "Tank", reason: "Eat his shots, contest the lamp, and fly past it — matrix makes his damage disappear." },
+          { hero: "Widowmaker", role: "DPS", reason: "One headshot through lamp from range — he can't immortality field a sniper bullet to the skull." },
+          { hero: "Tracer", role: "DPS", reason: "Pulse bomb sticks through lamp, blinks past it, and she one-clips him while he's playing with his gadgets." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade the lamp cluster, sleep Baptiste out of window, and out-snipe his regen burst." },
+        ]
+      },
+      "Brigitte": {
+        roast: "Brigitte mains think holding shield and pressing bash constitutes mechanical skill. Your APM is literally two.",
+        counters: [
+          { hero: "Pharah", role: "DPS", reason: "Fly above her shield and bash range — Brigitte can literally do nothing to you in the sky." },
+          { hero: "Junkrat", role: "DPS", reason: "Spam grenades around that tiny shield, mine over it, and her 300HP barrier breaks in two hits." },
+          { hero: "Echo", role: "DPS", reason: "Airborne stickies and beam ignore her shield and she can't bash what's flying above her." },
+          { hero: "Reaper", role: "DPS", reason: "Close range shotguns eat that little shield for lunch and lifesteal outheals her repair packs." },
+          { hero: "Bastion", role: "DPS", reason: "Melts her shield in one second flat and then melts Brig right after." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade her rally, sleep through shield bash range, and outrange her completely." },
+        ]
+      },
+      "Illari": {
+        roast: "Illari players drop a pylon and then play DPS for the rest of the match. We see you. Your tank is dying.",
+        counters: [
+          { hero: "Winston", role: "Tank", reason: "Dive her, destroy pylon instantly with Tesla, and she has no escape from a monkey on her face." },
+          { hero: "Sombra", role: "DPS", reason: "Hack removes all her abilities and she's just a mediocre hitscan with no healing." },
+          { hero: "Tracer", role: "DPS", reason: "Blink past her beam, one-clip her, and she can't track a Tracer up close." },
+          { hero: "D.Va", role: "Tank", reason: "Contest her, eat her shots, and destroy pylon — she loses all her value." },
+          { hero: "Genji", role: "DPS", reason: "Deflect her primary fire back, dash through her pylon, and she can't hit you." },
+          { hero: "Ana", role: "Support", reason: "Sleep the DPS-playing support and anti-nade makes her pylon healing useless." },
+        ]
+      },
+      "Juno": {
+        roast: "Juno players are just Baptiste mains who wanted a glide. That's the entire reason for the hero swap.",
+        counters: [
+          { hero: "Winston", role: "Tank", reason: "Dive her out of the sky — she can't glide away from a monkey already on her." },
+          { hero: "Sombra", role: "DPS", reason: "Hack grounds her, removes hyper ring, and she's an immobile target." },
+          { hero: "Widowmaker", role: "DPS", reason: "Hitscan deletes the floating, predictable target from across the map." },
+          { hero: "D.Va", role: "Tank", reason: "Chase her through the air, eat her shots, and she can't out-fly boosters." },
+          { hero: "Ana", role: "Support", reason: "Sleep the gliding target — huge hitbox in the air — and anti-nade her team in orbital ray." },
+          { hero: "Cassidy", role: "DPS", reason: "Hitscan plus magnetic grenade makes her glide a death sentence — hinder in the air is brutal." },
+        ]
+      },
+      "Kiriko": {
+        roast: "Kiriko players teleport to you, miss every kunai, suzu themselves at full HP, and call it a clutch play.",
+        counters: [
+          { hero: "Winston", role: "Tank", reason: "Auto-aim ignores her tiny hitbox and she can't suzu AND teleport — one goes on cooldown and she's dead." },
+          { hero: "Sombra", role: "DPS", reason: "Hack prevents suzu and teleport — without those two buttons she's a DPS player with support health." },
+          { hero: "Zarya", role: "Tank", reason: "Beam tracks through suzu timing and high charge melts her before she can cleanse anything." },
+          { hero: "Moira", role: "Support", reason: "Auto-track beam ignores her movement, orb pressures through suzu, and fade dodges kunai." },
+          { hero: "Roadhog", role: "Tank", reason: "Bait the suzu with chip damage, then hook — she's dead without cleanse and the cooldown is long." },
+          { hero: "Mei", role: "DPS", reason: "Wall separates her from her teleport target and slow makes kunai headshots free." },
+        ]
+      },
+      "Lifeweaver": {
+        roast: "Lifeweaver mains are either trolling their team with pull or they're... no, they're definitely just trolling.",
+        counters: [
+          { hero: "Widowmaker", role: "DPS", reason: "Snipe the immobile flower man — he literally stands still to heal and his hitbox is massive." },
+          { hero: "Sombra", role: "DPS", reason: "Hack removes pull, dash, petal platform — everything. He's just a guy holding a flower." },
+          { hero: "Winston", role: "Tank", reason: "Dive him — zero escape once you're in his face and his damage tickles your barrier." },
+          { hero: "Tracer", role: "DPS", reason: "Too fast for his projectile healing to matter and one-clip deletes his massive hitbox." },
+          { hero: "Roadhog", role: "Tank", reason: "Hook the large hitbox, one-shot combo, and he can't pull himself out of that." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade his tree of life, sleep the sitting duck, and outrange everything he has." },
+        ]
+      },
+      "Lucio": {
+        roast: "Lucio players spend the whole game wall-riding across the map doing rollouts and trick shots. Your team has zero healing.",
+        counters: [
+          { hero: "Sombra", role: "DPS", reason: "Hack stops wall ride, speed boost, AND amp — Lucio without mobility is just a frog on the ground." },
+          { hero: "Brigitte", role: "Support", reason: "Bash interrupts his movement, whip shot catches him off walls, and she outbrawls him hard." },
+          { hero: "Mei", role: "DPS", reason: "Slow completely negates his speed aura and wall blocks his escape routes." },
+          { hero: "Winston", role: "Tank", reason: "Auto-aim tracks his speed and barrier blocks boops — he can't escape Tesla." },
+          { hero: "Moira", role: "Support", reason: "Orb chases him through walls, beam auto-tracks his speed, and she outheal-duels him." },
+          { hero: "Roadhog", role: "Tank", reason: "Hook him off the wall and one-shot — all that speed doesn't matter when you're stunned." },
+        ]
+      },
+      "Mercy": {
+        roast: "Mercy mains hold M1 on their duo and call themselves the backbone of the team. The beam auto-aims — don't flatter yourself.",
+        counters: [
+          { hero: "Widowmaker", role: "DPS", reason: "Snipe her out of guardian angel — she flies in predictable arcs and her hitbox is free." },
+          { hero: "Sombra", role: "DPS", reason: "Hack prevents fly, rez, AND valk — Mercy without abilities is walking around with a pistol." },
+          { hero: "Winston", role: "Tank", reason: "Dive her wherever she goes — she can fly but she can't fly away from a monkey." },
+          { hero: "Tracer", role: "DPS", reason: "Chase her through the backline and one-clip — she can't guardian angel to what's already dead." },
+          { hero: "D.Va", role: "Tank", reason: "Fly to her and contest — she has no self-defense against a mech in her face." },
+          { hero: "Ana", role: "Support", reason: "Anti-nade makes her healing beam literally useless and sleep stops rez for a free kill." },
+        ]
+      },
+      "Moira": {
+        roast: "Moira players hold right click, throw a damage orb into the enemy team, and have the audacity to type 'DPS diff.'",
+        counters: [
+          { hero: "Ana", role: "Support", reason: "Anti-nade cancels all her healing and Moira without sustain is just a purple beam that tickles." },
+          { hero: "Widowmaker", role: "DPS", reason: "Snipe her from range where her beam and orb are completely useless — she can't touch you." },
+          { hero: "Pharah", role: "DPS", reason: "Fly above her tiny beam range — Moira can do absolutely nothing to a Pharah in the sky." },
+          { hero: "Sigma", role: "Tank", reason: "Absorb damage orbs for free shield, rock her out of coalescence, and outrange her beam." },
+          { hero: "D.Va", role: "Tank", reason: "Matrix eats orbs, fly above her beam range, and she can't fade away from boost." },
+          { hero: "Zenyatta", role: "Support", reason: "Discord and volley headshots delete her before she can drain enough to sustain — range wins." },
+        ]
+      },
+      "Zenyatta": {
+        roast: "Zenyatta players flex gold damage as support while their tank dies without a harmony orb. Put. It. On. Your. Tank.",
+        counters: [
+          { hero: "Winston", role: "Tank", reason: "Dive the zero-mobility monk — Tesla doesn't care about his hitbox and he can't run." },
+          { hero: "Tracer", role: "DPS", reason: "One-clip the 200HP sitting duck with zero escape abilities — it's the freest kill in the game." },
+          { hero: "Genji", role: "DPS", reason: "Dash + right click combo instantly deletes Zen and he can't move away from you." },
+          { hero: "Sombra", role: "DPS", reason: "Hack the immobile monk and unload — no discord, no harmony, no ult, just vibes." },
+          { hero: "D.Va", role: "Tank", reason: "Fly in, eat his charged volleys, and he has no answer to a mech in his face." },
+          { hero: "Ana", role: "Support", reason: "Sleep the stationary monk, anti-nade him, and he's too slow to dodge anything you throw." },
+        ]
+      },
+    };
+
+    // ═══════════════════════════════════════════════════
+    //  APP STATE
+    // ═══════════════════════════════════════════════════
+    let selectedHero = null;
+    let roleFilter = "All";
+    let roleLock = "Any";
+
+    const grid = document.getElementById("heroGrid");
+    const counterBtn = document.getElementById("counterBtn");
+    const selectedDisplay = document.getElementById("selectedDisplay");
+    const resultsEl = document.getElementById("results");
+    const roastEl = document.getElementById("roast");
+    const cardsEl = document.getElementById("counterCards");
+
+    // ═══════════════════════════════════════════════════
+    //  BUILD HERO GRID
+    // ═══════════════════════════════════════════════════
+    function buildGrid() {
+      grid.innerHTML = "";
+      HEROES.forEach(function(h) {
+        var btn = document.createElement("button");
+        btn.className = "hero-btn";
+        btn.dataset.hero = h.name;
+        btn.dataset.role = h.role;
+        btn.innerHTML = '<span class="role-dot ' + h.role + '"></span>' + h.name;
+        btn.addEventListener("click", function() { selectHero(h.name); });
+        grid.appendChild(btn);
+      });
+      applyRoleFilter();
+    }
+
+    function selectHero(name) {
+      selectedHero = name;
+      document.querySelectorAll(".hero-btn").forEach(function(b) {
+        b.classList.toggle("selected", b.dataset.hero === name);
+      });
+      selectedDisplay.innerHTML = '<span>Countering <span class="enemy-name">' + esc(name) + '</span></span>';
+      counterBtn.disabled = false;
+      resultsEl.classList.remove("visible");
+    }
+
+    function applyRoleFilter() {
+      document.querySelectorAll(".hero-btn").forEach(function(b) {
+        b.classList.toggle("hidden", roleFilter !== "All" && b.dataset.role !== roleFilter);
+      });
+    }
+
+    // ═══════════════════════════════════════════════════
+    //  ROLE FILTER TABS (hero grid)
+    // ═══════════════════════════════════════════════════
+    document.querySelectorAll(".role-tab").forEach(function(tab) {
+      tab.addEventListener("click", function() {
+        document.querySelectorAll(".role-tab").forEach(function(t) { t.classList.remove("active"); });
+        tab.classList.add("active");
+        roleFilter = tab.dataset.role;
+        applyRoleFilter();
+      });
+    });
+
+    // ═══════════════════════════════════════════════════
+    //  ROLE LOCK BUTTONS (counter results)
+    // ═══════════════════════════════════════════════════
+    document.querySelectorAll(".role-lock-btn").forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        document.querySelectorAll(".role-lock-btn").forEach(function(b) { b.classList.remove("active"); });
+        btn.classList.add("active");
+        roleLock = btn.dataset.lock;
+      });
+    });
+
+    // ═══════════════════════════════════════════════════
+    //  COUNTER BUTTON
+    // ═══════════════════════════════════════════════════
+    counterBtn.addEventListener("click", function() {
+      if (!selectedHero || !COUNTERS[selectedHero]) return;
+
+      var data = COUNTERS[selectedHero];
+      var counters = data.counters;
+
+      // Filter by role lock
+      if (roleLock !== "Any") {
+        counters = counters.filter(function(c) { return c.role === roleLock; });
+      }
+
+      // Take top 3
+      counters = counters.slice(0, 3);
+
+      if (counters.length === 0) {
+        roastEl.textContent = "No " + roleLock + " counters found. Try a different role.";
+        cardsEl.innerHTML = "";
+        resultsEl.classList.add("visible");
+        return;
+      }
+
+      renderResults({ roast: data.roast, counters: counters });
+    });
+
+    // ═══════════════════════════════════════════════════
+    //  RENDER
+    // ═══════════════════════════════════════════════════
+    function renderResults(data) {
+      roastEl.textContent = '"' + data.roast + '"';
+      cardsEl.innerHTML = data.counters.map(function(c, i) {
+        return '<div class="counter-card">' +
+          '<div class="rank">#' + (i + 1) + '</div>' +
+          '<div class="info">' +
+            '<div class="hero-name">' + esc(c.hero) + '</div>' +
+            '<span class="role-badge ' + c.role + '">' + c.role + '</span>' +
+            '<div class="reason">' + esc(c.reason) + '</div>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+      resultsEl.classList.add("visible");
+      resultsEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    function esc(s) {
+      var d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    buildGrid();
+  </script>
+</body>
+</html>
