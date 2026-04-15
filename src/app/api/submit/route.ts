@@ -54,9 +54,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, prUrl });
   } catch (error) {
-    console.error("Submission error:", error);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("Submission error:", message);
     return NextResponse.json(
-      { error: "Failed to create submission. Please try again." },
+      { error: `Submission failed: ${message}` },
       { status: 500 }
     );
   }

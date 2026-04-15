@@ -57,7 +57,7 @@ export async function createSubmissionPR(data: SubmissionData): Promise<string> 
     repo,
     path: `apps/${data.slug}/index.html`,
     message: `Add app: ${data.metadata.title}`,
-    content: Buffer.from(data.htmlContent).toString("base64"),
+    content: btoa(unescape(encodeURIComponent(data.htmlContent))),
     branch: branchName,
   });
 
@@ -67,7 +67,7 @@ export async function createSubmissionPR(data: SubmissionData): Promise<string> 
     repo,
     path: `apps/${data.slug}/app.json`,
     message: `Add metadata for: ${data.metadata.title}`,
-    content: Buffer.from(appJson).toString("base64"),
+    content: btoa(unescape(encodeURIComponent(appJson))),
     branch: branchName,
   });
 
