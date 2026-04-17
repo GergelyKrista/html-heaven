@@ -17,6 +17,36 @@ const publicAppsDir = path.join(__dirname, "..", "public", "apps");
 const generatedDir = path.join(__dirname, "..", "src", "generated");
 const manifestPath = path.join(generatedDir, "manifest.json");
 
+// The "Back to HTML Heaven" badge injected into every app.
+// Uses a container with very high z-index and scoped selectors so it can't
+// conflict with the app's own styles.
+const BACK_BADGE = `
+<!-- Injected by HTML Heaven -->
+<div id="__hh-back-badge" style="all:initial;position:fixed;top:12px;left:12px;z-index:2147483647;font-family:system-ui,-apple-system,'Segoe UI',sans-serif">
+  <a href="https://htmlheaven.com/" target="_top" rel="noopener"
+     style="all:initial;display:inline-flex;align-items:center;gap:6px;padding:6px 12px 6px 10px;background:rgba(0,0,0,0.75);color:#fff;text-decoration:none;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 2px 10px rgba(0,0,0,0.3);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1"
+     onmouseover="this.style.background='rgba(0,0,0,0.9)'"
+     onmouseout="this.style.background='rgba(0,0,0,0.75)'"
+     title="Back to HTML Heaven">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block"><path d="M15 18l-6-6 6-6"/></svg>
+    <span style="all:initial;color:inherit;font:inherit">HTML Heaven</span>
+  </a>
+</div>
+<!-- /HTML Heaven -->
+`.trim();
+
+function injectBackBadge(html: string): string {
+  // Skip if already injected (defensive)
+  if (html.includes("__hh-back-badge")) return html;
+
+  // Try to insert right before </body>. Fallback: append to end.
+  const bodyCloseRegex = /<\/body\s*>/i;
+  if (bodyCloseRegex.test(html)) {
+    return html.replace(bodyCloseRegex, `${BACK_BADGE}\n</body>`);
+  }
+  return html + "\n" + BACK_BADGE;
+}
+
 // Ensure output directories exist
 if (!fs.existsSync(publicAppsDir)) {
   fs.mkdirSync(publicAppsDir, { recursive: true });
@@ -49,10 +79,17 @@ for (const entry of entries) {
   const appFiles = fs.readdirSync(path.join(appsDir, entry.name));
   for (const file of appFiles) {
     if (file === "app.json") continue;
-    fs.copyFileSync(
-      path.join(appsDir, entry.name, file),
-      path.join(destDir, file)
-    );
+
+    const srcPath = path.join(appsDir, entry.name, file);
+    const destPath = path.join(destDir, file);
+
+    // Inject back badge into HTML files; copy others as-is
+    if (file.endsWith(".html") || file.endsWith(".htm")) {
+      const content = fs.readFileSync(srcPath, "utf-8");
+      fs.writeFileSync(destPath, injectBackBadge(content));
+    } else {
+      fs.copyFileSync(srcPath, destPath);
+    }
   }
 }
 
@@ -61,4 +98,4 @@ apps.sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getT
 
 fs.writeFileSync(manifestPath, JSON.stringify(apps, null, 2));
 console.log(`Generated manifest.json with ${apps.length} apps`);
-console.log(`Copied app files to public/apps/`);
+console.log(`Copied app files to public/apps/ (with back badge injected)`);
