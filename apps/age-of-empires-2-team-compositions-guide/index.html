@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AoE2 Strategy Builder - War Room Edition</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Fira+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* User Requested Palette */
+            --aoe-gold: #E0C9A6;
+            --aoe-dark: #191919;
+            --aoe-surface: #262626;
+            --aoe-red: #B33951;
+            --aoe-blue: #145C9E;
+            --aoe-green: #667761;
+            --aoe-text: #E8E8E8;
+            
+            /* Bubble Colors */
+            --bubble-bonus: #618B25;
+            --bubble-unit: #00A9A5;
+            
+            /* Font Stacks */
+            --font-header: "Mrs Eaves Small Caps", "Mrs Eaves", "Cinzel", serif;
+            --font-body: "Bookmania", "Bookman Old Style", "Bookman", "Libre Baskerville", serif;
+            --font-data: "Scala Sans Offc", "Scala Sans", "Fira Sans", sans-serif;
+        }
+        body {
+            background-color: var(--aoe-dark);
+            color: var(--aoe-text);
+            font-family: var(--font-body);
+            background-image: url('https://www.transparenttextures.com/patterns/dark-leather.png');
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+        h1 { 
+            font-family: var(--font-header); 
+            color: var(--aoe-gold);
+            font-variant: small-caps;
+            letter-spacing: 0.05em;
+        }
+        h2, h3, h4 { 
+            font-family: var(--font-header); 
+            color: var(--aoe-gold);
+            font-variant: small-caps;
+            letter-spacing: 0.04em;
+        }
+        .medieval-card {
+            background-color: var(--aoe-surface);
+            border: 1px solid var(--aoe-gold);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            transition: transform 0.2s;
+        }
+        .btn-active { background: var(--aoe-gold) !important; color: #191919 !important; font-weight: bold; }
+        
+        .tag-bonus, .tag-unit, .build-display, .settings-label, .players-btn, .map-select, .dlc-badge {
+            font-family: var(--font-data);
+        }
+
+        /* Outlined Bubble Design */
+        .tag-bonus { 
+            background: rgba(97, 139, 37, 0.1); 
+            border: 1px solid var(--bubble-bonus); 
+            color: #C1D4A0; 
+            padding: 2px 12px; 
+            border-radius: 9999px;
+            font-size: 0.85rem;
+        }
+        .tag-unit { 
+            background: rgba(0, 169, 165, 0.1); 
+            border: 1px solid var(--bubble-unit); 
+            color: #A0D4D2; 
+            padding: 2px 12px; 
+            border-radius: 9999px;
+            font-size: 0.85rem;
+        }
+        
+        .briefing-box {
+            background: rgba(102, 119, 97, 0.08);
+            border: 1px dashed var(--aoe-green);
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
+        
+        select, button { font-family: var(--font-data); cursor: pointer; }
+
+        .text-aoe-red { color: var(--aoe-red); }
+        .text-aoe-blue { color: var(--aoe-blue); }
+        .border-aoe-red { border-color: var(--aoe-red) !important; border-left-width: 4px !important; }
+        .border-aoe-blue { border-color: var(--aoe-blue) !important; border-left-width: 4px !important; }
+        
+        /* Brightened Sidebar Headers */
+        .settings-label { color: #FFFFFF !important; font-weight: 700; opacity: 1; font-size: 0.95rem; }
+        
+        .dlc-badge { font-size: 0.75rem; }
+
+        /* Links styling */
+        .wiki-link {
+            text-decoration: none;
+            transition: opacity 0.2s, filter 0.2s;
+        }
+        .wiki-link:hover {
+            opacity: 0.8;
+            filter: brightness(1.2);
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+
+        const DATA = {
+            maps: [
+                { id: 'arabia', name: 'Arabia', category: 'land', description: 'Open Land. Standard meta focuses on early aggression and scouting.' },
+                { id: 'black-forest', name: 'Black Forest', category: 'closed', description: 'Extreme choke points. Massive forest wall requiring heavy siege to break.' },
+                { id: 'arena', name: 'Arena', category: 'closed', description: 'Closed Land. Heavily wall-dependent with a focus on Fast Castle and booming.' },
+                { id: 'amazon-tunnel', name: 'Amazon Tunnel', category: 'closed', description: 'Extreme choke points. Massive trade is vital to fuel endless siege wars.' },
+                { id: 'michi', name: 'Michi', category: 'closed', description: 'Forest Divide. A race to Imperial Age; cutting trees reveals the battlefield.' },
+                { id: 'hamburger', name: 'Hamburger', category: 'hybrid', description: 'Ringed forest. Control the center meat resources while maintaining map presence.' },
+                { id: 'baltic', name: 'Baltic', category: 'water', description: 'Central Lake. Complete naval dominance often decides the winner here.' },
+                { id: 'team-islands', name: 'Team Islands', category: 'water', description: 'Divided landmasses. Requires full naval focus and amphibious landing tactics.' },
+                { id: 'nomad', name: 'Nomad', category: 'hybrid', description: 'Chaotic Hybrid. Early water control and positioning are unpredictable.' },
+                { id: 'highlands', name: 'Highlands', category: 'hybrid', description: 'River Crossings. Hold the bridges or win the water to bypass them.' },
+                { id: 'lochness', name: 'Loch Ness', category: 'water', description: 'Deep central lake with high resource density on the shores.' },
+                { id: 'team-moats', name: 'Team Moats', category: 'water', description: 'Protected bases. The moat must be defended to prevent raids.' },
+                { id: 'yucatan', name: 'Yucatan', category: 'closed', description: 'Abundant high-value resources. Wall up early and transition to late game.' },
+                { id: 'valley', name: 'Valley', category: 'land', description: 'Central River Bed. Exposed resources encourage constant skirmishing.' },
+                { id: 'the-passage', name: 'The Passage', category: 'water', description: 'Narrow sea corridor between massive islands. Intense ship micro required.' },
+                { id: 'snake-forest', name: 'Snake Forest', category: 'closed', description: 'Dense forest winding. Cutting paths is a high-level strategy here.' },
+                { id: 'snakepit', name: 'Snakepit', category: 'closed', description: 'Walled bases with open central corridors. Trade is safe but frontline is hot.' }
+            ],
+            civs: [
+                { id: 'britons', name: 'Britons', roles: ['Flank'], categories: ['land', 'closed', 'hybrid'], teamBonus: 'Ranges work 20% faster.', uniqueUnit: 'Longbowman', build: 'archers', dlc: null, synergy: 'The Britons dominate through sheer range and archer production speed. Their Foot Archers gain massive range in Castle and Imperial ages, allowing them to out-duel almost any other ranged unit. Use them to pick off enemy villagers and siege from a safe distance behind your walls.' },
+                { id: 'mayans', name: 'Mayans', roles: ['Flank'], categories: ['land', 'closed', 'water'], teamBonus: 'Walls -50% cost.', uniqueUnit: 'Plumed Archer', build: 'archers', dlc: null, synergy: 'Mayans are the premier archer civilization due to their significantly lower archer costs. Their unique unit, the Plumed Archer, is fast and tanky, making it perfect for hit-and-run tactics. Their longer-lasting resources ensure a smooth transition into a massive late-game force.' },
+                { id: 'ethiopians', name: 'Ethiopians', roles: ['Flank'], categories: ['land', 'hybrid'], teamBonus: 'Towers/Outposts +3 LOS.', uniqueUnit: 'Shotel Warrior', build: 'archers', dlc: null, synergy: 'Ethiopians excel in early Feudal aggression with archers that fire faster than any others. They receive bonus gold and food upon aging up, which provides a massive power spike for early pressure. Their Shotel Warriors are incredibly fragile but can destroy a base in seconds if they find a gap in the walls.' },
+                { id: 'vietnamese', name: 'Vietnamese', roles: ['Flank'], categories: ['land', 'hybrid'], teamBonus: 'TC positions revealed.', uniqueUnit: 'Rattan Archer', build: 'archers', dlc: null, synergy: 'Vietnamese are designed to win archer wars with their high-HP archery range units. Their unique unit, the Rattan Archer, has immense pierce armor, making them effectively immune to enemy archer fire. Revealing enemy Town Centers at the start allows the team to plan raids with perfect precision.' },
+                { id: 'goths', name: 'Goths', roles: ['Flank'], categories: ['land', 'closed'], teamBonus: 'Barracks 20% faster.', uniqueUnit: 'Huskarl', build: 'archers', dlc: null, synergy: 'The Goths are the ultimate "flood" civilization, capable of producing infantry at an unmatched speed. Their Huskarls are specifically designed to ignore arrow fire, making them the perfect counter to archer-heavy teams. Once their economy is established, they can overwhelm any defense through pure numbers.' },
+                { id: 'aztecs', name: 'Aztecs', roles: ['Flank'], categories: ['land', 'closed'], teamBonus: 'Relics +33% Gold.', uniqueUnit: 'Jaguar Warrior', build: 'archers', dlc: null, synergy: 'Aztecs rely on powerful infantry and the best monks in the game to control the battlefield. They produce military units faster, allowing them to gain early map control and secure vital relics. Their high gold income from relics fuels a relentless stream of elite infantry in the late game.' },
+                { id: 'byzantines', name: 'Byzantines', roles: ['Flank', 'Naval Support'], categories: ['land', 'water', 'hybrid'], teamBonus: 'Monks heal 50% faster.', uniqueUnit: 'Cataphract', build: 'archers', dlc: null, synergy: 'The Byzantines are masters of defense and counter-play. Their trash units (Spearmen and Skirmishers) are significantly cheaper, allowing them to hold flanks against superior numbers. Their Cataphracts are specialized heavy cavalry that can shred through enemy infantry formations with ease.' },
+                { id: 'incas', name: 'Incas', roles: ['Flank'], categories: ['land', 'closed'], teamBonus: 'Farms built 100% faster.', uniqueUnit: 'Kamayuk', build: 'archers', dlc: null, synergy: 'Incas offer a unique "counter-everything" toolkit with their versatile infantry. Kamayuks have a ranged melee attack, allowing them to stack up and destroy cavalry from behind a frontline. Their free Llamas and cheaper stone buildings provide a very safe and consistent early game.' },
+                { id: 'franks', name: 'Franks', roles: ['Pocket'], categories: ['land', 'hybrid'], teamBonus: 'Knights +2 Vision.', uniqueUnit: 'Throwing Axeman', build: 'scouts', dlc: null, synergy: 'Franks are the definitive cavalry civilization, boasting the highest HP Knights in the game. Their free farm upgrades ensure a booming economy that can easily support constant stable production. They are the primary hammer of any team, diving into the enemy backline to protect their archer allies.' },
+                { id: 'mongols', name: 'Mongols', roles: ['Pocket', 'Sniper'], categories: ['land', 'closed', 'hybrid'], teamBonus: 'Scouts +2 Vision.', uniqueUnit: 'Mangudai', build: 'scouts', dlc: null, synergy: 'Mongols are famous for their lightning-fast up-times due to their hunting bonus. Their unique unit, the Mangudai, is widely considered the best unit in the game, capable of sniping siege and retreating before the enemy can react. They provide high mobility and high damage for the pocket role.' },
+                { id: 'persians', name: 'Persians', roles: ['Pocket'], categories: ['land', 'hybrid', 'closed'], teamBonus: 'Knights +2 vs Archers.', uniqueUnit: 'War Elephant', build: 'scouts', dlc: null, synergy: 'Persians have one of the strongest economic booms thanks to their faster-working Town Centers. Their Knights are specialized in hunting down enemy archers, providing vital protection for the team. In the extreme late game, their War Elephants act as an unstoppable juggernaut if trade is secure.' },
+                { id: 'magyars', name: 'Magyars', roles: ['Pocket'], categories: ['land', 'hybrid'], teamBonus: 'Ranges +2 Vision.', uniqueUnit: 'Magyar Huszar', build: 'scouts', dlc: null, synergy: 'Magyars are specialists in light cavalry and raiding. They receive free melee attack upgrades, making their scout rush the deadliest in the game. Their unique unit, the Magyar Huszar, costs no gold and is highly effective at destroying enemy siege engines.' },
+                { id: 'teutons', name: 'Teutons', roles: ['Pocket', 'Meatshield'], categories: ['land', 'closed'], teamBonus: 'Conversion resistance.', uniqueUnit: 'Teutonic Knight', build: 'scouts', dlc: null, synergy: 'Teutons provide the thickest frontline in the game with their high-armor melee units. Their Knights receive extra melee armor, making them incredibly difficult to kill in direct combat. Cheap farms and extra-capacity towers make them an economic and defensive powerhouse.' },
+                { id: 'huns', name: 'Huns', roles: ['Pocket'], categories: ['land', 'hybrid'], teamBonus: 'Stables 20% faster.', uniqueUnit: 'Tarkan', build: 'scouts', dlc: null, synergy: 'Huns are designed for relentless aggression without the need to manage housing. Their faster-working stables allow them to flood the field with cavalry faster than any other civ. Tarkans are specialized in destroying buildings, making them excellent for surprise base-wiping raids.' },
+                { id: 'spaniards', name: 'Spanish', roles: ['Pocket', 'Trade'], categories: ['land', 'closed', 'hybrid'], teamBonus: 'Trade units +25% gold.', uniqueUnit: 'Conquistador', build: 'fc', dlc: null, synergy: 'Spanish are the ultimate team-game backbone due to their massive trade gold bonus. Their Conquistadors are powerful mounted gunpowder units that can dominate the mid-game. They build structures faster, allowing for rapid defensive setups and forward castle pushes.' },
+                { id: 'berbers', name: 'Berbers', roles: ['Pocket'], categories: ['land', 'hybrid'], teamBonus: 'Genitour available.', uniqueUnit: 'Camel Archer', build: 'scouts', dlc: null, synergy: 'Berbers specialize in fast-moving camel and cavalry units that cost significantly less. Their unique Camel Archer is a high-speed counter to enemy horse archers. They provide the team with the Genitour, a mounted skirmisher that helps all allies deal with archer pressure.' },
+                { id: 'slavs', name: 'Slavs', roles: ['Pocket'], categories: ['land', 'closed'], teamBonus: 'Military bldgs +5 pop.', uniqueUnit: 'Boyar', build: 'scouts', dlc: null, synergy: 'Slavs are a powerhouse on land with a superior farming economy. Their unique unit, the Boyar, has immense melee armor, making them a nightmare for enemy knights to deal with. Their siege units are also cheaper, allowing for a deadly heavy-cavalry and siege combination.' },
+                { id: 'chinese', name: 'Chinese', roles: ['Flank', 'Pocket'], categories: ['land', 'hybrid', 'closed'], teamBonus: 'Farms +45 Food.', uniqueUnit: 'Chu Ko Nu', build: 'archers', dlc: null, synergy: 'Chinese start with more villagers, giving them a high-skill but high-reward economic lead. Their Chu Ko Nu unique unit fires multiple arrows, which is effective against both massed units and high-armor targets. They offer the cheapest technology upgrades in the game for the whole team.' },
+                { id: 'saracens', name: 'Saracens', roles: ['Siege', 'Flank'], categories: ['closed', 'land'], teamBonus: 'Archers +2 vs buildings.', uniqueUnit: 'Mameluke', build: 'archers', dlc: null, synergy: 'Saracens are masters of the market and heavy siege. Their unique unit, the Mameluke, is a camel that throws swords, effectively countering all other cavalry from a distance. Their Siege Onagers receive extra HP, making them the kings of forest-cutting maps like Michi.' },
+                { id: 'celts', name: 'Celts', roles: ['Siege Lead'], categories: ['closed', 'land'], teamBonus: 'Siege Workshops 20% faster.', uniqueUnit: 'Woad Raider', build: 'fc', dlc: null, synergy: 'Celts possess the fastest-firing siege in the game, allowing them to flatten enemy armies before they can close the gap. Their infantry moves faster, making their Woad Raiders excellent for raiding or protecting their vulnerable siege. They excel in any map where forest-cutting or choke-point defense is required.' },
+                { id: 'koreans', name: 'Koreans', roles: ['Flank', 'Siege'], categories: ['closed', 'water'], teamBonus: 'Mangonels -1 range min.', uniqueUnit: 'War Wagon', build: 'fc', dlc: null, synergy: 'Koreans are a premier defensive civilization with superior towers and siege range. Their unique War Wagons are essentially mobile tanks that can absorb incredible amounts of fire while dealing heavy damage. They provide excellent vision and long-range support for the entire team fleet or frontline.' },
+                { id: 'turks', name: 'Turks', roles: ['Flank', 'Gunpowder'], categories: ['closed', 'land'], teamBonus: 'Gunpowder created 25% faster.', uniqueUnit: 'Janissary', build: 'fc', dlc: null, synergy: 'Turks are the undisputed masters of gunpowder warfare. They receive free Chemistry, allowing them to field Hand Cannoneers and Bombard Cannons immediately upon reaching the Imperial Age. Their Janissaries have immense damage and range, making them perfect for Arena-style maps.' },
+                { id: 'vikings', name: 'Vikings', roles: ['Naval Lead'], categories: ['water', 'hybrid'], teamBonus: 'Docks -15% cost.', uniqueUnit: 'Longboat', build: 'archers', dlc: null, synergy: 'Vikings are the dominant force on the high seas with their cheaper ships and superior economy. Their unique Longboat fires multiple arrows, allowing it to win almost any one-on-one naval engagement. Their infantry is also incredibly tanky, making them excellent for mid-game amphibious landings.' },
+                { id: 'japanese', name: 'Japanese', roles: ['Naval Lead', 'Flank'], categories: ['water', 'hybrid'], teamBonus: 'Galleys +50% LOS.', uniqueUnit: 'Samurai', build: 'archers', dlc: null, synergy: 'Japanese boast the fastest-attacking infantry in the game, making them lethal in early-game shoreline combat. Their fishing ships are more efficient and have more HP, providing a massive economic boost on any map with water. Their Galleys have superior vision, allowing the team to spot enemy fleets early.' },
+                { id: 'portuguese', name: 'Portuguese', roles: ['Naval Support'], categories: ['water', 'hybrid', 'land'], teamBonus: 'All units -20% gold.', uniqueUnit: 'Caravel', build: 'fc', dlc: null, synergy: 'Portuguese units all cost less gold, which is vital for maintaining a massive navy or siege force. Their unique Caravel ship deals area-of-effect damage, making it the perfect escort for the team fleet. The Feitoria provides them with infinite resources if the map is completely stripped of gold and wood.' },
+                { id: 'italians', name: 'Italians', roles: ['Naval Support'], categories: ['water', 'hybrid'], teamBonus: 'Condottiero available.', uniqueUnit: 'Genoese Crossbow', build: 'archers', dlc: null, synergy: 'Italians excel at winning the race to the next age, as their advancement costs are significantly lower. Their unique Genoese Crossbowman is specialized in killing cavalry, providing the team with much-needed anti-knight support. They offer the Condottiero unit to all allies, which is a powerful infantry counter to gunpowder.' },
+                { id: 'malay', name: 'Malay', roles: ['Naval Lead', 'Flank'], categories: ['water', 'hybrid'], teamBonus: 'Docks -50% cost.', uniqueUnit: 'Karambit Warrior', build: 'archers', dlc: null, synergy: 'Malay can age up 66% faster than other civs, allowing them to establish water control before the enemy even has a dock. Their unique Karambit Warrior is extremely cheap and takes up half a population slot, allowing for massive, overwhelming swarms. Their harbors can fire arrows, making their shoreline nearly impossible to raid.' },
+                { id: 'bohemians', name: 'Bohemians', roles: ['Flank', 'Siege'], categories: ['closed', 'land'], teamBonus: 'Market work +80%.', uniqueUnit: 'Houfnice', build: 'fc', dlc: 'Dawn of the Dukes', synergy: 'Bohemians are a specialized gunpowder and monk civilization. Their unique Houfnice is an upgraded Bombard Cannon with massive splash damage that can evaporate armies. Their Hussite Wagons provide a mobile fortress that protects vulnerable archers and monks from enemy fire.' },
+                { id: 'burgundians', name: 'Burgundians', roles: ['Pocket'], categories: ['land', 'closed'], teamBonus: 'Relics generate Food.', uniqueUnit: 'Coustillier', build: 'fc', dlc: 'Lords of the West', synergy: 'Burgundians can research economic upgrades an age earlier, allowing them to out-boom almost any other civilization. Their Coustillier has a unique charge attack that can one-shot many units before they can strike back. They also receive food from relics, ensuring a constant flow of heavy cavalry.' },
+                { id: 'poles', name: 'Poles', roles: ['Pocket'], categories: ['land', 'closed'], teamBonus: 'Scouts +1 vs Archers.', uniqueUnit: 'Obuch', build: 'scouts', dlc: 'Dawn of the Dukes', synergy: 'Poles have a unique Folwark building that makes their farming economy incredibly explosive. Their unique unit, the Obuch, is an infantryman that shreds enemy armor with every hit, making them perfect for softening up targets for your team. Their Knights are cheaper, allowing for a relentless cavalry flood.' },
+                { id: 'hindustanis', name: 'Hindustanis', roles: ['Pocket'], categories: ['land', 'hybrid'], teamBonus: 'Camels +2 buildings.', uniqueUnit: 'Ghulam', build: 'scouts', dlc: 'Dynasties of India', synergy: 'Hindustanis possess an unmatched camel-focused military and a superior economy with cheaper villagers. Their unique unit, the Ghulam, is a fast infantryman designed specifically to hunt down enemy archers. They are the premier choice for countering cavalry-heavy teams while maintaining high mobility.' },
+                { id: 'georgians', name: 'Georgians', roles: ['Pocket'], categories: ['land', 'closed'], teamBonus: 'Mule Carts -50% cost.', uniqueUnit: 'Monaspa', build: 'scouts', dlc: 'Mountain Royals', synergy: 'Georgians utilize unique Mule Carts to create an extremely efficient and mobile resource gathering system. Their unique unit, the Monaspa, gains significant attack bonuses when grouped together in large numbers. Their structures are more resilient, making them excellent for holding contested areas.' },
+                { id: 'dravidians', name: 'Dravidians', roles: ['Naval Lead'], categories: ['water', 'hybrid'], teamBonus: 'Docks +5 Pop.', uniqueUnit: 'Urumi Swordsman', build: 'archers', dlc: 'Dynasties of India', synergy: 'Dravidians are a naval and infantry powerhouse with a massive wood bonus upon reaching each age. Their unique Urumi Swordsman has a charged attack that hits multiple units, making them devastating in close-quarters combat. They excel at maintaining a persistent naval presence with their population-boosting docks.' },
+                { id: 'armenians', name: 'Armenians', roles: ['Flank'], categories: ['closed', 'hybrid'], teamBonus: 'Infantry +2 LOS.', uniqueUnit: 'Composite Bowman', build: 'fc', dlc: 'Mountain Royals', synergy: 'Armenians feature a unique infantry-focused religious toolkit, with Warrior Priests capable of fighting and healing simultaneously. Their unique Composite Bowman ignores all enemy armor, making them a lethal threat to even the tankiest units. They are specialists at controlling the late-game through superior durability.' }
+            ],
+            buildOrders: [
+                { id: 'scouts', name: '19-Pop Scout Rush', steps: ['6 on Sheep', '3 Wood', '1 Boar', '3 Berries', '1 Boar', '2 Food', '2 Wood', 'Loom & Click Up'] },
+                { id: 'archers', name: '20-Pop Archer Rush', steps: ['6 on Sheep', '4 Wood', '1 Boar', '2 Berries', '1 Boar', '3 Food', '2 Wood', 'Loom & Click Up'] },
+                { id: 'fc', name: 'Fast Castle (Boom)', steps: ['6 Sheep', '4 Wood', '1 Boar', '4 Berries', '1 Boar', '5 Food', '2 Gold', 'Market/BS in Feudal'] }
+            ]
+        };
+
+        function BuildDisplay({ buildId }) {
+            const bo = DATA.buildOrders.find(b => b.id === buildId);
+            if (!bo) return null;
+            return (
+                <div className="mt-4 p-4 bg-black/40 border border-gold/20 rounded build-display">
+                    <p className="text-sm text-gold uppercase tracking-widest mb-2 font-bold flex justify-between">
+                        <span>Standard Build: {bo.name}</span>
+                    </p>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+                        {bo.steps.map((s, i) => (
+                            <div key={i} className="text-xs text-gray-400">
+                                <span className="text-gold font-bold">{i+1}.</span> {s}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function CivCard({ civ, roleTitle, isRed }) {
+            const getWikiUrl = (name) => `https://ageofempires.fandom.com/wiki/${name.replace(/\s+/g, '_')}_(Age_of_Empires_II)`;
+            const getUnitWikiUrl = (name) => `https://ageofempires.fandom.com/wiki/${name.replace(/\s+/g, '_')}`;
+
+            return (
+                <div className={`medieval-card p-5 rounded-lg border-l-4 animate-fadeIn ${isRed ? 'border-aoe-red' : 'border-aoe-blue'}`}>
+                    <div className="flex justify-between items-start mb-2">
+                        <div>
+                            <span className="text-sm uppercase text-gray-500 tracking-tighter">{roleTitle}</span>
+                            <h4 className="text-2xl font-bold">
+                                <a href={getWikiUrl(civ.name)} target="_blank" rel="noopener noreferrer" className={`wiki-link ${isRed ? 'text-aoe-red' : 'text-aoe-blue'}`}>
+                                    {civ.name}
+                                </a>
+                            </h4>
+                        </div>
+                        <div className="text-right">
+                            <span className={`text-[10px] px-2 py-0.5 rounded font-bold border dlc-badge ${civ.dlc ? 'bg-purple-900/20 border-purple-500/50 text-purple-200' : 'bg-green-900/10 border-aoe-green/30 text-green-200'}`}>
+                                {civ.dlc ? civ.dlc.toUpperCase() : 'BASE GAME'}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div className="flex flex-wrap gap-2 mb-4">
+                        <span className="tag-bonus text-sm">Bonus: {civ.teamBonus}</span>
+                        <a href={getUnitWikiUrl(civ.uniqueUnit)} target="_blank" rel="noopener noreferrer" className="tag-unit wiki-link text-sm">
+                            Unit: {civ.uniqueUnit}
+                        </a>
+                    </div>
+
+                    <p className="text-sm text-gray-300 italic mb-3 leading-relaxed border-l border-gold/20 pl-3">
+                        {civ.synergy}
+                    </p>
+
+                    <BuildDisplay buildId={civ.build} />
+                </div>
+            );
+        }
+
+        function App() {
+            const [selectedMap, setSelectedMap] = useState(DATA.maps[0]);
+            const [players, setPlayers] = useState(2);
+
+            const compositions = useMemo(() => {
+                const cat = selectedMap.category;
+                const basePool = DATA.civs.filter(c => !c.dlc && (c.categories.includes(cat) || c.categories.includes('land')));
+                const fullPool = DATA.civs.filter(c => c.categories.includes(cat) || c.categories.includes('land'));
+                
+                const shuffle = (arr) => [...arr].sort(() => 0.5 - Math.random());
+                
+                const isFlank = (c) => c.roles.some(r => ['Flank', 'Siege', 'Naval Lead'].includes(r));
+                const isPocket = (c) => c.roles.some(r => ['Pocket', 'Meatshield', 'Trade', 'Naval Support'].includes(r));
+
+                const shuffledBaseFlanks = shuffle(basePool.filter(isFlank));
+                const shuffledBasePockets = shuffle(basePool.filter(isPocket));
+
+                const getUniqueComp = (index) => {
+                    const fCount = Math.ceil(players/2);
+                    const pCount = Math.floor(players/2);
+                    return { 
+                        flanks: shuffledBaseFlanks.slice(index * fCount, (index + 1) * fCount), 
+                        pockets: shuffledBasePockets.slice(index * pCount, (index + 1) * pCount) 
+                    };
+                };
+
+                const comp1 = getUniqueComp(0);
+                const comp2 = getUniqueComp(1);
+                const comp3 = getUniqueComp(2);
+
+                const dlcFlanks = shuffle(fullPool.filter(isFlank));
+                const dlcPockets = shuffle(fullPool.filter(isPocket));
+
+                return [
+                    { name: "Composition 1: Classic Meta (Base)", ...comp1 },
+                    { name: "Composition 2: Aggressive Standard (Base)", ...comp2 },
+                    { name: "Composition 3: Defensive Stance (Base)", ...comp3 },
+                    { name: "Composition 4: DLC & Global Tactics", flanks: dlcFlanks.slice(0, Math.ceil(players/2)), pockets: dlcPockets.slice(0, Math.floor(players/2)) }
+                ].filter(c => c.flanks.length > 0);
+            }, [selectedMap, players]);
+
+            return (
+                <div className="max-w-[1400px] mx-auto p-4 md:p-10">
+                    <header className="text-center mb-12">
+                        <h1 className="text-5xl md:text-7xl mb-4 tracking-widest uppercase font-bold">AOE2 Strategist</h1>
+                        <div className="h-1 w-40 bg-gold mx-auto mb-4" style={{backgroundColor: 'var(--aoe-gold)'}}></div>
+                        <p className="text-gray-400 italic tracking-widest text-xl">"Definitive Edition - Meta 2026: Strategic War Room"</p>
+                    </header>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
+                        <div className="lg:col-span-1 space-y-6">
+                            <div className="medieval-card p-6 rounded-lg sticky top-8">
+                                <h3 className="text-2xl mb-6 border-b border-gold/30 pb-2 uppercase tracking-widest">War Room</h3>
+                                <div className="space-y-6">
+                                    <div>
+                                        <label className="text-xs uppercase font-bold block mb-2 settings-label">Map Selection</label>
+                                        <select 
+                                            className="w-full bg-black/60 border border-gold/40 p-3 rounded text-base text-gold focus:outline-none"
+                                            value={selectedMap.id}
+                                            onChange={(e) => setSelectedMap(DATA.maps.find(m => m.id === e.target.value))}
+                                        >
+                                            {[...DATA.maps].sort((a, b) => a.name.localeCompare(b.name)).map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-xs uppercase font-bold block mb-2 settings-label">Army Size</label>
+                                        <div className="flex gap-2">
+                                            {[2, 3, 4].map(n => (
+                                                <button key={n} onClick={() => setPlayers(n)} className={`flex-1 py-2 text-sm border border-gold/30 rounded transition players-btn ${players === n ? 'btn-active' : 'hover:bg-gold/10'}`}>
+                                                    {n}v{n}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className="p-4 bg-black/40 rounded border border-gold/10">
+                                        <h4 className="text-sm text-gold uppercase font-bold mb-2">Briefing</h4>
+                                        <p className="text-sm text-gray-400 leading-relaxed">{selectedMap.description}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="lg:col-span-3 space-y-16">
+                            {compositions.map((comp, idx) => (
+                                <div key={idx} className="space-y-8 animate-fadeIn">
+                                    <div className="flex items-center gap-6">
+                                        <h2 className="text-3xl uppercase tracking-tighter">{comp.name}</h2>
+                                        <div className="flex-1 h-px bg-gold/20"></div>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-6">
+                                            <h3 className="text-xl font-bold uppercase tracking-widest border-b pb-1 text-aoe-red border-aoe-red/30">⚔ Flank Role</h3>
+                                            {comp.flanks.map(c => <CivCard key={c.id} civ={c} roleTitle="Aggressor" isRed={true} />)}
+                                        </div>
+                                        <div className="space-y-6">
+                                            <h3 className="text-xl font-bold uppercase tracking-widest border-b pb-1 text-aoe-blue border-aoe-blue/30">🛡 Pocket Role</h3>
+                                            {comp.pockets.map(c => <CivCard key={c.id} civ={c} roleTitle="Economy" isRed={false} />)}
+                                        </div>
+                                    </div>
+                                    <div className="medieval-card p-6 briefing-box rounded-xl">
+                                        <h4 className="text-sm text-gold uppercase font-bold mb-3 flex items-center gap-2">
+                                            <span className="text-xl">📜</span> Detailed Strategic Synergy:
+                                        </h4>
+                                        <p className="text-sm text-gray-400 leading-relaxed">
+                                            In this composition, the <strong>{comp.flanks[0]?.name}</strong> act as the "Tip of the Spear," utilizing their early-game agility to harass enemy gold mines and wood lines. This buys critical time for the <strong>{comp.pockets[0]?.name}</strong> to execute a robust economic boom, leveraging the team bonus of <strong>"{comp.pockets[0]?.teamBonus}"</strong> to secure a massive resource advantage by the early Imperial Age. 
+                                            <br/><br/>
+                                            For new players, the core objective is <strong>Synchronization</strong>: the flank should mass <strong>{comp.flanks[0]?.uniqueUnit}s</strong> to pick off enemy spearmen and monks from a distance, while the pocket player provides a resilient meatshield of <strong>{comp.pockets[0]?.uniqueUnit}s</strong> or Heavy Cavalry to absorb enemy fire and collapse the opposing frontline. If the game drags into the late-game, the {comp.flanks[0]?.name} should switch into a support role, providing anti-cavalry or siege coverage to protect the pocket's dominant cavalry force.
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <footer className="mt-20 border-t border-gold/20 pt-8 text-center pb-12">
+                        <p className="text-sm text-gray-600 uppercase tracking-[0.2em] mb-2">
+                            Built for Age of Empires II: Definitive Edition &copy; 2026.
+                        </p>
+                        <p className="text-xs text-gold/40 italic">
+                            Created with the strategic assistance of Gemini.
+                        </p>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
