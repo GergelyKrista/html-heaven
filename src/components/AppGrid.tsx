@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { AppMeta } from "@/types";
 import { AppCard } from "./AppCard";
 import { SearchBar } from "./SearchBar";
 import { TagFilter } from "./TagFilter";
 import { CATEGORIES, isValidCategory, type CategoryId } from "@/lib/categories";
 
-type SortOption = "newest" | "alphabetical";
+type SortOption = "popular" | "newest" | "alphabetical";
 type ViewMode = "grid" | "grouped";
 
 // Work out which category an app belongs to. Prefers explicit first-tag match
@@ -23,6 +23,9 @@ function categorizeApp(app: AppMeta): CategoryId {
   if (lowerTags.some((t) => ["creative", "art", "drawing", "music", "design"].includes(t))) return "creative";
   if (lowerTags.some((t) => ["education", "learning", "language", "cheatsheet", "guide"].includes(t))) return "learning";
   if (lowerTags.some((t) => ["productivity", "timer", "pomodoro", "todo"].includes(t))) return "productivity";
+  if (lowerTags.some((t) => ["exercise", "workout", "fitness", "yoga", "cardio"].includes(t))) return "exercise";
+  if (lowerTags.some((t) => ["travel", "trip-planner", "phrasebook", "itinerary"].includes(t))) return "travel";
+  if (lowerTags.some((t) => ["ai-skill", "claude-skill", "anthropic", "prompt"].includes(t))) return "ai-skill";
   if (lowerTags.some((t) => ["fun", "humor", "random"].includes(t))) return "fun";
   return "other";
 }
@@ -31,8 +34,24 @@ export function AppGrid({ apps, allTags }: { apps: AppMeta[]; allTags: string[] 
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | "all">("all");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [sort, setSort] = useState<SortOption>("newest");
+  const [sort, setSort] = useState<SortOption>("popular");
   const [view, setView] = useState<ViewMode>("grid");
+  const [likeCounts, setLikeCounts] = useState<Record<string, number>>({});
+
+  // Fetch like counts once on mount — used for the "Most liked" sort
+  // and also shown on each AppCard.
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/api/likes/batch")
+      .then((r) => r.json())
+      .then((data: { counts?: Record<string, number> }) => {
+        if (!cancelled && data.counts) setLikeCounts(data.counts);
+      })
+      .catch(() => {
+        // Not critical — sort falls back to newest ordering
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   function toggleTag(tag: string) {
     setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
@@ -77,7 +96,15 @@ export function AppGrid({ apps, allTags }: { apps: AppMeta[]; allTags: string[] 
       );
     }
 
-    if (sort === "newest") {
+    if (sort === "popular") {
+      // Rank by likes. Ties broken by recency (newer first).
+      result = [...result].sort((a, b) => {
+        const la = likeCounts[a.slug] || 0;
+        const lb = likeCounts[b.slug] || 0;
+        if (lb !== la) return lb - la;
+        return new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime();
+      });
+    } else if (sort === "newest") {
       result = [...result].sort(
         (a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime()
       );
@@ -86,7 +113,7 @@ export function AppGrid({ apps, allTags }: { apps: AppMeta[]; allTags: string[] 
     }
 
     return result;
-  }, [appsWithCategory, search, selectedCategory, selectedTags, sort]);
+  }, [appsWithCategory, search, selectedCategory, selectedTags, sort, likeCounts]);
 
   // Tags available in the current category filter (so they don't clutter)
   const relevantTags = useMemo(() => {
@@ -128,6 +155,7 @@ export function AppGrid({ apps, allTags }: { apps: AppMeta[]; allTags: string[] 
           onChange={(e) => setSort(e.target.value as SortOption)}
           className="h-9 rounded-lg border border-border bg-surface px-3 text-[13px] text-foreground focus:border-border-light focus:outline-none"
         >
+          <option value="popular">Most liked</option>
           <option value="newest">Newest</option>
           <option value="alphabetical">A–Z</option>
         </select>
@@ -200,7 +228,7 @@ export function AppGrid({ apps, allTags }: { apps: AppMeta[]; allTags: string[] 
       ) : view === "grid" ? (
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((app) => (
-            <AppCard key={app.slug} app={app} />
+            <AppCard key={app.slug} app={app} likeCount={likeCounts[app.slug]} />
           ))}
         </div>
       ) : (
@@ -217,7 +245,7 @@ export function AppGrid({ apps, allTags }: { apps: AppMeta[]; allTags: string[] 
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {groupApps.map((app) => (
-                  <AppCard key={app.slug} app={app} />
+                  <AppCard key={app.slug} app={app} likeCount={likeCounts[app.slug]} />
                 ))}
               </div>
             </section>

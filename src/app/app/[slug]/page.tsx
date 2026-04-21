@@ -82,7 +82,7 @@ export default async function AppPage({
             <div className="flex flex-wrap gap-2">
               <FavoriteButton slug={app.slug} />
               <LikeButton slug={app.slug} />
-              <ShareButton />
+              <ShareButton title={app.title} />
             </div>
 
             <div className="border-t border-border/50 pt-4">
