@@ -1,11 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { createSubmissionPR } from "@/lib/github";
-
-const ALLOWED_TAGS = new Set([
-  "games", "creative", "art", "tools", "design",
-  "productivity", "utilities", "education", "fun",
-]);
+import { normalizeTag, isValidCategory, TAG_RULES } from "@/lib/categories";
 
 // Simple in-memory rate limit: 3 submissions per user per hour
 const rateLimitMap = new Map<string, number[]>();
@@ -44,21 +40,42 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const htmlFile = formData.get("html") as File | null;
-    const title = (formData.get("title") as string || "").trim();
-    const description = (formData.get("description") as string || "").trim();
+    const title = ((formData.get("title") as string) || "").trim();
+    const description = ((formData.get("description") as string) || "").trim();
+    const category = ((formData.get("category") as string) || "").trim();
 
-    // Parse tags safely
+    // Category is required and must be from the known list
+    if (!category || !isValidCategory(category)) {
+      return NextResponse.json(
+        { error: "A valid category is required." },
+        { status: 400 }
+      );
+    }
+
+    // Parse & sanitize tags. Custom tags are allowed as long as they
+    // pass normalization. Duplicates are removed.
     let tags: string[] = [];
     try {
-      const rawTags = JSON.parse(formData.get("tags") as string);
+      const rawTags = JSON.parse((formData.get("tags") as string) || "[]");
       if (Array.isArray(rawTags)) {
-        tags = rawTags.filter((t): t is string =>
-          typeof t === "string" && ALLOWED_TAGS.has(t)
-        );
+        const seen = new Set<string>();
+        for (const raw of rawTags) {
+          const n = normalizeTag(String(raw));
+          if (n && !seen.has(n)) {
+            seen.add(n);
+            tags.push(n);
+          }
+        }
       }
     } catch {
-      // Invalid tags JSON — continue with empty tags
+      // Malformed JSON → fall back to empty tags
     }
+
+    // Ensure category sits first in tags (removing any accidental dup)
+    tags = [category, ...tags.filter((t) => t !== category)].slice(
+      0,
+      TAG_RULES.maxCount + 1 // +1 for category itself
+    );
 
     if (!htmlFile || !title || !description) {
       return NextResponse.json(
@@ -111,7 +128,10 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true, prUrl });
   } catch (error) {
-    console.error("Submission error:", error instanceof Error ? error.message : error);
+    console.error(
+      "Submission error:",
+      error instanceof Error ? error.message : error
+    );
     return NextResponse.json(
       { error: "Submission failed. Please try again later." },
       { status: 500 }
