@@ -20,7 +20,7 @@ function getAccent(slug: string) {
   return cardAccents[Math.abs(hash) % cardAccents.length];
 }
 
-export function AppCard({ app }: { app: AppMeta }) {
+export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }) {
   const accent = getAccent(app.slug);
 
   return (
@@ -31,7 +31,7 @@ export function AppCard({ app }: { app: AppMeta }) {
       className="card-glow group flex flex-col rounded-xl border border-border/60 bg-surface transition-all duration-200 hover:bg-surface-2"
     >
       <div className="flex flex-1 flex-col p-4">
-        {/* Top row: accent dot + tags */}
+        {/* Top row: accent dot + tags + like count */}
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className={`h-2 w-2 rounded-full ${accent.dot}`} />
@@ -39,9 +39,17 @@ export function AppCard({ app }: { app: AppMeta }) {
               {app.tags[0]}
             </span>
           </div>
-          <span className="text-[11px] text-muted/60">
-            {app.author}
-          </span>
+          <div className="flex items-center gap-2">
+            {likeCount !== undefined && likeCount > 0 && (
+              <span className="flex items-center gap-0.5 text-[11px] font-medium text-muted" title={`${likeCount} like${likeCount === 1 ? "" : "s"}`}>
+                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                </svg>
+                {likeCount}
+              </span>
+            )}
+            <span className="text-[11px] text-muted/60">{app.author}</span>
+          </div>
         </div>
 
         {/* Title */}

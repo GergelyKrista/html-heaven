@@ -6,6 +6,9 @@ export const CATEGORIES = [
   { id: "creative", label: "Creative", icon: "🎨", description: "Art, drawing, generative, music" },
   { id: "learning", label: "Learning", icon: "📚", description: "Education, flashcards, guides, cheatsheets" },
   { id: "productivity", label: "Productivity", icon: "⏱️", description: "Timers, task managers, trackers" },
+  { id: "exercise", label: "Exercise", icon: "💪", description: "Workouts, fitness routines, stretching" },
+  { id: "travel", label: "Travel", icon: "✈️", description: "Trip planners, phrasebooks, itineraries" },
+  { id: "ai-skill", label: "AI Skill", icon: "🤖", description: "Context packs for AI tools — reference skills as HTML" },
   { id: "fun", label: "Fun", icon: "✨", description: "Toys, generators, just-for-fun" },
   { id: "other", label: "Other", icon: "📦", description: "Doesn't fit anywhere else" },
 ] as const;
@@ -20,6 +23,9 @@ export const SUGGESTED_TAGS: Record<CategoryId, string[]> = {
   creative: ["drawing", "art", "music", "animation", "design", "generative", "pixel-art", "palette"],
   learning: ["language", "coding", "math", "history", "science", "flashcards", "reference", "tutorial", "cheatsheet"],
   productivity: ["timer", "todo", "habits", "planner", "focus", "pomodoro", "notes", "tracker"],
+  exercise: ["workout", "fitness", "yoga", "cardio", "strength", "stretching", "hiit", "running", "cycling", "mobility"],
+  travel: ["trip-planner", "phrasebook", "itinerary", "currency", "packing-list", "guide", "language", "map"],
+  "ai-skill": ["claude-skill", "anthropic", "context", "prompt", "reference", "prompting", "system-prompt"],
   fun: ["humor", "meme", "random", "interactive", "experiment"],
   other: [],
 };
