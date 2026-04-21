@@ -143,3 +143,68 @@ export async function getUserCommentCount(db: D1Database, userId: string, sinceH
     .first<{ count: number }>();
   return result?.count ?? 0;
 }
+
+// Submissions — records who submitted each app, for ownership checks on delete.
+export async function recordSubmission(
+  db: D1Database,
+  slug: string,
+  userId: string,
+  userName: string
+) {
+  await db
+    .prepare(
+      `INSERT INTO submissions (app_slug, user_id, user_name) VALUES (?, ?, ?)
+       ON CONFLICT(app_slug) DO NOTHING`
+    )
+    .bind(slug, userId, userName)
+    .run();
+}
+
+export async function getSubmitter(db: D1Database, slug: string): Promise<string | null> {
+  const result = await db
+    .prepare("SELECT user_id FROM submissions WHERE app_slug = ?")
+    .bind(slug)
+    .first<{ user_id: string }>();
+  return result?.user_id ?? null;
+}
+
+// App deletions — this is a *transient* UI-hide flag that bridges the ~90s gap
+// between the delete PR merging and the Cloudflare redeploy. The source of truth
+// is the repo itself — once the file is gone from main and deployed, this row
+// becomes redundant (harmless).
+export async function markAppDeleted(
+  db: D1Database,
+  slug: string,
+  deletedBy: string,
+  reason?: string
+) {
+  await db
+    .prepare(
+      `INSERT INTO app_deletions (app_slug, deleted_by, reason) VALUES (?, ?, ?)
+       ON CONFLICT(app_slug) DO NOTHING`
+    )
+    .bind(slug, deletedBy, reason ?? null)
+    .run();
+}
+
+export async function getDeletedSlugs(db: D1Database): Promise<Set<string>> {
+  const result = await db
+    .prepare("SELECT app_slug FROM app_deletions")
+    .all<{ app_slug: string }>();
+  return new Set(result.results.map((r) => r.app_slug));
+}
+
+export async function isAppDeleted(db: D1Database, slug: string): Promise<boolean> {
+  const result = await db
+    .prepare("SELECT 1 FROM app_deletions WHERE app_slug = ?")
+    .bind(slug)
+    .first();
+  return !!result;
+}
+
+export async function unmarkAppDeleted(db: D1Database, slug: string) {
+  await db
+    .prepare("DELETE FROM app_deletions WHERE app_slug = ?")
+    .bind(slug)
+    .run();
+}

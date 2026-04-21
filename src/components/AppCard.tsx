@@ -1,6 +1,10 @@
+"use client";
+
 import type { AppMeta } from "@/types";
 import { FavoriteButton } from "./FavoriteButton";
 import { ShareButton } from "./ShareButton";
+import { DeleteAppMenu } from "./DeleteAppMenu";
+import { useOwnership } from "./OwnershipProvider";
 
 // Deterministic color based on slug — each app gets a unique accent
 const cardAccents = [
@@ -27,6 +31,8 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
   const appUrl = `/apps/${app.slug}/index.html`;
   // Absolute URL for sharing (works on both live site and prod)
   const shareUrl = `https://htmlheaven.com/apps/${app.slug}/index.html`;
+  const { canDelete } = useOwnership();
+  const showDelete = canDelete(app.slug);
 
   return (
     <div className="card-glow group relative flex flex-col rounded-xl border border-border/60 bg-surface transition-all duration-200 hover:bg-surface-2">
@@ -92,6 +98,7 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
           <div className="pointer-events-auto flex items-center gap-1.5">
             <FavoriteButton slug={app.slug} compact />
             <ShareButton title={app.title} url={shareUrl} compact />
+            {showDelete && <DeleteAppMenu slug={app.slug} title={app.title} compact />}
           </div>
         </div>
       </div>

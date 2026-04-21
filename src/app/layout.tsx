@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { SessionProvider } from "@/components/SessionProvider";
+import { OwnershipProvider } from "@/components/OwnershipProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,9 +34,11 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <SessionProvider>
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <OwnershipProvider>
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </OwnershipProvider>
         </SessionProvider>
       </body>
     </html>

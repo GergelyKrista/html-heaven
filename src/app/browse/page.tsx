@@ -6,9 +6,8 @@ export const metadata = {
   description: "Browse all HTML5 apps in the collection.",
 };
 
-export default function BrowsePage() {
-  const apps = getAllApps();
-  const tags = getAllTags();
+export default async function BrowsePage() {
+  const [apps, tags] = await Promise.all([getAllApps(), getAllTags()]);
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { createSubmissionPR } from "@/lib/github";
 import { normalizeTag, isValidCategory, TAG_RULES } from "@/lib/categories";
+import { getDB, recordSubmission } from "@/lib/db";
 
 // Simple in-memory rate limit: 3 submissions per user per hour
 const rateLimitMap = new Map<string, number[]>();
@@ -125,6 +126,20 @@ export async function POST(request: NextRequest) {
       submitterName: session.user.name || "Anonymous",
       submitterEmail: session.user.email || "",
     });
+
+    // Record the submission for ownership on delete. Best-effort:
+    // if this fails, the PR still exists — admin can still merge.
+    try {
+      const db = await getDB();
+      await recordSubmission(
+        db,
+        slug,
+        session.user.email || "unknown",
+        session.user.name || "Anonymous"
+      );
+    } catch (err) {
+      console.error("recordSubmission failed:", err);
+    }
 
     return NextResponse.json({ success: true, prUrl });
   } catch (error) {

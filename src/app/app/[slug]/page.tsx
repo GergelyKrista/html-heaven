@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAllApps, getAppBySlug } from "@/lib/apps";
+import { getAllAppsSync, getAppBySlug } from "@/lib/apps";
+import { auth, isAdminEmail } from "@/lib/auth";
+import { getDB, getSubmitter } from "@/lib/db";
+import { DeleteAppMenu } from "@/components/DeleteAppMenu";
 import { AppPlayer } from "@/components/AppPlayer";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { LikeButton } from "@/components/LikeButton";
@@ -8,7 +11,8 @@ import { ShareButton } from "@/components/ShareButton";
 import { CommentsSection } from "@/components/CommentsSection";
 
 export function generateStaticParams() {
-  return getAllApps().map((app) => ({ slug: app.slug }));
+  // Build-time: use all apps. Runtime filter still applies.
+  return getAllAppsSync().map((app) => ({ slug: app.slug }));
 }
 
 export async function generateMetadata({
@@ -17,7 +21,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const app = getAppBySlug(slug);
+  const app = await getAppBySlug(slug);
   if (!app) return { title: "Not Found — HTML Heaven" };
   return {
     title: `${app.title} — HTML Heaven`,
@@ -31,8 +35,23 @@ export default async function AppPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const app = getAppBySlug(slug);
+  const app = await getAppBySlug(slug);
   if (!app) notFound();
+
+  // Determine if the current viewer can delete this app
+  const session = await auth();
+  const viewerEmail = session?.user?.email || null;
+  const isAdmin = isAdminEmail(viewerEmail);
+  let canDelete = isAdmin;
+  if (!canDelete && viewerEmail) {
+    try {
+      const db = await getDB();
+      const submitter = await getSubmitter(db, slug);
+      canDelete = !!submitter && submitter.toLowerCase() === viewerEmail.toLowerCase();
+    } catch {
+      canDelete = false;
+    }
+  }
 
   const dateStr = new Date(app.dateAdded).toLocaleDateString("en-US", {
     year: "numeric",
@@ -83,6 +102,7 @@ export default async function AppPage({
               <FavoriteButton slug={app.slug} />
               <LikeButton slug={app.slug} />
               <ShareButton title={app.title} />
+              {canDelete && <DeleteAppMenu slug={app.slug} title={app.title} />}
             </div>
 
             <div className="border-t border-border/50 pt-4">
