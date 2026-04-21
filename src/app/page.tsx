@@ -3,9 +3,8 @@ import { getAllApps, getFeaturedApps } from "@/lib/apps";
 import { AppCarousel } from "@/components/AppCarousel";
 import { AppCard } from "@/components/AppCard";
 
-export default function HomePage() {
-  const featured = getFeaturedApps();
-  const allApps = getAllApps();
+export default async function HomePage() {
+  const [featured, allApps] = await Promise.all([getFeaturedApps(), getAllApps()]);
   const appCount = allApps.length;
 
   return (

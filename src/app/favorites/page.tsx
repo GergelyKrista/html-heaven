@@ -6,8 +6,8 @@ export const metadata = {
   description: "Your saved HTML5 apps.",
 };
 
-export default function FavoritesPage() {
-  const allApps = getAllApps();
+export default async function FavoritesPage() {
+  const allApps = await getAllApps();
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
