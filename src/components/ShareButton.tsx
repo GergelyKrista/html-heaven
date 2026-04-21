@@ -4,6 +4,10 @@ import { useState, useEffect, useRef } from "react";
 
 interface Props {
   title?: string;
+  /** Override the URL to share. Defaults to `window.location.href`. */
+  url?: string;
+  /** Compact icon-only version for app cards. */
+  compact?: boolean;
 }
 
 // Compose a sensible default share text.
@@ -73,7 +77,7 @@ const providers = [
   },
 ];
 
-export function ShareButton({ title = "" }: Props) {
+export function ShareButton({ title = "", url: urlProp, compact = false }: Props) {
   const [open, setOpen] = useState(false);
   const [toast, setToast] = useState<string>("");
   const ref = useRef<HTMLDivElement>(null);
@@ -101,7 +105,7 @@ export function ShareButton({ title = "" }: Props) {
   }
 
   function handleProvider(id: string) {
-    const url = typeof window !== "undefined" ? window.location.href : "";
+    const url = urlProp || (typeof window !== "undefined" ? window.location.href : "");
 
     if (id === "copy") {
       navigator.clipboard.writeText(url).catch(() => {});
@@ -126,14 +130,18 @@ export function ShareButton({ title = "" }: Props) {
   }
 
   // Use native share sheet on mobile if available — tap the button directly shares
-  async function handlePrimaryClick() {
+  async function handlePrimaryClick(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = urlProp || (typeof window !== "undefined" ? window.location.href : "");
+
     // On touch devices with native share, prefer it
     if (typeof navigator !== "undefined" && "share" in navigator && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
       try {
         await (navigator as Navigator & { share: (d: ShareData) => Promise<void> }).share({
           title: title || "HTML Heaven",
           text: shareText(title),
-          url: window.location.href,
+          url,
         });
         return;
       } catch {
@@ -143,17 +151,36 @@ export function ShareButton({ title = "" }: Props) {
     setOpen((v) => !v);
   }
 
+  function handleProviderClick(e: React.MouseEvent, id: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    handleProvider(id);
+  }
+
   return (
     <div ref={ref} className="relative inline-block">
-      <button
-        onClick={handlePrimaryClick}
-        className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-surface px-3 text-[12px] font-medium text-muted transition-all hover:text-foreground"
-      >
-        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.065a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364l1.757 1.757" />
-        </svg>
-        Share
-      </button>
+      {compact ? (
+        <button
+          onClick={handlePrimaryClick}
+          title="Share this app"
+          aria-label="Share this app"
+          className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface text-muted transition-all hover:border-primary/30 hover:text-primary-light"
+        >
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.065a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364l1.757 1.757" />
+          </svg>
+        </button>
+      ) : (
+        <button
+          onClick={handlePrimaryClick}
+          className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-surface px-3 text-[12px] font-medium text-muted transition-all hover:text-foreground"
+        >
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-2.065a4.5 4.5 0 00-1.242-7.244l-4.5-4.5a4.5 4.5 0 00-6.364 6.364l1.757 1.757" />
+          </svg>
+          Share
+        </button>
+      )}
 
       {open && (
         <div
@@ -168,7 +195,7 @@ export function ShareButton({ title = "" }: Props) {
               <button
                 key={p.id}
                 role="menuitem"
-                onClick={() => handleProvider(p.id)}
+                onClick={(e) => handleProviderClick(e, p.id)}
                 className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left transition-colors hover:bg-surface-2"
               >
                 <span className="flex h-7 w-7 items-center justify-center rounded-md bg-surface-3 text-muted-light">
