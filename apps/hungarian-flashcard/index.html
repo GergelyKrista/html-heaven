@@ -1,0 +1,2830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magyar — Learn Hungarian</title>
+<style>
+:root {
+  --bg: #faf7f2;
+  --bg-soft: #f3efe7;
+  --card-bg: #ffffff;
+  --primary: #2d6a4f;
+  --primary-light: #40916c;
+  --primary-soft: #e8f1ec;
+  --accent: #d4a373;
+  --accent-light: #e9c89b;
+  --text: #2b2b2b;
+  --text-light: #6b6b6b;
+  --text-faint: #9a9a9a;
+  --danger: #c1121f;
+  --success: #2d6a4f;
+  --warn: #d97706;
+  --info: #3b82f6;
+  --border: #e0dcd5;
+  --shadow: 0 4px 24px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+[data-theme="dark"] {
+  --bg: #151511;
+  --bg-soft: #1e1e1a;
+  --card-bg: #22221d;
+  --primary: #52b788;
+  --primary-light: #74c69d;
+  --primary-soft: #1e3829;
+  --accent: #e9b87a;
+  --accent-light: #c49563;
+  --text: #e8e4d8;
+  --text-light: #a4a093;
+  --text-faint: #6b6b6b;
+  --border: #35352d;
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.5);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* ── Header ── */
+header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: white;
+  padding: 16px 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.header-left { display: flex; flex-direction: column; gap: 2px; }
+header h1 { font-size: 1.5em; font-weight: 700; letter-spacing: 0.5px; }
+header p { font-size: 0.78em; opacity: 0.85; }
+
+.header-stats {
+  display: flex;
+  gap: 16px;
+  font-size: 0.85em;
+}
+
+.header-stat {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.15);
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.header-stat .val { font-variant-numeric: tabular-nums; }
+
+.theme-toggle {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: white;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1em;
+  transition: background 0.15s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.28); }
+
+/* ── Navigation ── */
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 10px 12px;
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  overflow-x: auto;
+}
+
+nav button {
+  padding: 9px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+
+nav button:hover { border-color: var(--primary); color: var(--primary); }
+nav button.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* ── Main ── */
+main {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 20px 16px 100px;
+}
+
+.section { display: none; animation: fadeIn 0.3s ease; }
+.section.active { display: block; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* ── Study mode tabs ── */
+.mode-tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-soft);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+.mode-tabs button {
+  flex: 1;
+  min-width: 70px;
+  padding: 8px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.78em;
+  font-weight: 600;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.mode-tabs button.active {
+  background: var(--card-bg);
+  color: var(--primary);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+.mode-tabs button:hover:not(.active) { color: var(--text); }
+
+/* ── Flashcard ── */
+.card-container { perspective: 1000px; margin: 16px auto; max-width: 460px; }
+.flashcard {
+  width: 100%;
+  aspect-ratio: 3/2;
+  position: relative;
+  cursor: pointer;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+.flashcard.flipped { transform: rotateY(180deg); }
+.flashcard .front, .flashcard .back {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backface-visibility: hidden;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.flashcard .front {
+  background: linear-gradient(145deg, var(--card-bg), var(--bg-soft));
+  border: 2px solid var(--border);
+}
+.flashcard .back {
+  background: linear-gradient(145deg, var(--primary), var(--primary-light));
+  color: white;
+  transform: rotateY(180deg);
+}
+.card-word { font-size: 2em; font-weight: 700; text-align: center; line-height: 1.3; }
+.card-category { font-size: 0.7em; opacity: 0.6; margin-top: 12px; text-transform: uppercase; letter-spacing: 1.5px; }
+.card-hint { font-size: 0.78em; opacity: 0.55; margin-top: 14px; font-style: italic; }
+
+.speak-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: rgba(255,255,255,0.3);
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.15s;
+  backdrop-filter: blur(4px);
+}
+.flashcard .back .speak-btn {
+  background: rgba(255,255,255,0.2);
+  border-color: rgba(255,255,255,0.3);
+  color: white;
+}
+.speak-btn:hover { transform: scale(1.08); background: rgba(255,255,255,0.5); }
+
+.card-example {
+  font-size: 0.85em;
+  margin-top: 14px;
+  padding: 8px 12px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 8px;
+  font-style: italic;
+  max-width: 90%;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* ── Card controls ── */
+.card-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.card-controls button {
+  padding: 11px 22px;
+  border: none;
+  border-radius: 50px;
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.btn-again { background: var(--danger); color: white; }
+.btn-hard { background: var(--warn); color: white; }
+.btn-good { background: var(--info); color: white; }
+.btn-easy { background: var(--success); color: white; }
+.btn-again:hover, .btn-hard:hover, .btn-good:hover, .btn-easy:hover { transform: translateY(-1px); filter: brightness(1.1); }
+.btn-flip { background: var(--accent); color: white; }
+.btn-secondary { background: var(--border); color: var(--text); }
+
+.interval-hint {
+  font-size: 0.7em;
+  opacity: 0.85;
+  display: block;
+  margin-top: 2px;
+  font-weight: 400;
+}
+
+.card-progress {
+  text-align: center;
+  margin-top: 14px;
+  color: var(--text-light);
+  font-size: 0.85em;
+}
+
+.keyboard-hint {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 0.72em;
+  color: var(--text-faint);
+}
+
+/* ── Category Filter ── */
+.category-filter {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.category-filter button {
+  padding: 5px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.75em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.category-filter button.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.level-filter {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+.level-filter button {
+  padding: 4px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  background: var(--card-bg);
+  font-size: 0.72em;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 1px;
+}
+.level-filter button.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+/* ── Typing mode ── */
+.typing-container {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  max-width: 480px;
+  margin: 16px auto;
+}
+
+.typing-prompt-label {
+  font-size: 0.75em;
+  color: var(--text-light);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.typing-prompt {
+  font-size: 2em;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+.typing-input {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 1.1em;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-soft);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.typing-input:focus { border-color: var(--primary); }
+.typing-input.correct { border-color: var(--success); background: var(--primary-soft); }
+.typing-input.wrong { border-color: var(--danger); }
+
+.typing-feedback {
+  margin-top: 14px;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 0.9em;
+  font-weight: 600;
+  min-height: 42px;
+}
+.typing-feedback.correct { background: var(--primary-soft); color: var(--success); }
+.typing-feedback.wrong { background: #fde8e8; color: var(--danger); }
+
+/* ── Matching mode ── */
+.matching-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  max-width: 520px;
+  margin: 16px auto;
+}
+.matching-card {
+  padding: 14px 10px;
+  background: var(--card-bg);
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9em;
+  transition: all 0.15s;
+  min-height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.matching-card:hover { border-color: var(--primary); transform: scale(1.02); }
+.matching-card.selected { border-color: var(--accent); background: var(--accent-light); color: var(--text); }
+.matching-card.matched { border-color: var(--success); background: var(--primary-soft); color: var(--success); cursor: default; opacity: 0.6; }
+.matching-card.wrong-flash { border-color: var(--danger); background: #fde8e8; animation: shake 0.3s; }
+@keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+/* ── Quiz ── */
+.quiz-question {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  margin: 16px auto;
+  max-width: 520px;
+}
+.quiz-word {
+  font-size: 2em;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 6px;
+}
+.quiz-direction { font-size: 0.78em; color: var(--text-light); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+.quiz-options { display: grid; gap: 8px; }
+.quiz-option {
+  padding: 13px 18px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: left;
+  font-weight: 500;
+}
+.quiz-option:hover { border-color: var(--primary); background: var(--primary-soft); }
+.quiz-option.correct { border-color: var(--success); background: var(--primary-soft); color: var(--success); }
+.quiz-option.wrong { border-color: var(--danger); background: #fde8e8; color: var(--danger); }
+
+.quiz-score {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 30px 24px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  margin: 16px auto;
+  max-width: 440px;
+}
+.quiz-score h2 { font-size: 1.3em; margin-bottom: 10px; }
+.score-number { font-size: 3em; font-weight: 700; color: var(--primary); }
+
+/* ── Progress ── */
+.progress-overview {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.progress-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.progress-card .number { font-size: 1.7em; font-weight: 700; color: var(--primary); }
+.progress-card .label { font-size: 0.68em; color: var(--text-light); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+.progress-bar-outer {
+  background: var(--border);
+  border-radius: 50px;
+  height: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.progress-bar-inner {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  border-radius: 50px;
+  transition: width 0.5s ease;
+}
+
+.streak-display {
+  display: flex;
+  gap: 12px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  margin-bottom: 18px;
+  align-items: center;
+}
+.streak-num {
+  font-size: 2.2em;
+  font-weight: 700;
+  color: var(--accent);
+}
+.streak-info { flex: 1; }
+.streak-label { font-weight: 700; font-size: 0.95em; }
+.streak-sub { font-size: 0.8em; color: var(--text-light); margin-top: 2px; }
+
+.heatmap {
+  display: grid;
+  grid-template-columns: repeat(30, 1fr);
+  gap: 2px;
+  margin-top: 10px;
+}
+.heatmap-day {
+  aspect-ratio: 1;
+  background: var(--border);
+  border-radius: 2px;
+}
+.heatmap-day.h1 { background: #b6dac2; }
+.heatmap-day.h2 { background: #74c69d; }
+.heatmap-day.h3 { background: #40916c; }
+.heatmap-day.h4 { background: #2d6a4f; }
+
+.word-list { display: flex; flex-direction: column; gap: 5px; }
+.word-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card-bg);
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.88em;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  gap: 8px;
+}
+.word-item .hu { font-weight: 600; flex: 0 0 auto; }
+.word-item .en { color: var(--text-light); flex: 1; }
+.word-item .level-tag {
+  font-size: 0.62em;
+  padding: 2px 6px;
+  border-radius: 50px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: var(--bg-soft);
+  color: var(--text-light);
+}
+.mastery-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.mastery-0 { background: var(--border); }
+.mastery-1 { background: var(--danger); }
+.mastery-2 { background: var(--warn); }
+.mastery-3 { background: var(--accent); }
+.mastery-4 { background: var(--primary-light); }
+.mastery-5 { background: var(--success); }
+
+/* ── Manage ── */
+.manage-form {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+.manage-form h2 { font-size: 1.05em; margin-bottom: 14px; color: var(--primary); }
+
+.form-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.form-row input, .form-row select {
+  flex: 1;
+  min-width: 120px;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.9em;
+  background: var(--card-bg);
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-row input:focus, .form-row select:focus { border-color: var(--primary); }
+
+.btn-add {
+  padding: 9px 20px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+.btn-add:hover { background: var(--primary-light); }
+
+.manage-list { display: flex; flex-direction: column; gap: 5px; }
+.manage-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card-bg);
+  padding: 9px 14px;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  gap: 8px;
+  font-size: 0.88em;
+}
+.manage-item .words { flex: 1; }
+.manage-item .cat-label {
+  font-size: 0.7em;
+  background: var(--accent-light);
+  color: #8b6914;
+  padding: 2px 8px;
+  border-radius: 50px;
+  white-space: nowrap;
+}
+.btn-delete {
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 1.1em;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.btn-delete:hover { background: #fde8e8; }
+
+.import-export {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.import-export button {
+  padding: 7px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.import-export button:hover { border-color: var(--primary); color: var(--primary); }
+
+.search-bar {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.92em;
+  margin-bottom: 12px;
+  outline: none;
+}
+.search-bar:focus { border-color: var(--primary); }
+
+/* ── Toast ── */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(120px);
+  background: var(--text);
+  color: var(--card-bg);
+  padding: 11px 22px;
+  border-radius: 50px;
+  font-size: 0.85em;
+  font-weight: 500;
+  z-index: 200;
+  transition: transform 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-light);
+}
+.empty-state .icon { font-size: 2.5em; margin-bottom: 10px; opacity: 0.6; }
+
+/* ── Grammar reference ── */
+.grammar-section {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.grammar-section h2 {
+  font-size: 1.1em;
+  color: var(--primary);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+}
+.grammar-section h3 { font-size: 0.95em; margin-top: 14px; margin-bottom: 6px; color: var(--text); }
+.grammar-section p { font-size: 0.88em; line-height: 1.6; color: var(--text-light); margin-bottom: 8px; }
+.grammar-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 0.85em;
+}
+.grammar-table th, .grammar-table td {
+  padding: 7px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.grammar-table th {
+  background: var(--bg-soft);
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.grammar-table td .hu { font-weight: 600; color: var(--primary); }
+.grammar-table td code {
+  background: var(--bg-soft);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 0.92em;
+  color: var(--accent);
+  font-family: 'Consolas', monospace;
+}
+
+/* ── Conjugation table ── */
+.conjugation-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  margin-bottom: 12px;
+}
+.conjugation-verb {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.conjugation-verb .hu { font-size: 1.15em; font-weight: 700; color: var(--primary); }
+.conjugation-verb .en { color: var(--text-light); font-size: 0.9em; }
+
+/* ── Breakdown (unchanged mostly) ── */
+.breakdown-input-area {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 16px;
+}
+.breakdown-input-area h2 { font-size: 1.05em; color: var(--primary); margin-bottom: 4px; }
+.breakdown-input-area p { font-size: 0.82em; color: var(--text-light); margin-bottom: 12px; }
+.breakdown-row { display: flex; gap: 8px; }
+.breakdown-row input {
+  flex: 1;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1em;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.breakdown-row input:focus { border-color: var(--primary); }
+.breakdown-row button {
+  padding: 11px 22px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.92em;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.breakdown-row button:hover { background: var(--primary-light); }
+.breakdown-result { background: var(--card-bg); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); margin-bottom: 14px; }
+.breakdown-word-display { font-size: 1.7em; font-weight: 700; color: var(--primary); text-align: center; margin-bottom: 16px; letter-spacing: 1px; }
+.breakdown-visual { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; margin-bottom: 20px; }
+.breakdown-segment { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.segment-text {
+  font-size: 1.25em;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 10px;
+  color: white;
+  min-width: 36px;
+  text-align: center;
+}
+.segment-root { background: var(--primary); }
+.segment-suffix { background: var(--accent); }
+.segment-prefix { background: #7b68ee; }
+.segment-plural { background: #e07b53; }
+.segment-possessive { background: #c45baa; }
+.segment-verb { background: #4a90d9; }
+.segment-label { font-size: 0.65em; text-transform: uppercase; letter-spacing: 1px; color: var(--text-light); font-weight: 600; }
+.breakdown-connector { display: flex; align-items: center; font-size: 1.1em; color: var(--border); padding-top: 3px; }
+.breakdown-details { display: flex; flex-direction: column; gap: 8px; }
+.detail-card { display: flex; gap: 12px; padding: 12px 14px; background: var(--bg); border-radius: 12px; align-items: flex-start; }
+.detail-badge { padding: 3px 9px; border-radius: 50px; color: white; font-size: 0.75em; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+.badge-root { background: var(--primary); }
+.badge-suffix { background: var(--accent); }
+.badge-prefix { background: #7b68ee; }
+.badge-plural { background: #e07b53; }
+.badge-possessive { background: #c45baa; }
+.badge-verb { background: #4a90d9; }
+.detail-info { flex: 1; }
+.detail-info .piece { font-weight: 700; font-size: 1em; }
+.detail-info .role { color: var(--text-light); font-size: 0.83em; margin-top: 2px; line-height: 1.5; }
+.detail-info .example { font-size: 0.8em; color: var(--text-light); margin-top: 4px; font-style: italic; }
+.breakdown-summary {
+  margin-top: 14px;
+  padding: 14px;
+  background: var(--primary-soft);
+  border-radius: 12px;
+  text-align: center;
+}
+.breakdown-summary .meaning { font-size: 1em; font-weight: 600; color: var(--primary); }
+
+.examples-section {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  box-shadow: var(--shadow);
+}
+.examples-section h3 { font-size: 0.9em; color: var(--text-light); margin-bottom: 10px; }
+.example-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.example-chip {
+  padding: 7px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.example-chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+
+/* ── Daily goal progress ring ── */
+.goal-ring {
+  display: inline-block;
+  position: relative;
+}
+.goal-ring svg { display: block; transform: rotate(-90deg); }
+.goal-ring circle { fill: none; stroke-width: 6; }
+.goal-bg { stroke: var(--border); }
+.goal-fg { stroke: var(--primary); stroke-linecap: round; transition: stroke-dashoffset 0.4s ease; }
+.goal-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.7em;
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  header { padding: 12px 14px; }
+  header h1 { font-size: 1.2em; }
+  .header-stats { gap: 6px; font-size: 0.75em; }
+  .header-stat { padding: 4px 8px; gap: 4px; }
+  .card-word { font-size: 1.5em; }
+  .quiz-word, .typing-prompt { font-size: 1.5em; }
+  .progress-overview { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .progress-card .number { font-size: 1.4em; }
+  .form-row { flex-direction: column; }
+  main { padding: 14px 12px 80px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Magyar</h1>
+    <p>Learn Hungarian — A1 → B1</p>
+  </div>
+  <div class="header-stats">
+    <div class="header-stat" title="Current streak"><span>🔥</span><span class="val" id="statStreak">0</span></div>
+    <div class="header-stat" title="Words due today"><span>📅</span><span class="val" id="statDue">0</span></div>
+    <div class="header-stat" title="Daily goal"><span>🎯</span><span class="val" id="statGoal">0/20</span></div>
+  </div>
+  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme" id="themeBtn">🌙</button>
+</header>
+
+<nav>
+  <button class="active" onclick="showSection('study', this)">📚 Study</button>
+  <button onclick="showSection('progress', this)">📊 Progress</button>
+  <button onclick="showSection('grammar', this)">📖 Grammar</button>
+  <button onclick="showSection('conjugation', this)">🔤 Conjugation</button>
+  <button onclick="showSection('breakdown', this)">🧩 Breakdown</button>
+  <button onclick="showSection('manage', this)">⚙️ Manage</button>
+</nav>
+
+<main>
+  <!-- STUDY -->
+  <div id="study" class="section active">
+    <div class="mode-tabs">
+      <button class="active" onclick="setMode('flashcards', this)">🃏 Cards</button>
+      <button onclick="setMode('quiz', this)">✅ Choice</button>
+      <button onclick="setMode('typing', this)">⌨️ Typing</button>
+      <button onclick="setMode('listening', this)">👂 Listen</button>
+      <button onclick="setMode('matching', this)">🔗 Match</button>
+    </div>
+
+    <div class="level-filter" id="levelFilter"></div>
+    <div class="category-filter" id="categoryFilter"></div>
+    <div id="studyArea"></div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div id="progress" class="section">
+    <div class="streak-display">
+      <div class="goal-ring">
+        <svg width="70" height="70">
+          <circle class="goal-bg" cx="35" cy="35" r="30"/>
+          <circle class="goal-fg" id="goalRing" cx="35" cy="35" r="30" stroke-dasharray="188" stroke-dashoffset="188"/>
+        </svg>
+        <div class="goal-text" id="goalText">0%</div>
+      </div>
+      <div class="streak-info">
+        <div class="streak-label">🔥 <span id="streakNum">0</span>-day streak</div>
+        <div class="streak-sub" id="streakSub">Start studying today!</div>
+      </div>
+    </div>
+    <div class="progress-overview" id="progressOverview"></div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progressBar"></div>
+    </div>
+    <h3 style="margin-bottom:10px;font-size:0.95em;color:var(--text-light)">Last 30 days</h3>
+    <div class="heatmap" id="heatmap"></div>
+    <h3 style="margin:20px 0 10px;font-size:0.95em;color:var(--text-light)">All Words</h3>
+    <input class="search-bar" placeholder="🔍 Search words..." oninput="renderProgressList(this.value)" />
+    <div class="word-list" id="progressList"></div>
+  </div>
+
+  <!-- GRAMMAR -->
+  <div id="grammar" class="section">
+    <div class="grammar-section">
+      <h2>Vowel Harmony</h2>
+      <p>Hungarian has <strong>vowel harmony</strong> — suffixes change to match the vowels in the root word. Words with back vowels (a, á, o, ó, u, ú) take back-vowel suffixes; words with front vowels (e, é, i, í, ö, ő, ü, ű) take front-vowel suffixes.</p>
+      <table class="grammar-table">
+        <thead><tr><th>Vowel type</th><th>Examples</th><th>Suffix example</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Back</strong> (a, á, o, ó, u, ú)</td><td><span class="hu">ház, asztal, autó</span></td><td>ház<code>-ban</code>, asztal<code>-on</code></td></tr>
+          <tr><td><strong>Front unrounded</strong> (e, é, i, í)</td><td><span class="hu">kert, étterem</span></td><td>kert<code>-ben</code>, étterem<code>-ben</code></td></tr>
+          <tr><td><strong>Front rounded</strong> (ö, ő, ü, ű)</td><td><span class="hu">szőnyeg, tükör</span></td><td>tükör<code>-ben</code>, szőnyeg<code>-ön</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grammar-section">
+      <h2>Noun Cases (top 10)</h2>
+      <p>Hungarian has 18 cases but you'll use these 10 most often:</p>
+      <table class="grammar-table">
+        <thead><tr><th>Case</th><th>Suffix</th><th>Means</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td>Accusative</td><td><code>-t</code></td><td>direct object</td><td><span class="hu">könyvet</span> (book, obj)</td></tr>
+          <tr><td>Inessive</td><td><code>-ban/-ben</code></td><td>in (inside)</td><td><span class="hu">házban</span> (in the house)</td></tr>
+          <tr><td>Superessive</td><td><code>-on/-en/-ön</code></td><td>on (surface)</td><td><span class="hu">asztalon</span> (on the table)</td></tr>
+          <tr><td>Adessive</td><td><code>-nál/-nél</code></td><td>at / near</td><td><span class="hu">háznál</span> (at the house)</td></tr>
+          <tr><td>Illative</td><td><code>-ba/-be</code></td><td>into</td><td><span class="hu">házba</span> (into the house)</td></tr>
+          <tr><td>Sublative</td><td><code>-ra/-re</code></td><td>onto</td><td><span class="hu">asztalra</span> (onto the table)</td></tr>
+          <tr><td>Allative</td><td><code>-hoz/-hez/-höz</code></td><td>toward</td><td><span class="hu">házhoz</span> (to the house)</td></tr>
+          <tr><td>Elative</td><td><code>-ból/-ből</code></td><td>out of</td><td><span class="hu">házból</span> (from the house)</td></tr>
+          <tr><td>Delative</td><td><code>-ról/-ről</code></td><td>from (off)</td><td><span class="hu">asztalról</span> (off the table)</td></tr>
+          <tr><td>Ablative</td><td><code>-tól/-től</code></td><td>away from</td><td><span class="hu">háztól</span> (from the house)</td></tr>
+          <tr><td>Instrumental</td><td><code>-val/-vel</code></td><td>with</td><td><span class="hu">autóval</span> (by car)</td></tr>
+          <tr><td>Dative</td><td><code>-nak/-nek</code></td><td>to / for</td><td><span class="hu">gyereknek</span> (for the child)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grammar-section">
+      <h2>Present Tense (Indefinite)</h2>
+      <p>Most verbs follow a regular pattern. The suffixes depend on vowel harmony:</p>
+      <table class="grammar-table">
+        <thead><tr><th>Person</th><th>Back vowel (dolgozni — to work)</th><th>Front vowel (beszélni — to speak)</th></tr></thead>
+        <tbody>
+          <tr><td>I</td><td><span class="hu">dolgoz<strong>ok</strong></span></td><td><span class="hu">beszél<strong>ek</strong></span></td></tr>
+          <tr><td>you (informal)</td><td><span class="hu">dolgoz<strong>ol</strong></span></td><td><span class="hu">beszél<strong>sz</strong></span></td></tr>
+          <tr><td>he/she/it</td><td><span class="hu">dolgoz<strong>ik</strong></span></td><td><span class="hu">beszél</span></td></tr>
+          <tr><td>we</td><td><span class="hu">dolgoz<strong>unk</strong></span></td><td><span class="hu">beszél<strong>ünk</strong></span></td></tr>
+          <tr><td>you all</td><td><span class="hu">dolgoz<strong>tok</strong></span></td><td><span class="hu">beszél<strong>tek</strong></span></td></tr>
+          <tr><td>they</td><td><span class="hu">dolgoz<strong>nak</strong></span></td><td><span class="hu">beszél<strong>nek</strong></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grammar-section">
+      <h2>Plurals</h2>
+      <p>Add <code>-k</code> to form the plural. A linking vowel is often added for pronunciation:</p>
+      <table class="grammar-table">
+        <tbody>
+          <tr><td><span class="hu">alma</span> (apple)</td><td>→ <span class="hu">almák</span> (apples)</td></tr>
+          <tr><td><span class="hu">ház</span> (house)</td><td>→ <span class="hu">házak</span> (houses)</td></tr>
+          <tr><td><span class="hu">könyv</span> (book)</td><td>→ <span class="hu">könyvek</span> (books)</td></tr>
+          <tr><td><span class="hu">kéz</span> (hand)</td><td>→ <span class="hu">kezek</span> (hands)</td></tr>
+          <tr><td><span class="hu">barát</span> (friend)</td><td>→ <span class="hu">barátok</span> (friends)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grammar-section">
+      <h2>Possessive Suffixes</h2>
+      <p>Hungarian attaches possession directly to the noun:</p>
+      <table class="grammar-table">
+        <thead><tr><th>Person</th><th>Suffix</th><th>Example (<span class="hu">ház</span> — house)</th></tr></thead>
+        <tbody>
+          <tr><td>my</td><td><code>-m / -am / -em / -om / -öm</code></td><td><span class="hu">házam</span> (my house)</td></tr>
+          <tr><td>your (inf.)</td><td><code>-d / -ad / -ed / -od / -öd</code></td><td><span class="hu">házad</span> (your house)</td></tr>
+          <tr><td>his/her/its</td><td><code>-a / -e / -ja / -je</code></td><td><span class="hu">háza</span> (his/her house)</td></tr>
+          <tr><td>our</td><td><code>-unk / -ünk</code></td><td><span class="hu">házunk</span> (our house)</td></tr>
+          <tr><td>your (pl.)</td><td><code>-atok / -etek / -ötök</code></td><td><span class="hu">házatok</span> (your [pl] house)</td></tr>
+          <tr><td>their</td><td><code>-uk / -ük / -juk / -jük</code></td><td><span class="hu">házuk</span> (their house)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="grammar-section">
+      <h2>Definite vs Indefinite Verb Conjugation</h2>
+      <p>This is tricky: Hungarian has <strong>two sets</strong> of verb endings depending on whether the direct object is definite or not.</p>
+      <p><strong>Indefinite</strong> — used when there's no object, or the object is indefinite (<span class="hu">egy, valami, semmi</span>):</p>
+      <p style="padding-left:12px"><span class="hu">Egy könyvet olvasok</span> — I read a book.</p>
+      <p><strong>Definite</strong> — used when the object is definite (<span class="hu">a, az, ezt, azt</span>) or a named thing:</p>
+      <p style="padding-left:12px"><span class="hu">A könyvet olvasom</span> — I read the book.</p>
+      <p>Notice <span class="hu">olvas<strong>ok</strong></span> vs <span class="hu">olvas<strong>om</strong></span>.</p>
+    </div>
+  </div>
+
+  <!-- CONJUGATION -->
+  <div id="conjugation" class="section">
+    <input class="search-bar" placeholder="🔍 Search verbs..." oninput="renderConjugations(this.value)" />
+    <div id="conjugationList"></div>
+  </div>
+
+  <!-- WORD BREAKDOWN -->
+  <div id="breakdown" class="section">
+    <div class="breakdown-input-area">
+      <h2>Word Breakdown</h2>
+      <p>Type any Hungarian word to see its parts and what each piece means</p>
+      <div class="breakdown-row">
+        <input id="breakdownInput" placeholder="e.g. Budapestben, házakban, szeretem..." onkeydown="if(event.key==='Enter')analyzeWord()" />
+        <button onclick="analyzeWord()">Analyze</button>
+      </div>
+    </div>
+    <div id="breakdownResult"></div>
+    <div class="examples-section" style="margin-top:14px">
+      <h3>Try these examples</h3>
+      <div class="example-chips">
+        <button class="example-chip" onclick="tryExample('Budapestben')">Budapestben</button>
+        <button class="example-chip" onclick="tryExample('házakban')">házakban</button>
+        <button class="example-chip" onclick="tryExample('szeretem')">szeretem</button>
+        <button class="example-chip" onclick="tryExample('könyveket')">könyveket</button>
+        <button class="example-chip" onclick="tryExample('barátaimmal')">barátaimmal</button>
+        <button class="example-chip" onclick="tryExample('iskolából')">iskolából</button>
+        <button class="example-chip" onclick="tryExample('városokban')">városokban</button>
+        <button class="example-chip" onclick="tryExample('édesanyám')">édesanyám</button>
+        <button class="example-chip" onclick="tryExample('dolgozom')">dolgozom</button>
+        <button class="example-chip" onclick="tryExample('tanulunk')">tanulunk</button>
+        <button class="example-chip" onclick="tryExample('autóval')">autóval</button>
+        <button class="example-chip" onclick="tryExample('gyerekeknek')">gyerekeknek</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MANAGE -->
+  <div id="manage" class="section">
+    <div class="manage-form">
+      <h2>Add New Word</h2>
+      <div class="form-row">
+        <input id="newHu" placeholder="Hungarian" />
+        <input id="newEn" placeholder="English" />
+      </div>
+      <div class="form-row">
+        <select id="newCat">
+          <option value="Greetings">Greetings</option>
+          <option value="Numbers">Numbers</option>
+          <option value="Family">Family</option>
+          <option value="Food & Drink">Food & Drink</option>
+          <option value="Colors">Colors</option>
+          <option value="Days & Time">Days & Time</option>
+          <option value="Places">Places</option>
+          <option value="Verbs">Verbs</option>
+          <option value="Adjectives">Adjectives</option>
+          <option value="Phrases">Phrases</option>
+          <option value="Body">Body</option>
+          <option value="Weather">Weather</option>
+          <option value="Animals">Animals</option>
+          <option value="Home">Home</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Transport">Transport</option>
+          <option value="Work & School">Work & School</option>
+          <option value="Emotions">Emotions</option>
+          <option value="Nature">Nature</option>
+          <option value="Custom">Custom</option>
+        </select>
+        <select id="newLevel">
+          <option value="A1">A1</option>
+          <option value="A2">A2</option>
+          <option value="B1">B1</option>
+        </select>
+        <input id="newExample" placeholder="Example sentence (optional)" style="flex:2" />
+        <button class="btn-add" onclick="addWord()">Add</button>
+      </div>
+    </div>
+    <div class="manage-form">
+      <h2>Daily Goal</h2>
+      <div class="form-row">
+        <label style="display:flex;align-items:center;gap:8px;font-size:0.9em">
+          Reviews per day:
+          <input id="dailyGoal" type="number" min="5" max="200" value="20" onchange="setDailyGoal(this.value)" style="width:80px" />
+        </label>
+      </div>
+    </div>
+    <div class="import-export">
+      <button onclick="exportWords()">📤 Export</button>
+      <button onclick="document.getElementById('importFile').click()">📥 Import</button>
+      <button onclick="resetProgress()">♻️ Reset Progress</button>
+      <input type="file" id="importFile" accept=".json" style="display:none" onchange="importWords(event)" />
+    </div>
+    <input class="search-bar" id="manageSearch" placeholder="🔍 Search words..." oninput="renderManageList(this.value)" />
+    <div class="manage-list" id="manageList"></div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════════
+// DEFAULT VOCABULARY — A1 + A2 + B1 levels, ~400 words
+// ════════════════════════════════════════════════════════════
+const DEFAULT_WORDS = [
+  // ── A1 Greetings ──
+  {hu:"Szia",en:"Hi / Bye (informal)",cat:"Greetings",level:"A1",ex:"Szia, hogy vagy? — Hi, how are you?"},
+  {hu:"Szervusz",en:"Hello (semi-formal)",cat:"Greetings",level:"A1"},
+  {hu:"Jó reggelt",en:"Good morning",cat:"Greetings",level:"A1",ex:"Jó reggelt kívánok! — Good morning! (formal)"},
+  {hu:"Jó napot",en:"Good day (formal hello)",cat:"Greetings",level:"A1"},
+  {hu:"Jó estét",en:"Good evening",cat:"Greetings",level:"A1"},
+  {hu:"Jó éjszakát",en:"Good night",cat:"Greetings",level:"A1"},
+  {hu:"Viszontlátásra",en:"Goodbye (formal)",cat:"Greetings",level:"A1"},
+  {hu:"Viszlát",en:"See you (informal)",cat:"Greetings",level:"A1"},
+  {hu:"Köszönöm",en:"Thank you",cat:"Greetings",level:"A1",ex:"Köszönöm szépen! — Thank you very much!"},
+  {hu:"Kérem",en:"Please / You're welcome (formal)",cat:"Greetings",level:"A1"},
+  {hu:"Kérlek",en:"Please (informal)",cat:"Greetings",level:"A1"},
+  {hu:"Igen",en:"Yes",cat:"Greetings",level:"A1"},
+  {hu:"Nem",en:"No",cat:"Greetings",level:"A1"},
+  {hu:"Elnézést",en:"Excuse me / Sorry",cat:"Greetings",level:"A1"},
+  {hu:"Bocsánat",en:"Sorry / Pardon",cat:"Greetings",level:"A1"},
+  {hu:"Egészségedre",en:"Cheers / Bless you",cat:"Greetings",level:"A2"},
+  {hu:"Üdvözöllek",en:"Welcome (to greet)",cat:"Greetings",level:"A2"},
+
+  // ── Numbers ──
+  {hu:"egy",en:"one (1)",cat:"Numbers",level:"A1"},
+  {hu:"kettő",en:"two (2)",cat:"Numbers",level:"A1"},
+  {hu:"három",en:"three (3)",cat:"Numbers",level:"A1"},
+  {hu:"négy",en:"four (4)",cat:"Numbers",level:"A1"},
+  {hu:"öt",en:"five (5)",cat:"Numbers",level:"A1"},
+  {hu:"hat",en:"six (6)",cat:"Numbers",level:"A1"},
+  {hu:"hét",en:"seven (7)",cat:"Numbers",level:"A1"},
+  {hu:"nyolc",en:"eight (8)",cat:"Numbers",level:"A1"},
+  {hu:"kilenc",en:"nine (9)",cat:"Numbers",level:"A1"},
+  {hu:"tíz",en:"ten (10)",cat:"Numbers",level:"A1"},
+  {hu:"tizenegy",en:"eleven (11)",cat:"Numbers",level:"A1"},
+  {hu:"tizenkettő",en:"twelve (12)",cat:"Numbers",level:"A1"},
+  {hu:"húsz",en:"twenty (20)",cat:"Numbers",level:"A1"},
+  {hu:"harminc",en:"thirty (30)",cat:"Numbers",level:"A1"},
+  {hu:"negyven",en:"forty (40)",cat:"Numbers",level:"A1"},
+  {hu:"ötven",en:"fifty (50)",cat:"Numbers",level:"A1"},
+  {hu:"száz",en:"one hundred (100)",cat:"Numbers",level:"A1"},
+  {hu:"ezer",en:"one thousand (1000)",cat:"Numbers",level:"A2"},
+  {hu:"millió",en:"million",cat:"Numbers",level:"A2"},
+  {hu:"első",en:"first",cat:"Numbers",level:"A2"},
+  {hu:"második",en:"second",cat:"Numbers",level:"A2"},
+  {hu:"harmadik",en:"third",cat:"Numbers",level:"A2"},
+  {hu:"utolsó",en:"last",cat:"Numbers",level:"A2"},
+
+  // ── Family ──
+  {hu:"anya",en:"mother",cat:"Family",level:"A1",ex:"Az anyám tanár. — My mother is a teacher."},
+  {hu:"apa",en:"father",cat:"Family",level:"A1"},
+  {hu:"szülők",en:"parents",cat:"Family",level:"A1"},
+  {hu:"fiú",en:"boy / son",cat:"Family",level:"A1"},
+  {hu:"lány",en:"girl / daughter",cat:"Family",level:"A1"},
+  {hu:"testvér",en:"sibling",cat:"Family",level:"A1"},
+  {hu:"báty",en:"older brother",cat:"Family",level:"A2"},
+  {hu:"öcs",en:"younger brother",cat:"Family",level:"A2"},
+  {hu:"nővér",en:"older sister",cat:"Family",level:"A2"},
+  {hu:"húg",en:"younger sister",cat:"Family",level:"A2"},
+  {hu:"nagymama",en:"grandmother",cat:"Family",level:"A1"},
+  {hu:"nagypapa",en:"grandfather",cat:"Family",level:"A1"},
+  {hu:"férj",en:"husband",cat:"Family",level:"A1"},
+  {hu:"feleség",en:"wife",cat:"Family",level:"A1"},
+  {hu:"gyerek",en:"child",cat:"Family",level:"A1"},
+  {hu:"unokatestvér",en:"cousin",cat:"Family",level:"A2"},
+  {hu:"nagynéni",en:"aunt",cat:"Family",level:"A2"},
+  {hu:"nagybácsi",en:"uncle",cat:"Family",level:"A2"},
+  {hu:"barát",en:"friend",cat:"Family",level:"A1"},
+  {hu:"család",en:"family",cat:"Family",level:"A1"},
+  {hu:"rokon",en:"relative",cat:"Family",level:"B1"},
+
+  // ── Food & Drink ──
+  {hu:"kenyér",en:"bread",cat:"Food & Drink",level:"A1"},
+  {hu:"víz",en:"water",cat:"Food & Drink",level:"A1",ex:"Egy pohár vizet kérek. — I'd like a glass of water."},
+  {hu:"tej",en:"milk",cat:"Food & Drink",level:"A1"},
+  {hu:"kávé",en:"coffee",cat:"Food & Drink",level:"A1"},
+  {hu:"tea",en:"tea",cat:"Food & Drink",level:"A1"},
+  {hu:"sör",en:"beer",cat:"Food & Drink",level:"A1"},
+  {hu:"bor",en:"wine",cat:"Food & Drink",level:"A1"},
+  {hu:"hús",en:"meat",cat:"Food & Drink",level:"A1"},
+  {hu:"sajt",en:"cheese",cat:"Food & Drink",level:"A1"},
+  {hu:"alma",en:"apple",cat:"Food & Drink",level:"A1"},
+  {hu:"körte",en:"pear",cat:"Food & Drink",level:"A2"},
+  {hu:"banán",en:"banana",cat:"Food & Drink",level:"A2"},
+  {hu:"narancs",en:"orange (fruit)",cat:"Food & Drink",level:"A2"},
+  {hu:"szőlő",en:"grape",cat:"Food & Drink",level:"A2"},
+  {hu:"leves",en:"soup",cat:"Food & Drink",level:"A1"},
+  {hu:"rizs",en:"rice",cat:"Food & Drink",level:"A1"},
+  {hu:"hal",en:"fish",cat:"Food & Drink",level:"A1"},
+  {hu:"csirke",en:"chicken",cat:"Food & Drink",level:"A1"},
+  {hu:"cukor",en:"sugar",cat:"Food & Drink",level:"A1"},
+  {hu:"só",en:"salt",cat:"Food & Drink",level:"A1"},
+  {hu:"paprika",en:"paprika / pepper",cat:"Food & Drink",level:"A2"},
+  {hu:"tojás",en:"egg",cat:"Food & Drink",level:"A1"},
+  {hu:"vaj",en:"butter",cat:"Food & Drink",level:"A2"},
+  {hu:"méz",en:"honey",cat:"Food & Drink",level:"A2"},
+  {hu:"gyümölcs",en:"fruit",cat:"Food & Drink",level:"A2"},
+  {hu:"zöldség",en:"vegetable",cat:"Food & Drink",level:"A2"},
+  {hu:"reggeli",en:"breakfast",cat:"Food & Drink",level:"A2"},
+  {hu:"ebéd",en:"lunch",cat:"Food & Drink",level:"A2"},
+  {hu:"vacsora",en:"dinner",cat:"Food & Drink",level:"A2"},
+  {hu:"étel",en:"food / meal",cat:"Food & Drink",level:"A1"},
+  {hu:"ital",en:"drink",cat:"Food & Drink",level:"A1"},
+  {hu:"éhes",en:"hungry",cat:"Food & Drink",level:"A2"},
+  {hu:"szomjas",en:"thirsty",cat:"Food & Drink",level:"A2"},
+
+  // ── Colors ──
+  {hu:"piros",en:"red",cat:"Colors",level:"A1"},
+  {hu:"kék",en:"blue",cat:"Colors",level:"A1"},
+  {hu:"zöld",en:"green",cat:"Colors",level:"A1"},
+  {hu:"sárga",en:"yellow",cat:"Colors",level:"A1"},
+  {hu:"fehér",en:"white",cat:"Colors",level:"A1"},
+  {hu:"fekete",en:"black",cat:"Colors",level:"A1"},
+  {hu:"barna",en:"brown",cat:"Colors",level:"A1"},
+  {hu:"szürke",en:"gray",cat:"Colors",level:"A1"},
+  {hu:"narancssárga",en:"orange",cat:"Colors",level:"A1"},
+  {hu:"rózsaszín",en:"pink",cat:"Colors",level:"A2"},
+  {hu:"lila",en:"purple",cat:"Colors",level:"A2"},
+  {hu:"szín",en:"color",cat:"Colors",level:"A1"},
+
+  // ── Days & Time ──
+  {hu:"hétfő",en:"Monday",cat:"Days & Time",level:"A1"},
+  {hu:"kedd",en:"Tuesday",cat:"Days & Time",level:"A1"},
+  {hu:"szerda",en:"Wednesday",cat:"Days & Time",level:"A1"},
+  {hu:"csütörtök",en:"Thursday",cat:"Days & Time",level:"A1"},
+  {hu:"péntek",en:"Friday",cat:"Days & Time",level:"A1"},
+  {hu:"szombat",en:"Saturday",cat:"Days & Time",level:"A1"},
+  {hu:"vasárnap",en:"Sunday",cat:"Days & Time",level:"A1"},
+  {hu:"ma",en:"today",cat:"Days & Time",level:"A1"},
+  {hu:"holnap",en:"tomorrow",cat:"Days & Time",level:"A1"},
+  {hu:"tegnap",en:"yesterday",cat:"Days & Time",level:"A1"},
+  {hu:"reggel",en:"morning",cat:"Days & Time",level:"A1"},
+  {hu:"délelőtt",en:"forenoon (before noon)",cat:"Days & Time",level:"A2"},
+  {hu:"dél",en:"noon",cat:"Days & Time",level:"A2"},
+  {hu:"délután",en:"afternoon",cat:"Days & Time",level:"A2"},
+  {hu:"este",en:"evening",cat:"Days & Time",level:"A1"},
+  {hu:"éjjel",en:"at night",cat:"Days & Time",level:"A2"},
+  {hu:"éjszaka",en:"night",cat:"Days & Time",level:"A2"},
+  {hu:"perc",en:"minute",cat:"Days & Time",level:"A1"},
+  {hu:"óra",en:"hour / clock",cat:"Days & Time",level:"A1"},
+  {hu:"nap",en:"day",cat:"Days & Time",level:"A1"},
+  {hu:"hét",en:"week",cat:"Days & Time",level:"A1"},
+  {hu:"hónap",en:"month",cat:"Days & Time",level:"A1"},
+  {hu:"év",en:"year",cat:"Days & Time",level:"A1"},
+  {hu:"most",en:"now",cat:"Days & Time",level:"A1"},
+  {hu:"később",en:"later",cat:"Days & Time",level:"A2"},
+  {hu:"mindig",en:"always",cat:"Days & Time",level:"A2"},
+  {hu:"soha",en:"never",cat:"Days & Time",level:"A2"},
+  {hu:"gyakran",en:"often",cat:"Days & Time",level:"A2"},
+  {hu:"néha",en:"sometimes",cat:"Days & Time",level:"A2"},
+
+  // ── Places ──
+  {hu:"ház",en:"house",cat:"Places",level:"A1"},
+  {hu:"lakás",en:"apartment / flat",cat:"Places",level:"A2"},
+  {hu:"iskola",en:"school",cat:"Places",level:"A1"},
+  {hu:"bolt",en:"shop / store",cat:"Places",level:"A1"},
+  {hu:"étterem",en:"restaurant",cat:"Places",level:"A1"},
+  {hu:"kávézó",en:"café",cat:"Places",level:"A2"},
+  {hu:"kórház",en:"hospital",cat:"Places",level:"A1"},
+  {hu:"állomás",en:"station",cat:"Places",level:"A1"},
+  {hu:"utca",en:"street",cat:"Places",level:"A1"},
+  {hu:"város",en:"city",cat:"Places",level:"A1"},
+  {hu:"falu",en:"village",cat:"Places",level:"A2"},
+  {hu:"ország",en:"country",cat:"Places",level:"A1"},
+  {hu:"bank",en:"bank",cat:"Places",level:"A2"},
+  {hu:"posta",en:"post office",cat:"Places",level:"A2"},
+  {hu:"park",en:"park",cat:"Places",level:"A1"},
+  {hu:"piac",en:"market",cat:"Places",level:"A2"},
+  {hu:"mozi",en:"cinema",cat:"Places",level:"A2"},
+  {hu:"színház",en:"theater",cat:"Places",level:"A2"},
+  {hu:"múzeum",en:"museum",cat:"Places",level:"A2"},
+  {hu:"templom",en:"church",cat:"Places",level:"A2"},
+  {hu:"könyvtár",en:"library",cat:"Places",level:"A2"},
+  {hu:"repülőtér",en:"airport",cat:"Places",level:"A2"},
+  {hu:"szálloda",en:"hotel",cat:"Places",level:"A2"},
+  {hu:"uszoda",en:"swimming pool",cat:"Places",level:"A2"},
+
+  // ── Verbs ──
+  {hu:"lenni",en:"to be",cat:"Verbs",level:"A1"},
+  {hu:"van",en:"is / there is",cat:"Verbs",level:"A1",ex:"Van egy kutyám. — I have a dog."},
+  {hu:"enni",en:"to eat",cat:"Verbs",level:"A1"},
+  {hu:"inni",en:"to drink",cat:"Verbs",level:"A1"},
+  {hu:"menni",en:"to go",cat:"Verbs",level:"A1"},
+  {hu:"jönni",en:"to come",cat:"Verbs",level:"A1"},
+  {hu:"tudni",en:"to know / can",cat:"Verbs",level:"A1"},
+  {hu:"akarni",en:"to want",cat:"Verbs",level:"A1"},
+  {hu:"szeretni",en:"to love / to like",cat:"Verbs",level:"A1"},
+  {hu:"beszélni",en:"to speak",cat:"Verbs",level:"A1"},
+  {hu:"dolgozni",en:"to work",cat:"Verbs",level:"A1"},
+  {hu:"lakni",en:"to live (reside)",cat:"Verbs",level:"A1"},
+  {hu:"csinálni",en:"to do / to make",cat:"Verbs",level:"A1"},
+  {hu:"olvasni",en:"to read",cat:"Verbs",level:"A1"},
+  {hu:"írni",en:"to write",cat:"Verbs",level:"A1"},
+  {hu:"tanulni",en:"to learn / to study",cat:"Verbs",level:"A1"},
+  {hu:"nézni",en:"to watch / to look",cat:"Verbs",level:"A1"},
+  {hu:"hallgatni",en:"to listen",cat:"Verbs",level:"A1"},
+  {hu:"látni",en:"to see",cat:"Verbs",level:"A1"},
+  {hu:"hallani",en:"to hear",cat:"Verbs",level:"A1"},
+  {hu:"mondani",en:"to say",cat:"Verbs",level:"A1"},
+  {hu:"kérdezni",en:"to ask",cat:"Verbs",level:"A2"},
+  {hu:"válaszolni",en:"to answer",cat:"Verbs",level:"A2"},
+  {hu:"adni",en:"to give",cat:"Verbs",level:"A1"},
+  {hu:"kapni",en:"to get / receive",cat:"Verbs",level:"A1"},
+  {hu:"venni",en:"to buy / take",cat:"Verbs",level:"A1"},
+  {hu:"fizetni",en:"to pay",cat:"Verbs",level:"A2"},
+  {hu:"utazni",en:"to travel",cat:"Verbs",level:"A2"},
+  {hu:"főzni",en:"to cook",cat:"Verbs",level:"A2"},
+  {hu:"aludni",en:"to sleep",cat:"Verbs",level:"A1"},
+  {hu:"ébredni",en:"to wake up",cat:"Verbs",level:"A2"},
+  {hu:"játszani",en:"to play",cat:"Verbs",level:"A1"},
+  {hu:"énekelni",en:"to sing",cat:"Verbs",level:"A2"},
+  {hu:"táncolni",en:"to dance",cat:"Verbs",level:"A2"},
+  {hu:"futni",en:"to run",cat:"Verbs",level:"A2"},
+  {hu:"úszni",en:"to swim",cat:"Verbs",level:"A2"},
+  {hu:"ülni",en:"to sit",cat:"Verbs",level:"A1"},
+  {hu:"állni",en:"to stand",cat:"Verbs",level:"A1"},
+  {hu:"várni",en:"to wait",cat:"Verbs",level:"A1"},
+  {hu:"érteni",en:"to understand",cat:"Verbs",level:"A1"},
+  {hu:"segíteni",en:"to help",cat:"Verbs",level:"A2"},
+  {hu:"kezdeni",en:"to begin",cat:"Verbs",level:"A2"},
+  {hu:"befejezni",en:"to finish",cat:"Verbs",level:"B1"},
+  {hu:"gondolni",en:"to think",cat:"Verbs",level:"A2"},
+  {hu:"emlékezni",en:"to remember",cat:"Verbs",level:"B1"},
+  {hu:"felejteni",en:"to forget",cat:"Verbs",level:"B1"},
+  {hu:"élni",en:"to live (be alive)",cat:"Verbs",level:"A2"},
+  {hu:"nevetni",en:"to laugh",cat:"Verbs",level:"B1"},
+  {hu:"sírni",en:"to cry",cat:"Verbs",level:"B1"},
+
+  // ── Adjectives ──
+  {hu:"nagy",en:"big",cat:"Adjectives",level:"A1"},
+  {hu:"kicsi",en:"small",cat:"Adjectives",level:"A1"},
+  {hu:"jó",en:"good",cat:"Adjectives",level:"A1"},
+  {hu:"rossz",en:"bad",cat:"Adjectives",level:"A1"},
+  {hu:"szép",en:"beautiful",cat:"Adjectives",level:"A1"},
+  {hu:"csúnya",en:"ugly",cat:"Adjectives",level:"A2"},
+  {hu:"új",en:"new",cat:"Adjectives",level:"A1"},
+  {hu:"régi",en:"old (thing)",cat:"Adjectives",level:"A1"},
+  {hu:"fiatal",en:"young",cat:"Adjectives",level:"A1"},
+  {hu:"öreg",en:"old (person)",cat:"Adjectives",level:"A1"},
+  {hu:"meleg",en:"warm / hot",cat:"Adjectives",level:"A1"},
+  {hu:"hideg",en:"cold",cat:"Adjectives",level:"A1"},
+  {hu:"magas",en:"tall / high",cat:"Adjectives",level:"A2"},
+  {hu:"alacsony",en:"short / low",cat:"Adjectives",level:"A2"},
+  {hu:"gyors",en:"fast",cat:"Adjectives",level:"A2"},
+  {hu:"lassú",en:"slow",cat:"Adjectives",level:"A2"},
+  {hu:"nehéz",en:"hard / heavy",cat:"Adjectives",level:"A2"},
+  {hu:"könnyű",en:"easy / light",cat:"Adjectives",level:"A2"},
+  {hu:"drága",en:"expensive / dear",cat:"Adjectives",level:"A2"},
+  {hu:"olcsó",en:"cheap",cat:"Adjectives",level:"A2"},
+  {hu:"erős",en:"strong",cat:"Adjectives",level:"A2"},
+  {hu:"gyenge",en:"weak",cat:"Adjectives",level:"A2"},
+  {hu:"finom",en:"tasty / delicate",cat:"Adjectives",level:"A2"},
+  {hu:"érdekes",en:"interesting",cat:"Adjectives",level:"A2"},
+  {hu:"fontos",en:"important",cat:"Adjectives",level:"A2"},
+  {hu:"boldog",en:"happy",cat:"Adjectives",level:"A2"},
+  {hu:"szomorú",en:"sad",cat:"Adjectives",level:"A2"},
+  {hu:"fáradt",en:"tired",cat:"Adjectives",level:"A2"},
+  {hu:"beteg",en:"sick",cat:"Adjectives",level:"A2"},
+  {hu:"egészséges",en:"healthy",cat:"Adjectives",level:"B1"},
+  {hu:"okos",en:"smart",cat:"Adjectives",level:"B1"},
+  {hu:"buta",en:"dumb / silly",cat:"Adjectives",level:"B1"},
+  {hu:"szabad",en:"free",cat:"Adjectives",level:"B1"},
+  {hu:"foglalt",en:"busy / occupied",cat:"Adjectives",level:"B1"},
+
+  // ── Phrases ──
+  {hu:"Hogy vagy?",en:"How are you? (informal)",cat:"Phrases",level:"A1"},
+  {hu:"Hogy van?",en:"How are you? (formal)",cat:"Phrases",level:"A1"},
+  {hu:"Jól vagyok",en:"I'm fine",cat:"Phrases",level:"A1"},
+  {hu:"Hogy hívnak?",en:"What's your name? (informal)",cat:"Phrases",level:"A1"},
+  {hu:"A nevem...",en:"My name is...",cat:"Phrases",level:"A1"},
+  {hu:"Nem értem",en:"I don't understand",cat:"Phrases",level:"A1"},
+  {hu:"Beszélsz angolul?",en:"Do you speak English?",cat:"Phrases",level:"A1"},
+  {hu:"Nem beszélek magyarul",en:"I don't speak Hungarian",cat:"Phrases",level:"A1"},
+  {hu:"Mennyibe kerül?",en:"How much does it cost?",cat:"Phrases",level:"A1"},
+  {hu:"Segítség!",en:"Help!",cat:"Phrases",level:"A1"},
+  {hu:"Hol van...?",en:"Where is...?",cat:"Phrases",level:"A1"},
+  {hu:"Szeretnék...",en:"I would like...",cat:"Phrases",level:"A1"},
+  {hu:"Hány óra van?",en:"What time is it?",cat:"Phrases",level:"A2"},
+  {hu:"Honnan jöttél?",en:"Where are you from?",cat:"Phrases",level:"A2"},
+  {hu:"Magyarországról jöttem",en:"I'm from Hungary",cat:"Phrases",level:"A2"},
+  {hu:"Boldog születésnapot!",en:"Happy birthday!",cat:"Phrases",level:"A2"},
+  {hu:"Jó étvágyat!",en:"Enjoy your meal!",cat:"Phrases",level:"A2"},
+  {hu:"Vigyázz magadra!",en:"Take care!",cat:"Phrases",level:"B1"},
+  {hu:"Sok szerencsét!",en:"Good luck!",cat:"Phrases",level:"A2"},
+
+  // ── Body ──
+  {hu:"fej",en:"head",cat:"Body",level:"A2"},
+  {hu:"arc",en:"face",cat:"Body",level:"A2"},
+  {hu:"szem",en:"eye",cat:"Body",level:"A2"},
+  {hu:"orr",en:"nose",cat:"Body",level:"A2"},
+  {hu:"száj",en:"mouth",cat:"Body",level:"A2"},
+  {hu:"fog",en:"tooth",cat:"Body",level:"A2"},
+  {hu:"fül",en:"ear",cat:"Body",level:"A2"},
+  {hu:"haj",en:"hair",cat:"Body",level:"A2"},
+  {hu:"kéz",en:"hand",cat:"Body",level:"A2"},
+  {hu:"láb",en:"foot / leg",cat:"Body",level:"A2"},
+  {hu:"ujj",en:"finger",cat:"Body",level:"A2"},
+  {hu:"szív",en:"heart",cat:"Body",level:"A2"},
+  {hu:"has",en:"stomach / belly",cat:"Body",level:"B1"},
+  {hu:"hát",en:"back",cat:"Body",level:"B1"},
+  {hu:"nyak",en:"neck",cat:"Body",level:"B1"},
+
+  // ── Weather ──
+  {hu:"időjárás",en:"weather",cat:"Weather",level:"A2"},
+  {hu:"nap",en:"sun",cat:"Weather",level:"A1"},
+  {hu:"eső",en:"rain",cat:"Weather",level:"A1"},
+  {hu:"szél",en:"wind",cat:"Weather",level:"A1"},
+  {hu:"hó",en:"snow",cat:"Weather",level:"A1"},
+  {hu:"felhő",en:"cloud",cat:"Weather",level:"A1"},
+  {hu:"esik",en:"it's raining / falling",cat:"Weather",level:"A2",ex:"Esik az eső. — It's raining."},
+  {hu:"süt",en:"shines",cat:"Weather",level:"A2",ex:"Süt a nap. — The sun is shining."},
+  {hu:"köd",en:"fog",cat:"Weather",level:"B1"},
+  {hu:"vihar",en:"storm",cat:"Weather",level:"B1"},
+  {hu:"tavasz",en:"spring",cat:"Weather",level:"A2"},
+  {hu:"nyár",en:"summer",cat:"Weather",level:"A2"},
+  {hu:"ősz",en:"autumn",cat:"Weather",level:"A2"},
+  {hu:"tél",en:"winter",cat:"Weather",level:"A2"},
+
+  // ── Animals ──
+  {hu:"kutya",en:"dog",cat:"Animals",level:"A1"},
+  {hu:"macska",en:"cat",cat:"Animals",level:"A1"},
+  {hu:"madár",en:"bird",cat:"Animals",level:"A1"},
+  {hu:"ló",en:"horse",cat:"Animals",level:"A1"},
+  {hu:"tehén",en:"cow",cat:"Animals",level:"A2"},
+  {hu:"disznó",en:"pig",cat:"Animals",level:"A2"},
+  {hu:"juh",en:"sheep",cat:"Animals",level:"A2"},
+  {hu:"egér",en:"mouse",cat:"Animals",level:"A2"},
+  {hu:"nyúl",en:"rabbit",cat:"Animals",level:"A2"},
+  {hu:"medve",en:"bear",cat:"Animals",level:"B1"},
+  {hu:"farkas",en:"wolf",cat:"Animals",level:"B1"},
+  {hu:"róka",en:"fox",cat:"Animals",level:"B1"},
+  {hu:"oroszlán",en:"lion",cat:"Animals",level:"B1"},
+  {hu:"elefánt",en:"elephant",cat:"Animals",level:"B1"},
+
+  // ── Home ──
+  {hu:"szoba",en:"room",cat:"Home",level:"A1"},
+  {hu:"konyha",en:"kitchen",cat:"Home",level:"A1"},
+  {hu:"fürdőszoba",en:"bathroom",cat:"Home",level:"A1"},
+  {hu:"hálószoba",en:"bedroom",cat:"Home",level:"A1"},
+  {hu:"nappali",en:"living room",cat:"Home",level:"A2"},
+  {hu:"asztal",en:"table",cat:"Home",level:"A1"},
+  {hu:"szék",en:"chair",cat:"Home",level:"A1"},
+  {hu:"ágy",en:"bed",cat:"Home",level:"A1"},
+  {hu:"ajtó",en:"door",cat:"Home",level:"A1"},
+  {hu:"ablak",en:"window",cat:"Home",level:"A1"},
+  {hu:"tükör",en:"mirror",cat:"Home",level:"A2"},
+  {hu:"szekrény",en:"cabinet / wardrobe",cat:"Home",level:"A2"},
+  {hu:"kert",en:"garden",cat:"Home",level:"A2"},
+  {hu:"kulcs",en:"key",cat:"Home",level:"A2"},
+  {hu:"fal",en:"wall",cat:"Home",level:"B1"},
+  {hu:"padló",en:"floor",cat:"Home",level:"B1"},
+  {hu:"tető",en:"roof",cat:"Home",level:"B1"},
+
+  // ── Clothing ──
+  {hu:"ruha",en:"clothing / dress",cat:"Clothing",level:"A2"},
+  {hu:"póló",en:"t-shirt",cat:"Clothing",level:"A2"},
+  {hu:"nadrág",en:"pants",cat:"Clothing",level:"A2"},
+  {hu:"szoknya",en:"skirt",cat:"Clothing",level:"A2"},
+  {hu:"kabát",en:"coat",cat:"Clothing",level:"A2"},
+  {hu:"cipő",en:"shoe",cat:"Clothing",level:"A2"},
+  {hu:"kalap",en:"hat",cat:"Clothing",level:"A2"},
+  {hu:"zokni",en:"sock",cat:"Clothing",level:"A2"},
+  {hu:"ing",en:"shirt",cat:"Clothing",level:"B1"},
+  {hu:"sál",en:"scarf",cat:"Clothing",level:"B1"},
+  {hu:"kesztyű",en:"glove",cat:"Clothing",level:"B1"},
+
+  // ── Transport ──
+  {hu:"autó",en:"car",cat:"Transport",level:"A1"},
+  {hu:"busz",en:"bus",cat:"Transport",level:"A1"},
+  {hu:"vonat",en:"train",cat:"Transport",level:"A1"},
+  {hu:"villamos",en:"tram",cat:"Transport",level:"A2"},
+  {hu:"metró",en:"metro / subway",cat:"Transport",level:"A2"},
+  {hu:"repülő",en:"airplane",cat:"Transport",level:"A2"},
+  {hu:"kerékpár",en:"bicycle",cat:"Transport",level:"A2"},
+  {hu:"bicikli",en:"bike (colloquial)",cat:"Transport",level:"A2"},
+  {hu:"hajó",en:"ship / boat",cat:"Transport",level:"A2"},
+  {hu:"jegy",en:"ticket",cat:"Transport",level:"A2"},
+  {hu:"taxi",en:"taxi",cat:"Transport",level:"A2"},
+
+  // ── Work & School ──
+  {hu:"munka",en:"work",cat:"Work & School",level:"A1"},
+  {hu:"tanár",en:"teacher",cat:"Work & School",level:"A1"},
+  {hu:"diák",en:"student",cat:"Work & School",level:"A1"},
+  {hu:"orvos",en:"doctor",cat:"Work & School",level:"A1"},
+  {hu:"rendőr",en:"police officer",cat:"Work & School",level:"A2"},
+  {hu:"eladó",en:"salesperson",cat:"Work & School",level:"A2"},
+  {hu:"mérnök",en:"engineer",cat:"Work & School",level:"B1"},
+  {hu:"könyv",en:"book",cat:"Work & School",level:"A1"},
+  {hu:"toll",en:"pen",cat:"Work & School",level:"A1"},
+  {hu:"ceruza",en:"pencil",cat:"Work & School",level:"A1"},
+  {hu:"papír",en:"paper",cat:"Work & School",level:"A1"},
+  {hu:"iroda",en:"office",cat:"Work & School",level:"A2"},
+  {hu:"főnök",en:"boss",cat:"Work & School",level:"B1"},
+  {hu:"fizetés",en:"salary",cat:"Work & School",level:"B1"},
+  {hu:"vizsga",en:"exam",cat:"Work & School",level:"B1"},
+  {hu:"feladat",en:"task / assignment",cat:"Work & School",level:"B1"},
+
+  // ── Emotions ──
+  {hu:"szerelem",en:"love (romantic)",cat:"Emotions",level:"B1"},
+  {hu:"boldogság",en:"happiness",cat:"Emotions",level:"B1"},
+  {hu:"harag",en:"anger",cat:"Emotions",level:"B1"},
+  {hu:"félelem",en:"fear",cat:"Emotions",level:"B1"},
+  {hu:"öröm",en:"joy",cat:"Emotions",level:"B1"},
+  {hu:"bánat",en:"sorrow",cat:"Emotions",level:"B1"},
+  {hu:"meglepetés",en:"surprise",cat:"Emotions",level:"B1"},
+  {hu:"remény",en:"hope",cat:"Emotions",level:"B1"},
+
+  // ── Nature ──
+  {hu:"fa",en:"tree",cat:"Nature",level:"A1"},
+  {hu:"virág",en:"flower",cat:"Nature",level:"A1"},
+  {hu:"fű",en:"grass",cat:"Nature",level:"A2"},
+  {hu:"hegy",en:"mountain",cat:"Nature",level:"A2"},
+  {hu:"folyó",en:"river",cat:"Nature",level:"A2"},
+  {hu:"tó",en:"lake",cat:"Nature",level:"A2"},
+  {hu:"tenger",en:"sea",cat:"Nature",level:"A2"},
+  {hu:"erdő",en:"forest",cat:"Nature",level:"A2"},
+  {hu:"levegő",en:"air",cat:"Nature",level:"B1"},
+  {hu:"föld",en:"earth / ground",cat:"Nature",level:"B1"},
+  {hu:"ég",en:"sky",cat:"Nature",level:"B1"},
+  {hu:"csillag",en:"star",cat:"Nature",level:"B1"},
+  {hu:"hold",en:"moon",cat:"Nature",level:"B1"},
+];
+
+// ════════════════════════════════════════════════════════════
+// VERB CONJUGATION DATA — covers major verbs
+// ════════════════════════════════════════════════════════════
+const CONJUGATIONS = [
+  { verb:"lenni", en:"to be",
+    present:{ I:"vagyok", you:"vagy", heshe:"van", we:"vagyunk", youall:"vagytok", they:"vannak" },
+    past:{ I:"voltam", you:"voltál", heshe:"volt", we:"voltunk", youall:"voltatok", they:"voltak" },
+    future:{ I:"leszek", you:"leszel", heshe:"lesz", we:"leszünk", youall:"lesztek", they:"lesznek" },
+    note:"Irregular but essential. Often omitted in present tense (e.g. 'Én diák.' = 'I am a student.')"
+  },
+  { verb:"menni", en:"to go",
+    present:{ I:"megyek", you:"mész", heshe:"megy", we:"megyünk", youall:"mentek", they:"mennek" },
+    past:{ I:"mentem", you:"mentél", heshe:"ment", we:"mentünk", youall:"mentetek", they:"mentek" },
+    future:{ I:"megyek majd", you:"mész majd", heshe:"megy majd", we:"megyünk majd", youall:"mentek majd", they:"mennek majd" },
+    note:"Irregular. Use with prefixes like el- (away), be- (in), ki- (out)."
+  },
+  { verb:"jönni", en:"to come",
+    present:{ I:"jövök", you:"jössz", heshe:"jön", we:"jövünk", youall:"jöttök", they:"jönnek" },
+    past:{ I:"jöttem", you:"jöttél", heshe:"jött", we:"jöttünk", youall:"jöttetek", they:"jöttek" },
+    future:{ I:"jönni fogok", you:"jönni fogsz", heshe:"jönni fog", we:"jönni fogunk", youall:"jönni fogtok", they:"jönni fognak" },
+  },
+  { verb:"enni", en:"to eat",
+    present:{ I:"eszem", you:"eszel", heshe:"eszik", we:"eszünk", youall:"esztek", they:"esznek" },
+    past:{ I:"ettem", you:"ettél", heshe:"evett", we:"ettünk", youall:"ettetek", they:"ettek" },
+    future:{ I:"enni fogok", you:"enni fogsz", heshe:"enni fog", we:"enni fogunk", youall:"enni fogtok", they:"enni fognak" },
+    note:"Irregular -ik verb. Third person present ends in -ik."
+  },
+  { verb:"inni", en:"to drink",
+    present:{ I:"iszom", you:"iszol", heshe:"iszik", we:"iszunk", youall:"isztok", they:"isznak" },
+    past:{ I:"ittam", you:"ittál", heshe:"ivott", we:"ittunk", youall:"ittatok", they:"ittak" },
+    future:{ I:"inni fogok", you:"inni fogsz", heshe:"inni fog", we:"inni fogunk", youall:"inni fogtok", they:"inni fognak" },
+    note:"Irregular -ik verb."
+  },
+  { verb:"tudni", en:"to know / can",
+    present:{ I:"tudok", you:"tudsz", heshe:"tud", we:"tudunk", youall:"tudtok", they:"tudnak" },
+    past:{ I:"tudtam", you:"tudtál", heshe:"tudott", we:"tudtunk", youall:"tudtatok", they:"tudtak" },
+    future:{ I:"tudni fogok", you:"tudni fogsz", heshe:"tudni fog", we:"tudni fogunk", youall:"tudni fogtok", they:"tudni fognak" },
+    note:"Back-vowel regular verb. Also means 'can' with an infinitive (Tudok főzni = I can cook)."
+  },
+  { verb:"akarni", en:"to want",
+    present:{ I:"akarok", you:"akarsz", heshe:"akar", we:"akarunk", youall:"akartok", they:"akarnak" },
+    past:{ I:"akartam", you:"akartál", heshe:"akart", we:"akartunk", youall:"akartatok", they:"akartak" },
+    future:{ I:"akarni fogok", you:"akarni fogsz", heshe:"akarni fog", we:"akarni fogunk", youall:"akarni fogtok", they:"akarni fognak" },
+  },
+  { verb:"szeretni", en:"to love / to like",
+    present:{ I:"szeretek", you:"szeretsz", heshe:"szeret", we:"szeretünk", youall:"szerettek", they:"szeretnek" },
+    past:{ I:"szerettem", you:"szerettél", heshe:"szeretett", we:"szerettünk", youall:"szerettetek", they:"szerettek" },
+    future:{ I:"szeretni fogok", you:"szeretni fogsz", heshe:"szeretni fog", we:"szeretni fogunk", youall:"szeretni fogtok", they:"szeretni fognak" },
+    note:"With conditional: szeretnék = I would like. Front-vowel verb."
+  },
+  { verb:"beszélni", en:"to speak",
+    present:{ I:"beszélek", you:"beszélsz", heshe:"beszél", we:"beszélünk", youall:"beszéltek", they:"beszélnek" },
+    past:{ I:"beszéltem", you:"beszéltél", heshe:"beszélt", we:"beszéltünk", youall:"beszéltetek", they:"beszéltek" },
+    future:{ I:"beszélni fogok", you:"beszélni fogsz", heshe:"beszélni fog", we:"beszélni fogunk", youall:"beszélni fogtok", they:"beszélni fognak" },
+  },
+  { verb:"dolgozni", en:"to work",
+    present:{ I:"dolgozom", you:"dolgozol", heshe:"dolgozik", we:"dolgozunk", youall:"dolgoztok", they:"dolgoznak" },
+    past:{ I:"dolgoztam", you:"dolgoztál", heshe:"dolgozott", we:"dolgoztunk", youall:"dolgoztatok", they:"dolgoztak" },
+    future:{ I:"dolgozni fogok", you:"dolgozni fogsz", heshe:"dolgozni fog", we:"dolgozni fogunk", youall:"dolgozni fogtok", they:"dolgozni fognak" },
+    note:"-ik verb (note first person singular ends in -om, not -ok)."
+  },
+  { verb:"lakni", en:"to live (reside)",
+    present:{ I:"lakom", you:"laksz", heshe:"lakik", we:"lakunk", youall:"laktok", they:"laknak" },
+    past:{ I:"laktam", you:"laktál", heshe:"lakott", we:"laktunk", youall:"laktatok", they:"laktak" },
+    future:{ I:"lakni fogok", you:"lakni fogsz", heshe:"lakni fog", we:"lakni fogunk", youall:"lakni fogtok", they:"lakni fognak" },
+    note:"-ik verb."
+  },
+  { verb:"tanulni", en:"to study / to learn",
+    present:{ I:"tanulok", you:"tanulsz", heshe:"tanul", we:"tanulunk", youall:"tanultok", they:"tanulnak" },
+    past:{ I:"tanultam", you:"tanultál", heshe:"tanult", we:"tanultunk", youall:"tanultatok", they:"tanultak" },
+    future:{ I:"tanulni fogok", you:"tanulni fogsz", heshe:"tanulni fog", we:"tanulni fogunk", youall:"tanulni fogtok", they:"tanulni fognak" },
+  },
+  { verb:"írni", en:"to write",
+    present:{ I:"írok", you:"írsz", heshe:"ír", we:"írunk", youall:"írtok", they:"írnak" },
+    past:{ I:"írtam", you:"írtál", heshe:"írt", we:"írtunk", youall:"írtatok", they:"írtak" },
+    future:{ I:"írni fogok", you:"írni fogsz", heshe:"írni fog", we:"írni fogunk", youall:"írni fogtok", they:"írni fognak" },
+  },
+  { verb:"olvasni", en:"to read",
+    present:{ I:"olvasok", you:"olvasol", heshe:"olvas", we:"olvasunk", youall:"olvastok", they:"olvasnak" },
+    past:{ I:"olvastam", you:"olvastál", heshe:"olvasott", we:"olvastunk", youall:"olvastatok", they:"olvastak" },
+    future:{ I:"olvasni fogok", you:"olvasni fogsz", heshe:"olvasni fog", we:"olvasni fogunk", youall:"olvasni fogtok", they:"olvasni fognak" },
+  },
+  { verb:"látni", en:"to see",
+    present:{ I:"látok", you:"látsz", heshe:"lát", we:"látunk", youall:"láttok", they:"látnak" },
+    past:{ I:"láttam", you:"láttál", heshe:"látott", we:"láttunk", youall:"láttatok", they:"láttak" },
+    future:{ I:"látni fogok", you:"látni fogsz", heshe:"látni fog", we:"látni fogunk", youall:"látni fogtok", they:"látni fognak" },
+  },
+  { verb:"venni", en:"to buy / to take",
+    present:{ I:"veszek", you:"veszel", heshe:"vesz", we:"veszünk", youall:"vesztek", they:"vesznek" },
+    past:{ I:"vettem", you:"vettél", heshe:"vett", we:"vettünk", youall:"vettetek", they:"vettek" },
+    future:{ I:"venni fogok", you:"venni fogsz", heshe:"venni fog", we:"venni fogunk", youall:"venni fogtok", they:"venni fognak" },
+    note:"Irregular. Uses 'vesz-' in present tense."
+  },
+  { verb:"adni", en:"to give",
+    present:{ I:"adok", you:"adsz", heshe:"ad", we:"adunk", youall:"adtok", they:"adnak" },
+    past:{ I:"adtam", you:"adtál", heshe:"adott", we:"adtunk", youall:"adtatok", they:"adtak" },
+    future:{ I:"adni fogok", you:"adni fogsz", heshe:"adni fog", we:"adni fogunk", youall:"adni fogtok", they:"adni fognak" },
+  },
+  { verb:"csinálni", en:"to do / to make",
+    present:{ I:"csinálok", you:"csinálsz", heshe:"csinál", we:"csinálunk", youall:"csináltok", they:"csinálnak" },
+    past:{ I:"csináltam", you:"csináltál", heshe:"csinált", we:"csináltunk", youall:"csináltatok", they:"csináltak" },
+    future:{ I:"csinálni fogok", you:"csinálni fogsz", heshe:"csinálni fog", we:"csinálni fogunk", youall:"csinálni fogtok", they:"csinálni fognak" },
+  },
+];
+
+// ════════════════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════════════════
+let words = [];
+let srs = {};           // key: "hu::en" → { stage, ease, due, reps }
+let stats = { streak: 0, lastStudyDate: null, totalStudied: 0, dailyGoal: 20, history: {}, todayCount: 0 };
+let activeCategory = "All";
+let activeLevel = "All";
+let studyMode = "flashcards";
+let currentIndex = 0;
+let isFlipped = false;
+let showHuFirst = true;
+let dueQueue = [];       // current study queue
+let quizState = null;    // for quiz mode
+let matchingState = null;// for matching mode
+let theme = 'light';
+
+// ── SRS ──
+function srsKey(w) { return w.hu + '::' + w.en; }
+
+function getSRS(w) {
+  return srs[srsKey(w)] || { stage: 0, ease: 2.5, due: Date.now(), reps: 0 };
+}
+
+function updateSRS(w, quality) {
+  // quality: 0 (again), 1 (hard), 2 (good), 3 (easy)
+  const s = getSRS(w);
+  s.reps++;
+
+  if (quality === 0) {
+    s.stage = 0;
+    s.ease = Math.max(1.3, s.ease - 0.2);
+    s.due = Date.now() + 60 * 1000; // 1 minute
+  } else {
+    // SM-2 inspired
+    if (quality === 1) s.ease = Math.max(1.3, s.ease - 0.15);
+    if (quality === 3) s.ease = s.ease + 0.15;
+
+    s.stage++;
+    const intervals = [
+      60 * 1000,             // 1 min
+      10 * 60 * 1000,        // 10 min
+      1 * 24 * 3600 * 1000,  // 1 day
+      3 * 24 * 3600 * 1000,  // 3 days
+      7 * 24 * 3600 * 1000,  // 1 week
+      14 * 24 * 3600 * 1000, // 2 weeks
+      30 * 24 * 3600 * 1000, // 1 month
+    ];
+
+    let interval;
+    if (s.stage < intervals.length) {
+      interval = intervals[s.stage];
+    } else {
+      const lastInterval = intervals[intervals.length - 1];
+      interval = lastInterval * Math.pow(s.ease, s.stage - intervals.length + 1);
+    }
+
+    if (quality === 1) interval *= 0.7;
+    if (quality === 3) interval *= 1.5;
+
+    s.due = Date.now() + interval;
+  }
+
+  srs[srsKey(w)] = s;
+  save();
+
+  // Track today's study count
+  const todayStr = new Date().toDateString();
+  stats.history[todayStr] = (stats.history[todayStr] || 0) + 1;
+  stats.todayCount = stats.history[todayStr];
+  stats.totalStudied++;
+  updateStreak();
+  save();
+  updateStats();
+}
+
+function getMasteryLevel(w) {
+  // Return 0-5 based on SRS stage
+  const s = getSRS(w);
+  if (s.reps === 0) return 0;
+  if (s.stage === 0) return 1;
+  if (s.stage === 1) return 2;
+  if (s.stage === 2) return 3;
+  if (s.stage <= 4) return 4;
+  return 5;
+}
+
+function updateStreak() {
+  const today = new Date().toDateString();
+  const yesterday = new Date(Date.now() - 86400000).toDateString();
+
+  if (stats.lastStudyDate === today) {
+    // already counted today
+  } else if (stats.lastStudyDate === yesterday || !stats.lastStudyDate) {
+    stats.streak = (stats.lastStudyDate === yesterday ? stats.streak : 0) + 1;
+    stats.lastStudyDate = today;
+  } else {
+    stats.streak = 1;
+    stats.lastStudyDate = today;
+  }
+}
+
+// ── Persistence ──
+function save() {
+  localStorage.setItem('magyar_words_v2', JSON.stringify(words));
+  localStorage.setItem('magyar_srs_v2', JSON.stringify(srs));
+  localStorage.setItem('magyar_stats_v2', JSON.stringify(stats));
+  localStorage.setItem('magyar_theme', theme);
+}
+
+function load() {
+  const stored = localStorage.getItem('magyar_words_v2');
+  if (stored) {
+    words = JSON.parse(stored);
+    // Merge any new default words that don't exist
+    DEFAULT_WORDS.forEach(dw => {
+      if (!words.some(w => w.hu === dw.hu && w.en === dw.en)) {
+        words.push(dw);
+      }
+    });
+  } else {
+    // Try loading v1 data
+    const v1 = localStorage.getItem('magyar_words');
+    if (v1) {
+      words = JSON.parse(v1);
+      DEFAULT_WORDS.forEach(dw => {
+        if (!words.some(w => w.hu === dw.hu && w.en === dw.en)) {
+          words.push(dw);
+        }
+      });
+    } else {
+      words = [...DEFAULT_WORDS];
+    }
+  }
+
+  // Ensure all words have level field
+  words.forEach(w => { if (!w.level) w.level = "A1"; });
+
+  srs = JSON.parse(localStorage.getItem('magyar_srs_v2') || '{}');
+  stats = Object.assign(
+    { streak: 0, lastStudyDate: null, totalStudied: 0, dailyGoal: 20, history: {}, todayCount: 0 },
+    JSON.parse(localStorage.getItem('magyar_stats_v2') || '{}')
+  );
+
+  // Reset todayCount if it's a new day
+  const today = new Date().toDateString();
+  if (!stats.history[today]) stats.todayCount = 0;
+  else stats.todayCount = stats.history[today];
+
+  theme = localStorage.getItem('magyar_theme') || 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeBtn').textContent = theme === 'dark' ? '☀️' : '🌙';
+  save();
+}
+
+// ── Theme ──
+function toggleTheme() {
+  theme = theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', theme);
+  document.getElementById('themeBtn').textContent = theme === 'dark' ? '☀️' : '🌙';
+  save();
+}
+
+// ── TTS ──
+let huVoice = null;
+function loadVoices() {
+  const voices = speechSynthesis.getVoices();
+  huVoice = voices.find(v => v.lang.startsWith('hu')) || null;
+}
+if (typeof speechSynthesis !== 'undefined') {
+  loadVoices();
+  speechSynthesis.onvoiceschanged = loadVoices;
+}
+
+function speak(text) {
+  if (!('speechSynthesis' in window)) { toast("Speech not supported"); return; }
+  speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'hu-HU';
+  if (huVoice) utter.voice = huVoice;
+  utter.rate = 0.85;
+  utter.pitch = 1;
+  speechSynthesis.speak(utter);
+}
+
+// ── Filtering ──
+function filteredWords() {
+  return words.filter(w => {
+    if (activeCategory !== "All" && w.cat !== activeCategory) return false;
+    if (activeLevel !== "All" && w.level !== activeLevel) return false;
+    return true;
+  });
+}
+
+function getCategories() {
+  const cats = new Set(words.map(w => w.cat));
+  return ["All", ...Array.from(cats).sort()];
+}
+
+function buildDueQueue() {
+  const now = Date.now();
+  const pool = filteredWords();
+  // Due words first (overdue by longest), then new words
+  const due = pool.filter(w => {
+    const s = getSRS(w);
+    return s.reps > 0 && s.due <= now;
+  }).sort((a, b) => getSRS(a).due - getSRS(b).due);
+
+  const newWords = pool.filter(w => getSRS(w).reps === 0);
+
+  // Shuffle new words
+  for (let i = newWords.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newWords[i], newWords[j]] = [newWords[j], newWords[i]];
+  }
+
+  dueQueue = [...due, ...newWords.slice(0, 20)];  // cap new words per session
+  currentIndex = 0;
+}
+
+// ── Render category/level filters ──
+function renderLevelFilter() {
+  const levels = ["All", "A1", "A2", "B1"];
+  document.getElementById('levelFilter').innerHTML = levels.map(l =>
+    `<button class="${l === activeLevel ? 'active' : ''}" onclick="setLevel('${l}')">${l}</button>`
+  ).join('');
+}
+
+function renderCategoryFilter() {
+  const cats = getCategories();
+  document.getElementById('categoryFilter').innerHTML = cats.map(c =>
+    `<button class="${c === activeCategory ? 'active' : ''}" onclick="setCategory('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setCategory(c) {
+  activeCategory = c;
+  buildDueQueue();
+  renderCategoryFilter();
+  renderStudy();
+}
+
+function setLevel(l) {
+  activeLevel = l;
+  buildDueQueue();
+  renderLevelFilter();
+  renderStudy();
+}
+
+// ── Study modes ──
+function setMode(m, btn) {
+  studyMode = m;
+  document.querySelectorAll('.mode-tabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  buildDueQueue();
+  renderStudy();
+}
+
+function renderStudy() {
+  if (studyMode === 'flashcards') renderFlashcards();
+  else if (studyMode === 'quiz') renderQuiz();
+  else if (studyMode === 'typing') renderTyping();
+  else if (studyMode === 'listening') renderListening();
+  else if (studyMode === 'matching') renderMatching();
+}
+
+// ── Flashcards mode ──
+function renderFlashcards() {
+  if (dueQueue.length === 0) {
+    document.getElementById('studyArea').innerHTML = emptyQueue();
+    return;
+  }
+  if (currentIndex >= dueQueue.length) { buildDueQueue(); }
+
+  const w = dueQueue[currentIndex] || dueQueue[0];
+  const front = showHuFirst ? w.hu : w.en;
+  const back = showHuFirst ? w.en : w.hu;
+  const ml = getMasteryLevel(w);
+  const masteryLabels = ['New','Again','Learning','Familiar','Known','Confident','Mastered'];
+
+  document.getElementById('studyArea').innerHTML = `
+    <div class="card-container">
+      <div class="flashcard ${isFlipped ? 'flipped' : ''}" id="flashcard" onclick="flipCard()">
+        <div class="front">
+          <button class="speak-btn" onclick="event.stopPropagation(); speak('${w.hu.replace(/'/g, "\\'")}')">🔊</button>
+          <div class="card-word">${front}</div>
+          <div class="card-category">${w.cat} · ${w.level||'A1'}</div>
+          <div class="card-hint">Tap to flip · Space</div>
+        </div>
+        <div class="back">
+          <button class="speak-btn" onclick="event.stopPropagation(); speak('${w.hu.replace(/'/g, "\\'")}')">🔊</button>
+          <div class="card-word">${back}</div>
+          <div class="card-category">${w.cat}</div>
+          ${w.ex ? `<div class="card-example">"${w.ex}"</div>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="card-controls">
+      <button class="btn-again" onclick="markCard(0)">Again <span class="interval-hint">&lt;1m</span></button>
+      <button class="btn-hard" onclick="markCard(1)">Hard <span class="interval-hint">${formatInterval(w, 1)}</span></button>
+      <button class="btn-good" onclick="markCard(2)">Good <span class="interval-hint">${formatInterval(w, 2)}</span></button>
+      <button class="btn-easy" onclick="markCard(3)">Easy <span class="interval-hint">${formatInterval(w, 3)}</span></button>
+    </div>
+    <div class="card-controls" style="margin-top:8px">
+      <button class="btn-secondary" onclick="toggleDirection()">${showHuFirst ? 'HU → EN' : 'EN → HU'}</button>
+      <button class="btn-secondary" onclick="nextCard()">Skip</button>
+    </div>
+    <div class="card-progress">${currentIndex + 1} / ${dueQueue.length} · ${masteryLabels[ml]}</div>
+    <div class="keyboard-hint">Shortcuts: Space = flip, 1-4 = rate, → = skip</div>
+  `;
+}
+
+function formatInterval(w, quality) {
+  const s = { ...getSRS(w) };
+  if (quality === 0) return '&lt;1m';
+  const baseStage = s.stage + 1;
+  const intervals = [60000, 600000, 86400000, 259200000, 604800000, 1209600000, 2592000000];
+  let ms = baseStage < intervals.length ? intervals[baseStage] : intervals[intervals.length-1] * Math.pow(s.ease, baseStage - intervals.length + 1);
+  if (quality === 1) ms *= 0.7;
+  if (quality === 3) ms *= 1.5;
+  const mins = ms / 60000;
+  if (mins < 60) return Math.round(mins) + 'm';
+  const hrs = mins / 60;
+  if (hrs < 24) return Math.round(hrs) + 'h';
+  const days = hrs / 24;
+  if (days < 30) return Math.round(days) + 'd';
+  return Math.round(days / 30) + 'mo';
+}
+
+function flipCard() {
+  isFlipped = !isFlipped;
+  const card = document.getElementById('flashcard');
+  if (card) card.classList.toggle('flipped', isFlipped);
+}
+
+function markCard(quality) {
+  if (dueQueue.length === 0) return;
+  const w = dueQueue[currentIndex];
+  updateSRS(w, quality);
+  nextCard();
+}
+
+function nextCard() {
+  currentIndex++;
+  isFlipped = false;
+  if (currentIndex >= dueQueue.length) {
+    buildDueQueue();
+  }
+  renderStudy();
+}
+
+function toggleDirection() {
+  showHuFirst = !showHuFirst;
+  renderStudy();
+}
+
+function emptyQueue() {
+  return `<div class="empty-state"><div class="icon">🎉</div>
+    <p style="font-size:1.05em;margin-bottom:8px"><strong>All caught up!</strong></p>
+    <p>No words due for review in this filter. Try another category or level, or add new words in Manage.</p></div>`;
+}
+
+// ── Quiz (Multiple Choice) ──
+function renderQuiz() {
+  const pool = filteredWords();
+  if (pool.length < 4) {
+    document.getElementById('studyArea').innerHTML =
+      `<div class="empty-state"><div class="icon">📝</div><p>Need at least 4 words in this filter for a quiz.</p></div>`;
+    return;
+  }
+  if (!quizState || quizState.done) {
+    quizState = { questions: generateQuizQuestions(pool), idx: 0, score: 0, answered: false, done: false };
+  }
+  if (quizState.idx >= quizState.questions.length) { renderQuizResult(); return; }
+
+  const q = quizState.questions[quizState.idx];
+  const askHu = Math.random() > 0.5;
+
+  document.getElementById('studyArea').innerHTML = `
+    <div class="quiz-question">
+      <div class="quiz-direction">${askHu ? "What does this mean?" : "What is the Hungarian word?"}</div>
+      <div class="quiz-word">${askHu ? q.word.hu : q.word.en}
+        <button class="speak-btn" style="width:30px;height:30px;font-size:0.8em;margin-left:8px;vertical-align:middle" onclick="speak('${q.word.hu.replace(/'/g,"\\'")}')">🔊</button>
+      </div>
+      <div class="quiz-options">
+        ${q.options.map((o, i) => `
+          <button class="quiz-option" data-idx="${i}" onclick="answerQuiz(${i}, ${askHu})">${askHu ? o.en : o.hu}</button>
+        `).join('')}
+      </div>
+      <div class="card-progress" style="margin-top:14px">Question ${quizState.idx + 1} / ${quizState.questions.length} · Score: ${quizState.score}</div>
+    </div>
+  `;
+  quizState.answered = false;
+}
+
+function generateQuizQuestions(pool) {
+  const count = Math.min(10, pool.length);
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, count).map(w => {
+    const others = pool.filter(x => x.en !== w.en).sort(() => Math.random() - 0.5).slice(0, 3);
+    const options = [w, ...others].sort(() => Math.random() - 0.5);
+    return { word: w, options };
+  });
+}
+
+function answerQuiz(idx, askHu) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = quizState.questions[quizState.idx];
+  const correct = q.options.indexOf(q.word);
+  const buttons = document.querySelectorAll('.quiz-option');
+  buttons[correct].classList.add('correct');
+  if (idx === correct) {
+    quizState.score++;
+    updateSRS(q.word, 2);
+  } else {
+    buttons[idx].classList.add('wrong');
+    updateSRS(q.word, 0);
+  }
+  setTimeout(() => { quizState.idx++; renderQuiz(); }, 1100);
+}
+
+function renderQuizResult() {
+  const pct = Math.round((quizState.score / quizState.questions.length) * 100);
+  const emoji = pct >= 80 ? "🎉" : pct >= 50 ? "👍" : "💪";
+  document.getElementById('studyArea').innerHTML = `
+    <div class="quiz-score">
+      <h2>${emoji} Quiz Complete</h2>
+      <div class="score-number">${quizState.score} / ${quizState.questions.length}</div>
+      <p style="color:var(--text-light);margin-top:6px">${pct}% correct</p>
+      <button class="btn-add" style="margin-top:18px" onclick="quizState = null; renderQuiz()">New Quiz</button>
+    </div>
+  `;
+  quizState.done = true;
+}
+
+// ── Typing mode ──
+function renderTyping() {
+  const pool = filteredWords();
+  if (pool.length === 0) { document.getElementById('studyArea').innerHTML = emptyQueue(); return; }
+  if (dueQueue.length === 0) buildDueQueue();
+  const w = dueQueue[currentIndex] || dueQueue[0];
+  const askHu = showHuFirst; // if showHuFirst, show HU, ask for EN; else reverse
+
+  document.getElementById('studyArea').innerHTML = `
+    <div class="typing-container">
+      <div class="typing-prompt-label">${askHu ? 'Type the English translation' : 'Type the Hungarian word'}</div>
+      <div class="typing-prompt">${askHu ? w.hu : w.en}
+        ${askHu ? `<button class="speak-btn" style="width:30px;height:30px;font-size:0.8em;margin-left:8px;vertical-align:middle" onclick="speak('${w.hu.replace(/'/g,"\\'")}')">🔊</button>` : ''}
+      </div>
+      <input type="text" class="typing-input" id="typingInput" placeholder="Type your answer..." autocomplete="off"
+             onkeydown="if(event.key==='Enter') checkTyping(${askHu ? 'true' : 'false'})" />
+      <div class="typing-feedback" id="typingFeedback"></div>
+      <div class="card-controls" style="margin-top:12px">
+        <button class="btn-secondary" onclick="toggleDirection()">${askHu ? 'HU → EN' : 'EN → HU'}</button>
+        <button class="btn-good" onclick="checkTyping(${askHu ? 'true' : 'false'})">Check</button>
+        <button class="btn-secondary" onclick="nextCard()">Skip</button>
+      </div>
+      <div class="card-progress">Word ${currentIndex + 1} of ${dueQueue.length}</div>
+    </div>
+  `;
+  setTimeout(() => { const i = document.getElementById('typingInput'); if (i) i.focus(); }, 50);
+}
+
+function checkTyping(askHu) {
+  const input = document.getElementById('typingInput');
+  const feedback = document.getElementById('typingFeedback');
+  const w = dueQueue[currentIndex];
+  const userAns = input.value.trim().toLowerCase();
+  const correct = (askHu ? w.en : w.hu).toLowerCase();
+
+  // Accept any of the / separated alternates
+  const accepted = correct.split(/\s*\/\s*/).map(s => s.replace(/\(.*?\)/g, '').trim());
+  const isCorrect = accepted.some(a => a === userAns) || userAns === correct;
+  const isClose = !isCorrect && accepted.some(a => levenshtein(a, userAns) <= 2);
+
+  if (isCorrect) {
+    input.classList.add('correct');
+    feedback.className = 'typing-feedback correct';
+    feedback.textContent = '✓ Correct! ' + (w.ex ? `"${w.ex}"` : '');
+    updateSRS(w, 2);
+    setTimeout(nextCard, 1400);
+  } else if (isClose) {
+    input.classList.add('wrong');
+    feedback.className = 'typing-feedback wrong';
+    feedback.innerHTML = `Close! Correct: <strong>${askHu ? w.en : w.hu}</strong>`;
+    updateSRS(w, 1);
+    setTimeout(nextCard, 2000);
+  } else {
+    input.classList.add('wrong');
+    feedback.className = 'typing-feedback wrong';
+    feedback.innerHTML = `Correct answer: <strong>${askHu ? w.en : w.hu}</strong>`;
+    updateSRS(w, 0);
+    setTimeout(nextCard, 2000);
+  }
+}
+
+function levenshtein(a, b) {
+  const dp = Array.from({length: a.length+1}, (_, i) => [i]);
+  for (let j = 1; j <= b.length; j++) dp[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j-1], dp[i][j-1], dp[i-1][j]);
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+// ── Listening mode ──
+function renderListening() {
+  const pool = filteredWords();
+  if (pool.length < 4) {
+    document.getElementById('studyArea').innerHTML =
+      `<div class="empty-state"><div class="icon">👂</div><p>Need at least 4 words in this filter for listening mode.</p></div>`;
+    return;
+  }
+  if (dueQueue.length === 0) buildDueQueue();
+  const w = dueQueue[currentIndex] || dueQueue[0];
+  const others = pool.filter(x => x.hu !== w.hu).sort(() => Math.random() - 0.5).slice(0, 3);
+  const options = [w, ...others].sort(() => Math.random() - 0.5);
+
+  document.getElementById('studyArea').innerHTML = `
+    <div class="typing-container">
+      <div class="typing-prompt-label">Listen and choose the correct word</div>
+      <button onclick="speak('${w.hu.replace(/'/g,"\\'")}')" style="width:72px;height:72px;border-radius:50%;border:2px solid var(--primary);background:var(--primary-soft);font-size:1.8em;cursor:pointer;margin-bottom:20px">🔊</button>
+      <div class="quiz-options">
+        ${options.map((o, i) => `
+          <button class="quiz-option" onclick="answerListening(${i}, ${JSON.stringify(options.indexOf(w))})">${o.hu}</button>
+        `).join('')}
+      </div>
+      <div class="card-progress" style="margin-top:14px">Word ${currentIndex + 1} of ${dueQueue.length}</div>
+    </div>
+  `;
+  // Auto-play after a short delay
+  setTimeout(() => speak(w.hu), 300);
+}
+
+function answerListening(idx, correct) {
+  const w = dueQueue[currentIndex];
+  const buttons = document.querySelectorAll('.quiz-option');
+  buttons[correct].classList.add('correct');
+  if (idx === correct) {
+    updateSRS(w, 2);
+  } else {
+    buttons[idx].classList.add('wrong');
+    updateSRS(w, 0);
+  }
+  setTimeout(nextCard, 1200);
+}
+
+// ── Matching mode ──
+function renderMatching() {
+  const pool = filteredWords();
+  if (pool.length < 6) {
+    document.getElementById('studyArea').innerHTML =
+      `<div class="empty-state"><div class="icon">🔗</div><p>Need at least 6 words in this filter for matching.</p></div>`;
+    return;
+  }
+  if (!matchingState || matchingState.done) {
+    const selected = [...pool].sort(() => Math.random() - 0.5).slice(0, 6);
+    const left = selected.map(w => ({ ...w, side: 'hu' })).sort(() => Math.random() - 0.5);
+    const right = selected.map(w => ({ ...w, side: 'en' })).sort(() => Math.random() - 0.5);
+    matchingState = { pairs: selected, left, right, selected: null, matched: [], done: false };
+  }
+
+  const allCards = [...matchingState.left, ...matchingState.right];
+  const cardsHtml = allCards.map((c, i) => {
+    const key = c.hu + '::' + c.en + ':' + c.side;
+    const isMatched = matchingState.matched.includes(key);
+    const isSelected = matchingState.selected === key;
+    const text = c.side === 'hu' ? c.hu : c.en;
+    return `<div class="matching-card ${isMatched ? 'matched' : ''} ${isSelected ? 'selected' : ''}"
+              data-key="${key}" data-pair="${c.hu + '::' + c.en}"
+              onclick="matchClick('${key}')">${text}</div>`;
+  }).join('');
+
+  document.getElementById('studyArea').innerHTML = `
+    <p style="text-align:center;color:var(--text-light);font-size:0.9em;margin-bottom:8px">
+      Match Hungarian words with their English meanings
+    </p>
+    <div class="matching-grid">${cardsHtml}</div>
+    <div class="card-progress" style="margin-top:12px">${matchingState.matched.length / 2} / ${matchingState.pairs.length} matched</div>
+    ${matchingState.matched.length === matchingState.pairs.length * 2 ? `
+      <div class="card-controls" style="margin-top:16px">
+        <button class="btn-easy" onclick="matchingState = null; renderMatching()">New Round</button>
+      </div>` : ''}
+  `;
+}
+
+function matchClick(key) {
+  if (matchingState.matched.includes(key)) return;
+  if (matchingState.selected === key) { matchingState.selected = null; renderMatching(); return; }
+
+  if (matchingState.selected === null) {
+    matchingState.selected = key;
+    renderMatching();
+    return;
+  }
+
+  const selPair = matchingState.selected.split(':').slice(0, 2).join(':');
+  const clickedPair = key.split(':').slice(0, 2).join(':');
+
+  if (selPair === clickedPair) {
+    // Match
+    matchingState.matched.push(matchingState.selected, key);
+    // Find the word to update SRS
+    const w = words.find(w => (w.hu + '::' + w.en) === selPair);
+    if (w) updateSRS(w, 2);
+    matchingState.selected = null;
+    if (matchingState.matched.length === matchingState.pairs.length * 2) {
+      matchingState.done = true;
+      toast("🎉 Round complete!");
+    }
+  } else {
+    // Wrong
+    const el = document.querySelector(`[data-key="${key}"]`);
+    const prevEl = document.querySelector(`[data-key="${matchingState.selected}"]`);
+    if (el) el.classList.add('wrong-flash');
+    if (prevEl) prevEl.classList.add('wrong-flash');
+    const prev = matchingState.selected;
+    matchingState.selected = null;
+    setTimeout(() => {
+      const el2 = document.querySelector(`[data-key="${key}"]`);
+      const prevEl2 = document.querySelector(`[data-key="${prev}"]`);
+      if (el2) el2.classList.remove('wrong-flash');
+      if (prevEl2) prevEl2.classList.remove('wrong-flash');
+    }, 400);
+  }
+  renderMatching();
+}
+
+// ── Progress ──
+function renderProgress() {
+  const total = words.length;
+  const masterCounts = [0, 0, 0, 0, 0, 0];
+  words.forEach(w => masterCounts[getMasteryLevel(w)]++);
+  const pct = total > 0 ? Math.round(((masterCounts[4] + masterCounts[5]) / total) * 100) : 0;
+
+  const dueCount = filteredWords().filter(w => {
+    const s = getSRS(w);
+    return s.reps > 0 && s.due <= Date.now();
+  }).length;
+  const newCount = words.filter(w => getSRS(w).reps === 0).length;
+
+  document.getElementById('progressOverview').innerHTML = `
+    <div class="progress-card"><div class="number">${total}</div><div class="label">Total</div></div>
+    <div class="progress-card"><div class="number" style="color:var(--danger)">${newCount}</div><div class="label">New</div></div>
+    <div class="progress-card"><div class="number" style="color:var(--warn)">${dueCount}</div><div class="label">Due</div></div>
+    <div class="progress-card"><div class="number" style="color:var(--success)">${masterCounts[5]}</div><div class="label">Mastered</div></div>
+  `;
+  document.getElementById('progressBar').style.width = pct + '%';
+
+  // Streak
+  document.getElementById('streakNum').textContent = stats.streak;
+  document.getElementById('streakSub').textContent = stats.streak > 0
+    ? `Keep it going! ${stats.todayCount}/${stats.dailyGoal} today.`
+    : 'Start studying today!';
+
+  // Daily goal ring
+  const goalPct = Math.min(100, Math.round((stats.todayCount / stats.dailyGoal) * 100));
+  const circ = 188;
+  document.getElementById('goalRing').style.strokeDashoffset = circ - (circ * goalPct / 100);
+  document.getElementById('goalText').textContent = goalPct + '%';
+
+  // Heatmap
+  renderHeatmap();
+  renderProgressList('');
+}
+
+function renderHeatmap() {
+  const html = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 86400000);
+    const key = d.toDateString();
+    const count = stats.history[key] || 0;
+    let level = 0;
+    if (count > 0) level = 1;
+    if (count >= 5) level = 2;
+    if (count >= 15) level = 3;
+    if (count >= 30) level = 4;
+    html.push(`<div class="heatmap-day h${level}" title="${key}: ${count} reviews"></div>`);
+  }
+  document.getElementById('heatmap').innerHTML = html.join('');
+}
+
+function renderProgressList(query) {
+  const q = (query || '').toLowerCase();
+  const filtered = words.filter(w =>
+    w.hu.toLowerCase().includes(q) || w.en.toLowerCase().includes(q) || w.cat.toLowerCase().includes(q)
+  );
+
+  document.getElementById('progressList').innerHTML = filtered.slice(0, 200).map(w => {
+    const m = getMasteryLevel(w);
+    return `<div class="word-item">
+      <span class="hu">${w.hu}</span>
+      <span class="en">${w.en}</span>
+      <span class="level-tag">${w.level||'A1'}</span>
+      <span class="mastery-dot mastery-${m}" title="Level ${m}/5"></span>
+    </div>`;
+  }).join('');
+}
+
+function updateStats() {
+  document.getElementById('statStreak').textContent = stats.streak;
+  const dueCount = filteredWords().filter(w => {
+    const s = getSRS(w);
+    return s.reps > 0 && s.due <= Date.now();
+  }).length;
+  document.getElementById('statDue').textContent = dueCount;
+  document.getElementById('statGoal').textContent = `${stats.todayCount}/${stats.dailyGoal}`;
+}
+
+function setDailyGoal(val) {
+  stats.dailyGoal = Math.max(5, Math.min(200, parseInt(val) || 20));
+  save();
+  updateStats();
+  toast(`Daily goal: ${stats.dailyGoal}`);
+}
+
+// ── Manage ──
+function addWord() {
+  const hu = document.getElementById('newHu').value.trim();
+  const en = document.getElementById('newEn').value.trim();
+  const cat = document.getElementById('newCat').value;
+  const level = document.getElementById('newLevel').value;
+  const ex = document.getElementById('newExample').value.trim();
+  if (!hu || !en) { toast("Please fill both fields"); return; }
+  words.push({ hu, en, cat, level, ex: ex || undefined });
+  save();
+  document.getElementById('newHu').value = '';
+  document.getElementById('newEn').value = '';
+  document.getElementById('newExample').value = '';
+  renderManageList('');
+  renderCategoryFilter();
+  toast(`Added: ${hu}`);
+}
+
+function deleteWord(idx) {
+  const w = words[idx];
+  delete srs[srsKey(w)];
+  words.splice(idx, 1);
+  save();
+  renderManageList(document.getElementById('manageSearch').value);
+  toast("Word removed");
+}
+
+function renderManageList(query) {
+  const q = (query || '').toLowerCase();
+  const filtered = words.map((w, i) => ({ ...w, idx: i })).filter(w =>
+    w.hu.toLowerCase().includes(q) || w.en.toLowerCase().includes(q) || w.cat.toLowerCase().includes(q)
+  );
+  document.getElementById('manageList').innerHTML = filtered.slice(0, 200).map(w =>
+    `<div class="manage-item">
+      <div class="words"><strong>${w.hu}</strong> — ${w.en}</div>
+      <span class="cat-label">${w.cat}</span>
+      <span class="level-tag">${w.level || 'A1'}</span>
+      <button class="btn-delete" onclick="deleteWord(${w.idx})" title="Remove">×</button>
+    </div>`
+  ).join('');
+  document.getElementById('dailyGoal').value = stats.dailyGoal;
+}
+
+function exportWords() {
+  const data = { words, srs, stats };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `magyar-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("Exported!");
+}
+
+function importWords(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      let added = 0;
+      (data.words || []).forEach(w => {
+        if (!words.some(x => x.hu === w.hu && x.en === w.en)) {
+          words.push(w);
+          added++;
+        }
+      });
+      if (data.srs) Object.assign(srs, data.srs);
+      if (data.stats) Object.assign(stats, data.stats);
+      save();
+      renderCategoryFilter();
+      renderManageList('');
+      toast(`Imported ${added} new words`);
+    } catch { toast("Invalid file"); }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function resetProgress() {
+  if (confirm("Reset all progress? Your words will be kept.")) {
+    srs = {};
+    stats = { streak: 0, lastStudyDate: null, totalStudied: 0, dailyGoal: stats.dailyGoal, history: {}, todayCount: 0 };
+    save();
+    buildDueQueue();
+    renderStudy();
+    renderProgress();
+    updateStats();
+    toast("Progress reset");
+  }
+}
+
+// ── Conjugation view ──
+function renderConjugations(query) {
+  const q = (query || '').toLowerCase();
+  const filtered = CONJUGATIONS.filter(c =>
+    c.verb.toLowerCase().includes(q) || c.en.toLowerCase().includes(q)
+  );
+  document.getElementById('conjugationList').innerHTML = filtered.map(c => `
+    <div class="conjugation-card">
+      <div class="conjugation-verb">
+        <div>
+          <div class="hu">${c.verb}
+            <button class="speak-btn" style="width:26px;height:26px;font-size:0.75em;vertical-align:middle;margin-left:6px" onclick="speak('${c.verb}')">🔊</button>
+          </div>
+          <div class="en">${c.en}</div>
+        </div>
+      </div>
+      <table class="grammar-table">
+        <thead><tr><th>Person</th><th>Present</th><th>Past</th><th>Future</th></tr></thead>
+        <tbody>
+          <tr><td>I</td><td class="hu-cell">${c.present.I}</td><td>${c.past.I}</td><td>${c.future.I}</td></tr>
+          <tr><td>you (inf.)</td><td>${c.present.you}</td><td>${c.past.you}</td><td>${c.future.you}</td></tr>
+          <tr><td>he/she</td><td>${c.present.heshe}</td><td>${c.past.heshe}</td><td>${c.future.heshe}</td></tr>
+          <tr><td>we</td><td>${c.present.we}</td><td>${c.past.we}</td><td>${c.future.we}</td></tr>
+          <tr><td>you all</td><td>${c.present.youall}</td><td>${c.past.youall}</td><td>${c.future.youall}</td></tr>
+          <tr><td>they</td><td>${c.present.they}</td><td>${c.past.they}</td><td>${c.future.they}</td></tr>
+        </tbody>
+      </table>
+      ${c.note ? `<p style="font-size:0.82em;color:var(--text-light);margin-top:8px;font-style:italic">💡 ${c.note}</p>` : ''}
+    </div>
+  `).join('');
+}
+
+// ── Navigation ──
+function showSection(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(name).classList.add('active');
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (name === 'study') { renderLevelFilter(); renderCategoryFilter(); renderStudy(); }
+  if (name === 'progress') renderProgress();
+  if (name === 'conjugation') renderConjugations('');
+  if (name === 'manage') renderManageList('');
+  if (name === 'breakdown') setTimeout(() => document.getElementById('breakdownInput').focus(), 50);
+}
+
+// ── Toast ──
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+// ── Keyboard shortcuts ──
+document.addEventListener('keydown', (e) => {
+  if (!document.getElementById('study').classList.contains('active')) return;
+  if (document.activeElement.tagName === 'INPUT') return;
+  if (studyMode !== 'flashcards') return;
+  if (e.code === 'Space') { e.preventDefault(); flipCard(); }
+  else if (e.key === '1') markCard(0);
+  else if (e.key === '2') markCard(1);
+  else if (e.key === '3') markCard(2);
+  else if (e.key === '4') markCard(3);
+  else if (e.key === 'ArrowRight') nextCard();
+});
+
+// ════════════════════════════════════════════════════════════
+// WORD BREAKDOWN / MORPHOLOGY ANALYZER (kept from original)
+// ════════════════════════════════════════════════════════════
+const KNOWN_ROOTS = {
+  "budapest":"Budapest (capital city)","magyarország":"Hungary","magyar":"Hungarian",
+  "ház":"house","város":"city","falu":"village","iskola":"school","bolt":"shop/store",
+  "étterem":"restaurant","kórház":"hospital","állomás":"station","utca":"street",
+  "ország":"country","szoba":"room","kert":"garden","park":"park","tér":"square",
+  "híd":"bridge","templom":"church","piac":"market","mozi":"cinema","könyvtár":"library",
+  "repülőtér":"airport","pályaudvar":"train station","irodá":"office","otthon":"home",
+  "iroda":"office","vonat":"train","autó":"car","busz":"bus",
+  "anya":"mother","apa":"father","fiú":"boy/son","lány":"girl/daughter",
+  "testvér":"sibling","nagymama":"grandmother","nagypapa":"grandfather","férj":"husband",
+  "feleség":"wife","gyerek":"child","barát":"friend","család":"family",
+  "édesanya":"dear mother","édesapa":"dear father","baba":"baby","ember":"person/human",
+  "nő":"woman","férfi":"man",
+  "kenyér":"bread","víz":"water","tej":"milk","kávé":"coffee","tea":"tea",
+  "sör":"beer","bor":"wine","hús":"meat","sajt":"cheese","alma":"apple",
+  "leves":"soup","rizs":"rice","hal":"fish","csirke":"chicken","cukor":"sugar",
+  "só":"salt","torta":"cake","sütemény":"pastry","gyümölcs":"fruit","zöldség":"vegetable",
+  "könyv":"book","szó":"word","nap":"day/sun","idő":"time/weather","munka":"work",
+  "pénz":"money","név":"name","év":"year","hely":"place","út":"road/way",
+  "világ":"world","dolog":"thing","kérdés":"question","nyelv":"language/tongue",
+  "élet":"life","szív":"heart","kéz":"hand","szem":"eye","fej":"head",
+  "láb":"foot/leg","kutya":"dog","macska":"cat","madár":"bird","ló":"horse",
+  "fa":"tree/wood","virág":"flower","hegy":"mountain","folyó":"river","tó":"lake",
+  "eső":"rain","hó":"snow","szél":"wind","felhő":"cloud",
+  "szék":"chair","asztal":"table","ajtó":"door","ablak":"window","ágy":"bed",
+  "óra":"hour/clock/watch","telefon":"phone","levél":"letter/leaf","újság":"newspaper",
+  "szeret":"love/like","beszél":"speak","dolgoz":"work","lak":"live/reside",
+  "csinál":"do/make","olvas":"read","ír":"write","tanul":"learn/study",
+  "megy":"go","jön":"come","tud":"know/can","akar":"want","ad":"give",
+  "kap":"get/receive","lát":"see","hall":"hear","mond":"say","kér":"ask/request",
+  "vesz":"buy/take","eszik":"eat","iszik":"drink","alszik":"sleep","fut":"run",
+  "ül":"sit","áll":"stand","játszik":"play","néz":"watch/look","vár":"wait",
+  "ért":"understand","segít":"help","kezd":"begin","gondol":"think",
+  "hisz":"believe","él":"live","főz":"cook","mos":"wash","takarít":"clean",
+  "fizet":"pay","utaz":"travel",
+};
+
+const SUFFIXES = [
+  {patterns:["ban","ben"],type:"suffix",label:"Case: Inessive",role:"Means \"in\" or \"inside\"",example:"házban = in the house",color:"suffix"},
+  {patterns:["ból","ből"],type:"suffix",label:"Case: Elative",role:"Means \"out of\" / \"from inside\"",example:"iskolából = from inside the school",color:"suffix"},
+  {patterns:["ba","be"],type:"suffix",label:"Case: Illative",role:"Means \"into\"",example:"házba = into the house",color:"suffix"},
+  {patterns:["on","en","ön"],type:"suffix",label:"Case: Superessive",role:"Means \"on\" / \"on top of\"",example:"asztalon = on the table",color:"suffix"},
+  {patterns:["ról","ről"],type:"suffix",label:"Case: Delative",role:"Means \"from (off of)\" or \"about\"",example:"hegyről = from the mountain",color:"suffix"},
+  {patterns:["ra","re"],type:"suffix",label:"Case: Sublative",role:"Means \"onto\"",example:"asztalra = onto the table",color:"suffix"},
+  {patterns:["nál","nél"],type:"suffix",label:"Case: Adessive",role:"Means \"at\" / \"by\"",example:"háznál = at the house",color:"suffix"},
+  {patterns:["tól","től"],type:"suffix",label:"Case: Ablative",role:"Means \"from (away from)\"",example:"háztól = away from the house",color:"suffix"},
+  {patterns:["hoz","hez","höz"],type:"suffix",label:"Case: Allative",role:"Means \"to\" / \"toward\"",example:"házhoz = to the house",color:"suffix"},
+  {patterns:["nak","nek"],type:"suffix",label:"Case: Dative",role:"Means \"to\" / \"for\" (recipient)",example:"gyereknek = for the child",color:"suffix"},
+  {patterns:["val","vel"],type:"suffix",label:"Case: Instrumental",role:"Means \"with\"",example:"autóval = by car",color:"suffix"},
+  {patterns:["ként"],type:"suffix",label:"Case: Essive-Formal",role:"Means \"as\"",example:"tanárként = as a teacher",color:"suffix"},
+  {patterns:["ért"],type:"suffix",label:"Case: Causal-Final",role:"Means \"for\" / \"because of\"",example:"pénzért = for money",color:"suffix"},
+  {patterns:["ig"],type:"suffix",label:"Case: Terminative",role:"Means \"until\" / \"up to\"",example:"holnapig = until tomorrow",color:"suffix"},
+  {patterns:["at","et","ot","öt"],type:"suffix",label:"Accusative (-t)",role:"Marks the direct object",example:"könyvet = book (obj)",color:"suffix"},
+  {patterns:["t"],type:"suffix",label:"Accusative (-t)",role:"Marks the direct object",example:"házat = house (obj)",color:"suffix"},
+  {patterns:["ak","ek","ok","ök"],type:"plural",label:"Plural",role:"Makes the word plural",example:"házak = houses",color:"plural"},
+  {patterns:["k"],type:"plural",label:"Plural (-k)",role:"Makes the word plural",example:"almák = apples",color:"plural"},
+  {patterns:["aim","eim","jaim","jeim"],type:"possessive",label:"Possessive: my (plural)",role:"\"My\" (plural)",example:"barátaim = my friends",color:"possessive"},
+  {patterns:["aid","eid","jaid","jeid"],type:"possessive",label:"Possessive: your (plural, informal)",role:"\"Your\" (plural)",example:"barátaid = your friends",color:"possessive"},
+  {patterns:["ai","ei","jai","jei"],type:"possessive",label:"Possessive: his/her (plural)",role:"\"His/her\" (plural)",example:"barátai = his/her friends",color:"possessive"},
+  {patterns:["am","em","om","öm"],type:"possessive",label:"Possessive: my",role:"\"My\"",example:"házam = my house",color:"possessive"},
+  {patterns:["ad","ed","od","öd"],type:"possessive",label:"Possessive: your (informal)",role:"\"Your\" (informal)",example:"házad = your house",color:"possessive"},
+  {patterns:["ja","je","a","e"],type:"possessive",label:"Possessive: his/her",role:"\"His/her\"",example:"háza = his/her house",color:"possessive"},
+  {patterns:["unk","ünk"],type:"possessive",label:"Possessive: our",role:"\"Our\"",example:"házunk = our house",color:"possessive"},
+  {patterns:["atok","etek","ötök","tok","tek","tök"],type:"possessive",label:"Possessive: your (formal/plural)",role:"\"Your\" (plural)",example:"házatok = your (pl.) house",color:"possessive"},
+  {patterns:["juk","jük","uk","ük"],type:"possessive",label:"Possessive: their",role:"\"Their\"",example:"házuk = their house",color:"possessive"},
+  {patterns:["om","em","öm"],type:"verb",label:"Verb: I (definite)",role:"1st person singular definite",example:"szeretem = I love it",color:"verb"},
+  {patterns:["ok","ek","ök"],type:"verb",label:"Verb: I (indefinite)",role:"1st person singular indefinite",example:"dolgozok = I work",color:"verb"},
+  {patterns:["od","ed","öd"],type:"verb",label:"Verb: you (definite, informal)",role:"2nd person singular definite",example:"szereted = you love it",color:"verb"},
+  {patterns:["sz","ol","el","öl","asz","esz"],type:"verb",label:"Verb: you (indefinite, informal)",role:"2nd person singular indefinite",example:"beszélsz = you speak",color:"verb"},
+  {patterns:["ja","i"],type:"verb",label:"Verb: he/she (definite)",role:"3rd person singular definite",example:"szereti = he/she loves it",color:"verb"},
+  {patterns:["unk","ünk"],type:"verb",label:"Verb: we",role:"1st person plural",example:"tanulunk = we study",color:"verb"},
+  {patterns:["tok","tek","tök"],type:"verb",label:"Verb: you all",role:"2nd person plural",example:"tanultok = you all study",color:"verb"},
+  {patterns:["nak","nek"],type:"verb",label:"Verb: they (indefinite)",role:"3rd person plural indefinite",example:"dolgoznak = they work",color:"verb"},
+  {patterns:["ják","ik"],type:"verb",label:"Verb: they (definite)",role:"3rd person plural definite",example:"szeretik = they love it",color:"verb"},
+];
+
+const PREFIXES = [
+  {pattern:"meg",label:"Verbal prefix: meg-",role:"Perfective — completed action",example:"megeszem = I eat it up",color:"prefix"},
+  {pattern:"el",label:"Verbal prefix: el-",role:"Means \"away\" or completion",example:"elmegyek = I go away",color:"prefix"},
+  {pattern:"ki",label:"Verbal prefix: ki-",role:"Means \"out\"",example:"kimegyek = I go out",color:"prefix"},
+  {pattern:"be",label:"Verbal prefix: be-",role:"Means \"in\" / \"into\"",example:"bemegyek = I go in",color:"prefix"},
+  {pattern:"fel",label:"Verbal prefix: fel-",role:"Means \"up\"",example:"felállok = I stand up",color:"prefix"},
+  {pattern:"le",label:"Verbal prefix: le-",role:"Means \"down\"",example:"leülök = I sit down",color:"prefix"},
+  {pattern:"vissza",label:"Verbal prefix: vissza-",role:"Means \"back\"",example:"visszamegyek = I go back",color:"prefix"},
+  {pattern:"össze",label:"Verbal prefix: össze-",role:"Means \"together\"",example:"összegyűjt = collects",color:"prefix"},
+  {pattern:"át",label:"Verbal prefix: át-",role:"Means \"across\" / \"through\"",example:"átmegyek = I go across",color:"prefix"},
+  {pattern:"édes",label:"Prefix: édes-",role:"Means \"sweet\" / \"dear\"",example:"édesanya = dear mother",color:"prefix"},
+  {pattern:"nagy",label:"Prefix: nagy-",role:"Means \"grand\" / \"big\"",example:"nagymama = grandmother",color:"prefix"},
+];
+
+const LINKING_VOWELS = ['a','e','o','ö','á','é'];
+
+function analyzeWord() {
+  const input = document.getElementById('breakdownInput').value.trim();
+  if (!input) { toast("Type a Hungarian word first"); return; }
+  const word = input.toLowerCase();
+  const result = breakdownWord(word);
+  renderBreakdown(input, result);
+}
+
+function tryExample(word) {
+  document.getElementById('breakdownInput').value = word;
+  analyzeWord();
+}
+
+function breakdownWord(word) {
+  const parts = [];
+  let remaining = word;
+
+  let foundPrefix = null;
+  for (const prefix of PREFIXES) {
+    if (remaining.startsWith(prefix.pattern) && remaining.length > prefix.pattern.length + 1) {
+      const afterPrefix = remaining.slice(prefix.pattern.length);
+      const hasKnownRoot = Object.keys(KNOWN_ROOTS).some(r => afterPrefix.startsWith(r));
+      if (hasKnownRoot) { foundPrefix = prefix; remaining = afterPrefix; break; }
+    }
+  }
+
+  let rootMatch = null, rootMeaning = "";
+  const sortedRoots = Object.keys(KNOWN_ROOTS).sort((a, b) => b.length - a.length);
+  for (const root of sortedRoots) {
+    if (remaining.startsWith(root)) {
+      rootMatch = root; rootMeaning = KNOWN_ROOTS[root];
+      remaining = remaining.slice(root.length); break;
+    }
+  }
+
+  if (!rootMatch) {
+    let testWord = remaining;
+    for (const suffix of SUFFIXES) {
+      for (const pat of suffix.patterns) {
+        if (testWord.endsWith(pat) && testWord.length > pat.length + 1) {
+          const possibleRoot = testWord.slice(0, testWord.length - pat.length);
+          let cleanRoot = possibleRoot;
+          if (LINKING_VOWELS.includes(cleanRoot[cleanRoot.length - 1]) && cleanRoot.length > 2) {
+            const wo = cleanRoot.slice(0, -1);
+            if (KNOWN_ROOTS[wo]) cleanRoot = wo;
+          }
+          if (KNOWN_ROOTS[cleanRoot]) {
+            rootMatch = cleanRoot; rootMeaning = KNOWN_ROOTS[cleanRoot];
+            remaining = testWord.slice(cleanRoot.length); break;
+          }
+        }
+      }
+      if (rootMatch) break;
+    }
+  }
+
+  if (foundPrefix) parts.push({ text: foundPrefix.pattern, type: "prefix", label: foundPrefix.label, role: foundPrefix.role, example: foundPrefix.example, color: foundPrefix.color });
+  if (rootMatch) parts.push({ text: rootMatch, type: "root", label: "Root word", role: `The base word meaning "${rootMeaning}".`, example: "", color: "root" });
+  else if (remaining.length > 0) { parts.push({ text: remaining, type: "root", label: "Root / base", role: "Base word — add to your flashcards to learn it!", example: "", color: "root" }); remaining = ""; }
+
+  if (remaining.length > 0) {
+    let suffixRemaining = remaining;
+    let safety = 0;
+    while (suffixRemaining.length > 0 && safety < 5) {
+      safety++;
+      let found = false;
+      if (suffixRemaining.length > 1 && LINKING_VOWELS.includes(suffixRemaining[0])) {
+        const afterVowel = suffixRemaining.slice(1);
+        for (const suffix of SUFFIXES) {
+          for (const pat of suffix.patterns) {
+            if (afterVowel.startsWith(pat)) {
+              parts.push({ text: suffixRemaining[0], type: "suffix", label: "Linking vowel", role: "Connecting vowel for pronunciation. Hungarian uses vowel harmony.", example: "házat (not házt)", color: "suffix" });
+              suffixRemaining = afterVowel; found = true; break;
+            }
+          }
+          if (found) break;
+        }
+        if (found) continue;
+      }
+      for (const suffix of SUFFIXES) {
+        const sortedPatterns = [...suffix.patterns].sort((a, b) => b.length - a.length);
+        for (const pat of sortedPatterns) {
+          if (suffixRemaining.startsWith(pat)) {
+            parts.push({ text: pat, type: suffix.type, label: suffix.label, role: suffix.role, example: suffix.example, color: suffix.color });
+            suffixRemaining = suffixRemaining.slice(pat.length); found = true; break;
+          }
+        }
+        if (found) break;
+      }
+      if (!found) {
+        parts.push({ text: suffixRemaining, type: "suffix", label: "Suffix / ending", role: "A grammatical ending — possibly a rare combination.", example: "", color: "suffix" });
+        suffixRemaining = "";
+      }
+    }
+  }
+
+  return parts;
+}
+
+function renderBreakdown(originalWord, parts) {
+  if (parts.length === 0) {
+    document.getElementById('breakdownResult').innerHTML = '<div class="empty-state"><p>Could not analyze this word.</p></div>';
+    return;
+  }
+  const segmentsHtml = parts.map((p, i) => {
+    const connector = i > 0 ? '<div class="breakdown-connector">+</div>' : '';
+    return `${connector}<div class="breakdown-segment">
+      <div class="segment-text segment-${p.color}">${p.text}</div>
+      <div class="segment-label">${p.type}</div>
+    </div>`;
+  }).join('');
+  const detailsHtml = parts.map(p => `
+    <div class="detail-card">
+      <span class="detail-badge badge-${p.color}">${p.text}</span>
+      <div class="detail-info">
+        <div class="piece">${p.label}</div>
+        <div class="role">${p.role}</div>
+        ${p.example ? `<div class="example">${p.example}</div>` : ''}
+      </div>
+    </div>`).join('');
+  const summary = buildSummary(originalWord, parts);
+  document.getElementById('breakdownResult').innerHTML = `
+    <div class="breakdown-result">
+      <div class="breakdown-word-display">${originalWord}
+        <button class="speak-btn" style="width:28px;height:28px;font-size:0.8em;vertical-align:middle;margin-left:6px" onclick="speak('${originalWord.replace(/'/g,"\\'")}')">🔊</button>
+      </div>
+      <div class="breakdown-visual">${segmentsHtml}</div>
+      <div class="breakdown-details">${detailsHtml}</div>
+      ${summary ? `<div class="breakdown-summary"><div class="meaning">${summary}</div></div>` : ''}
+    </div>`;
+}
+
+function buildSummary(word, parts) {
+  const root = parts.find(p => p.type === 'root');
+  const suffixes = parts.filter(p => p.type === 'suffix' && p.label !== 'Linking vowel');
+  const prefix = parts.find(p => p.type === 'prefix');
+  const plural = parts.find(p => p.type === 'plural');
+  const possessive = parts.find(p => p.type === 'possessive');
+  const verb = parts.find(p => p.type === 'verb');
+  if (!root) return '';
+  let pieces = [];
+  if (prefix) pieces.push(prefix.label.replace('Verbal prefix: ','').replace('Prefix: ',''));
+  pieces.push(`<strong>${root.text}</strong>`);
+  if (plural) pieces.push('(plural)');
+  if (possessive) pieces.push(`(${possessive.label.replace('Possessive: ','')})`);
+  if (suffixes.length > 0) suffixes.forEach(s => pieces.push(`+ ${s.label.replace('Case: ','')}`));
+  if (verb) pieces.push(`(${verb.label.replace('Verb: ','')})`);
+  return pieces.join(' ');
+}
+
+// ════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════
+load();
+buildDueQueue();
+renderLevelFilter();
+renderCategoryFilter();
+renderStudy();
+updateStats();
+</script>
+</body>
+</html>

@@ -1,0 +1,1374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>THE FIELD MANUAL // Shipping a Game Promo Site for Backend Brains</title>
+<meta name="description" content="A high-fidelity guide for backend engineers building a cinematic game promotion / contact site on Cloudflare." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+
+<style>
+  /* ---------- DESIGN TOKENS ---------- */
+  :root{
+    --bg:        #0a0908;
+    --bg-elev:   #141210;
+    --bg-paper:  #1c1916;
+    --ink:       #faf4e8;
+    --ink-mute:  #a89f90;
+    --ink-dim:   #6b6355;
+    --rule:      #2a2621;
+
+    --signal:    #e63946;   /* press-start red */
+    --amber:     #f4a261;   /* CRT amber */
+    --ice:       #a8dadc;   /* cold HUD cyan */
+    --acid:      #d4ff3a;   /* highlight */
+
+    --f-display: "Bebas Neue", "Impact", sans-serif;
+    --f-edit:    "Fraunces", "Times New Roman", serif;
+    --f-body:    "IBM Plex Sans", system-ui, sans-serif;
+    --f-mono:    "JetBrains Mono", ui-monospace, monospace;
+
+    --w-max: 1320px;
+    --gutter: clamp(16px, 3vw, 40px);
+
+    --ease: cubic-bezier(.2,.7,.2,1);
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--f-body);
+    font-size:16px;
+    line-height:1.55;
+    font-feature-settings:"ss01","cv11";
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  /* Film-grain overlay — critical to the "not AI slop" feel */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.35 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+    opacity:.06;
+    pointer-events:none;
+    z-index:1000;
+    mix-blend-mode:overlay;
+  }
+
+  /* Scanline atmosphere on the hero only, added via local ::after */
+
+  a{color:inherit}
+  ::selection{background:var(--signal); color:var(--ink)}
+
+  /* ---------- LAYOUT PRIMITIVES ---------- */
+  .wrap{max-width:var(--w-max); margin:0 auto; padding:0 var(--gutter)}
+  .row{display:grid; gap:clamp(16px,2.5vw,32px)}
+
+  /* ---------- TOP BAR ---------- */
+  .bar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(10,9,8,.72);
+    backdrop-filter:blur(14px) saturate(140%);
+    border-bottom:1px solid var(--rule);
+  }
+  .bar__inner{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px var(--gutter);
+    max-width:var(--w-max); margin:0 auto;
+    font-family:var(--f-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+  }
+  .bar__brand{display:flex; align-items:center; gap:10px; font-weight:700}
+  .bar__brand .dot{width:8px; height:8px; background:var(--signal); border-radius:50%; box-shadow:0 0 12px var(--signal); animation:blink 1.4s steps(2) infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .bar__nav{display:flex; gap:18px; color:var(--ink-mute)}
+  .bar__nav a{text-decoration:none; transition:color .2s var(--ease)}
+  .bar__nav a:hover{color:var(--ink)}
+  @media (max-width:720px){ .bar__nav{display:none} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    padding: clamp(48px, 10vh, 120px) 0 clamp(40px, 8vh, 100px);
+    overflow:hidden;
+    border-bottom:1px solid var(--rule);
+  }
+  .hero::before{
+    /* radial cinematic glow */
+    content:"";
+    position:absolute; inset:-20%;
+    background:
+      radial-gradient(60% 40% at 20% 30%, rgba(230,57,70,.22), transparent 60%),
+      radial-gradient(50% 35% at 85% 70%, rgba(168,218,220,.14), transparent 60%),
+      radial-gradient(80% 60% at 50% 120%, rgba(244,162,97,.18), transparent 60%);
+    filter:blur(40px);
+    pointer-events:none;
+  }
+  .hero::after{
+    /* scanlines */
+    content:"";
+    position:absolute; inset:0;
+    background-image:repeating-linear-gradient(
+      to bottom,
+      transparent 0 3px,
+      rgba(255,255,255,.02) 3px 4px
+    );
+    pointer-events:none;
+  }
+  .hero__grid{
+    display:grid;
+    grid-template-columns: 1.2fr .8fr;
+    gap: clamp(24px, 4vw, 64px);
+    align-items:end;
+    position:relative; z-index:2;
+  }
+  @media (max-width:900px){ .hero__grid{grid-template-columns:1fr} }
+
+  .eyebrow{
+    font-family:var(--f-mono);
+    font-size:12px;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:var(--amber);
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:22px; height:1px; background:var(--amber)}
+
+  h1.title{
+    font-family:var(--f-display);
+    font-weight:400;
+    font-size: clamp(58px, 11.5vw, 184px);
+    line-height:.88;
+    letter-spacing:-.01em;
+    margin:.35em 0 .2em;
+    text-transform:uppercase;
+  }
+  h1.title .slash{color:var(--signal)}
+  h1.title .italic{
+    font-family:var(--f-edit);
+    font-style:italic;
+    font-weight:300;
+    text-transform:none;
+    letter-spacing:-.02em;
+    color:var(--ink-mute);
+    font-size:.55em;
+    display:inline-block;
+    transform:translateY(-.15em);
+  }
+
+  .hero__lede{
+    font-family:var(--f-edit);
+    font-weight:300;
+    font-size: clamp(18px, 1.5vw, 22px);
+    line-height:1.4;
+    color:var(--ink);
+    max-width:52ch;
+  }
+  .hero__lede em{color:var(--amber); font-style:italic}
+
+  .hero__meta{
+    border-left:2px solid var(--signal);
+    padding-left:18px;
+    font-family:var(--f-mono);
+    font-size:12px;
+    color:var(--ink-mute);
+    line-height:1.7;
+  }
+  .hero__meta dt{color:var(--ink); text-transform:uppercase; letter-spacing:.1em; margin-top:10px}
+  .hero__meta dt:first-child{margin-top:0}
+  .hero__meta dd{margin:0}
+
+  /* ---------- SECTION SHELL ---------- */
+  section.chapter{
+    padding: clamp(60px, 9vh, 120px) 0;
+    border-bottom:1px solid var(--rule);
+    position:relative;
+  }
+  .chap-head{
+    display:grid;
+    grid-template-columns: 120px 1fr;
+    gap: clamp(16px, 3vw, 40px);
+    align-items:start;
+    margin-bottom: clamp(32px, 5vh, 64px);
+  }
+  @media (max-width:720px){ .chap-head{grid-template-columns:1fr} }
+  .chap-num{
+    font-family:var(--f-display);
+    font-size: clamp(56px, 8vw, 112px);
+    line-height:.85;
+    color:var(--signal);
+  }
+  .chap-title{
+    font-family:var(--f-display);
+    font-size: clamp(36px, 5.5vw, 80px);
+    line-height:.9;
+    text-transform:uppercase;
+    margin:0 0 10px;
+    letter-spacing:-.005em;
+  }
+  .chap-sub{
+    font-family:var(--f-edit);
+    font-style:italic;
+    font-weight:300;
+    color:var(--ink-mute);
+    font-size: clamp(16px, 1.4vw, 20px);
+    max-width:60ch;
+    margin:0;
+  }
+
+  /* ---------- PROSE ---------- */
+  .prose{
+    max-width:72ch;
+    font-size:16px;
+    color:var(--ink);
+  }
+  .prose p{margin:0 0 1.1em}
+  .prose strong{color:var(--ink); font-weight:600; background:linear-gradient(transparent 70%, rgba(230,57,70,.35) 70%)}
+  .prose em{color:var(--amber); font-style:italic; font-family:var(--f-edit); font-weight:400}
+  .prose code{
+    font-family:var(--f-mono); font-size:.86em;
+    background:var(--bg-elev); border:1px solid var(--rule);
+    padding:2px 6px; border-radius:3px; color:var(--ice);
+  }
+
+  /* ---------- TWO-COL CONTENT ---------- */
+  .two{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(20px, 3vw, 48px);
+  }
+  @media (max-width:860px){ .two{grid-template-columns:1fr} }
+
+  /* ---------- COMPARE CARDS (bad vs good) ---------- */
+  .compare{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin:24px 0}
+  @media (max-width:720px){ .compare{grid-template-columns:1fr} }
+  .card{
+    background:var(--bg-elev);
+    border:1px solid var(--rule);
+    padding:22px;
+    position:relative;
+    transition: transform .3s var(--ease), border-color .3s var(--ease);
+  }
+  .card:hover{transform:translateY(-2px); border-color:var(--ink-dim)}
+  .card__tag{
+    position:absolute; top:-10px; left:16px;
+    font-family:var(--f-mono); font-size:11px; letter-spacing:.12em;
+    text-transform:uppercase;
+    background:var(--bg); padding:2px 8px;
+  }
+  .card--bad .card__tag{color:#ff6b6b; border:1px solid #ff6b6b44}
+  .card--good .card__tag{color:var(--acid); border:1px solid #d4ff3a44}
+  .card h4{
+    font-family:var(--f-display);
+    font-weight:400;
+    font-size:22px;
+    letter-spacing:.02em;
+    text-transform:uppercase;
+    margin:8px 0 10px;
+  }
+  .card p{margin:0; color:var(--ink-mute); font-size:14.5px}
+
+  /* ---------- CODE BLOCK ---------- */
+  pre.code{
+    font-family:var(--f-mono);
+    font-size:13px;
+    line-height:1.6;
+    background:var(--bg-paper);
+    border:1px solid var(--rule);
+    border-left:3px solid var(--amber);
+    padding:18px 20px;
+    overflow:auto;
+    margin:20px 0;
+    color:var(--ink);
+    position:relative;
+  }
+  pre.code::before{
+    content:attr(data-lang);
+    position:absolute; top:6px; right:12px;
+    font-size:10px; letter-spacing:.18em;
+    color:var(--ink-dim); text-transform:uppercase;
+  }
+  .tok-k{color:var(--signal)}      /* keyword */
+  .tok-s{color:var(--acid)}        /* string */
+  .tok-c{color:var(--ink-dim); font-style:italic}  /* comment */
+  .tok-p{color:var(--ice)}         /* property */
+  .tok-n{color:var(--amber)}       /* number/unit */
+
+  /* ---------- PULL QUOTE ---------- */
+  .pull{
+    font-family:var(--f-edit);
+    font-style:italic;
+    font-weight:300;
+    font-size: clamp(24px, 3vw, 40px);
+    line-height:1.2;
+    color:var(--ink);
+    max-width:28ch;
+    margin: clamp(24px, 5vh, 48px) 0;
+    padding-left:28px;
+    border-left:3px solid var(--signal);
+  }
+  .pull .by{
+    display:block;
+    font-family:var(--f-mono);
+    font-style:normal;
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    margin-top:14px;
+  }
+
+  /* ---------- TYPE SPECIMEN ---------- */
+  .specimen{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:24px;
+    margin:20px 0;
+  }
+  @media (max-width:720px){ .specimen{grid-template-columns:1fr} }
+  .spec{
+    background:var(--bg-elev); border:1px solid var(--rule);
+    padding:24px; position:relative;
+  }
+  .spec__label{
+    font-family:var(--f-mono); font-size:10px; letter-spacing:.2em;
+    text-transform:uppercase; color:var(--ink-dim);
+  }
+  .spec__big{
+    font-size: clamp(40px, 5vw, 72px);
+    line-height:.95;
+    margin:8px 0 4px;
+  }
+  .spec__small{color:var(--ink-mute); font-size:13px}
+  .spec--display .spec__big{font-family:var(--f-display); font-weight:400; text-transform:uppercase; letter-spacing:-.005em}
+  .spec--edit    .spec__big{font-family:var(--f-edit); font-style:italic; font-weight:300}
+  .spec--body    .spec__big{font-family:var(--f-body); font-weight:600}
+  .spec--mono    .spec__big{font-family:var(--f-mono); font-weight:500; font-size:clamp(32px,4vw,56px)}
+
+  /* ---------- COLOR CHIPS ---------- */
+  .chips{display:grid; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr)); gap:14px; margin:20px 0}
+  .chip{
+    aspect-ratio: 5/4;
+    padding:12px;
+    display:flex; flex-direction:column; justify-content:space-between;
+    border:1px solid var(--rule);
+    font-family:var(--f-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    transition:transform .2s var(--ease);
+  }
+  .chip:hover{transform:scale(1.03)}
+  .chip--bg{background:var(--bg); color:var(--ink-mute)}
+  .chip--ink{background:var(--ink); color:var(--bg)}
+  .chip--signal{background:var(--signal); color:var(--ink)}
+  .chip--amber{background:var(--amber); color:var(--bg)}
+  .chip--ice{background:var(--ice); color:var(--bg)}
+  .chip--acid{background:var(--acid); color:var(--bg)}
+
+  /* ---------- DEMO HERO (live example inside the manual) ---------- */
+  .demo-hero{
+    position:relative; overflow:hidden;
+    background:#0c0a09;
+    border:1px solid var(--rule);
+    padding: clamp(36px, 6vw, 72px) clamp(20px, 4vw, 56px);
+    margin:28px 0;
+    min-height:420px;
+    display:flex; flex-direction:column; justify-content:flex-end;
+  }
+  .demo-hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      radial-gradient(60% 70% at 80% 30%, rgba(230,57,70,.35), transparent 60%),
+      radial-gradient(50% 50% at 20% 80%, rgba(244,162,97,.22), transparent 60%),
+      linear-gradient(180deg, #0c0a09 0%, #1a0e0d 100%);
+    z-index:0;
+  }
+  .demo-hero::after{
+    content:""; position:absolute; inset:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='.8' numOctaves='2'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='.6'/></svg>");
+    opacity:.08; z-index:1; mix-blend-mode:overlay;
+  }
+  .demo-hero > *{position:relative; z-index:2}
+  .demo-hero__eyebrow{
+    font-family:var(--f-mono); font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+    color:var(--amber);
+  }
+  .demo-hero__title{
+    font-family:var(--f-display); font-weight:400;
+    font-size: clamp(48px, 8vw, 120px);
+    line-height:.88; text-transform:uppercase;
+    margin:.2em 0 .3em; color:var(--ink);
+    text-shadow: 0 2px 40px rgba(230,57,70,.4);
+  }
+  .demo-hero__title .glitch{display:inline-block; position:relative; color:var(--signal)}
+  .demo-hero__sub{
+    font-family:var(--f-edit); font-style:italic; font-weight:300;
+    font-size: clamp(15px, 1.4vw, 19px);
+    color:var(--ink-mute); max-width:40ch;
+    margin-bottom:24px;
+  }
+  .demo-hero__ctas{display:flex; gap:12px; flex-wrap:wrap}
+
+  /* ---------- BUTTONS ---------- */
+  .btn{
+    --bc: var(--signal);
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--f-mono); font-size:12px; letter-spacing:.16em;
+    text-transform:uppercase; font-weight:700;
+    padding:14px 22px;
+    background:var(--bc); color:var(--bg);
+    border:1px solid var(--bc);
+    cursor:pointer;
+    text-decoration:none;
+    position:relative;
+    transition: transform .2s var(--ease), box-shadow .3s var(--ease);
+  }
+  .btn:hover{transform:translate(-2px,-2px); box-shadow:4px 4px 0 var(--bg)}
+  .btn--ghost{background:transparent; color:var(--ink); border-color:var(--ink)}
+  .btn--ghost:hover{background:var(--ink); color:var(--bg); box-shadow:4px 4px 0 var(--signal)}
+  .btn__arrow{transition:transform .2s var(--ease)}
+  .btn:hover .btn__arrow{transform:translateX(3px)}
+
+  /* ---------- FEATURE GRID ---------- */
+  .features{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap:0;
+    border:1px solid var(--rule);
+    margin:24px 0;
+  }
+  .feat{
+    padding:28px 24px;
+    border-right:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+  }
+  .feat:last-child{border-right:none}
+  .feat__num{
+    font-family:var(--f-mono); font-size:11px; letter-spacing:.18em;
+    color:var(--signal); text-transform:uppercase;
+  }
+  .feat__title{
+    font-family:var(--f-display); font-weight:400;
+    font-size:26px; letter-spacing:.01em;
+    text-transform:uppercase;
+    margin:10px 0 8px;
+  }
+  .feat__body{color:var(--ink-mute); font-size:14.5px; margin:0}
+
+  /* ---------- CHECKLIST ---------- */
+  .check{
+    list-style:none; padding:0; margin:24px 0;
+    border-top:1px solid var(--rule);
+  }
+  .check li{
+    display:grid; grid-template-columns: 42px 1fr auto; gap:16px; align-items:center;
+    padding:16px 4px;
+    border-bottom:1px solid var(--rule);
+    transition:background .2s var(--ease);
+  }
+  .check li:hover{background:var(--bg-elev)}
+  .check__box{
+    width:22px; height:22px; border:1.5px solid var(--ink-dim);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--signal); font-family:var(--f-mono); font-size:14px;
+    cursor:pointer; transition:all .2s var(--ease);
+  }
+  .check__box.done{background:var(--signal); border-color:var(--signal); color:var(--bg)}
+  .check__text{font-size:15.5px}
+  .check__text strong{color:var(--ink); font-weight:600}
+  .check li.done .check__text{color:var(--ink-dim); text-decoration:line-through}
+  .check__tag{
+    font-family:var(--f-mono); font-size:10px; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--ink-dim);
+    padding:3px 8px; border:1px solid var(--rule);
+  }
+
+  /* ---------- FORM DEMO ---------- */
+  .form-demo{
+    display:grid; grid-template-columns: 1fr 1fr; gap:14px;
+    background:var(--bg-elev);
+    border:1px solid var(--rule);
+    padding:28px;
+    margin:24px 0;
+  }
+  @media (max-width:720px){ .form-demo{grid-template-columns:1fr} }
+  .form-demo__full{grid-column:1/-1}
+  .field{display:flex; flex-direction:column; gap:6px}
+  .field label{
+    font-family:var(--f-mono); font-size:10px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--ink-mute);
+  }
+  .field input, .field textarea, .field select{
+    font-family:var(--f-body); font-size:15px;
+    background:var(--bg); border:1px solid var(--rule);
+    color:var(--ink); padding:12px 14px;
+    outline:none; transition:border-color .2s var(--ease), box-shadow .2s var(--ease);
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{
+    border-color:var(--signal);
+    box-shadow:0 0 0 3px rgba(230,57,70,.18);
+  }
+  .field textarea{min-height:120px; resize:vertical; font-family:var(--f-body)}
+
+  /* ---------- STACK TABLE ---------- */
+  .stack{
+    display:grid; grid-template-columns:1fr 1fr 1fr;
+    border:1px solid var(--rule);
+    margin:24px 0;
+    font-size:14px;
+  }
+  @media (max-width:720px){ .stack{grid-template-columns:1fr} }
+  .stack > div{
+    padding:20px;
+    border-right:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+  }
+  .stack .head{
+    font-family:var(--f-mono); font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--amber);
+    background:var(--bg-elev);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer.end{
+    padding: clamp(60px, 10vh, 120px) 0 40px;
+    position:relative;
+  }
+  footer.end::before{
+    content:"";
+    position:absolute; inset:0;
+    background: radial-gradient(60% 100% at 50% 0%, rgba(230,57,70,.15), transparent 70%);
+    pointer-events:none;
+  }
+  .end__mega{
+    font-family:var(--f-display); font-weight:400;
+    font-size: clamp(72px, 16vw, 260px);
+    line-height:.8; letter-spacing:-.01em;
+    text-transform:uppercase;
+    color:var(--ink);
+    margin:0;
+  }
+  .end__mega .k{color:var(--signal)}
+  .end__mega .italic{
+    font-family:var(--f-edit); font-style:italic; font-weight:300;
+    text-transform:none; color:var(--ink-mute);
+    font-size:.25em; display:block; letter-spacing:-.02em;
+    margin-top:12px;
+  }
+  .end__meta{
+    display:flex; justify-content:space-between; flex-wrap:wrap; gap:20px;
+    border-top:1px solid var(--rule); padding-top:24px; margin-top:40px;
+    font-family:var(--f-mono); font-size:11px; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--ink-dim);
+  }
+
+  /* ---------- ENTRY ANIMATIONS ---------- */
+  @keyframes rise{
+    from{opacity:0; transform:translateY(20px)}
+    to{opacity:1; transform:none}
+  }
+  .reveal{opacity:0}
+  .reveal.in{animation:rise .8s var(--ease) forwards}
+  .reveal.d1{animation-delay:.08s}
+  .reveal.d2{animation-delay:.16s}
+  .reveal.d3{animation-delay:.24s}
+  .reveal.d4{animation-delay:.32s}
+
+  /* ---------- MARQUEE ---------- */
+  .marquee{
+    overflow:hidden;
+    border-top:1px solid var(--rule);
+    border-bottom:1px solid var(--rule);
+    background:var(--bg);
+    padding:16px 0;
+  }
+  .marquee__track{
+    display:flex; gap:48px;
+    white-space:nowrap;
+    animation: slide 40s linear infinite;
+    font-family:var(--f-display); font-size: clamp(32px, 5vw, 64px);
+    text-transform:uppercase;
+    color:var(--ink);
+  }
+  .marquee__track span{display:inline-flex; align-items:center; gap:48px}
+  .marquee__track .sep{color:var(--signal); font-size:.6em}
+  @keyframes slide{ from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  @media (prefers-reduced-motion: reduce){
+    *,*::before,*::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important}
+  }
+</style>
+</head>
+<body>
+
+<!-- ===================== TOP BAR ===================== -->
+<header class="bar">
+  <div class="bar__inner">
+    <div class="bar__brand"><span class="dot"></span>FIELD MANUAL · V1</div>
+    <nav class="bar__nav">
+      <a href="#stack">00 Stack</a>
+      <a href="#type">01 Type</a>
+      <a href="#color">02 Color</a>
+      <a href="#hero">03 Hero</a>
+      <a href="#motion">04 Motion</a>
+      <a href="#form">05 Contact</a>
+      <a href="#perf">06 Perf</a>
+      <a href="#deploy">07 Ship</a>
+    </nav>
+    <div style="color:var(--ink-mute)">For Backends Who Miss The Sun</div>
+  </div>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <div class="wrap hero__grid">
+    <div>
+      <span class="eyebrow reveal in">Issue No. 01 · Cloudflare Deployment Edition</span>
+      <h1 class="title reveal in d1">
+        Ship<span class="slash">/</span>A<br/>
+        Game<br/>
+        Promo <span class="italic">that doesn't look like a CRUD form.</span>
+      </h1>
+      <p class="hero__lede reveal in d2">
+        You've written <em>seventeen microservices</em>. You can explain eventual consistency at a dinner party. But the
+        marketing team just asked you to build the launch site, and your last CSS encounter was a <code style="font-family:var(--f-mono); background:var(--bg-elev); padding:2px 6px; color:var(--ice)">float:left</code> in 2014. This is your manual.
+      </p>
+    </div>
+    <aside class="hero__meta reveal in d3">
+      <dt>Audience</dt>
+      <dd>Senior backend engineers</dd>
+      <dt>Deliverable</dt>
+      <dd>Game promo + contact page</dd>
+      <dt>Target Host</dt>
+      <dd>Cloudflare Pages / Workers</dd>
+      <dt>Time Budget</dt>
+      <dd>2–5 focused days</dd>
+      <dt>Success Metric</dt>
+      <dd>It looks intentional, not templated</dd>
+    </aside>
+  </div>
+</section>
+
+<!-- ===================== MARQUEE BREAK ===================== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <span>Contrast over comfort <span class="sep">✦</span> Motion with restraint <span class="sep">✦</span> One hero, one promise <span class="sep">✦</span> Dark mode is a default, not a feature <span class="sep">✦</span> Ship the edges <span class="sep">✦</span></span>
+    <span>Contrast over comfort <span class="sep">✦</span> Motion with restraint <span class="sep">✦</span> One hero, one promise <span class="sep">✦</span> Dark mode is a default, not a feature <span class="sep">✦</span> Ship the edges <span class="sep">✦</span></span>
+  </div>
+</div>
+
+<!-- ===================== CHAPTER 00 · MENTAL MODEL ===================== -->
+<section class="chapter">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">00</div>
+      <div>
+        <h2 class="chap-title">The Mental Model Shift</h2>
+        <p class="chap-sub">Frontend is not a weaker backend. It is a different discipline with inverted priorities — you are now writing for humans who scroll for four seconds before they decide.</p>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="prose">
+        <p>On the backend you optimise for <strong>correctness, throughput, and uptime</strong>. Invisible success. On a game promo site you optimise for <em>one emotion in under four seconds</em> — "I want to play that."</p>
+        <p>Everything in this manual serves that one job. If it doesn't, cut it. There is no feature so clever it survives a bad hero section.</p>
+        <p>Two mental flips that will save you two weeks:</p>
+        <p><strong>1. Design is a constraint problem, not a palette problem.</strong> You don't start with a colour picker. You start with: "what's the one thing a visitor must remember after leaving?" Then every type size, every motion curve, every bit of whitespace is in service of that.</p>
+        <p><strong>2. The browser is your production environment.</strong> DevTools is your REPL. You will spend 60% of your time nudging values by 2px and 0.05s until something clicks. This is not procrastination. This is the work.</p>
+      </div>
+      <div>
+        <div class="pull">
+          A game promo site has one job: make the viewer <em>feel</em> something before they read anything.
+          <span class="by">— Field Manual, page 1</span>
+        </div>
+        <div class="features">
+          <div class="feat">
+            <div class="feat__num">Rule 01</div>
+            <div class="feat__title">One Hero</div>
+            <p class="feat__body">One headline, one image, one CTA. If you have two, you have none.</p>
+          </div>
+          <div class="feat">
+            <div class="feat__num">Rule 02</div>
+            <div class="feat__title">Dark First</div>
+            <p class="feat__body">Games are cinematic. Dark backgrounds let art, light, and motion do the work.</p>
+          </div>
+          <div class="feat">
+            <div class="feat__num">Rule 03</div>
+            <div class="feat__title">Ship Edges</div>
+            <p class="feat__body">Full-bleed media, grain, scanlines, asymmetry. Safe centred boxes read as templates.</p>
+          </div>
+          <div class="feat">
+            <div class="feat__num">Rule 04</div>
+            <div class="feat__title">Respect Eyes</div>
+            <p class="feat__body">Every effect has an off-switch: <code>prefers-reduced-motion</code>. Non-negotiable.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAPTER 01 · STACK ===================== -->
+<section class="chapter" id="stack">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">01</div>
+      <div>
+        <h2 class="chap-title">Stack &amp; Tooling</h2>
+        <p class="chap-sub">Pick boring tools. You want every decision you make to be visible on the page, not hidden in config.</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>For a single promo + contact page on Cloudflare, the "correct" answer is almost always <strong>Astro</strong> or plain <strong>Vite + vanilla JS</strong> deployed to <strong>Cloudflare Pages</strong>, with the contact form handled by a <strong>Worker</strong>. Resist the urge to reach for a full React framework — you're shipping two routes, not an application.</p>
+    </div>
+
+    <div class="stack">
+      <div class="head">Layer</div>
+      <div class="head">Pick</div>
+      <div class="head">Why</div>
+
+      <div>Framework</div>
+      <div><strong>Astro</strong> · SvelteKit · Next (only if you know it)</div>
+      <div>Zero-JS by default. Islands only where motion lives.</div>
+
+      <div>Styling</div>
+      <div><strong>Vanilla CSS</strong> with tokens · optional Tailwind</div>
+      <div>Modern CSS covers 95% of what you need. Don't import a UI kit.</div>
+
+      <div>Fonts</div>
+      <div>Google Fonts or self-hosted WOFF2</div>
+      <div>Self-host for perf + no CLS. <code>font-display:swap</code>.</div>
+
+      <div>Assets</div>
+      <div>Cloudflare Images · R2</div>
+      <div>AVIF/WebP served at the edge, geo-close to every player.</div>
+
+      <div>Form backend</div>
+      <div>Cloudflare Worker → Resend / Postmark / D1</div>
+      <div>One function, ~30 lines. Turnstile for bot filtering.</div>
+
+      <div>Analytics</div>
+      <div>Cloudflare Web Analytics (free, cookieless)</div>
+      <div>Zero consent banner needed in EU. Ship faster.</div>
+
+      <div>Deploy</div>
+      <div><code>wrangler pages deploy</code> · Git push</div>
+      <div>Preview URLs on every PR. Production on <code>main</code>.</div>
+
+      <div>Perf budget</div>
+      <div>LCP &lt; 2.0s · CLS &lt; 0.05 · JS &lt; 80KB</div>
+      <div>Anything higher and the site will feel like software.</div>
+
+      <div>Observability</div>
+      <div>Cloudflare Analytics Engine · Sentry</div>
+      <div>You still want stack traces. This is not optional for forms.</div>
+    </div>
+
+    <pre class="code" data-lang="bash"><span class="tok-c"># Bootstrap a promo site in under a minute</span>
+<span class="tok-k">npm</span> create astro@latest game-promo -- --template minimal --typescript strict
+<span class="tok-k">cd</span> game-promo
+<span class="tok-k">npm</span> i -D @astrojs/cloudflare
+<span class="tok-k">npx</span> wrangler pages project create game-promo
+<span class="tok-k">npx</span> wrangler pages deploy ./dist</pre>
+  </div>
+</section>
+
+<!-- ===================== CHAPTER 02 · TYPOGRAPHY ===================== -->
+<section class="chapter" id="type">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">02</div>
+      <div>
+        <h2 class="chap-title">Typography, Or: Why Your Arial Page Feels Like a TPS Report</h2>
+        <p class="chap-sub">Type is 80% of the perceived quality of your site. The correct font is not the font you know — it is the font nobody else is using this quarter.</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Type-setting is how websites communicate <em>before</em> words are read. A wall of 16px Inter reads as "documentation." A condensed display face at 140px reads as "event." Pick on purpose.</p>
+      <p>The working pattern for a game promo: <strong>a hard display face</strong> (condensed, heavy, uppercase-friendly) + <strong>a refined body face</strong> + <strong>an editorial italic serif</strong> for pull quotes, release dates, and credits. Three fonts is a trio; four is a band with tension.</p>
+    </div>
+
+    <div class="specimen">
+      <div class="spec spec--display">
+        <div class="spec__label">Display · Bebas Neue</div>
+        <div class="spec__big">Enter the Vault</div>
+        <div class="spec__small">Condensed, cinematic, uppercase. Eats headlines above 60px. Avoid for body.</div>
+      </div>
+      <div class="spec spec--edit">
+        <div class="spec__label">Editorial · Fraunces Italic</div>
+        <div class="spec__big">a quiet moment</div>
+        <div class="spec__small">For pull quotes, release dates, credits. Adds breath between loud chapters.</div>
+      </div>
+      <div class="spec spec--body">
+        <div class="spec__label">Body · IBM Plex Sans</div>
+        <div class="spec__big">Readable at 16</div>
+        <div class="spec__small">Humanist sans. Clear at small sizes, friendly without being cute.</div>
+      </div>
+      <div class="spec spec--mono">
+        <div class="spec__label">Mono · JetBrains Mono</div>
+        <div class="spec__big">v1.2.0 · BUILD_4421</div>
+        <div class="spec__small">Credits, metadata, timestamps, build hashes. Gives authority.</div>
+      </div>
+    </div>
+
+    <div class="compare">
+      <div class="card card--bad">
+        <span class="card__tag">❌ Template</span>
+        <h4>Hero H1 · 48px · Inter 600</h4>
+        <p>Looks like a dashboard. Reads as "our SaaS is about to explain its value prop in four bullets."</p>
+      </div>
+      <div class="card card--good">
+        <span class="card__tag">✓ Intentional</span>
+        <h4>Hero H1 · clamp(58px, 11.5vw, 184px) · Bebas 400</h4>
+        <p>Fills the viewport. Becomes a poster. Gives the word itself room to perform.</p>
+      </div>
+    </div>
+
+    <pre class="code" data-lang="css"><span class="tok-c">/* Three moves that instantly elevate any headline */</span>
+.title{
+  <span class="tok-p">font-family</span>: <span class="tok-s">"Bebas Neue"</span>, Impact, sans-serif;
+  <span class="tok-p">font-size</span>: <span class="tok-k">clamp</span>(<span class="tok-n">58px</span>, <span class="tok-n">11.5vw</span>, <span class="tok-n">184px</span>);  <span class="tok-c">/* fluid, not stepped */</span>
+  <span class="tok-p">line-height</span>: <span class="tok-n">.88</span>;       <span class="tok-c">/* tight — display type breathes from size, not leading */</span>
+  <span class="tok-p">letter-spacing</span>: <span class="tok-n">-.01em</span>; <span class="tok-c">/* optical correction for large caps */</span>
+  <span class="tok-p">text-wrap</span>: balance;   <span class="tok-c">/* modern browsers balance ragged lines for you */</span>
+}</pre>
+
+    <div class="pull">
+      Type sets the stage before the reader reads. Get it wrong and the best copy in the world sounds like support documentation.
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAPTER 03 · COLOR ===================== -->
+<section class="chapter" id="color">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">03</div>
+      <div>
+        <h2 class="chap-title">Color &amp; Atmosphere</h2>
+        <p class="chap-sub">You are not decorating. You are lighting a scene. Your palette is 70% background, 25% ink, 5% signal — and that 5% is doing all the work.</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Most bad sites fail here by distributing colour evenly. <em>Evenly distributed is noise.</em> Pick one dominant, one ink, and <strong>one signal colour that owns every CTA</strong>. A second accent only if the first needs breathing room.</p>
+      <p>For games: a near-black background with one punchy hue does more work than any gradient you'll construct. Your game key-art is the hero — your palette frames it.</p>
+    </div>
+
+    <div class="chips" role="list">
+      <div class="chip chip--bg"><span>#0A0908</span><span>bg · 70%</span></div>
+      <div class="chip chip--ink"><span>#FAF4E8</span><span>ink · 25%</span></div>
+      <div class="chip chip--signal"><span>#E63946</span><span>signal · 5%</span></div>
+      <div class="chip chip--amber"><span>#F4A261</span><span>warm accent</span></div>
+      <div class="chip chip--ice"><span>#A8DADC</span><span>cold accent</span></div>
+      <div class="chip chip--acid"><span>#D4FF3A</span><span>highlight</span></div>
+    </div>
+
+    <pre class="code" data-lang="css"><span class="tok-c">/* Put every colour behind a token. Change a game's mood in one place. */</span>
+<span class="tok-k">:root</span>{
+  <span class="tok-p">--bg</span>:       <span class="tok-s">#0a0908</span>;   <span class="tok-c">/* dominant */</span>
+  <span class="tok-p">--ink</span>:      <span class="tok-s">#faf4e8</span>;   <span class="tok-c">/* body + headings */</span>
+  <span class="tok-p">--ink-mute</span>: <span class="tok-s">#a89f90</span>;   <span class="tok-c">/* secondary text */</span>
+  <span class="tok-p">--signal</span>:   <span class="tok-s">#e63946</span>;   <span class="tok-c">/* CTAs, focus rings, accents */</span>
+  <span class="tok-p">--rule</span>:     <span class="tok-s">#2a2621</span>;   <span class="tok-c">/* borders — never pure black */</span>
+}
+
+<span class="tok-c">/* Use OKLCH when you need accessible-at-any-hue variants */</span>
+.cta{ <span class="tok-p">background</span>: <span class="tok-k">oklch</span>(<span class="tok-n">62%</span> <span class="tok-n">.22</span> <span class="tok-n">26</span>); }
+.cta<span class="tok-k">:hover</span>{ <span class="tok-p">background</span>: <span class="tok-k">oklch</span>(<span class="tok-n">70%</span> <span class="tok-n">.22</span> <span class="tok-n">26</span>); }</pre>
+
+    <div class="two">
+      <div class="card card--bad">
+        <span class="card__tag">❌ Slop</span>
+        <h4>Purple → Pink gradient on white</h4>
+        <p>The default AI-generated landing page. Hosted on every bootstrap template since 2019. Has no point of view.</p>
+      </div>
+      <div class="card card--good">
+        <span class="card__tag">✓ Cinema</span>
+        <h4>Near-black + one fierce red</h4>
+        <p>Looks like a movie poster. The signal colour reserves itself for a single button and every visitor's eye lands there.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAPTER 04 · HERO ===================== -->
+<section class="chapter" id="hero">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">04</div>
+      <div>
+        <h2 class="chap-title">The Hero Section Is The Whole Game</h2>
+        <p class="chap-sub">60% of visitors never scroll. Treat the first viewport like a billboard, not a table of contents.</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Anatomy of a hero that sells a game: <strong>eyebrow</strong> (tiny context, mono, uppercase) → <strong>title</strong> (massive, one line if possible) → <strong>one-sentence promise</strong> → <strong>one primary CTA + one ghost CTA</strong>. A background that breathes — grain, scanlines, a hero plate of key-art, a gradient that mimics light. Nothing else.</p>
+    </div>
+
+    <!-- LIVE DEMO HERO -->
+    <div class="demo-hero" role="img" aria-label="Example game-promo hero section">
+      <span class="demo-hero__eyebrow">◆ Chapter Zero · Out Q3 2027</span>
+      <h3 class="demo-hero__title">Nightfall <span class="glitch">/</span> Protocol</h3>
+      <p class="demo-hero__sub">A cooperative infiltration game for players who refuse to stop thinking about <em>how the machine actually works</em>.</p>
+      <div class="demo-hero__ctas">
+        <a href="#" class="btn">Wishlist on Steam <span class="btn__arrow">→</span></a>
+        <a href="#" class="btn btn--ghost">Watch the Trailer</a>
+      </div>
+    </div>
+
+    <pre class="code" data-lang="html"><span class="tok-k">&lt;section</span> <span class="tok-p">class</span>=<span class="tok-s">"hero"</span><span class="tok-k">&gt;</span>
+  <span class="tok-k">&lt;span</span> <span class="tok-p">class</span>=<span class="tok-s">"eyebrow"</span><span class="tok-k">&gt;</span>◆ Chapter Zero · Out Q3 2027<span class="tok-k">&lt;/span&gt;</span>
+  <span class="tok-k">&lt;h1</span> <span class="tok-p">class</span>=<span class="tok-s">"title"</span><span class="tok-k">&gt;</span>Nightfall <span class="tok-k">&lt;span</span> <span class="tok-p">class</span>=<span class="tok-s">"slash"</span><span class="tok-k">&gt;</span>/<span class="tok-k">&lt;/span&gt;</span> Protocol<span class="tok-k">&lt;/h1&gt;</span>
+  <span class="tok-k">&lt;p</span> <span class="tok-p">class</span>=<span class="tok-s">"lede"</span><span class="tok-k">&gt;</span>A cooperative infiltration game for…<span class="tok-k">&lt;/p&gt;</span>
+  <span class="tok-k">&lt;div</span> <span class="tok-p">class</span>=<span class="tok-s">"ctas"</span><span class="tok-k">&gt;</span>
+    <span class="tok-k">&lt;a</span> <span class="tok-p">href</span>=<span class="tok-s">"..."</span> <span class="tok-p">class</span>=<span class="tok-s">"btn"</span><span class="tok-k">&gt;</span>Wishlist on Steam →<span class="tok-k">&lt;/a&gt;</span>
+    <span class="tok-k">&lt;a</span> <span class="tok-p">href</span>=<span class="tok-s">"..."</span> <span class="tok-p">class</span>=<span class="tok-s">"btn btn--ghost"</span><span class="tok-k">&gt;</span>Watch the Trailer<span class="tok-k">&lt;/a&gt;</span>
+  <span class="tok-k">&lt;/div&gt;</span>
+<span class="tok-k">&lt;/section&gt;</span></pre>
+
+    <div class="features">
+      <div class="feat">
+        <div class="feat__num">Tip 01</div>
+        <div class="feat__title">Break the Grid</div>
+        <p class="feat__body">Slide the title left of centre, key-art right. Asymmetry reads as "designed."</p>
+      </div>
+      <div class="feat">
+        <div class="feat__num">Tip 02</div>
+        <div class="feat__title">Lay on Grain</div>
+        <p class="feat__body">A 6% opacity noise overlay makes digital dark backgrounds look filmic, not flat.</p>
+      </div>
+      <div class="feat">
+        <div class="feat__num">Tip 03</div>
+        <div class="feat__title">One Primary CTA</div>
+        <p class="feat__body">Wishlist or Buy, never both. The second action is always a ghost button.</p>
+      </div>
+      <div class="feat">
+        <div class="feat__num">Tip 04</div>
+        <div class="feat__title">No Stock Imagery</div>
+        <p class="feat__body">Bespoke key-art, concept art, or nothing. Stock kills a game's soul on contact.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAPTER 05 · MOTION ===================== -->
+<section class="chapter" id="motion">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">05</div>
+      <div>
+        <h2 class="chap-title">Motion With Restraint</h2>
+        <p class="chap-sub">Motion is seasoning. Excellent sites use it on three moments a page — a page-in reveal, a hover on CTAs, and one scroll-triggered set piece. That's it.</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>The three motion patterns you'll actually ship:</p>
+      <p><strong>1. Staggered page-in.</strong> Eyebrow → title → lede → CTAs rise one after the other in 80ms offsets. 800ms total. Creates the feeling of a room being lit.</p>
+      <p><strong>2. CTA micro-interaction.</strong> Button nudges 2px up-and-left, drops a hard shadow on hover. The arrow slides 3px right. <em>2px, not 12px.</em> Restraint is the signal.</p>
+      <p><strong>3. Scroll-triggered reveal.</strong> IntersectionObserver flags sections as they enter the viewport. Nothing moves in parallax — that ship sailed around 2019.</p>
+    </div>
+
+    <pre class="code" data-lang="css"><span class="tok-c">/* Staggered rise — pure CSS, no library */</span>
+<span class="tok-k">@keyframes</span> rise{
+  from{ <span class="tok-p">opacity</span>:<span class="tok-n">0</span>; <span class="tok-p">transform</span>:<span class="tok-k">translateY</span>(<span class="tok-n">20px</span>); }
+  to  { <span class="tok-p">opacity</span>:<span class="tok-n">1</span>; <span class="tok-p">transform</span>:none; }
+}
+.reveal.in   { <span class="tok-p">animation</span>: rise <span class="tok-n">.8s</span> <span class="tok-k">cubic-bezier</span>(.2,.7,.2,1) forwards; }
+.reveal.d1.in{ <span class="tok-p">animation-delay</span>: <span class="tok-n">.08s</span>; }
+.reveal.d2.in{ <span class="tok-p">animation-delay</span>: <span class="tok-n">.16s</span>; }
+
+<span class="tok-c">/* Non-negotiable: respect the user's system setting */</span>
+<span class="tok-k">@media</span> (<span class="tok-p">prefers-reduced-motion</span>: reduce){
+  *{ <span class="tok-p">animation-duration</span>:<span class="tok-n">.001ms</span> !important; <span class="tok-p">transition-duration</span>:<span class="tok-n">.001ms</span> !important; }
+}</pre>
+
+    <pre class="code" data-lang="js"><span class="tok-c">// Scroll-in reveal — 10 lines, zero dependencies</span>
+<span class="tok-k">const</span> io = <span class="tok-k">new</span> IntersectionObserver((entries) =&gt; {
+  entries.forEach(e =&gt; {
+    <span class="tok-k">if</span> (e.isIntersecting) {
+      e.target.classList.add(<span class="tok-s">'in'</span>);
+      io.unobserve(e.target); <span class="tok-c">// fire once, forget</span>
+    }
+  });
+}, { threshold: <span class="tok-n">0.12</span> });
+
+document.querySelectorAll(<span class="tok-s">'.reveal'</span>).forEach(el =&gt; io.observe(el));</pre>
+
+    <div class="pull">
+      If you can't explain why an animation exists in one sentence, delete it.
+      <span class="by">— Every senior designer, quietly, for 10 years</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAPTER 06 · LAYOUT ===================== -->
+<section class="chapter">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">06</div>
+      <div>
+        <h2 class="chap-title">Layout &amp; Composition</h2>
+        <p class="chap-sub">Three layout moves cover 95% of a promo site. Know them cold.</p>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="prose">
+        <p><strong>1. Fluid scale with <code>clamp()</code>.</strong> Every font-size, padding, and gap uses <code>clamp(min, fluid, max)</code>. You write breakpoints only for genuine layout changes — not for "shrink the text."</p>
+        <p><strong>2. 12-col grid is optional.</strong> Most of your page wants an asymmetric 2-col (60/40 or 70/30). A CSS Grid template with named areas beats any framework's col system.</p>
+        <p><strong>3. Edges over cards.</strong> Full-bleed imagery, thin rules, generous inline padding. Drop-shadowed rounded cards read as dashboard — you are not a dashboard.</p>
+      </div>
+      <div>
+        <pre class="code" data-lang="css"><span class="tok-c">/* Fluid type scale you'll use on every section */</span>
+:root{
+  <span class="tok-p">--step-0</span>: <span class="tok-k">clamp</span>(<span class="tok-n">14px</span>, <span class="tok-n">.88vw + 10px</span>, <span class="tok-n">17px</span>);
+  <span class="tok-p">--step-1</span>: <span class="tok-k">clamp</span>(<span class="tok-n">18px</span>, <span class="tok-n">1.1vw + 14px</span>, <span class="tok-n">22px</span>);
+  <span class="tok-p">--step-2</span>: <span class="tok-k">clamp</span>(<span class="tok-n">24px</span>, <span class="tok-n">1.6vw + 18px</span>, <span class="tok-n">32px</span>);
+  <span class="tok-p">--step-3</span>: <span class="tok-k">clamp</span>(<span class="tok-n">36px</span>, <span class="tok-n">3vw + 24px</span>, <span class="tok-n">56px</span>);
+  <span class="tok-p">--step-4</span>: <span class="tok-k">clamp</span>(<span class="tok-n">58px</span>, <span class="tok-n">11vw + 20px</span>, <span class="tok-n">184px</span>);
+}
+
+<span class="tok-c">/* Asymmetric hero grid — not 12-col, not centred */</span>
+.hero-grid{
+  <span class="tok-p">display</span>: grid;
+  <span class="tok-p">grid-template-columns</span>: <span class="tok-n">1.2fr</span> <span class="tok-n">.8fr</span>;
+  <span class="tok-p">gap</span>: <span class="tok-k">clamp</span>(<span class="tok-n">24px</span>, <span class="tok-n">4vw</span>, <span class="tok-n">64px</span>);
+  <span class="tok-p">align-items</span>: end;
+}</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAPTER 07 · CONTACT FORM ===================== -->
+<section class="chapter" id="form">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">07</div>
+      <div>
+        <h2 class="chap-title">The Contact Form</h2>
+        <p class="chap-sub">A promo site's contact form is a press / partnerships / support triage, not a customer-service ticket portal. Ask for three things, not twelve.</p>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Good form design on a game site means: <strong>visible labels</strong> (never placeholder-as-label), <strong>big input targets</strong> (48px min height on mobile), <strong>a focus state that actually shouts</strong>, and a <strong>Turnstile CAPTCHA</strong> instead of reCAPTCHA. Autofocus on load is a hostile act; don't.</p>
+    </div>
+
+    <div class="form-demo" role="presentation" aria-label="Example contact form — preview only">
+      <div class="field">
+        <label for="demo-name">Name</label>
+        <input id="demo-name" type="text" placeholder="Commander Shepard" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label for="demo-email">Email</label>
+        <input id="demo-email" type="email" placeholder="you@studio.example" autocomplete="email" />
+      </div>
+      <div class="field form-demo__full">
+        <label for="demo-topic">Topic</label>
+        <select id="demo-topic">
+          <option>Press &amp; Media Enquiry</option>
+          <option>Partnership / Collab</option>
+          <option>Player Support</option>
+          <option>Something Else</option>
+        </select>
+      </div>
+      <div class="field form-demo__full">
+        <label for="demo-msg">Message</label>
+        <textarea id="demo-msg" placeholder="Keep it short. You'll get a reply inside 72h."></textarea>
+      </div>
+      <div class="form-demo__full" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px">
+        <span style="font-family:var(--f-mono); font-size:11px; color:var(--ink-dim); letter-spacing:.1em; text-transform:uppercase">Protected by Turnstile · No tracking cookies</span>
+        <button type="button" class="btn" onclick="this.innerHTML='Sent ✓'; this.style.setProperty('--bc', 'var(--acid)')">
+          Transmit <span class="btn__arrow">→</span>
+        </button>
+      </div>
+    </div>
+
+    <pre class="code" data-lang="js"><span class="tok-c">// Cloudflare Worker — contact form handler (complete, ~30 lines)</span>
+<span class="tok-k">export default</span> {
+  <span class="tok-k">async</span> fetch(req, env) {
+    <span class="tok-k">if</span> (req.method !== <span class="tok-s">'POST'</span>) <span class="tok-k">return new</span> Response(<span class="tok-s">'nope'</span>, { status: <span class="tok-n">405</span> });
+
+    <span class="tok-k">const</span> data = <span class="tok-k">await</span> req.json();
+    <span class="tok-k">const</span> { name, email, topic, message, token } = data;
+
+    <span class="tok-c">// 1. Verify Turnstile — bot-filter at the edge</span>
+    <span class="tok-k">const</span> verify = <span class="tok-k">await</span> fetch(<span class="tok-s">'https://challenges.cloudflare.com/turnstile/v0/siteverify'</span>, {
+      method: <span class="tok-s">'POST'</span>,
+      body: <span class="tok-k">new</span> URLSearchParams({ secret: env.TURNSTILE_SECRET, response: token })
+    }).then(r =&gt; r.json());
+    <span class="tok-k">if</span> (!verify.success) <span class="tok-k">return new</span> Response(<span class="tok-s">'bot'</span>, { status: <span class="tok-n">403</span> });
+
+    <span class="tok-c">// 2. Basic validation — never trust the client</span>
+    <span class="tok-k">if</span> (!email?.includes(<span class="tok-s">'@'</span>) || !message || message.length &gt; <span class="tok-n">4000</span>)
+      <span class="tok-k">return new</span> Response(<span class="tok-s">'invalid'</span>, { status: <span class="tok-n">400</span> });
+
+    <span class="tok-c">// 3. Send via Resend (or store in D1, or forward to Slack)</span>
+    <span class="tok-k">await</span> fetch(<span class="tok-s">'https://api.resend.com/emails'</span>, {
+      method: <span class="tok-s">'POST'</span>,
+      headers: { <span class="tok-s">'Authorization'</span>: <span class="tok-s">`Bearer ${env.RESEND_KEY}`</span>, <span class="tok-s">'Content-Type'</span>: <span class="tok-s">'application/json'</span> },
+      body: JSON.stringify({
+        from: <span class="tok-s">'promo@yourgame.com'</span>,
+        to: <span class="tok-s">'team@yourgame.com'</span>,
+        subject: <span class="tok-s">`[${topic}] ${name}`</span>,
+        text: <span class="tok-s">`${email}\n\n${message}`</span>
+      })
+    });
+
+    <span class="tok-k">return new</span> Response(<span class="tok-s">JSON.stringify({ ok: true })</span>, { headers: { <span class="tok-s">'content-type'</span>: <span class="tok-s">'application/json'</span> } });
+  }
+};</pre>
+  </div>
+</section>
+
+<!-- ===================== CHAPTER 08 · PERFORMANCE ===================== -->
+<section class="chapter" id="perf">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">08</div>
+      <div>
+        <h2 class="chap-title">Performance Is A Design Constraint</h2>
+        <p class="chap-sub">A slow site is an ugly site, no matter how good the typography. Budget before you build.</p>
+      </div>
+    </div>
+
+    <div class="features">
+      <div class="feat">
+        <div class="feat__num">LCP</div>
+        <div class="feat__title">&lt; 2.0s</div>
+        <p class="feat__body">Largest Contentful Paint. For games: your hero key-art. Preload it.</p>
+      </div>
+      <div class="feat">
+        <div class="feat__num">CLS</div>
+        <div class="feat__title">&lt; 0.05</div>
+        <p class="feat__body">Layout shift kills trust. Always set <code>width</code>/<code>height</code> on media.</p>
+      </div>
+      <div class="feat">
+        <div class="feat__num">INP</div>
+        <div class="feat__title">&lt; 200ms</div>
+        <p class="feat__body">Interaction to Next Paint. Avoid heavy JS on the main thread.</p>
+      </div>
+      <div class="feat">
+        <div class="feat__num">JS</div>
+        <div class="feat__title">&lt; 80KB gz</div>
+        <p class="feat__body">If you're over this, you're shipping a framework a promo page doesn't need.</p>
+      </div>
+    </div>
+
+    <pre class="code" data-lang="html"><span class="tok-c">&lt;!-- Hero image — the single most important perf optimisation on the page --&gt;</span>
+<span class="tok-k">&lt;link</span> <span class="tok-p">rel</span>=<span class="tok-s">"preload"</span> <span class="tok-p">as</span>=<span class="tok-s">"image"</span>
+      <span class="tok-p">href</span>=<span class="tok-s">"/hero.avif"</span>
+      <span class="tok-p">imagesrcset</span>=<span class="tok-s">"/hero-800.avif 800w, /hero-1600.avif 1600w, /hero-2400.avif 2400w"</span>
+      <span class="tok-p">imagesizes</span>=<span class="tok-s">"100vw"</span><span class="tok-k">&gt;</span>
+
+<span class="tok-c">&lt;!-- Font preload only for the hero display face --&gt;</span>
+<span class="tok-k">&lt;link</span> <span class="tok-p">rel</span>=<span class="tok-s">"preload"</span> <span class="tok-p">as</span>=<span class="tok-s">"font"</span> <span class="tok-p">type</span>=<span class="tok-s">"font/woff2"</span>
+      <span class="tok-p">href</span>=<span class="tok-s">"/fonts/bebas.woff2"</span> <span class="tok-p">crossorigin</span><span class="tok-k">&gt;</span>
+
+<span class="tok-c">&lt;!-- Every &lt;img&gt; below the fold --&gt;</span>
+<span class="tok-k">&lt;img</span> <span class="tok-p">src</span>=<span class="tok-s">"/screen.avif"</span> <span class="tok-p">alt</span>=<span class="tok-s">"Gameplay: infiltrating the server farm"</span>
+     <span class="tok-p">width</span>=<span class="tok-s">"1600"</span> <span class="tok-p">height</span>=<span class="tok-s">"900"</span> <span class="tok-p">loading</span>=<span class="tok-s">"lazy"</span> <span class="tok-p">decoding</span>=<span class="tok-s">"async"</span><span class="tok-k">&gt;</span></pre>
+
+    <div class="prose">
+      <p>Cloudflare-specific wins: turn on <strong>Polish</strong> (auto WebP/AVIF), <strong>Mirage</strong> (responsive images), and <strong>Early Hints</strong>. These are two checkboxes in the dashboard and shave 300–800ms off LCP for free. Use <strong>Cache Rules</strong> to cache HTML for 60s at the edge — browsers still revalidate but bots get served instantly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAPTER 09 · ACCESSIBILITY ===================== -->
+<section class="chapter">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">09</div>
+      <div>
+        <h2 class="chap-title">Accessibility Is Polish, Not Compliance</h2>
+        <p class="chap-sub">The same discipline that makes a site usable with a screen reader makes it more cinematic for everyone.</p>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="prose">
+        <p>A game promo site with poor a11y is also a site that feels amateur. Focus rings that match your signal colour, keyboard traps audited out, landmark regions (<code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;footer&gt;</code>), contrast ratios that pass AA — these are the same moves that make a site feel meticulous.</p>
+        <p>The minimum bar: <strong>4.5:1 contrast</strong> on body text, <strong>3:1</strong> on large display type, a <strong>visible focus ring</strong> no matter where you are, and <strong>skip links</strong> at the top of the DOM.</p>
+      </div>
+      <div>
+        <pre class="code" data-lang="css"><span class="tok-c">/* A focus ring that belongs in your design, not Chrome default blue */</span>
+<span class="tok-k">:focus-visible</span>{
+  <span class="tok-p">outline</span>: <span class="tok-n">2px</span> solid <span class="tok-k">var</span>(--signal);
+  <span class="tok-p">outline-offset</span>: <span class="tok-n">3px</span>;
+}
+
+<span class="tok-c">/* Skip link — visible only on focus */</span>
+.skip{
+  <span class="tok-p">position</span>: absolute; <span class="tok-p">top</span>: <span class="tok-n">-100px</span>; <span class="tok-p">left</span>: <span class="tok-n">16px</span>;
+  <span class="tok-p">background</span>: <span class="tok-k">var</span>(--signal); <span class="tok-p">color</span>: <span class="tok-k">var</span>(--bg);
+  <span class="tok-p">padding</span>: <span class="tok-n">8px 14px</span>; <span class="tok-p">z-index</span>: <span class="tok-n">1000</span>;
+  <span class="tok-p">transition</span>: top <span class="tok-n">.2s</span>;
+}
+.skip<span class="tok-k">:focus</span>{ <span class="tok-p">top</span>: <span class="tok-n">12px</span>; }</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHAPTER 10 · CLOUDFLARE DEPLOY ===================== -->
+<section class="chapter" id="deploy">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">10</div>
+      <div>
+        <h2 class="chap-title">Ship It On Cloudflare</h2>
+        <p class="chap-sub">From <code>git push</code> to a global edge-deployed game promo site in 90 seconds. This is where your backend instincts finally pay off.</p>
+      </div>
+    </div>
+
+    <pre class="code" data-lang="bash"><span class="tok-c"># 1. Build &amp; deploy static site</span>
+<span class="tok-k">npm</span> run build                           <span class="tok-c"># produces ./dist</span>
+<span class="tok-k">npx</span> wrangler pages deploy ./dist        <span class="tok-c"># → https://game.pages.dev</span>
+
+<span class="tok-c"># 2. Wire a custom domain</span>
+<span class="tok-k">npx</span> wrangler pages deployment tail     <span class="tok-c"># watch live logs</span>
+
+<span class="tok-c"># 3. Ship the contact-form Worker</span>
+<span class="tok-k">npx</span> wrangler deploy worker/contact.ts
+<span class="tok-k">npx</span> wrangler secret put RESEND_KEY
+<span class="tok-k">npx</span> wrangler secret put TURNSTILE_SECRET
+
+<span class="tok-c"># 4. Preview URL on every PR — share with marketing before merge</span>
+<span class="tok-c"># Cloudflare auto-creates one per commit</span></pre>
+
+    <pre class="code" data-lang="toml"><span class="tok-c"># wrangler.toml — everything you need, nothing you don't</span>
+<span class="tok-p">name</span> = <span class="tok-s">"game-promo"</span>
+<span class="tok-p">compatibility_date</span> = <span class="tok-s">"2026-04-01"</span>
+<span class="tok-p">pages_build_output_dir</span> = <span class="tok-s">"./dist"</span>
+
+[<span class="tok-p">vars</span>]
+<span class="tok-p">ENVIRONMENT</span> = <span class="tok-s">"production"</span>
+
+[[<span class="tok-p">routes</span>]]
+<span class="tok-p">pattern</span> = <span class="tok-s">"yourgame.com/api/contact"</span>
+<span class="tok-p">script</span> = <span class="tok-s">"contact-worker"</span></pre>
+
+    <div class="features">
+      <div class="feat">
+        <div class="feat__num">Flag 01</div>
+        <div class="feat__title">Polish ON</div>
+        <p class="feat__body">Dashboard → Speed → Optimization. Auto-serves AVIF/WebP.</p>
+      </div>
+      <div class="feat">
+        <div class="feat__num">Flag 02</div>
+        <div class="feat__title">Early Hints ON</div>
+        <p class="feat__body">Ships <code>103</code> responses so browsers preconnect during server work.</p>
+      </div>
+      <div class="feat">
+        <div class="feat__num">Flag 03</div>
+        <div class="feat__title">HTTP/3 ON</div>
+        <p class="feat__body">Default but worth confirming. Real win on flaky mobile networks.</p>
+      </div>
+      <div class="feat">
+        <div class="feat__num">Flag 04</div>
+        <div class="feat__title">Turnstile Keys</div>
+        <p class="feat__body">Generate in dashboard, paste site-key in HTML, secret in Worker.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CHECKLIST ===================== -->
+<section class="chapter">
+  <div class="wrap">
+    <div class="chap-head">
+      <div class="chap-num">11</div>
+      <div>
+        <h2 class="chap-title">The Pre-Flight Checklist</h2>
+        <p class="chap-sub">Tap a box. Don't deploy with open rows. If it's embarrassing, it's wrong.</p>
+      </div>
+    </div>
+
+    <ul class="check" id="checklist">
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>Hero fits one viewport</strong> on 1440×900 and on a Pixel 7. Nothing clipped.</span><span class="check__tag">Design</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>Primary CTA is the only signal-coloured thing</strong> in the first viewport.</span><span class="check__tag">Design</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>Typography passes 4.5:1 contrast</strong> on body, 3:1 on display.</span><span class="check__tag">A11y</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>Keyboard traversal</strong> reaches every interactive element with a visible ring.</span><span class="check__tag">A11y</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>LCP under 2s</strong> on a throttled 4G profile. Hero image preloaded.</span><span class="check__tag">Perf</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>CLS is 0</strong>. Every image has explicit width/height. No late-injected ads.</span><span class="check__tag">Perf</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>JS bundle &lt; 80KB gzipped</strong>. If not, kill a library.</span><span class="check__tag">Perf</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>Form rejects empty, oversize, and bot submissions</strong> with Turnstile.</span><span class="check__tag">Backend</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>Open-graph + Twitter cards</strong> set with a 1200×630 hero card.</span><span class="check__tag">SEO</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>Reduced-motion works</strong>. Test in DevTools → Rendering → Emulate CSS media.</span><span class="check__tag">A11y</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>Cloudflare Polish + Early Hints enabled</strong>. HTML cached 60s at edge.</span><span class="check__tag">Edge</span></li>
+      <li><span class="check__box" role="checkbox" aria-checked="false" tabindex="0">✓</span><span class="check__text"><strong>A non-designer describes the game in one sentence</strong> after 5 seconds on the page.</span><span class="check__tag">Proof</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="end">
+  <div class="wrap">
+    <h2 class="end__mega">
+      Now<br/>
+      ship <span class="k">/</span><br/>
+      it.
+      <span class="italic">The designers in marketing are rooting for you. So are we.</span>
+    </h2>
+    <div class="end__meta">
+      <span>Field Manual · v1.0 · 2026</span>
+      <span>Made for backend brains</span>
+      <span>Deployed on Cloudflare · obviously</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ===================== SCRIPTS ===================== -->
+<script>
+  // Scroll-triggered reveals
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  // Observe every section for a subtle stagger
+  document.querySelectorAll('.chapter, .demo-hero, .hero__meta').forEach((el, i) => {
+    if (!el.classList.contains('reveal')) {
+      el.classList.add('reveal');
+      el.style.animationDelay = (i * 0.04) + 's';
+    }
+    io.observe(el);
+  });
+
+  // Interactive checklist
+  document.querySelectorAll('#checklist .check__box').forEach(box => {
+    const toggle = () => {
+      const li = box.closest('li');
+      const done = li.classList.toggle('done');
+      box.classList.toggle('done', done);
+      box.setAttribute('aria-checked', done ? 'true' : 'false');
+    };
+    box.addEventListener('click', toggle);
+    box.addEventListener('keydown', e => {
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggle(); }
+    });
+  });
+
+  // Tiny easter egg: log the build signature
+  console.log('%cFIELD MANUAL // v1.0 // for backend brains',
+    'font: 700 14px "JetBrains Mono", monospace; color:#e63946; background:#0a0908; padding:8px 12px');
+</script>
+
+</body>
+</html>

@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deficit — Daily Intake Planner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Inter+Tight:wght@300..700&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F3EDDD;
+  --bg-2: #EAE1CA;
+  --ink: #1B2A1F;
+  --ink-2: #3A4A3E;
+  --ink-3: #6F7566;
+  --accent: #B85C38;
+  --accent-2: #8B3A1F;
+  --line: #C9BFA5;
+  --line-2: #DCD2B8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter Tight', -apple-system, system-ui, sans-serif;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(27,42,31,0.08) 1px, transparent 0);
+  background-size: 3px 3px;
+  pointer-events: none;
+  opacity: 0.35;
+  z-index: 0;
+}
+
+.mono { font-family: 'JetBrains Mono', ui-monospace, monospace; font-feature-settings: 'tnum'; }
+.serif { font-family: 'Fraunces', Georgia, serif; }
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 36px 28px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* HEADER */
+.header {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 28px;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.logo {
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+  font-size: clamp(44px, 10vw, 86px);
+  line-height: 0.88;
+  letter-spacing: -0.045em;
+  font-variation-settings: "opsz" 144;
+}
+
+.logo em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+  font-variation-settings: "opsz" 144;
+}
+
+.logo::after {
+  content: ".";
+  color: var(--accent);
+}
+
+.header-meta {
+  text-align: right;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  line-height: 1.7;
+}
+
+.header-meta strong { color: var(--ink); font-weight: 500; }
+
+/* SECTIONS */
+.section { margin-bottom: 56px; }
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-3);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.section-label::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--ink-3);
+}
+
+.section-label strong { color: var(--ink); font-weight: 500; }
+
+/* CALORIE HERO */
+.calorie-hero {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 40px;
+  padding: 40px 0 32px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  align-items: end;
+}
+
+.cal-big {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(82px, 18vw, 180px);
+  font-weight: 300;
+  line-height: 0.82;
+  letter-spacing: -0.055em;
+  font-variation-settings: "opsz" 144;
+}
+
+.cal-big .unit {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.11em;
+  font-weight: 400;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  margin-left: 10px;
+  vertical-align: top;
+  display: inline-block;
+  margin-top: 1.2em;
+}
+
+.deficit-info {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-align: right;
+  color: var(--ink-2);
+  line-height: 2;
+}
+
+.maintenance-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+  margin-bottom: 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+}
+
+.maintenance-row input {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  width: 64px;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  padding: 2px 4px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.maintenance-row input:focus {
+  outline: none;
+  border-bottom-color: var(--accent);
+}
+
+.val { color: var(--accent); font-weight: 600; }
+.val.neg { color: var(--ink); }
+
+/* SLIDER */
+.slider-wrap { margin: 28px 0 0; }
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--ink-3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.slider-labels .middle { letter-spacing: 0.14em; }
+
+input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  height: 28px;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  background: var(--line);
+  height: 2px;
+  border-radius: 1px;
+}
+
+input[type="range"]::-moz-range-track {
+  background: var(--line);
+  height: 2px;
+  border-radius: 1px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -13px;
+  width: 28px;
+  height: 28px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 4px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--accent), 0 2px 8px rgba(184,92,56,0.25);
+  transition: transform 0.15s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover,
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: var(--accent);
+  border-radius: 50%;
+  border: 4px solid var(--bg);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+/* MACROS */
+.macros {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.macro {
+  background: var(--bg);
+  padding: 26px 24px;
+  position: relative;
+}
+
+.macro-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+}
+
+.macro-value {
+  font-family: 'Fraunces', serif;
+  font-size: 52px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variation-settings: "opsz" 144;
+}
+
+.macro-value .unit {
+  font-size: 0.38em;
+  color: var(--ink-3);
+  margin-left: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 400;
+}
+
+.macro-pct {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+}
+
+.macro-bar {
+  height: 2px;
+  background: var(--line-2);
+  margin-top: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.macro-bar::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: var(--accent);
+  width: var(--fill, 50%);
+  transition: width 0.3s ease;
+}
+
+/* DIETARY CHIPS */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 10px 15px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: all 0.15s;
+  border-radius: 2px;
+  font-weight: 500;
+}
+
+.chip:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.chip.active {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+/* MEAL CARDS */
+.meals {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+
+.meal {
+  background: var(--bg);
+  padding: 30px 28px;
+}
+
+.meal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line-2);
+  margin-bottom: 18px;
+  gap: 12px;
+}
+
+.meal-name {
+  font-family: 'Fraunces', serif;
+  font-size: 28px;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: -0.015em;
+  font-variation-settings: "opsz" 144;
+  color: var(--ink);
+}
+
+.meal-kcal {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.meal-items { list-style: none; }
+
+.meal-item {
+  padding: 11px 0;
+  border-bottom: 1px dashed var(--line-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+}
+
+.meal-item:last-child { border-bottom: none; }
+
+.meal-item.alt {
+  color: var(--accent-2);
+  font-style: italic;
+  background: rgba(184,92,56,0.05);
+  margin: 0 -10px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.meal-item .item-note {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-style: normal;
+}
+
+.meal-empty {
+  font-style: italic;
+  color: var(--ink-3);
+  padding: 14px 0;
+  font-size: 13px;
+}
+
+/* RULES */
+.rules {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 44px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rules::before {
+  content: "§";
+  position: absolute;
+  font-family: 'Fraunces', serif;
+  font-size: 240px;
+  font-weight: 300;
+  font-style: italic;
+  color: rgba(245,239,225,0.05);
+  right: -20px;
+  top: -60px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.rules-title {
+  font-family: 'Fraunces', serif;
+  font-style: italic;
+  font-weight: 300;
+  font-size: 32px;
+  margin-bottom: 26px;
+  color: var(--bg);
+  letter-spacing: -0.015em;
+  position: relative;
+}
+
+.rules ol {
+  padding-left: 24px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--bg-2);
+  position: relative;
+  max-width: 780px;
+}
+
+.rules ol li {
+  margin-bottom: 14px;
+  padding-left: 6px;
+}
+
+.rules ol li::marker {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--accent);
+}
+
+.rules ol li strong {
+  color: var(--bg);
+  font-weight: 600;
+}
+
+/* FOOTER */
+.footer {
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+}
+
+/* RESPONSIVE */
+@media (max-width: 720px) {
+  .container { padding: 24px 18px 60px; }
+  .header { flex-direction: column; align-items: flex-start; gap: 14px; padding-bottom: 20px; margin-bottom: 28px; }
+  .header-meta { text-align: left; }
+  .calorie-hero { grid-template-columns: 1fr; gap: 18px; padding: 28px 0 24px; }
+  .deficit-info { text-align: left; font-size: 12.5px; }
+  .maintenance-row { justify-content: flex-start; }
+  .macros { grid-template-columns: 1fr; }
+  .macro { padding: 22px 20px; }
+  .macro-value { font-size: 44px; }
+  .meals { grid-template-columns: 1fr; }
+  .meal { padding: 24px 22px; }
+  .rules { padding: 32px 22px; }
+  .rules-title { font-size: 26px; }
+  .section { margin-bottom: 44px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header class="header">
+    <h1 class="logo">Defic<em>it</em></h1>
+    <div class="header-meta">
+      Daily Intake Planner<br>
+      <strong>v1.0</strong> — single file
+    </div>
+  </header>
+
+  <!-- CALORIE HERO -->
+  <section class="section">
+    <div class="section-label"><strong>01</strong> — target intake</div>
+    <div class="calorie-hero">
+      <div class="cal-big">
+        <span id="cal-number">3000</span><span class="unit">kcal/day</span>
+      </div>
+      <div class="deficit-info">
+        <div class="maintenance-row">
+          <label for="maintenance-input">Your maintenance:</label>
+          <input type="number" id="maintenance-input" value="3500" min="1500" max="5000" step="50">
+          <span>kcal</span>
+        </div>
+        Deficit: <span class="val mono" id="deficit">500</span> kcal/day<br>
+        Est. weekly: <span class="val mono" id="weekly-loss">0.45</span> kg <span id="loss-label">loss</span><br>
+        4 weeks: <span class="val mono" id="monthly-loss">1.8</span> kg · 12 weeks: <span class="val mono" id="quarter-loss">5.5</span> kg
+      </div>
+    </div>
+    <div class="slider-wrap">
+      <div class="slider-labels">
+        <span>1,500</span>
+        <span class="middle">drag to set target</span>
+        <span>4,000</span>
+      </div>
+      <input type="range" id="cal-slider" min="1500" max="4000" step="50" value="3000">
+    </div>
+  </section>
+
+  <!-- MACROS -->
+  <section class="section">
+    <div class="section-label"><strong>02</strong> — macros · cut split</div>
+    <div class="macros">
+      <div class="macro">
+        <div class="macro-label">Protein</div>
+        <div class="macro-value"><span id="protein-g">188</span><span class="unit">g</span></div>
+        <div class="macro-pct">25% · 4 kcal/g</div>
+        <div class="macro-bar" style="--fill: 25%"></div>
+      </div>
+      <div class="macro">
+        <div class="macro-label">Carbs</div>
+        <div class="macro-value"><span id="carbs-g">375</span><span class="unit">g</span></div>
+        <div class="macro-pct">50% · 4 kcal/g</div>
+        <div class="macro-bar" style="--fill: 50%"></div>
+      </div>
+      <div class="macro">
+        <div class="macro-label">Fat</div>
+        <div class="macro-value"><span id="fat-g">83</span><span class="unit">g</span></div>
+        <div class="macro-pct">25% · 9 kcal/g</div>
+        <div class="macro-bar" style="--fill: 25%"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIETARY FILTERS -->
+  <section class="section">
+    <div class="section-label"><strong>03</strong> — dietary filters</div>
+    <div class="chips" id="filter-chips">
+      <button class="chip" data-tag="beef">No beef</button>
+      <button class="chip" data-tag="pork">No pork</button>
+      <button class="chip" data-tag="chicken">No chicken</button>
+      <button class="chip" data-tag="fish">No fish</button>
+      <button class="chip" data-tag="eggs">No eggs</button>
+      <button class="chip" data-tag="dairy">No dairy</button>
+      <button class="chip" data-tag="gluten">No gluten</button>
+      <button class="chip" data-tag="nuts">No nuts</button>
+      <button class="chip" data-tag="vegetarian">Vegetarian</button>
+      <button class="chip" data-tag="vegan">Vegan</button>
+    </div>
+  </section>
+
+  <!-- MEALS -->
+  <section class="section">
+    <div class="section-label"><strong>04</strong> — meal plan · portions scale with target</div>
+    <div class="meals" id="meals-grid"></div>
+  </section>
+
+  <!-- RULES -->
+  <section class="rules">
+    <div class="rules-title">Rules that do most of the work</div>
+    <ol>
+      <li><strong>Hit protein first.</strong> If you hit the protein target, you can miss calories by 200 either way and still progress.</li>
+      <li><strong>Weigh daily, trust the weekly average.</strong> Day-to-day numbers are noise — especially the day after heavy lifting. The 7-day trend is the signal.</li>
+      <li><strong>Weekends count.</strong> Two "off" days can erase a weekday deficit. Log honestly or pick a looser target you can live with.</li>
+      <li><strong>Alcohol is the biggest silent lever.</strong> Four pints is ~800 kcal of nothing — not banned, just accounted for.</li>
+      <li><strong>If lifts die for 3–4 weeks straight, eat 200 more.</strong> Keeping muscle in a deficit is the whole point; strength is the proxy for how it's going.</li>
+    </ol>
+  </section>
+
+  <footer class="footer">
+    <span>Built for daily use</span>
+    <span>Informational — not medical advice</span>
+  </footer>
+
+</div>
+
+<script>
+// ============================================================
+// Meal database. Tags = filters that REMOVE the item.
+// Alt items only appear when their `altFor` tag is active.
+// ============================================================
+const MEALS = [
+  {
+    name: "Breakfast",
+    pctCalories: 0.22,
+    items: [
+      { name: "Whole eggs",          base: 4,   unit: "eggs",       tags: ["eggs"] },
+      { name: "Egg whites",          base: 3,   unit: "whites",     tags: ["eggs"] },
+      { name: "Wholemeal toast",     base: 2,   unit: "slices",     tags: ["gluten"] },
+      { name: "Oats in milk",        base: 80,  unit: "g dry",      tags: ["gluten", "dairy"] },
+      { name: "Banana",              base: 1,   unit: "medium",     tags: [] },
+      { name: "Coffee / Diet Coke",  base: 1,   unit: "serving",    tags: [] },
+      { name: "Tofu scramble",       base: 200, unit: "g",          tags: [],              altFor: ["eggs", "vegan"], alt: true },
+      { name: "Greek yoghurt 0%",    base: 250, unit: "g",          tags: ["dairy"],       altFor: ["eggs"],          alt: true },
+      { name: "Rice cakes",          base: 3,   unit: "cakes",      tags: [],              altFor: ["gluten"],        alt: true },
+      { name: "Oat/soy milk",        base: 300, unit: "ml",         tags: [],              altFor: ["dairy", "vegan"], alt: true },
+      { name: "Almond butter",       base: 20,  unit: "g",          tags: ["nuts"],        altFor: ["eggs"],          alt: true },
+    ]
+  },
+  {
+    name: "Lunch",
+    pctCalories: 0.27,
+    items: [
+      { name: "Chicken breast",      base: 200, unit: "g",          tags: ["chicken"] },
+      { name: "Lean steak",          base: 180, unit: "g",          tags: ["beef"] },
+      { name: "Turkey breast",       base: 200, unit: "g",          tags: [] },
+      { name: "Salmon fillet",       base: 180, unit: "g",          tags: ["fish"] },
+      { name: "Cooked rice",         base: 250, unit: "g",          tags: [] },
+      { name: "Pasta",               base: 250, unit: "g cooked",   tags: ["gluten"] },
+      { name: "Mixed veg + olive oil", base: 10, unit: "g oil",     tags: [] },
+      { name: "Apple",               base: 1,   unit: "medium",     tags: [] },
+      { name: "Tofu or tempeh",      base: 220, unit: "g",          tags: [],              altFor: ["vegetarian", "vegan"], alt: true },
+      { name: "Chickpeas or lentils",base: 200, unit: "g cooked",   tags: [],              altFor: ["vegetarian", "vegan"], alt: true },
+      { name: "Potatoes (any)",      base: 350, unit: "g",          tags: [],              altFor: ["gluten"],        alt: true },
+    ]
+  },
+  {
+    name: "Training Snack",
+    pctCalories: 0.15,
+    items: [
+      { name: "Whey shake in milk",  base: 30,  unit: "g whey",     tags: ["dairy"] },
+      { name: "Bagel + honey",       base: 1,   unit: "bagel",      tags: ["gluten"] },
+      { name: "Rice cakes + honey",  base: 3,   unit: "cakes",      tags: [] },
+      { name: "Blueberries",         base: 120, unit: "g",          tags: [] },
+      { name: "Plant protein shake", base: 35,  unit: "g protein",  tags: [],              altFor: ["dairy", "vegan"], alt: true },
+    ]
+  },
+  {
+    name: "Dinner",
+    pctCalories: 0.36,
+    items: [
+      { name: "Salmon fillet",       base: 200, unit: "g",          tags: ["fish"] },
+      { name: "Lean mince 5%",       base: 250, unit: "g",          tags: ["beef"] },
+      { name: "Sirloin / flank steak", base: 200, unit: "g",        tags: ["beef"] },
+      { name: "Pork loin",           base: 200, unit: "g",          tags: ["pork"] },
+      { name: "Potatoes (sweet/reg)", base: 300, unit: "g",         tags: [] },
+      { name: "Pasta",               base: 250, unit: "g cooked",   tags: ["gluten"] },
+      { name: "Salad + feta",        base: 50,  unit: "g feta",     tags: ["dairy"] },
+      { name: "Greek yoghurt + honey", base: 200, unit: "g",        tags: ["dairy"] },
+      { name: "Dark chocolate",      base: 20,  unit: "g",          tags: [] },
+      { name: "Lentil + bean stew",  base: 350, unit: "g",          tags: [],              altFor: ["vegetarian", "vegan"], alt: true },
+      { name: "Salad + avocado",     base: 80,  unit: "g",          tags: [],              altFor: ["dairy", "vegan"], alt: true },
+      { name: "Coconut yoghurt + honey", base: 200, unit: "g",      tags: [],              altFor: ["dairy", "vegan"], alt: true },
+    ]
+  }
+];
+
+const MACRO_SPLIT = { protein: 0.25, carbs: 0.50, fat: 0.25 };
+const KCAL_PER_KG_FAT = 7700;
+
+let activeFilters = new Set();
+
+// ============================================================
+// Render
+// ============================================================
+function update() {
+  const cals = parseInt(document.getElementById('cal-slider').value);
+  const maintenance = parseInt(document.getElementById('maintenance-input').value) || 3500;
+
+  document.getElementById('cal-number').textContent = cals.toLocaleString();
+
+  const deficit = maintenance - cals;
+  const deficitEl = document.getElementById('deficit');
+  deficitEl.textContent = (deficit >= 0 ? '+' : '') + deficit;
+  deficitEl.className = deficit >= 0 ? 'val mono' : 'val mono neg';
+
+  // Loss / gain calc
+  const weekly = (deficit * 7 / KCAL_PER_KG_FAT);
+  document.getElementById('weekly-loss').textContent = Math.abs(weekly).toFixed(2);
+  document.getElementById('loss-label').textContent = deficit >= 0 ? 'loss' : 'gain';
+  document.getElementById('monthly-loss').textContent = Math.abs(weekly * 4).toFixed(1);
+  document.getElementById('quarter-loss').textContent = Math.abs(weekly * 12).toFixed(1);
+
+  // Macros
+  document.getElementById('protein-g').textContent = Math.round((cals * MACRO_SPLIT.protein) / 4);
+  document.getElementById('carbs-g').textContent   = Math.round((cals * MACRO_SPLIT.carbs) / 4);
+  document.getElementById('fat-g').textContent     = Math.round((cals * MACRO_SPLIT.fat) / 9);
+
+  renderMeals(cals);
+}
+
+function renderMeals(totalCals) {
+  const grid = document.getElementById('meals-grid');
+  grid.innerHTML = '';
+  const scale = totalCals / 3000;
+
+  MEALS.forEach(meal => {
+    const mealCals = Math.round(totalCals * meal.pctCalories);
+
+    // Hide items whose tags intersect with active filters
+    let items = meal.items.filter(item =>
+      !item.tags.some(tag => activeFilters.has(tag))
+    );
+
+    // Alt items only appear when their altFor is active
+    items = items.filter(item => {
+      if (!item.alt) return true;
+      if (!item.altFor) return false;
+      return item.altFor.some(tag => activeFilters.has(tag));
+    });
+
+    const card = document.createElement('article');
+    card.className = 'meal';
+    card.innerHTML = `
+      <div class="meal-head">
+        <div class="meal-name">${meal.name}</div>
+        <div class="meal-kcal">~${mealCals.toLocaleString()} kcal</div>
+      </div>
+      <ul class="meal-items">
+        ${items.length === 0
+          ? '<li class="meal-empty">All options filtered out — loosen a filter.</li>'
+          : items.map(item => `
+              <li class="meal-item ${item.alt ? 'alt' : ''}">
+                <span>${item.alt ? '↳ ' : ''}${item.name}</span>
+                <span class="item-note">${scalePortion(item.base, scale)} ${item.unit}</span>
+              </li>
+            `).join('')}
+      </ul>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function scalePortion(base, scale) {
+  const v = base * scale;
+  if (v >= 10) return Math.round(v);
+  if (v >= 1)  return (Math.round(v * 2) / 2).toString();
+  return v.toFixed(1);
+}
+
+// ============================================================
+// Events
+// ============================================================
+document.getElementById('cal-slider').addEventListener('input', update);
+document.getElementById('maintenance-input').addEventListener('input', update);
+
+document.querySelectorAll('#filter-chips .chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const tag = chip.dataset.tag;
+
+    if (activeFilters.has(tag)) {
+      activeFilters.delete(tag);
+      chip.classList.remove('active');
+      // Clean up cascading filters when toggling off
+      if (tag === 'vegan') {
+        ['eggs', 'dairy'].forEach(t => {
+          activeFilters.delete(t);
+          document.querySelector(`[data-tag="${t}"]`)?.classList.remove('active');
+        });
+      }
+    } else {
+      activeFilters.add(tag);
+      chip.classList.add('active');
+
+      // Cascades
+      if (tag === 'vegan') {
+        ['vegetarian', 'beef', 'pork', 'chicken', 'fish', 'dairy', 'eggs'].forEach(t => {
+          activeFilters.add(t);
+          document.querySelector(`[data-tag="${t}"]`)?.classList.add('active');
+        });
+      }
+      if (tag === 'vegetarian') {
+        ['beef', 'pork', 'chicken', 'fish'].forEach(t => {
+          activeFilters.add(t);
+          document.querySelector(`[data-tag="${t}"]`)?.classList.add('active');
+        });
+      }
+    }
+    update();
+  });
+});
+
+update();
+</script>
+
+</body>
+</html>
