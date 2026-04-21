@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creator's Compass | 2026 Master Strategy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400&family=Outfit:wght@100;200;300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FDFDFF;
+            --text: #0A0A0B;
+            --accent-red: #A63446;
+            --accent-blue: #0C6291;
+            --border: rgba(10, 10, 11, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-weight: 200;
+            line-height: 1.8;
+            display: flex;
+            justify-content: center;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { max-width: 1300px; width: 100%; padding: 5rem 2rem; }
+
+        header {
+            text-align: left;
+            margin-bottom: 5rem;
+            border-bottom: 2px solid var(--accent-red);
+            padding-bottom: 3rem;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 5rem;
+            font-weight: 100;
+            color: var(--accent-red);
+            margin-bottom: 0.8rem;
+            line-height: 1;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--accent-blue);
+            font-weight: 300;
+            letter-spacing: 0.2rem;
+            text-transform: lowercase;
+        }
+
+        nav.tabs {
+            display: flex;
+            gap: 4rem;
+            margin-bottom: 6rem;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            padding-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 200;
+            color: rgba(10, 10, 11, 0.6);
+            cursor: pointer;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: all 0.4s ease;
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+        }
+
+        .tab-btn:hover { color: var(--accent-blue); }
+        .tab-btn.active { color: var(--accent-red); font-weight: 400; }
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1.5rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--accent-red);
+        }
+
+        .content-section { display: none; animation: fadeIn 0.8s ease; }
+        .content-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 100;
+            margin-bottom: 4rem;
+            color: var(--accent-blue);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .grid-layout { display: grid; grid-template-columns: 360px 1fr; gap: 5rem; }
+
+        .sidebar-specs {
+            border-right: 1px solid var(--border);
+            padding-right: 2.5rem;
+            height: fit-content;
+        }
+
+        .sidebar-specs h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+            color: var(--accent-red);
+            letter-spacing: 0.25em;
+            font-weight: 300;
+        }
+
+        .spec-group { margin-bottom: 3.5rem; }
+        .spec-group-title { font-size: 0.75rem; font-weight: 400; text-transform: uppercase; color: var(--accent-blue); margin-bottom: 1.5rem; letter-spacing: 0.15em; }
+        .spec-item { margin-bottom: 1.5rem; }
+        .spec-label { display: block; font-size: 0.6rem; font-weight: 400; color: rgba(10, 10, 11, 0.4); text-transform: uppercase; margin-bottom: 0.4rem; letter-spacing: 0.1em; }
+        .spec-value { font-size: 0.9rem; color: var(--text); font-weight: 300; }
+
+        .strategy-content h3 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 100;
+            margin-bottom: 4rem;
+            color: var(--accent-red);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        .tip-block { margin-bottom: 8rem; }
+        .tip-header { font-weight: 300; font-size: 1.6rem; color: var(--text); margin-bottom: 2rem; font-family: 'Outfit', sans-serif; display: flex; align-items: center; }
+        .tip-header span { color: var(--accent-blue); margin-right: 20px; font-weight: 100; font-size: 2.5rem; }
+        .tip-body { font-size: 1.15rem; color: var(--text); opacity: 0.9; margin-bottom: 3rem; font-weight: 200; max-width: 800px; }
+
+        .example-card { background-color: rgba(12, 98, 145, 0.02); border-left: 1px solid var(--accent-blue); padding: 3rem; margin-bottom: 3rem; }
+        .example-label { display: inline-block; color: var(--accent-blue); font-size: 0.7rem; font-weight: 400; text-transform: uppercase; margin-bottom: 2rem; letter-spacing: 0.3em; }
+        .example-text { font-size: 1.05rem; font-style: italic; color: var(--text); font-weight: 300; white-space: pre-line; padding-top: 1.5rem; border-top: 1px solid rgba(12, 98, 145, 0.08); }
+
+        .warning-box { background-color: rgba(166, 52, 70, 0.02); border: 1px solid rgba(166, 52, 70, 0.1); padding: 2.5rem; margin-top: 2rem; }
+        .warning-label { color: var(--accent-red); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; display: block; margin-bottom: 1rem; }
+        .warning-text { font-size: 1rem; color: var(--text); opacity: 0.8; font-weight: 200; }
+
+        .highlight-panel { border: 1px solid var(--accent-red); padding: 5rem; margin-top: 10rem; text-align: center; }
+        .highlight-panel h4 { font-family: 'Outfit', sans-serif; font-weight: 100; color: var(--accent-red); text-transform: uppercase; margin-bottom: 2rem; letter-spacing: 0.5em; font-size: 1.6rem; }
+        .highlight-panel p { font-size: 1.4rem; font-weight: 100; max-width: 1000px; margin: 0 auto; color: var(--text); line-height: 1.6; }
+
+        footer { margin-top: 10rem; padding: 5rem 0; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text); opacity: 0.5; font-weight: 200; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.4em; }
+
+        @media (max-width: 1100px) {
+            .grid-layout { grid-template-columns: 1fr; }
+            .sidebar-specs { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 4rem; margin-bottom: 4rem; }
+            h1 { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Creator's Compass</h1>
+            <div class="tagline">The technical & strategic blueprint for the 2026 digital era.</div>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="switchTab('facebook')">Facebook</button>
+            <button class="tab-btn" onclick="switchTab('instagram')">Instagram</button>
+            <button class="tab-btn" onclick="switchTab('substack')">Substack</button>
+        </nav>
+
+        <!-- FACEBOOK -->
+        <div id="facebook" class="content-section active">
+            <h2>Facebook Architecture</h2>
+            <div class="grid-layout">
+                <aside class="sidebar-specs">
+                    <h3>2026 Asset Masterlist</h3>
+                    <div class="spec-group">
+                        <div class="spec-group-title">Identity Assets</div>
+                        <div class="spec-item"><span class="spec-label">Avatar (Profile)</span><span class="spec-value">1080 x 1080 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Personal Cover</span><span class="spec-value">851 x 315 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Group Cover</span><span class="spec-value">1640 x 856 px</span></div>
+                    </div>
+                    <div class="spec-group">
+                        <div class="spec-group-title">Feed Mechanics</div>
+                        <div class="spec-item"><span class="spec-label">Portrait (4:5)</span><span class="spec-value">1080 x 1350 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Reels / Stories</span><span class="spec-value">1080 x 1920 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Link Share Prev.</span><span class="spec-value">1200 x 628 px</span></div>
+                    </div>
+                    <div class="spec-group">
+                        <div class="spec-group-title">Performance</div>
+                        <div class="spec-item"><span class="spec-label">Max File Size</span><span class="spec-value">4 GB (Video)</span></div>
+                        <div class="spec-item"><span class="spec-label">Video Format</span><span class="spec-value">MP4 / H.264</span></div>
+                    </div>
+                </aside>
+
+                <div class="strategy-content">
+                    <h3>Comprehensive Strategy: Facebook</h3>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>01</span> The Resharing Mandate</div>
+                        <div class="tip-body">Viral growth on Facebook is impossible if your audience cannot resharing your work. Ensure your post audience is set to <strong>Public</strong>. Private or "Friends-only" posts hide the Share button from potential new fans.</div>
+                        <div class="warning-box">
+                            <span class="warning-label">Privacy Check</span>
+                            <p class="warning-text">Go to Settings > Audience and Visibility > Posts. Set "Who can see your future posts?" to Public. This is the single biggest factor in organic distribution.</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>02</span> Binary Engagement Loops</div>
+                        <div class="tip-body">Algorithm priority is awarded to <em>Velocity of Interaction</em>. A/B polls or binary questions (Yes/No) create high-volume, low-friction comment waves that propel your post into the Newsfeed.</div>
+                        <div class="example-card">
+                            <div class="example-label">The A/B Script</div>
+                            <div class="example-text">"Planning next week's guide for [Topic].
+A) Focus on Automation Systems
+B) Focus on Content Strategy
+
+Which one is your priority? Drop A or B below — I'll send the draft to the first 50 people who vote."</div>
+                        </div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>03</span> The Ghost Link Protocol</div>
+                        <div class="tip-body">Facebook severely throttles posts containing external URLs. To maintain reach, publish your post as <em>Image + Text</em> with zero links. Wait 15 minutes, then edit the link into the first comment.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>04</span> 4:5 Visual Dominance</div>
+                        <div class="tip-body">Square (1:1) is dead. 4:5 Portrait images occupy 20% more vertical screen space on mobile. In 2026, this extra real estate is the difference between a "scroll-by" and a "stop-scroll."</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>05</span> Sentiment-Driven Captions</div>
+                        <div class="tip-body">The algorithm now tracks <em>Comment Sentiment</em>. Posts that trigger positive, long-form discussion (over 4 words per comment) are distributed to "Friends of Friends" automatically.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>06</span> Native Video Hooks (3s Rule)</div>
+                        <div class="tip-body">Don't link to YouTube. Upload natively. Your first 3 seconds must be a "Visual Hook" (text overlay or motion) to trigger the 'Watch' feed distribution.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>07</span> Group Sentiment Mirroring</div>
+                        <div class="tip-body">Distribution is now Group-centric. Mirror the language and specific jargon of a Group when sharing your Page posts to ensure higher Member Appreciation signals.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>08</span> Direct-to-DM "Nudge"</div>
+                        <div class="tip-body">End your posts with "DM me the word [KEYWORD] for [RESOURCE]." This signals deep intimacy to the algorithm, ensuring that user sees your main feed for the next 7 days.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>09</span> The "Context-Value-Action" Framework</div>
+                        <div class="tip-body">Post structure: Context (Why now?) → Value (3 bullets of insight) → Action (Simple CTA). This scannability is optimized for the mobile user's attention span.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>10</span> Community Polls for Metadata</div>
+                        <div class="tip-body">Native FB Polls aren't just for engagement; they tag your profile with interest metadata. Use them weekly to refine how the AI categorizes your audience.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- INSTAGRAM -->
+        <div id="instagram" class="content-section">
+            <h2>Instagram Authority</h2>
+            <div class="grid-layout">
+                <aside class="sidebar-specs">
+                    <h3>2026 Asset Masterlist</h3>
+                    <div class="spec-group">
+                        <div class="spec-group-title">Visual Identity</div>
+                        <div class="spec-item"><span class="spec-label">Avatar</span><span class="spec-value">320 x 320 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Highlights</span><span class="spec-value">161 x 161 px</span></div>
+                    </div>
+                    <div class="spec-group">
+                        <div class="spec-group-title">Feed Assets</div>
+                        <div class="spec-item"><span class="spec-label">Portrait Post</span><span class="spec-value">1080 x 1350 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Carousel Card</span><span class="spec-value">1080 x 1350 px</span></div>
+                    </div>
+                    <div class="spec-group">
+                        <div class="spec-group-title">Video Assets</div>
+                        <div class="spec-item"><span class="spec-label">Reels / Stories</span><span class="spec-value">1080 x 1920 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Safe Zone (Bot)</span><span class="spec-value">420 px Margin</span></div>
+                    </div>
+                </aside>
+
+                <div class="strategy-content">
+                    <h3>Comprehensive Strategy: Instagram</h3>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>01</span> Save-Optimized Architecture</div>
+                        <div class="tip-body">In 2026, a "Save" is worth 10x more than a "Like." Structure carousels as <em>Modular Toolkits</em>. The final slide should be a high-contrast checklist readers will want to reference later.</div>
+                        <div class="example-card">
+                            <div class="example-label">Carousel Formula</div>
+                            <div class="example-text">Slide 1: Identify a painful industry myth.
+Slides 2-8: Step-by-step fix with screenshots.
+Slide 9: The "Cheat Sheet" Summary.
+Slide 10: "Save this for your next [Project]."</div>
+                        </div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>02</span> Perfect Retention Reels</div>
+                        <div class="tip-body">High watch-time triggers the Explore feed. End your Reel with a sentence that loops perfectly back to the first second of the video, encouraging multiple viewings per user.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>03</span> Semantic Keyword SEO</div>
+                        <div class="tip-body">Keywords in your caption and Alt-Text are now more powerful than hashtags. Manually edit 'Advanced Settings > Alt-Text' for every post using niche-specific keywords for semantic indexing.</div>
+                        <div class="warning-box">
+                            <span class="warning-label">Privacy & Security</span>
+                            <p class="warning-text">Enable "Hidden Words" in Privacy settings to automatically filter bot comments and spam. This keeps your engagement signal clean and professional.</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>04</span> Story-to-DM conversion</div>
+                        <div class="tip-body">DMs are the strongest intimacy signal. Use "Keyword Triggers" (e.g., "Reply with START"). Each reply creates a private thread, ensuring the algorithm shows them your next 3 feed posts.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>05</span> The "Secondary Hook" Rule</div>
+                        <div class="tip-body">Instagram re-serves carousels to non-interactors by showing the <em>second slide</em>. Ensure your Slide 2 is as visually arresting as Slide 1 to capture the second-look audience.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>06</span> Story Sticker Density</div>
+                        <div class="tip-body">Engagement signals on Stories are binary. Use Polls, Sliders, and Quizzes daily. Every tap on a sticker is a "Vote of Confidence" for your profile's authority.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>07</span> Broadcast Channels for Intent</div>
+                        <div class="tip-body">Move your high-intent fans into a Broadcast Channel. This bypasses the feed entirely, delivering notifications directly to their inbox—the highest-converting space on the app.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>08</span> Collab Post Synergy</div>
+                        <div class="tip-body">Co-authoring a post with a peer shares engagement signals across both audiences. It effectively doubles your footprint in the Explore feed for zero extra cost.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>09</span> Hiding "Like" Counts</div>
+                        <div class="tip-body">For accounts under 50k, hiding "Like" counts often increases comment volume. It shifts the user's focus from "social proof" to "personal engagement," humanizing the brand.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>10</span> Data Usage Quality Check</div>
+                        <div class="tip-body">Verify Settings > Data Usage > "Upload at Highest Quality" is ON. Instagram defaults to compression to save server space—don't let them kill your 4K production value.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUBSTACK -->
+        <div id="substack" class="content-section">
+            <h2>Substack Direct</h2>
+            <div class="grid-layout">
+                <aside class="sidebar-specs">
+                    <h3>2026 Asset Masterlist</h3>
+                    <div class="spec-group">
+                        <div class="spec-group-title">Brand Identity</div>
+                        <div class="spec-item"><span class="spec-label">Circular Logo</span><span class="spec-value">256 x 256 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Wordmark Logo</span><span class="spec-value">1344 x 256 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Social Share Prev</span><span class="spec-value">1456 x 1048 px</span></div>
+                    </div>
+                    <div class="spec-group">
+                        <div class="spec-group-title">Newsletter Assets</div>
+                        <div class="spec-item"><span class="spec-label">Email Banner</span><span class="spec-value">1100 x 220 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Article Column</span><span class="spec-value">730 px (Fixed)</span></div>
+                    </div>
+                    <div class="spec-group">
+                        <div class="spec-group-title">Ecosystem Assets</div>
+                        <div class="spec-item"><span class="spec-label">Notes Thumbnail</span><span class="spec-value">1200 x 630 px</span></div>
+                        <div class="spec-item"><span class="spec-label">Welcome Cover</span><span class="spec-value">600 x 600 px</span></div>
+                    </div>
+                </aside>
+
+                <div class="strategy-content">
+                    <h3>Comprehensive Strategy: Substack</h3>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>01</span> The Restack Multiplier</div>
+                        <div class="tip-body">Substack Notes is the discovery engine. When Restacking your own post, add a <em>Behind-the-Scenes</em> reflection. Don't just promote; humanize the effort to stop the scroll.</div>
+                        <div class="example-card">
+                            <div class="example-label">The Notes Script</div>
+                            <div class="example-text">"I almost deleted today's draft because [Reason].
+But then I realized [New Truth]. 
+If you've ever felt [Specific Emotion], this one was written for you.
+Link to full piece below."</div>
+                        </div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>02</span> Mobile Pattern Interrupts</div>
+                        <div class="tip-body">Readers scan; they don't read. Use a "Visual Reset" (bold quote, horizontal rule, or small 300px image) every 250 words to refresh focus and maintain scroll depth.</div>
+                        <div class="warning-box">
+                            <span class="warning-label">The 102KB Limit</span>
+                            <p class="warning-text">If your email exceeds 102KB, Gmail clips the bottom. This kills your CTA. Keep images <150KB and text focused to ensure deliverability.</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>03</span> Recommendation Syndicates</div>
+                        <div class="tip-body">Growth is fueled by other writers. Reach out to 3-5 creators for a <em>Recommendation Exchange</em>. This accounts for 60% of organic growth in the 2026 ecosystem.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>04</span> Welcome Sequence Funnel</div>
+                        <div class="tip-body">Your first automated email has a 90% open rate. Curate your "Best Of" list immediately to hook the reader into your highest-value work and ensure long-term retention.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>05</span> The Paid Tier "Specific" Offer</div>
+                        <div class="tip-body">Don't sell generic "support." Sell a specific <em>Transformation</em> (e.g., a private PDF guide or a monthly AMA link). Specificity converts 3x better than altruism.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>06</span> "Open Thread" Rituals</div>
+                        <div class="tip-body">Monthly Open Threads convert passive readers into active community members. High comment volume drives Notes discovery and algorithm favor.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>07</span> Smart Cropping for Notes</div>
+                        <div class="tip-body">Ensure your social preview image (1456x1048) centers the most critical element. Substack's AI cropping on mobile is aggressive; keep the "eye" in the center.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>08</span> Shareable Quote Graphics</div>
+                        <div class="tip-body">Generate a high-contrast 1200x630px image for your core thesis. These are "Restack Bait" on Notes, often going viral even if the full article is behind a paywall.</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>09</span> The TL;DR Header</div>
+                        <div class="tip-body">Start every long-form essay with a 3-bullet "Executive Summary." This respects the reader's time and increases the conversion from 'Click' to 'Full Read.'</div>
+                    </div>
+
+                    <div class="tip-block">
+                        <div class="tip-header"><span>10</span> Cross-Pollination vs. Guest Posting</div>
+                        <div class="tip-body">Guest posting on larger publications is a high-effort, high-reward growth lever. Aim for one external collaboration per quarter to tap into established trust.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-panel">
+            <h4>The 2026 Core Directive</h4>
+            <p>Owned media is the only sustainable asset. Use social for discovery, but optimize every touchpoint for direct conversion to your private network. Build on property you own, not property you lease.</p>
+        </div>
+
+        <footer>
+            <span>&copy; 2026 CREATOR'S COMPASS</span>
+            <span>SYSTEM v11.0 // FULL STRATEGIC MASTERLIST</span>
+        </footer>
+    </div>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.content-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => { if (btn.textContent.toLowerCase() === tabId) btn.classList.add('active'); });
+        }
+    </script>
+</body>
+</html>
