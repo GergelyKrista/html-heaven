@@ -1,4 +1,6 @@
 import type { AppMeta } from "@/types";
+import { FavoriteButton } from "./FavoriteButton";
+import { ShareButton } from "./ShareButton";
 
 // Deterministic color based on slug — each app gets a unique accent
 const cardAccents = [
@@ -20,18 +22,26 @@ function getAccent(slug: string) {
   return cardAccents[Math.abs(hash) % cardAccents.length];
 }
 
-export function AppCard({ app }: { app: AppMeta }) {
+export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }) {
   const accent = getAccent(app.slug);
+  const appUrl = `/apps/${app.slug}/index.html`;
+  // Absolute URL for sharing (works on both live site and prod)
+  const shareUrl = `https://htmlheaven.com/apps/${app.slug}/index.html`;
 
   return (
-    <a
-      href={`/apps/${app.slug}/index.html`}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="card-glow group flex flex-col rounded-xl border border-border/60 bg-surface transition-all duration-200 hover:bg-surface-2"
-    >
-      <div className="flex flex-1 flex-col p-4">
-        {/* Top row: accent dot + tags */}
+    <div className="card-glow group relative flex flex-col rounded-xl border border-border/60 bg-surface transition-all duration-200 hover:bg-surface-2">
+      {/* The entire card is clickable via this absolute overlay link.
+          Action buttons sit above it with pointer-events:auto and stopPropagation. */}
+      <a
+        href={appUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Play ${app.title}`}
+        className="absolute inset-0 z-0 rounded-xl"
+      />
+
+      <div className="pointer-events-none relative z-10 flex flex-1 flex-col p-4">
+        {/* Top row: accent dot + primary tag, like count, author */}
         <div className="mb-3 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className={`h-2 w-2 rounded-full ${accent.dot}`} />
@@ -39,9 +49,20 @@ export function AppCard({ app }: { app: AppMeta }) {
               {app.tags[0]}
             </span>
           </div>
-          <span className="text-[11px] text-muted/60">
-            {app.author}
-          </span>
+          <div className="flex items-center gap-2">
+            {likeCount !== undefined && likeCount > 0 && (
+              <span
+                className="flex items-center gap-0.5 text-[11px] font-medium text-muted"
+                title={`${likeCount} like${likeCount === 1 ? "" : "s"}`}
+              >
+                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                </svg>
+                {likeCount}
+              </span>
+            )}
+            <span className="text-[11px] text-muted/60">{app.author}</span>
+          </div>
         </div>
 
         {/* Title */}
@@ -54,8 +75,8 @@ export function AppCard({ app }: { app: AppMeta }) {
           {app.description}
         </p>
 
-        {/* Footer: tags + arrow */}
-        <div className="mt-auto flex items-center justify-between">
+        {/* Footer: tags + action buttons */}
+        <div className="mt-auto flex items-end justify-between gap-3">
           <div className="flex flex-wrap gap-1.5">
             {app.tags.slice(0, 2).map((tag) => (
               <span
@@ -66,13 +87,14 @@ export function AppCard({ app }: { app: AppMeta }) {
               </span>
             ))}
           </div>
-          <span className="text-muted transition-all group-hover:translate-x-0.5 group-hover:text-primary">
-            <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-            </svg>
-          </span>
+          {/* Re-enable pointer events for the action cluster so the card link
+              doesn't swallow clicks on these buttons. */}
+          <div className="pointer-events-auto flex items-center gap-1.5">
+            <FavoriteButton slug={app.slug} compact />
+            <ShareButton title={app.title} url={shareUrl} compact />
+          </div>
         </div>
       </div>
-    </a>
+    </div>
   );
 }
