@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth, githubFieldsFromSession } from "@/lib/auth";
 import { createSubmissionPR } from "@/lib/github";
 import { normalizeTag, isValidCategory, TAG_RULES } from "@/lib/categories";
 import { getDB, recordSubmission } from "@/lib/db";
@@ -133,13 +133,14 @@ export async function POST(request: NextRequest) {
     // if this fails, the PR still exists and admin can still merge.
     try {
       const db = await getDB();
-      const userSession = session.user as typeof session.user & { githubLogin?: string };
+      const { githubLogin, gh } = githubFieldsFromSession(session.user);
       await ensureUserWithHandle(
         db,
         session.user.email || "unknown",
         session.user.name || "Anonymous",
         session.user.image || null,
-        userSession.githubLogin || null
+        githubLogin,
+        gh
       );
       await recordSubmission(
         db,

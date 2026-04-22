@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth, githubFieldsFromSession } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { updateProfile, normalizeHandle, ensureUserWithHandle } from "@/lib/users";
 
@@ -62,13 +62,14 @@ export async function POST(request: NextRequest) {
   try {
     const db = await getDB();
     // Make sure user exists first
-    const sess = session.user as typeof session.user & { githubLogin?: string };
+    const { githubLogin, gh } = githubFieldsFromSession(session.user);
     await ensureUserWithHandle(
       db,
       session.user.email,
       session.user.name || "Anonymous",
       session.user.image || null,
-      sess.githubLogin || null
+      githubLogin,
+      gh
     );
 
     await updateProfile(db, session.user.email, updates);

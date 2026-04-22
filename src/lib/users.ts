@@ -39,9 +39,20 @@ export function normalizeHandle(raw: string | null | undefined): string | null {
   return n;
 }
 
+export interface GithubProfileFields {
+  bio?: string | null;
+  website?: string | null;
+  location?: string | null;
+  twitter?: string | null;
+}
+
 /**
- * Ensures a user row exists. If a handle is not yet set but we have a
- * GitHub login, picks the first-available handle derived from it.
+ * Ensures a user row exists with everything we can pull from GitHub.
+ * - name / avatar are always refreshed from the latest session.
+ * - handle is auto-claimed from the GitHub login if still null.
+ * - bio / website / location / x_handle are only set if they're still NULL
+ *   in the DB — we never overwrite what the user edited themselves.
+ *
  * Called by auth-gated API routes after session is verified.
  */
 export async function ensureUserWithHandle(
@@ -49,9 +60,10 @@ export async function ensureUserWithHandle(
   id: string,
   name: string,
   avatar: string | null,
-  githubLogin: string | null
+  githubLogin: string | null,
+  gh: GithubProfileFields = {}
 ) {
-  // Upsert basic fields
+  // Upsert basic identity fields
   await db
     .prepare(
       `INSERT INTO users (id, name, avatar, github) VALUES (?, ?, ?, ?)
@@ -61,12 +73,21 @@ export async function ensureUserWithHandle(
     .bind(id, name, avatar, githubLogin)
     .run();
 
-  // If this user has no handle yet but we have a github login, try to claim one.
+  // Fetch current row so we only fill fields that are still empty.
   const existing = await db
-    .prepare("SELECT handle FROM users WHERE id = ?")
+    .prepare(
+      `SELECT handle, bio, website, x_handle, location FROM users WHERE id = ?`
+    )
     .bind(id)
-    .first<{ handle: string | null }>();
+    .first<{
+      handle: string | null;
+      bio: string | null;
+      website: string | null;
+      x_handle: string | null;
+      location: string | null;
+    }>();
 
+  // Auto-claim a handle from the GitHub login if we don't have one yet.
   if (!existing?.handle && githubLogin) {
     const base = normalizeHandle(githubLogin);
     if (base) {
@@ -85,6 +106,27 @@ export async function ensureUserWithHandle(
         }
       }
     }
+  }
+
+  // Fill profile fields from GitHub — only if still empty.
+  // This means first-time sign-in pre-populates the profile, but if the
+  // user later edits their bio on the site we never clobber it.
+  const fillUpdates: Array<[string, string | null]> = [];
+  if (existing?.bio == null && gh.bio) fillUpdates.push(["bio", gh.bio]);
+  if (existing?.website == null && gh.website) {
+    const url = /^https?:\/\//i.test(gh.website) ? gh.website : `https://${gh.website}`;
+    fillUpdates.push(["website", url]);
+  }
+  if (existing?.location == null && gh.location) fillUpdates.push(["location", gh.location]);
+  if (existing?.x_handle == null && gh.twitter) fillUpdates.push(["x_handle", gh.twitter]);
+
+  if (fillUpdates.length > 0) {
+    const setClause = fillUpdates.map(([col]) => `${col} = ?`).join(", ");
+    const values = fillUpdates.map(([, val]) => val);
+    await db
+      .prepare(`UPDATE users SET ${setClause} WHERE id = ?`)
+      .bind(...values, id)
+      .run();
   }
 }
 
