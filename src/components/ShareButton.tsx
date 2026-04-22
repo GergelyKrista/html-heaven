@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 
 interface Props {
   title?: string;
@@ -40,7 +41,6 @@ const providers = [
     label: "Messenger",
     sub: "Send on Facebook",
     icon: <span className="text-base leading-none">✉️</span>,
-    // Mobile deep link; falls back to facebook.com on desktop
     href: (url: string) =>
       `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
   },
@@ -77,25 +77,68 @@ const providers = [
   },
 ];
 
+const MENU_WIDTH = 224; // w-56
+
 export function ShareButton({ title = "", url: urlProp, compact = false }: Props) {
   const [open, setOpen] = useState(false);
   const [toast, setToast] = useState<string>("");
-  const ref = useRef<HTMLDivElement>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
+  const [portalReady, setPortalReady] = useState(false);
 
-  // Close the dropdown on outside click or Escape
+  // Trigger button wrapper — used for outside-click detection AND for
+  // computing the fixed-position coords of the portalled menu.
+  const triggerRef = useRef<HTMLDivElement>(null);
+  // Menu wrapper inside the portal — used for outside-click detection.
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Only render the portal on the client (avoid SSR hydration mismatch)
+    setPortalReady(true);
+  }, []);
+
+  // Position the menu so it hangs off the trigger's right edge, clamped
+  // to the viewport. Runs every time the menu opens.
+  function positionMenu() {
+    const trigger = triggerRef.current?.getBoundingClientRect();
+    if (!trigger) return;
+    const margin = 8;
+    const viewportW = window.innerWidth;
+    // Prefer aligning the menu's right edge with the trigger's right edge
+    let left = trigger.right - MENU_WIDTH;
+    if (left + MENU_WIDTH > viewportW - margin) left = viewportW - MENU_WIDTH - margin;
+    if (left < margin) left = margin;
+    const top = trigger.bottom + 6;
+    setMenuPos({ top, left });
+  }
+
+  // Close on outside click / Escape / scroll / resize.
   useEffect(() => {
     if (!open) return;
+
     function onClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+      const t = e.target as Node;
+      if (triggerRef.current?.contains(t)) return;
+      if (menuRef.current?.contains(t)) return;
+      setOpen(false);
     }
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
     }
+    function onScrollOrResize() {
+      // Recompute rather than closing — lets the menu follow the page
+      positionMenu();
+    }
+
     document.addEventListener("mousedown", onClick);
     document.addEventListener("keydown", onKey);
+    window.addEventListener("scroll", onScrollOrResize, true);
+    window.addEventListener("resize", onScrollOrResize);
+
     return () => {
       document.removeEventListener("mousedown", onClick);
       document.removeEventListener("keydown", onKey);
+      window.removeEventListener("scroll", onScrollOrResize, true);
+      window.removeEventListener("resize", onScrollOrResize);
     };
   }, [open]);
 
@@ -135,7 +178,6 @@ export function ShareButton({ title = "", url: urlProp, compact = false }: Props
     e.stopPropagation();
     const url = urlProp || (typeof window !== "undefined" ? window.location.href : "");
 
-    // On touch devices with native share, prefer it
     if (typeof navigator !== "undefined" && "share" in navigator && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)) {
       try {
         await (navigator as Navigator & { share: (d: ShareData) => Promise<void> }).share({
@@ -148,6 +190,9 @@ export function ShareButton({ title = "", url: urlProp, compact = false }: Props
         // user cancelled or API failed — fall through to menu
       }
     }
+
+    // Opening: compute position before render so the menu appears in place
+    if (!open) positionMenu();
     setOpen((v) => !v);
   }
 
@@ -157,8 +202,46 @@ export function ShareButton({ title = "", url: urlProp, compact = false }: Props
     handleProvider(id);
   }
 
+  const menu =
+    open && menuPos && portalReady ? (
+      <div
+        ref={menuRef}
+        role="menu"
+        style={{
+          position: "fixed",
+          top: menuPos.top,
+          left: menuPos.left,
+          width: MENU_WIDTH,
+          zIndex: 100,
+        }}
+        className="overflow-hidden rounded-lg border border-border bg-surface shadow-xl"
+      >
+        <div className="border-b border-border bg-surface-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted">
+          Share this app
+        </div>
+        <div className="p-1">
+          {providers.map((p) => (
+            <button
+              key={p.id}
+              role="menuitem"
+              onClick={(e) => handleProviderClick(e, p.id)}
+              className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left transition-colors hover:bg-surface-2"
+            >
+              <span className="flex h-7 w-7 items-center justify-center rounded-md bg-surface-3 text-muted-light">
+                {p.icon}
+              </span>
+              <span className="flex-1">
+                <span className="block text-[13px] font-medium text-foreground">{p.label}</span>
+                <span className="block text-[11px] text-muted">{p.sub}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    ) : null;
+
   return (
-    <div ref={ref} className="relative inline-block">
+    <div ref={triggerRef} className="relative inline-block">
       {compact ? (
         <button
           onClick={handlePrimaryClick}
@@ -182,34 +265,9 @@ export function ShareButton({ title = "", url: urlProp, compact = false }: Props
         </button>
       )}
 
-      {open && (
-        <div
-          role="menu"
-          className="absolute right-0 z-30 mt-1.5 w-56 overflow-hidden rounded-lg border border-border bg-surface shadow-xl"
-        >
-          <div className="border-b border-border bg-surface-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-muted">
-            Share this app
-          </div>
-          <div className="p-1">
-            {providers.map((p) => (
-              <button
-                key={p.id}
-                role="menuitem"
-                onClick={(e) => handleProviderClick(e, p.id)}
-                className="flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left transition-colors hover:bg-surface-2"
-              >
-                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-surface-3 text-muted-light">
-                  {p.icon}
-                </span>
-                <span className="flex-1">
-                  <span className="block text-[13px] font-medium text-foreground">{p.label}</span>
-                  <span className="block text-[11px] text-muted">{p.sub}</span>
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Dropdown menu — portalled to body so it can escape overflow:hidden
+          parents (e.g. the Featured carousel's scroll container). */}
+      {menu && portalReady && createPortal(menu, document.body)}
 
       {toast && (
         <div className="pointer-events-none absolute right-0 top-10 z-30 whitespace-nowrap rounded-md bg-foreground px-2.5 py-1 text-[11px] font-medium text-background shadow-lg">
