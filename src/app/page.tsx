@@ -85,7 +85,9 @@ export default async function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {top.map((app) => (
+            {/* Defensive cap — getTopApps already limits to 6 but belt-and-suspenders
+                keeps the grid at exactly two rows of three on desktop */}
+            {top.slice(0, 6).map((app) => (
               <AppCard key={app.slug} app={app} likeCount={app.likeCount} />
             ))}
           </div>
