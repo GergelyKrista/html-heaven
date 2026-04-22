@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
   website TEXT,
   github TEXT,
   x_handle TEXT,
+  reddit_handle TEXT,
   location TEXT,
   created_at TEXT DEFAULT (datetime('now'))
 );
