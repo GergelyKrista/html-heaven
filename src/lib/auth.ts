@@ -5,6 +5,47 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [GitHub],
   trustHost: true,
   callbacks: {
+    // Eagerly create a user row + claim a handle as soon as someone
+    // signs in. This is what makes clicking "AmbrusOrban" on a card
+    // actually land on a profile page — without this, user rows are
+    // only created on actions like submit/edit/follow, so a fresh
+    // sign-in user has no handle and no /u/<handle> page.
+    async signIn({ user, profile }) {
+      if (!user?.email) return true;
+      try {
+        // Lazy-import to avoid pulling D1/Workers-only code into
+        // environments where auth runs without a request (edge prerender).
+        const { getDB } = await import("./db");
+        const { ensureUserWithHandle } = await import("./users");
+        const db = await getDB();
+        const p = (profile || {}) as {
+          login?: string;
+          bio?: string | null;
+          blog?: string | null;
+          location?: string | null;
+          twitter_username?: string | null;
+        };
+        await ensureUserWithHandle(
+          db,
+          user.email,
+          user.name || user.email,
+          user.image || null,
+          p.login || null,
+          {
+            bio: p.bio || null,
+            website: p.blog || null,
+            location: p.location || null,
+            twitter: p.twitter_username || null,
+          }
+        );
+      } catch (err) {
+        // Never block sign-in on a DB hiccup — the user can still
+        // land on the site and the next authed action will retry.
+        console.error("signIn ensureUserWithHandle failed:", err);
+      }
+      return true;
+    },
+
     // Capture the public GitHub profile at sign-in so we can pre-fill
     // the user's HTML Heaven profile the first time they land on /profile.
     async jwt({ token, profile, account }) {
