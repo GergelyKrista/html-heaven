@@ -2,14 +2,13 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { ensureUserWithHandle, getProfileById } from "@/lib/users";
+import { ProfileEditForm } from "@/components/ProfileEditForm";
 
-/**
- * The user's own profile. We redirect to /u/<handle> so there's one
- * canonical public URL per user. If the user has no handle yet (first
- * visit after sign-in), we auto-claim one from their GitHub login;
- * if that still fails, send them to /settings/profile to pick one.
- */
-export default async function ProfilePage() {
+export const metadata = {
+  title: "Edit profile — HTML Heaven",
+};
+
+export default async function EditProfilePage() {
   const session = await auth();
   if (!session?.user?.email) redirect("/api/auth/signin");
 
@@ -24,8 +23,17 @@ export default async function ProfilePage() {
   );
 
   const profile = await getProfileById(db, session.user.email);
-  if (profile?.handle) {
-    redirect(`/u/${profile.handle}`);
-  }
-  redirect("/settings/profile");
+  if (!profile) redirect("/");
+
+  return (
+    <div className="mx-auto max-w-xl px-4 py-10 sm:px-6">
+      <div className="mb-6">
+        <h1 className="text-xl font-semibold">Edit profile</h1>
+        <p className="mt-1 text-[13px] text-muted">
+          Tell people who you are and what you make.
+        </p>
+      </div>
+      <ProfileEditForm profile={profile} />
+    </div>
+  );
 }
