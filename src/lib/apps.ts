@@ -37,6 +37,35 @@ export async function getFeaturedApps(): Promise<AppMeta[]> {
   return apps.filter((app) => app.featured && !deleted.has(app.slug));
 }
 
+/**
+ * Returns the most-liked apps with their like counts, sorted descending.
+ * Ties broken by recency. Apps that have never been liked are excluded.
+ * If D1 is unreachable, returns an empty array so the caller can skip
+ * the section entirely rather than rendering an empty "Top" block.
+ */
+export async function getTopApps(count = 6): Promise<Array<AppMeta & { likeCount: number }>> {
+  try {
+    const db = await getDB();
+    const [deleted, result] = await Promise.all([
+      getDeletedSlugs(db),
+      db
+        .prepare("SELECT app_slug, COUNT(*) as likes FROM likes GROUP BY app_slug ORDER BY likes DESC")
+        .all<{ app_slug: string; likes: number }>(),
+    ]);
+    const out: Array<AppMeta & { likeCount: number }> = [];
+    for (const row of result.results) {
+      if (deleted.has(row.app_slug)) continue;
+      const app = apps.find((a) => a.slug === row.app_slug);
+      if (!app) continue;
+      out.push({ ...app, likeCount: row.likes });
+      if (out.length >= count) break;
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
 export async function getRecentApps(count = 6): Promise<AppMeta[]> {
   const deleted = await deletedSet();
   return apps

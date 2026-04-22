@@ -1,10 +1,14 @@
 import Link from "next/link";
-import { getAllApps, getFeaturedApps } from "@/lib/apps";
+import { getAllApps, getFeaturedApps, getTopApps } from "@/lib/apps";
 import { AppCarousel } from "@/components/AppCarousel";
 import { AppCard } from "@/components/AppCard";
 
 export default async function HomePage() {
-  const [featured, allApps] = await Promise.all([getFeaturedApps(), getAllApps()]);
+  const [featured, top, allApps] = await Promise.all([
+    getFeaturedApps(),
+    getTopApps(6),
+    getAllApps(),
+  ]);
   const appCount = allApps.length;
 
   return (
@@ -45,7 +49,7 @@ export default async function HomePage() {
 
       {/* Featured */}
       {featured.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 py-14 sm:px-6">
+        <section className="mx-auto max-w-6xl px-4 pb-4 pt-14 sm:px-6">
           <div className="mb-6 flex items-end justify-between">
             <div>
               <h2 className="text-lg font-semibold">Featured</h2>
@@ -58,6 +62,33 @@ export default async function HomePage() {
             </Link>
           </div>
           <AppCarousel apps={featured} />
+        </section>
+      )}
+
+      {/* Top — most-liked apps */}
+      {top.length > 0 && (
+        <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
+          <div className="mb-6 flex items-end justify-between">
+            <div>
+              <h2 className="flex items-baseline gap-2 text-lg font-semibold">
+                <span aria-hidden>🔥</span> Top this week
+              </h2>
+              <p className="mt-0.5 text-[12px] text-muted">
+                The apps with the most likes right now.
+              </p>
+            </div>
+            <Link
+              href="/browse?sort=popular"
+              className="text-[13px] font-medium text-muted transition-colors hover:text-foreground"
+            >
+              See all
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {top.map((app) => (
+              <AppCard key={app.slug} app={app} likeCount={app.likeCount} />
+            ))}
+          </div>
         </section>
       )}
 
