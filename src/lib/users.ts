@@ -9,6 +9,7 @@ export interface UserProfile {
   website: string | null;
   github: string | null;      // github username
   xHandle: string | null;     // x/twitter handle
+  redditHandle: string | null; // reddit username (without "u/")
   location: string | null;
   createdAt: string;
 }
@@ -130,19 +131,24 @@ export async function ensureUserWithHandle(
   }
 }
 
-export async function getProfileByHandle(db: D1Database, handle: string): Promise<UserProfile | null> {
-  const row = await db
-    .prepare(
-      `SELECT id, name, avatar, handle, bio, website, github, x_handle, location, created_at
-       FROM users WHERE handle = ?`
-    )
-    .bind(handle)
-    .first<{
-      id: string; name: string; avatar: string | null; handle: string;
-      bio: string | null; website: string | null; github: string | null;
-      x_handle: string | null; location: string | null; created_at: string;
-    }>();
-  if (!row) return null;
+type ProfileRow = {
+  id: string;
+  name: string;
+  avatar: string | null;
+  handle: string | null;
+  bio: string | null;
+  website: string | null;
+  github: string | null;
+  x_handle: string | null;
+  reddit_handle: string | null;
+  location: string | null;
+  created_at: string;
+};
+
+const PROFILE_COLS =
+  "id, name, avatar, handle, bio, website, github, x_handle, reddit_handle, location, created_at";
+
+function rowToProfile(row: ProfileRow): UserProfile {
   return {
     id: row.id,
     name: row.name,
@@ -152,36 +158,26 @@ export async function getProfileByHandle(db: D1Database, handle: string): Promis
     website: row.website,
     github: row.github,
     xHandle: row.x_handle,
+    redditHandle: row.reddit_handle,
     location: row.location,
     createdAt: row.created_at,
   };
 }
 
+export async function getProfileByHandle(db: D1Database, handle: string): Promise<UserProfile | null> {
+  const row = await db
+    .prepare(`SELECT ${PROFILE_COLS} FROM users WHERE handle = ?`)
+    .bind(handle)
+    .first<ProfileRow>();
+  return row ? rowToProfile(row) : null;
+}
+
 export async function getProfileById(db: D1Database, id: string): Promise<UserProfile | null> {
   const row = await db
-    .prepare(
-      `SELECT id, name, avatar, handle, bio, website, github, x_handle, location, created_at
-       FROM users WHERE id = ?`
-    )
+    .prepare(`SELECT ${PROFILE_COLS} FROM users WHERE id = ?`)
     .bind(id)
-    .first<{
-      id: string; name: string; avatar: string | null; handle: string | null;
-      bio: string | null; website: string | null; github: string | null;
-      x_handle: string | null; location: string | null; created_at: string;
-    }>();
-  if (!row) return null;
-  return {
-    id: row.id,
-    name: row.name,
-    avatar: row.avatar,
-    handle: row.handle,
-    bio: row.bio,
-    website: row.website,
-    github: row.github,
-    xHandle: row.x_handle,
-    location: row.location,
-    createdAt: row.created_at,
-  };
+    .first<ProfileRow>();
+  return row ? rowToProfile(row) : null;
 }
 
 export async function updateProfile(
@@ -193,6 +189,7 @@ export async function updateProfile(
     website?: string | null;
     github?: string | null;
     xHandle?: string | null;
+    redditHandle?: string | null;
     location?: string | null;
   }
 ) {
@@ -215,6 +212,7 @@ export async function updateProfile(
     ["website", "website"],
     ["github", "github"],
     ["xHandle", "x_handle"],
+    ["redditHandle", "reddit_handle"],
     ["location", "location"],
   ];
   for (const [key, col] of mappings) {

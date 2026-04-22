@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
     website?: string | null;
     github?: string | null;
     xHandle?: string | null;
+    redditHandle?: string | null;
     location?: string | null;
   } = {};
 
@@ -57,6 +58,7 @@ export async function POST(request: NextRequest) {
   if ("website" in body) updates.website = normalizeUrl(clean(body.website, MAX_FIELD));
   if ("github" in body) updates.github = clean(body.github, MAX_FIELD);
   if ("xHandle" in body) updates.xHandle = clean(body.xHandle, MAX_FIELD);
+  if ("redditHandle" in body) updates.redditHandle = clean(body.redditHandle, MAX_FIELD);
   if ("location" in body) updates.location = clean(body.location, MAX_FIELD);
 
   try {
