@@ -12,6 +12,7 @@ export function ProfileEditForm({ profile }: { profile: UserProfile }) {
   const [website, setWebsite] = useState(profile.website || "");
   const [github, setGithub] = useState(profile.github || "");
   const [xHandle, setXHandle] = useState(profile.xHandle || "");
+  const [redditHandle, setRedditHandle] = useState(profile.redditHandle || "");
   const [location, setLocation] = useState(profile.location || "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -32,6 +33,7 @@ export function ProfileEditForm({ profile }: { profile: UserProfile }) {
           website: website.trim() || null,
           github: github.trim().replace(/^@/, "") || null,
           xHandle: xHandle.trim().replace(/^@/, "") || null,
+          redditHandle: redditHandle.trim().replace(/^u\//, "").replace(/^@/, "") || null,
           location: location.trim() || null,
         }),
       });
@@ -111,6 +113,16 @@ export function ProfileEditForm({ profile }: { profile: UserProfile }) {
             onChange={(e) => setXHandle(e.target.value)}
             maxLength={100}
             placeholder="yourhandle"
+            className="h-9 w-full rounded-lg border border-border bg-surface px-3 text-[13px] text-foreground placeholder:text-muted focus:border-border-light focus:outline-none"
+          />
+        </Field>
+        <Field label="Reddit username" hint="no “u/” prefix">
+          <input
+            type="text"
+            value={redditHandle}
+            onChange={(e) => setRedditHandle(e.target.value)}
+            maxLength={100}
+            placeholder="spez"
             className="h-9 w-full rounded-lg border border-border bg-surface px-3 text-[13px] text-foreground placeholder:text-muted focus:border-border-light focus:outline-none"
           />
         </Field>
