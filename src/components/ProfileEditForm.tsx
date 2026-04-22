@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { UserProfile } from "@/lib/users";
+import { AvatarUploader } from "./AvatarUploader";
 
 export function ProfileEditForm({ profile }: { profile: UserProfile }) {
   const router = useRouter();
@@ -52,6 +53,10 @@ export function ProfileEditForm({ profile }: { profile: UserProfile }) {
 
   return (
     <form onSubmit={save} className="space-y-4">
+      <Field label="Profile picture">
+        <AvatarUploader current={profile.avatar} name={profile.name} />
+      </Field>
+
       <Field label="Handle" hint="3-25 chars, lowercase letters/numbers/hyphens. Your public URL: /u/<handle>.">
         <div className="flex items-center gap-2">
           <span className="text-[13px] text-muted">@</span>
