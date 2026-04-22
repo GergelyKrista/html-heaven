@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import type { AppMeta } from "@/types";
 import { FavoriteButton } from "./FavoriteButton";
 import { ShareButton } from "./ShareButton";
 import { DeleteAppMenu } from "./DeleteAppMenu";
 import { useOwnership } from "./OwnershipProvider";
+import { AppPreviewModal } from "./AppPreviewModal";
 
 // Deterministic color based on slug — each app gets a unique accent
 const cardAccents = [
@@ -28,80 +30,88 @@ function getAccent(slug: string) {
 
 export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }) {
   const accent = getAccent(app.slug);
-  const appUrl = `/apps/${app.slug}/index.html`;
-  // Absolute URL for sharing (works on both live site and prod)
   const shareUrl = `https://htmlheaven.com/apps/${app.slug}/index.html`;
   const { canDelete } = useOwnership();
   const showDelete = canDelete(app.slug);
+  const [previewOpen, setPreviewOpen] = useState(false);
+
+  function openPreview(e: React.MouseEvent) {
+    // Ignore clicks on the action buttons cluster
+    const target = e.target as HTMLElement;
+    if (target.closest("[data-card-actions]")) return;
+    setPreviewOpen(true);
+  }
 
   return (
-    <div className="card-glow group relative flex flex-col rounded-xl border border-border/60 bg-surface transition-all duration-200 hover:bg-surface-2">
-      {/* The entire card is clickable via this absolute overlay link.
-          Action buttons sit above it with pointer-events:auto and stopPropagation. */}
-      <a
-        href={appUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`Play ${app.title}`}
-        className="absolute inset-0 z-0 rounded-xl"
-      />
-
-      <div className="pointer-events-none relative z-10 flex flex-1 flex-col p-4">
-        {/* Top row: accent dot + primary tag, like count, author */}
-        <div className="mb-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className={`h-2 w-2 rounded-full ${accent.dot}`} />
-            <span className="text-[11px] font-medium uppercase tracking-wider text-muted">
-              {app.tags[0]}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            {likeCount !== undefined && likeCount > 0 && (
-              <span
-                className="flex items-center gap-0.5 text-[11px] font-medium text-muted"
-                title={`${likeCount} like${likeCount === 1 ? "" : "s"}`}
-              >
-                <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-                  <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
-                </svg>
-                {likeCount}
+    <>
+      <button
+        onClick={openPreview}
+        aria-label={`Preview ${app.title}`}
+        type="button"
+        className="card-glow group flex w-full flex-col rounded-xl border border-border/60 bg-surface text-left transition-all duration-200 hover:bg-surface-2"
+      >
+        <div className="flex flex-1 flex-col p-4">
+          {/* Top row: accent dot + primary tag, like count, author */}
+          <div className="mb-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className={`h-2 w-2 rounded-full ${accent.dot}`} />
+              <span className="text-[11px] font-medium uppercase tracking-wider text-muted">
+                {app.tags[0]}
               </span>
-            )}
-            <span className="text-[11px] text-muted/60">{app.author}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              {likeCount !== undefined && likeCount > 0 && (
+                <span
+                  className="flex items-center gap-0.5 text-[11px] font-medium text-muted"
+                  title={`${likeCount} like${likeCount === 1 ? "" : "s"}`}
+                >
+                  <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
+                  </svg>
+                  {likeCount}
+                </span>
+              )}
+              <span className="text-[11px] text-muted/60">{app.author}</span>
+            </div>
+          </div>
+
+          {/* Title */}
+          <h3 className="mb-1.5 text-[15px] font-semibold leading-snug text-foreground">
+            {app.title}
+          </h3>
+
+          {/* Description */}
+          <p className="mb-4 line-clamp-2 text-[13px] leading-relaxed text-muted-light">
+            {app.description}
+          </p>
+
+          {/* Footer: tags + action buttons */}
+          <div className="mt-auto flex items-end justify-between gap-3">
+            <div className="flex flex-wrap gap-1.5">
+              {app.tags.slice(0, 2).map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-md bg-surface-3 px-2 py-0.5 text-[11px] font-medium text-muted"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+            {/* data-card-actions marks this cluster so the card-level click handler
+                can detect and ignore clicks that land here. Each inner button also
+                calls stopPropagation as belt-and-suspenders. */}
+            <div data-card-actions className="flex items-center gap-1.5">
+              <FavoriteButton slug={app.slug} compact />
+              <ShareButton title={app.title} url={shareUrl} compact />
+              {showDelete && <DeleteAppMenu slug={app.slug} title={app.title} compact />}
+            </div>
           </div>
         </div>
+      </button>
 
-        {/* Title */}
-        <h3 className="mb-1.5 text-[15px] font-semibold leading-snug text-foreground">
-          {app.title}
-        </h3>
-
-        {/* Description */}
-        <p className="mb-4 line-clamp-2 text-[13px] leading-relaxed text-muted-light">
-          {app.description}
-        </p>
-
-        {/* Footer: tags + action buttons */}
-        <div className="mt-auto flex items-end justify-between gap-3">
-          <div className="flex flex-wrap gap-1.5">
-            {app.tags.slice(0, 2).map((tag) => (
-              <span
-                key={tag}
-                className="rounded-md bg-surface-3 px-2 py-0.5 text-[11px] font-medium text-muted"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-          {/* Re-enable pointer events for the action cluster so the card link
-              doesn't swallow clicks on these buttons. */}
-          <div className="pointer-events-auto flex items-center gap-1.5">
-            <FavoriteButton slug={app.slug} compact />
-            <ShareButton title={app.title} url={shareUrl} compact />
-            {showDelete && <DeleteAppMenu slug={app.slug} title={app.title} compact />}
-          </div>
-        </div>
-      </div>
-    </div>
+      {previewOpen && (
+        <AppPreviewModal app={app} onClose={() => setPreviewOpen(false)} />
+      )}
+    </>
   );
 }
