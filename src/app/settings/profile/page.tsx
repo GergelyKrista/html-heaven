@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
+import { auth, githubFieldsFromSession } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { ensureUserWithHandle, getProfileById } from "@/lib/users";
 import { ProfileEditForm } from "@/components/ProfileEditForm";
@@ -13,13 +13,14 @@ export default async function EditProfilePage() {
   if (!session?.user?.email) redirect("/api/auth/signin");
 
   const db = await getDB();
-  const sess = session.user as typeof session.user & { githubLogin?: string };
+  const { githubLogin, gh } = githubFieldsFromSession(session.user);
   await ensureUserWithHandle(
     db,
     session.user.email,
     session.user.name || "Anonymous",
     session.user.image || null,
-    sess.githubLogin || null
+    githubLogin,
+    gh
   );
 
   const profile = await getProfileById(db, session.user.email);

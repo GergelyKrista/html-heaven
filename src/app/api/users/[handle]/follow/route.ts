@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth, githubFieldsFromSession } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { getProfileByHandle, follow, unfollow, isFollowing, ensureUserWithHandle } from "@/lib/users";
 
@@ -14,13 +14,14 @@ export async function POST(_request: Request, { params }: { params: Promise<{ ha
     const db = await getDB();
 
     // Make sure the caller has a user row (first-time visitors)
-    const sess = session.user as typeof session.user & { githubLogin?: string };
+    const { githubLogin, gh } = githubFieldsFromSession(session.user);
     await ensureUserWithHandle(
       db,
       session.user.email,
       session.user.name || "Anonymous",
       session.user.image || null,
-      sess.githubLogin || null
+      githubLogin,
+      gh
     );
 
     const target = await getProfileByHandle(db, handle);
