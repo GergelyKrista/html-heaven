@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { createSubmissionPR } from "@/lib/github";
 import { normalizeTag, isValidCategory, TAG_RULES } from "@/lib/categories";
 import { getDB, recordSubmission } from "@/lib/db";
+import { ensureUserWithHandle } from "@/lib/users";
 
 // Simple in-memory rate limit: 3 submissions per user per hour
 const rateLimitMap = new Map<string, number[]>();
@@ -127,10 +128,19 @@ export async function POST(request: NextRequest) {
       submitterEmail: session.user.email || "",
     });
 
-    // Record the submission for ownership on delete. Best-effort:
-    // if this fails, the PR still exists — admin can still merge.
+    // Record the submission for ownership on delete + ensure the
+    // submitter has a user row (so their profile exists). Best-effort —
+    // if this fails, the PR still exists and admin can still merge.
     try {
       const db = await getDB();
+      const userSession = session.user as typeof session.user & { githubLogin?: string };
+      await ensureUserWithHandle(
+        db,
+        session.user.email || "unknown",
+        session.user.name || "Anonymous",
+        session.user.image || null,
+        userSession.githubLogin || null
+      );
       await recordSubmission(
         db,
         slug,

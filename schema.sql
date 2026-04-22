@@ -3,8 +3,24 @@ CREATE TABLE IF NOT EXISTS users (
   name TEXT NOT NULL,
   avatar TEXT,
   github_username TEXT,
+  handle TEXT,
+  bio TEXT,
+  website TEXT,
+  github TEXT,
+  x_handle TEXT,
+  location TEXT,
   created_at TEXT DEFAULT (datetime('now'))
 );
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_handle ON users(handle) WHERE handle IS NOT NULL;
+
+-- Social follow graph
+CREATE TABLE IF NOT EXISTS follows (
+  follower_id TEXT NOT NULL,
+  following_id TEXT NOT NULL,
+  created_at TEXT DEFAULT (datetime('now')),
+  PRIMARY KEY (follower_id, following_id)
+);
+CREATE INDEX IF NOT EXISTS idx_follows_following ON follows(following_id);
 
 CREATE TABLE IF NOT EXISTS favorites (
   user_id TEXT NOT NULL,

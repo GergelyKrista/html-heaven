@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getAllAppsSync, getAppBySlug } from "@/lib/apps";
 import { auth, isAdminEmail } from "@/lib/auth";
 import { getDB, getSubmitter } from "@/lib/db";
+import { getProfileById } from "@/lib/users";
 import { DeleteAppMenu } from "@/components/DeleteAppMenu";
 import { AppPlayer } from "@/components/AppPlayer";
 import { FavoriteButton } from "@/components/FavoriteButton";
@@ -38,19 +39,25 @@ export default async function AppPage({
   const app = await getAppBySlug(slug);
   if (!app) notFound();
 
-  // Determine if the current viewer can delete this app
+  // Determine if the current viewer can delete this app, and look up
+  // the submitter's profile so we can link the author name to /u/<handle>.
   const session = await auth();
   const viewerEmail = session?.user?.email || null;
   const isAdmin = isAdminEmail(viewerEmail);
   let canDelete = isAdmin;
-  if (!canDelete && viewerEmail) {
-    try {
-      const db = await getDB();
-      const submitter = await getSubmitter(db, slug);
-      canDelete = !!submitter && submitter.toLowerCase() === viewerEmail.toLowerCase();
-    } catch {
-      canDelete = false;
+  let authorHandle: string | null = null;
+  try {
+    const db = await getDB();
+    const submitter = await getSubmitter(db, slug);
+    if (submitter) {
+      if (!canDelete && viewerEmail) {
+        canDelete = submitter.toLowerCase() === viewerEmail.toLowerCase();
+      }
+      const submitterProfile = await getProfileById(db, submitter);
+      authorHandle = submitterProfile?.handle ?? null;
     }
+  } catch {
+    // Non-fatal — the page still renders without the profile link
   }
 
   const dateStr = new Date(app.dateAdded).toLocaleDateString("en-US", {
@@ -79,7 +86,17 @@ export default async function AppPage({
             <div>
               <h1 className="text-lg font-semibold">{app.title}</h1>
               <p className="mt-0.5 text-[13px] text-muted">
-                {app.author} &middot; {dateStr}
+                {authorHandle ? (
+                  <Link
+                    href={`/u/${authorHandle}`}
+                    className="text-muted-light hover:text-foreground hover:underline"
+                  >
+                    {app.author}
+                  </Link>
+                ) : (
+                  app.author
+                )}{" "}
+                &middot; {dateStr}
               </p>
             </div>
 
