@@ -15,7 +15,7 @@ export default async function SubmitPage() {
       <div className="mx-auto max-w-sm px-4 py-24 text-center sm:px-6">
         <h1 className="text-xl font-semibold">Sign in to submit</h1>
         <p className="mt-2 text-[14px] text-muted">
-          We use Google sign-in to track contributions.
+          We use GitHub sign-in to track contributions.
         </p>
         <div className="mt-6">
           <SignInButton />

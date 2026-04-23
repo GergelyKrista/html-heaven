@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { AppMeta } from "@/types";
+import { isExternal } from "@/types";
 import { FavoriteButton } from "./FavoriteButton";
 import { ShareButton } from "./ShareButton";
 import { DeleteAppMenu } from "./DeleteAppMenu";
@@ -80,8 +81,16 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
           </div>
 
           {/* Title */}
-          <h3 className="mb-1.5 text-[15px] font-semibold leading-snug text-foreground">
-            {app.title}
+          <h3 className="mb-1.5 flex items-center gap-1.5 text-[15px] font-semibold leading-snug text-foreground">
+            <span className="line-clamp-1">{app.title}</span>
+            {isExternal(app) && (
+              <span
+                className="inline-flex shrink-0 items-center rounded bg-surface-3 px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted"
+                title="Hosted on the submitter's own domain — opens in a new tab"
+              >
+                ↗ ext
+              </span>
+            )}
           </h3>
 
           {/* Description */}

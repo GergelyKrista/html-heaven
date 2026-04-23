@@ -102,7 +102,7 @@ export default async function AppPage({
 
         <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
           <div className="space-y-6">
-            <AppPlayer slug={app.slug} title={app.title} />
+            <AppPlayer app={app} />
             <CommentsSection slug={app.slug} />
           </div>
 

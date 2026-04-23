@@ -4,12 +4,15 @@ import { useState, useRef, useMemo } from "react";
 import { AIGuide } from "./AIGuide";
 import { CATEGORIES, SUGGESTED_TAGS, TAG_RULES, normalizeTag, type CategoryId } from "@/lib/categories";
 
-type Step = "upload" | "metadata" | "preview" | "submitting" | "done";
+type HostingType = "bundled" | "external";
+type Step = "type" | "source" | "metadata" | "preview" | "submitting" | "done";
 
 export function SubmitForm() {
-  const [step, setStep] = useState<Step>("upload");
+  const [step, setStep] = useState<Step>("type");
+  const [hostingType, setHostingType] = useState<HostingType | null>(null);
   const [htmlFile, setHtmlFile] = useState<File | null>(null);
   const [htmlContent, setHtmlContent] = useState("");
+  const [externalUrl, setExternalUrl] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<CategoryId | "">("");
@@ -103,24 +106,60 @@ export function SubmitForm() {
     }
   }
 
+  // Returns the trimmed + normalized URL, or an error message.
+  function validateExternalUrl(raw: string): { url?: string; error?: string } {
+    const trimmed = raw.trim();
+    if (!trimmed) return { error: "Enter the URL where your app is hosted." };
+    if (!/^https:\/\//i.test(trimmed)) {
+      return { error: "URL must start with https://" };
+    }
+    try {
+      const parsed = new URL(trimmed);
+      if (/(^|\.)htmlheaven\.com$/i.test(parsed.hostname)) {
+        return { error: "Use the bundled path for htmlheaven.com — external is for your own domain." };
+      }
+      return { url: parsed.toString() };
+    } catch {
+      return { error: "That doesn't look like a valid URL." };
+    }
+  }
+
   async function handleSubmit() {
-    if (!htmlFile) return;
+    if (!hostingType) return;
     if (!category) {
       setError("Pick a category.");
       return;
     }
+    if (hostingType === "bundled" && !htmlFile) {
+      setError("Upload an HTML file.");
+      return;
+    }
+    if (hostingType === "external") {
+      const r = validateExternalUrl(externalUrl);
+      if (r.error) {
+        setError(r.error);
+        return;
+      }
+    }
+
     setStep("submitting");
     setError("");
 
-    // Server expects category merged into tags array as first element
     const finalTags = [category, ...tags.filter((t) => t !== category)];
 
     const formData = new FormData();
-    formData.append("html", htmlFile);
+    formData.append("hostingType", hostingType);
     formData.append("title", title);
     formData.append("description", description);
     formData.append("category", category);
     formData.append("tags", JSON.stringify(finalTags));
+    if (hostingType === "bundled" && htmlFile) {
+      formData.append("html", htmlFile);
+    }
+    if (hostingType === "external") {
+      formData.append("externalUrl", externalUrl.trim());
+    }
+
     try {
       const res = await fetch("/api/submit", { method: "POST", body: formData });
       const data = (await res.json()) as { error?: string; prUrl?: string };
@@ -133,14 +172,18 @@ export function SubmitForm() {
     }
   }
 
-  const steps: Step[] = ["upload", "metadata", "preview"];
-  const currentIdx = steps.indexOf(step === "submitting" || step === "done" ? "preview" : step);
+  // Step indicator: folding Type + Source into the first pill keeps the
+  // count at 3 for both paths.
+  const currentIdx = (() => {
+    if (step === "type" || step === "source") return 0;
+    if (step === "metadata") return 1;
+    return 2;
+  })();
 
   return (
     <div className="mx-auto max-w-xl">
-      {/* Step indicator */}
       <div className="mb-6 flex items-center gap-1">
-        {["File", "Details", "Review"].map((label, i) => (
+        {["Source", "Details", "Review"].map((label, i) => (
           <div key={label} className="flex items-center gap-1">
             <span
               className={`flex h-6 w-6 items-center justify-center rounded text-[11px] font-semibold ${
@@ -157,8 +200,55 @@ export function SubmitForm() {
         ))}
       </div>
 
-      {/* Upload */}
-      {step === "upload" && (
+      {/* Type picker */}
+      {step === "type" && (
+        <div className="space-y-4">
+          <p className="text-[13px] text-muted-light">
+            Two ways to add an app. Pick whichever fits.
+          </p>
+
+          <button
+            onClick={() => {
+              setHostingType("bundled");
+              setStep("source");
+            }}
+            className="group flex w-full items-start gap-3 rounded-lg border border-border bg-surface p-4 text-left transition-all hover:border-border-light hover:bg-surface-2"
+          >
+            <div className="mt-0.5 text-xl">📄</div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[14px] font-semibold text-foreground">Host it here</p>
+              <p className="mt-0.5 text-[12px] text-muted-light">
+                Upload a single <code>.html</code> file. Lives under{" "}
+                <code>htmlheaven.com/apps/&lt;your-slug&gt;</code>. Sandboxed iframe,
+                auto-scanned for secrets and trackers before merge.
+              </p>
+            </div>
+            <span className="mt-1 text-[14px] text-muted opacity-0 transition-opacity group-hover:opacity-100">→</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setHostingType("external");
+              setStep("source");
+            }}
+            className="group flex w-full items-start gap-3 rounded-lg border border-border bg-surface p-4 text-left transition-all hover:border-border-light hover:bg-surface-2"
+          >
+            <div className="mt-0.5 text-xl">🔗</div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[14px] font-semibold text-foreground">I&apos;m already hosting it</p>
+              <p className="mt-0.5 text-[12px] text-muted-light">
+                Link an app on your own domain. We list it in the catalog; clicking
+                Launch opens your site in a new tab. Must be{" "}
+                <code>https</code> and publicly viewable (no login wall).
+              </p>
+            </div>
+            <span className="mt-1 text-[14px] text-muted opacity-0 transition-opacity group-hover:opacity-100">→</span>
+          </button>
+        </div>
+      )}
+
+      {/* Source — file drop (bundled) or URL input (external) */}
+      {step === "source" && hostingType === "bundled" && (
         <div className="space-y-4">
           <AIGuide />
 
@@ -197,13 +287,66 @@ export function SubmitForm() {
           </div>
           <input ref={fileInputRef} type="file" accept=".html,.htm" onChange={handleFileInputChange} className="hidden" />
           {error && <p className="text-center text-[12px] text-red-400">{error}</p>}
-          <button
-            disabled={!htmlFile}
-            onClick={() => setStep("metadata")}
-            className="h-9 w-full rounded-lg bg-primary text-[13px] font-semibold text-white transition-colors hover:bg-primary-hover disabled:opacity-30"
-          >
-            Continue
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setStep("type")}
+              className="h-9 flex-1 rounded-lg border border-border text-[13px] font-medium text-muted-light hover:text-foreground"
+            >
+              Back
+            </button>
+            <button
+              disabled={!htmlFile}
+              onClick={() => setStep("metadata")}
+              className="h-9 flex-1 rounded-lg bg-primary text-[13px] font-semibold text-white transition-colors hover:bg-primary-hover disabled:opacity-30"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
+
+      {step === "source" && hostingType === "external" && (
+        <div className="space-y-4">
+          <div className="rounded-lg border border-border bg-surface-2 p-3 text-[12px] text-muted-light">
+            Paste the public URL of the app you&apos;re hosting elsewhere. It should
+            load without a login wall, be served over <code>https</code>, and keep
+            working — broken links get removed.
+          </div>
+          <div>
+            <label className="mb-1 block text-[13px] font-medium">URL</label>
+            <input
+              type="url"
+              value={externalUrl}
+              onChange={(e) => setExternalUrl(e.target.value)}
+              placeholder="https://example.com/my-app"
+              maxLength={500}
+              className="h-9 w-full rounded-lg border border-border bg-surface px-3 text-[13px] text-foreground placeholder:text-muted focus:border-border-light focus:outline-none"
+            />
+          </div>
+          {error && <p className="text-[12px] text-red-400">{error}</p>}
+          <div className="flex gap-2">
+            <button
+              onClick={() => setStep("type")}
+              className="h-9 flex-1 rounded-lg border border-border text-[13px] font-medium text-muted-light hover:text-foreground"
+            >
+              Back
+            </button>
+            <button
+              disabled={!externalUrl.trim()}
+              onClick={() => {
+                const r = validateExternalUrl(externalUrl);
+                if (r.error) {
+                  setError(r.error);
+                  return;
+                }
+                setError("");
+                setStep("metadata");
+              }}
+              className="h-9 flex-1 rounded-lg bg-primary text-[13px] font-semibold text-white transition-colors hover:bg-primary-hover disabled:opacity-30"
+            >
+              Continue
+            </button>
+          </div>
         </div>
       )}
 
@@ -235,7 +378,6 @@ export function SubmitForm() {
             <p className="mt-0.5 text-right text-[11px] text-muted">{description.length}/1000</p>
           </div>
 
-          {/* Category — mandatory, one selection */}
           <div>
             <label className="mb-1.5 block text-[13px] font-medium">
               Category <span className="text-red-400">*</span>
@@ -260,13 +402,11 @@ export function SubmitForm() {
             </div>
           </div>
 
-          {/* Tags — optional, suggestions + custom */}
           <div>
             <label className="mb-1.5 block text-[13px] font-medium">
               Tags <span className="font-normal text-muted">Optional · up to {TAG_RULES.maxCount}</span>
             </label>
 
-            {/* Selected tags as chips */}
             {tags.length > 0 && (
               <div className="mb-2 flex flex-wrap gap-1.5">
                 {tags.map((tag) => (
@@ -280,7 +420,6 @@ export function SubmitForm() {
               </div>
             )}
 
-            {/* Custom tag input */}
             <div className="mb-2 flex gap-1.5">
               <input
                 type="text"
@@ -300,7 +439,6 @@ export function SubmitForm() {
               </button>
             </div>
 
-            {/* Suggested tags based on chosen category */}
             {suggestedTags.length > 0 && (
               <div>
                 <p className="mb-1 text-[11px] text-muted">Suggestions</p>
@@ -327,7 +465,7 @@ export function SubmitForm() {
           {error && <p className="text-[12px] text-red-400">{error}</p>}
           <div className="flex gap-2">
             <button
-              onClick={() => setStep("upload")}
+              onClick={() => setStep("source")}
               className="h-9 flex-1 rounded-lg border border-border text-[13px] font-medium text-muted-light hover:text-foreground"
             >
               Back
@@ -346,17 +484,43 @@ export function SubmitForm() {
       {/* Preview */}
       {step === "preview" && (
         <div className="space-y-4">
-          <div className="overflow-hidden rounded-lg border border-border">
-            <div className="flex items-center gap-1.5 border-b border-border bg-surface-2 px-3 py-1.5">
-              <span className="h-2 w-2 rounded-full bg-border-light" />
-              <span className="h-2 w-2 rounded-full bg-border-light" />
-              <span className="h-2 w-2 rounded-full bg-border-light" />
-              <span className="ml-1 text-[11px] text-muted">{title}</span>
+          {hostingType === "bundled" ? (
+            <div className="overflow-hidden rounded-lg border border-border">
+              <div className="flex items-center gap-1.5 border-b border-border bg-surface-2 px-3 py-1.5">
+                <span className="h-2 w-2 rounded-full bg-border-light" />
+                <span className="h-2 w-2 rounded-full bg-border-light" />
+                <span className="h-2 w-2 rounded-full bg-border-light" />
+                <span className="ml-1 text-[11px] text-muted">{title}</span>
+              </div>
+              <iframe srcDoc={htmlContent} title="Preview" sandbox="allow-scripts" className="h-[350px] w-full bg-white" />
             </div>
-            <iframe srcDoc={htmlContent} title="Preview" sandbox="allow-scripts" className="h-[350px] w-full bg-white" />
-          </div>
+          ) : (
+            <div className="rounded-lg border border-border bg-surface p-4">
+              <div className="mb-1 text-[11px] font-medium uppercase tracking-wider text-muted">
+                External link
+              </div>
+              <a
+                href={externalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="break-all text-[13px] text-primary-light hover:underline"
+              >
+                {externalUrl} ↗
+              </a>
+              <p className="mt-2 text-[11px] text-muted">
+                Opens in a new tab when someone hits Launch from the catalog.
+              </p>
+            </div>
+          )}
           <div className="rounded-lg border border-border bg-surface p-3">
-            <p className="text-[14px] font-medium">{title}</p>
+            <div className="flex items-center gap-2">
+              <p className="text-[14px] font-medium">{title}</p>
+              {hostingType === "external" && (
+                <span className="rounded-md bg-surface-2 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted">
+                  external ↗
+                </span>
+              )}
+            </div>
             <p className="mt-0.5 text-[12px] text-muted">{description}</p>
             <div className="mt-2 flex flex-wrap items-center gap-1">
               {category && (

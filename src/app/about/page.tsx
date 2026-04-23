@@ -12,13 +12,16 @@ export default function AboutPage() {
 
       <div className="mt-6 space-y-4 text-[14px] leading-relaxed text-muted-light">
         <p>
-          HTML Heaven is a collection of free, self-contained HTML5 apps that
-          run entirely in your browser. No downloads, no accounts, no tracking.
+          HTML Heaven is a community-curated showcase of small, self-contained
+          HTML5 apps — bundled single-file uploads and apps hosted on
+          contributors&apos; own domains. The site code is open-source under
+          MIT; the catalog is moderated.
         </p>
 
         <p>
-          Every app is a single HTML file loaded in a sandboxed iframe. Your
-          data stays in your browser. Nothing is sent to any server.
+          Bundled apps run as a single HTML file loaded in a sandboxed iframe.
+          Your input stays in your browser for those; nothing is sent to any
+          server except when you choose to like, favorite, or comment.
         </p>
 
         <h2 className="pt-2 text-[15px] font-semibold text-foreground">
@@ -45,17 +48,21 @@ export default function AboutPage() {
           How it works
         </h2>
         <p>
-          The entire catalog lives as files in a GitHub repository. There&apos;s
-          no database and no recurring cost. Favorites and votes are stored in
-          your browser&apos;s localStorage.
+          The catalog of bundled apps lives as files in a GitHub repository, so
+          the content is inspectable and forkable. Social data — likes,
+          favorites, comments, profiles — is stored in a Cloudflare D1
+          database. The whole stack runs on Cloudflare free tiers.
         </p>
 
         <h2 className="pt-2 text-[15px] font-semibold text-foreground">
           Security
         </h2>
         <p>
-          Apps run in sandboxed iframes with restricted permissions. They cannot
-          access cookies, storage, or any data from the parent page.
+          Bundled apps run in sandboxed iframes with restricted permissions
+          and an HTTP-level CSP sandbox — even when opened in a new tab they
+          can&apos;t read cookies or make authenticated requests back to the
+          main site. Externally-hosted apps open in a new tab on their own
+          domain; we don&apos;t iframe or proxy them.
         </p>
       </div>
     </div>
