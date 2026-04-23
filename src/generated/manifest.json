@@ -1,5 +1,88 @@
 [
   {
+    "title": "Space Marine 2 - Team Compositions",
+    "slug": "space-marine-2-team-compositions",
+    "description": "The app suggests team compositions and loadouts based on mission type and difficulty.",
+    "author": "ambrusorban",
+    "tags": [
+      "games",
+      "shooter",
+      "action",
+      "multiplayer"
+    ],
+    "dateAdded": "2026-04-23",
+    "thumbnail": "thumbnail.png",
+    "featured": false
+  },
+  {
+    "title": "Creator's Compass",
+    "slug": "creator-s-compass",
+    "description": "Comprehensive strategic manual for social media.",
+    "author": "ambrusorban",
+    "tags": [
+      "productivity",
+      "socialmedia",
+      "guide",
+      "facebook",
+      "instagram",
+      "substack"
+    ],
+    "dateAdded": "2026-04-21",
+    "thumbnail": "thumbnail.png",
+    "featured": false
+  },
+  {
+    "title": "Deficit - Calorie deficit calculator",
+    "slug": "deficit-calorie-deficit-calculator",
+    "description": "You can veiw recopies and plan meals for a steady weight loss",
+    "author": "GergelyKrista",
+    "tags": [
+      "tools"
+    ],
+    "dateAdded": "2026-04-21",
+    "thumbnail": "thumbnail.png",
+    "featured": false
+  },
+  {
+    "title": "Front end development guide",
+    "slug": "front-end-development-guide",
+    "description": "For basement (living) engineers",
+    "author": "GergelyKrista",
+    "tags": [
+      "productivity",
+      "education",
+      "tools",
+      "creative"
+    ],
+    "dateAdded": "2026-04-19",
+    "thumbnail": "thumbnail.png",
+    "featured": false
+  },
+  {
+    "title": "Age of Empires 2 - Team Compositions Guide",
+    "slug": "age-of-empires-2-team-compositions-guide",
+    "description": "The app suggests team compositions for different maps based on player number.",
+    "author": "ambrusorban",
+    "tags": [
+      "games"
+    ],
+    "dateAdded": "2026-04-17",
+    "thumbnail": "thumbnail.png",
+    "featured": false
+  },
+  {
+    "title": "Hungarian Flashcard",
+    "slug": "hungarian-flashcard",
+    "description": "Hun language learning app",
+    "author": "GergelyKrista",
+    "tags": [
+      "education"
+    ],
+    "dateAdded": "2026-04-17",
+    "thumbnail": "thumbnail.png",
+    "featured": false
+  },
+  {
     "title": "The Marble Dust Playbook",
     "slug": "managing-up-playbook",
     "description": "Historical wisdom for managing up — strategies and principles from history's greatest advisors.",
@@ -10,6 +93,31 @@
     "dateAdded": "2026-04-15",
     "thumbnail": "thumbnail.png",
     "featured": true
+  },
+  {
+    "title": "Orbán kifogás generátor",
+    "slug": "orb-n-kifog-s-gener-tor",
+    "description": "Az őszinte igazság!",
+    "author": "ambrusorban",
+    "tags": [
+      "fun"
+    ],
+    "dateAdded": "2026-04-15",
+    "thumbnail": "thumbnail.png",
+    "featured": false
+  },
+  {
+    "title": "OW2",
+    "slug": "ow2",
+    "description": "counter",
+    "author": "GergelyKrista",
+    "tags": [
+      "games",
+      "tools"
+    ],
+    "dateAdded": "2026-04-15",
+    "thumbnail": "thumbnail.png",
+    "featured": false
   },
   {
     "title": "Random Quote Generator",

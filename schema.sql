@@ -64,6 +64,15 @@ CREATE TABLE IF NOT EXISTS app_deletions (
   reason TEXT
 );
 
+-- Per-user rate limit ledger. One row per allowed hit. Callers check the
+-- rolling-window count before inserting a new row.
+CREATE TABLE IF NOT EXISTS rate_limits (
+  user_id TEXT NOT NULL,
+  action TEXT NOT NULL,
+  ts TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_rate_limits_lookup ON rate_limits(user_id, action, ts);
+
 CREATE INDEX IF NOT EXISTS idx_favorites_slug ON favorites(app_slug);
 CREATE INDEX IF NOT EXISTS idx_likes_slug ON likes(app_slug);
 CREATE INDEX IF NOT EXISTS idx_comments_slug ON comments(app_slug);

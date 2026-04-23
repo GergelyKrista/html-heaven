@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { getAllApps, getFeaturedApps, getTopApps } from "@/lib/apps";
+import { getAllApps, getRecentApps, getTopApps } from "@/lib/apps";
 import { AppCarousel } from "@/components/AppCarousel";
 import { AppCard } from "@/components/AppCard";
 
 export default async function HomePage() {
-  const [featured, top, allApps] = await Promise.all([
-    getFeaturedApps(),
+  const [latest, top, allApps] = await Promise.all([
+    getRecentApps(8),
     getTopApps(6),
     getAllApps(),
   ]);
@@ -47,21 +47,26 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured */}
-      {featured.length > 0 && (
+      {/* Latest — most recently uploaded apps */}
+      {latest.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 pb-4 pt-14 sm:px-6">
           <div className="mb-6 flex items-end justify-between">
             <div>
-              <h2 className="text-lg font-semibold">Featured</h2>
+              <h2 className="flex items-baseline gap-2 text-lg font-semibold">
+                <span aria-hidden>🆕</span> Latest
+              </h2>
+              <p className="mt-0.5 text-[12px] text-muted">
+                Just added to the collection.
+              </p>
             </div>
             <Link
-              href="/browse"
+              href="/browse?sort=newest"
               className="text-[13px] font-medium text-muted transition-colors hover:text-foreground"
             >
               View all
             </Link>
           </div>
-          <AppCarousel apps={featured} />
+          <AppCarousel apps={latest} />
         </section>
       )}
 

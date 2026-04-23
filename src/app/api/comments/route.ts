@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { getDB, ensureUser, getComments, addComment, getUserCommentCount } from "@/lib/db";
+import { getDB, ensureUser, getComments, addComment } from "@/lib/db";
 import { postCommentToPR } from "@/lib/github";
+import { assertSameOrigin } from "@/lib/security";
+import { checkAndRecord } from "@/lib/ratelimit";
 
 const MAX_COMMENT_LENGTH = 500;
 const COMMENTS_PER_HOUR = 10;
@@ -23,6 +25,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const originGate = assertSameOrigin(request);
+  if (originGate) return originGate;
+
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
@@ -47,9 +52,8 @@ export async function POST(request: NextRequest) {
     const userName = session.user.name || "Anonymous";
     const userAvatar = session.user.image || null;
 
-    // Rate limit
-    const recentCount = await getUserCommentCount(db, userId, 1);
-    if (recentCount >= COMMENTS_PER_HOUR) {
+    const { allowed } = await checkAndRecord(db, userId, "comment", 60 * 60, COMMENTS_PER_HOUR);
+    if (!allowed) {
       return NextResponse.json({ error: "Too many comments. Try again later." }, { status: 429 });
     }
 
