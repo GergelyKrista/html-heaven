@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getDB, ensureUser, toggleLike, getLikeCount, hasUserLiked } from "@/lib/db";
+import { assertSameOrigin } from "@/lib/security";
 
 export async function GET(request: NextRequest) {
   const slug = request.nextUrl.searchParams.get("slug");
@@ -25,6 +26,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const originGate = assertSameOrigin(request);
+  if (originGate) return originGate;
+
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });

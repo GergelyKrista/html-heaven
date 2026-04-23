@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, githubFieldsFromSession } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { ensureUserWithHandle } from "@/lib/users";
+import { assertSameOrigin } from "@/lib/security";
 
 // Roughly 200KB when base64-encoded (encoding adds ~33% overhead on top
 // of the raw image bytes, so we cap on the encoded string length).
@@ -18,6 +19,9 @@ const ALLOWED_MIME = new Set(["image/jpeg", "image/png", "image/webp", "image/gi
  * Or:        { dataUrl: null }   → reset to GitHub avatar
  */
 export async function POST(request: NextRequest) {
+  const originGate = assertSameOrigin(request);
+  if (originGate) return originGate;
+
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });

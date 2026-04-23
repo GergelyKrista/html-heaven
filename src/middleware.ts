@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isDev = process.env.NODE_ENV !== "production";
 
-  // Shared headers on every response
+  // Shared headers — applied on every response
   headers.set("X-Content-Type-Options", "nosniff");
   headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   headers.set(
@@ -25,16 +25,28 @@ export function middleware(request: NextRequest) {
     "max-age=31536000; includeSubDomains"
   );
 
-  // Anything under /apps/ is user-submitted HTML — keep the sandbox CSP.
-  // See the PR on origin isolation for the full reasoning; the short
-  // version is that `sandbox` at the HTTP-header level gives the document
-  // an opaque origin even when loaded top-level, which stops submitted
-  // code from making authenticated same-origin requests to /api.
+  // Anything under /apps/ is user-submitted HTML. Treat it as untrusted
+  // third-party content even though it's served from our own origin.
+  //
+  // The CSP `sandbox` directive, applied at the HTTP header level, forces
+  // the document into a sandboxed browsing context with an **opaque
+  // origin** — even when opened top-level in a new tab or via direct URL.
+  // An opaque-origin page is cross-site with htmlheaven.com, so:
+  //   - the session cookie (SameSite=Lax) is NOT sent on fetches back to
+  //     /api/*, so submitted code can't act as the signed-in user.
+  //   - localStorage / sessionStorage / document.cookie are inaccessible.
+  //   - top-level navigation is only allowed by explicit user gesture
+  //     (keeps the "Back to HTML Heaven" badge click working).
+  //
+  // This is our primary defense against account takeover via a malicious
+  // submission opened in a new tab. Without it, same-origin code would
+  // pick up the logged-in user's session cookie and act on their behalf.
   if (path.startsWith("/apps/")) {
     headers.set(
       "Content-Security-Policy",
       "sandbox allow-scripts allow-popups allow-top-navigation-by-user-activation allow-forms allow-modals allow-pointer-lock allow-downloads"
     );
+    // Don't set X-Frame-Options — we WANT to embed these in our own iframe.
     return response;
   }
 
