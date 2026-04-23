@@ -24,7 +24,9 @@ export function AppPreviewModal({ app, onClose }: Props) {
   const [loading, setLoading] = useState(true);
 
   const appUrl = `/apps/${app.slug}/index.html`;
-  const shareUrl = `https://htmlheaven.com/apps/${app.slug}/index.html`;
+  // Share the detail page URL so link previews in chats render a real
+  // OG card (the /apps/.../index.html static file has no meta tags).
+  const shareUrl = `https://htmlheaven.com/app/${app.slug}`;
   const dateStr = new Date(app.dateAdded).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",

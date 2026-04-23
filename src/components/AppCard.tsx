@@ -30,7 +30,9 @@ function getAccent(slug: string) {
 
 export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }) {
   const accent = getAccent(app.slug);
-  const shareUrl = `https://htmlheaven.com/apps/${app.slug}/index.html`;
+  // Share the detail page, not the raw HTML file — the detail page carries
+  // OG + Twitter meta tags, so chat apps generate a proper preview card.
+  const shareUrl = `https://htmlheaven.com/app/${app.slug}`;
   const { canDelete } = useOwnership();
   const showDelete = canDelete(app.slug);
   const [previewOpen, setPreviewOpen] = useState(false);

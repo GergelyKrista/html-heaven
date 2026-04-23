@@ -24,9 +24,33 @@ export async function generateMetadata({
   const { slug } = await params;
   const app = await getAppBySlug(slug);
   if (!app) return { title: "Not Found — HTML Heaven" };
+
+  const title = `${app.title} — HTML Heaven`;
+  const description = app.description;
+  const url = `https://htmlheaven.com/app/${slug}`;
+
   return {
-    title: `${app.title} — HTML Heaven`,
-    description: app.description,
+    title,
+    description,
+    // Explicit per-page OG so preview scrapers that read openGraph
+    // directly (rather than falling back to <title>) see the app's
+    // real title + description instead of the site-wide defaults.
+    // The og:image comes from the co-located opengraph-image.tsx.
+    openGraph: {
+      type: "website",
+      url,
+      title,
+      description,
+      siteName: "HTML Heaven",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: url,
+    },
   };
 }
 
