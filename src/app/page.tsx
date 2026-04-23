@@ -25,9 +25,9 @@ export default async function HomePage() {
               <span className="text-muted">made by people.</span>
             </h1>
             <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-muted-light">
-              A collection of self-contained HTML5 tools, games, and creative
-              experiments. Everything runs in your browser. Nothing to install.
-              All open source.
+              A community-curated collection of self-contained HTML5 tools,
+              games, and creative experiments. Everything runs in your browser.
+              Nothing to install.
             </p>
             <div className="mt-8 flex items-center gap-3">
               <Link
