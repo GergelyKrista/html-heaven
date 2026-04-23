@@ -134,16 +134,6 @@ export async function addComment(
     .run();
 }
 
-export async function getUserCommentCount(db: D1Database, userId: string, sinceHoursAgo: number): Promise<number> {
-  const result = await db
-    .prepare(
-      "SELECT COUNT(*) as count FROM comments WHERE user_id = ? AND created_at > datetime('now', ?)"
-    )
-    .bind(userId, `-${sinceHoursAgo} hours`)
-    .first<{ count: number }>();
-  return result?.count ?? 0;
-}
-
 // Submissions — records who submitted each app, for ownership checks on delete.
 export async function recordSubmission(
   db: D1Database,
