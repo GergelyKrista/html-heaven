@@ -1,9 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth, githubFieldsFromSession } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { getProfileByHandle, follow, unfollow, isFollowing, ensureUserWithHandle } from "@/lib/users";
+import { assertSameOrigin } from "@/lib/security";
 
-export async function POST(_request: Request, { params }: { params: Promise<{ handle: string }> }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ handle: string }> }) {
+  const originGate = assertSameOrigin(request);
+  if (originGate) return originGate;
+
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });

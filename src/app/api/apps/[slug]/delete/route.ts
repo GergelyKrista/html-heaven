@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, isAdminEmail } from "@/lib/auth";
 import { getDB, getSubmitter, markAppDeleted } from "@/lib/db";
 import { createDeletePR } from "@/lib/github";
+import { assertSameOrigin } from "@/lib/security";
 
 interface Params {
   params: Promise<{ slug: string }>;
 }
 
 export async function POST(request: NextRequest, { params }: Params) {
+  const originGate = assertSameOrigin(request);
+  if (originGate) return originGate;
+
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
