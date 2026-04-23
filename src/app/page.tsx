@@ -119,7 +119,7 @@ export default async function HomePage() {
             <div>
               <h2 className="text-lg font-semibold">Built something?</h2>
               <p className="mt-1 text-[14px] text-muted">
-                Upload a single HTML file. We review it, you get credit.
+                Upload a single HTML file, or link one you already host.
               </p>
             </div>
             <Link

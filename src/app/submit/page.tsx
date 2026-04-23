@@ -29,7 +29,7 @@ export default async function SubmitPage() {
       <div className="mb-8">
         <h1 className="text-xl font-semibold">Submit an app</h1>
         <p className="mt-1 text-[14px] text-muted">
-          Upload a single HTML file. We review it, you get credit.
+          Upload a single HTML file, or link one you already host.
         </p>
       </div>
       <SubmitForm />
