@@ -7,6 +7,7 @@ import type { UserProfile, ProfileStats } from "@/lib/users";
 import { FavoriteButton } from "./FavoriteButton";
 import { LikeButton } from "./LikeButton";
 import { ShareButton } from "./ShareButton";
+import { AppThumbnail } from "./AppThumbnail";
 
 interface Props {
   app: AppMeta;
@@ -82,6 +83,9 @@ export function AppPreviewModal({ app, onClose }: Props) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
+
+        {/* Hero thumbnail */}
+        <AppThumbnail app={app} aspect="aspect-[2/1]" />
 
         {/* Header block */}
         <div className="px-5 pb-4 pt-6 sm:px-6">

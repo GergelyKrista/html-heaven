@@ -30,8 +30,16 @@ function categorizeApp(app: AppMeta): CategoryId {
   return "other";
 }
 
-export function AppGrid({ apps, allTags }: { apps: AppMeta[]; allTags: string[] }) {
-  const [search, setSearch] = useState("");
+export function AppGrid({
+  apps,
+  allTags,
+  initialSearch = "",
+}: {
+  apps: AppMeta[];
+  allTags: string[];
+  initialSearch?: string;
+}) {
+  const [search, setSearch] = useState(initialSearch);
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | "all">("all");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [sort, setSort] = useState<SortOption>("popular");

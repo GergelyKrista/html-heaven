@@ -6,8 +6,17 @@ export const metadata = {
   description: "Browse all HTML5 apps in the collection.",
 };
 
-export default async function BrowsePage() {
-  const [apps, tags] = await Promise.all([getAllApps(), getAllTags()]);
+export default async function BrowsePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const [apps, tags, sp] = await Promise.all([
+    getAllApps(),
+    getAllTags(),
+    searchParams,
+  ]);
+  const initialSearch = typeof sp.q === "string" ? sp.q : "";
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
@@ -17,7 +26,7 @@ export default async function BrowsePage() {
           {apps.length} apps in the collection
         </p>
       </div>
-      <AppGrid apps={apps} allTags={tags} />
+      <AppGrid apps={apps} allTags={tags} initialSearch={initialSearch} />
     </div>
   );
 }
