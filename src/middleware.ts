@@ -11,6 +11,7 @@ export function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const headers = response.headers;
   const path = request.nextUrl.pathname;
+  const isDev = process.env.NODE_ENV !== "production";
 
   // Shared headers — applied on every response
   headers.set("X-Content-Type-Options", "nosniff");
@@ -49,13 +50,26 @@ export function middleware(request: NextRequest) {
     return response;
   }
 
-  // Main-site pages and API routes — standard clickjacking + CSP.
+  // Main-site CSP. Notes:
+  // - We keep `unsafe-inline` for script-src because Next.js emits inline
+  //   bootstrap scripts on every page, and most of our pages are
+  //   statically prerendered. Switching to per-request nonces would
+  //   require forcing every page to render dynamically (nonce in the
+  //   header must match nonce in the HTML), which is a bigger refactor.
+  //   We have zero `dangerouslySetInnerHTML` and zero raw-HTML rendering
+  //   of user content today, so there is no current XSS sink for an
+  //   inline-script injection to hit — it's defense-in-depth, not the
+  //   front-line guard.
+  // - `unsafe-eval` is only allowed in dev (Turbopack HMR uses it).
+  //   Production builds don't need it, so we drop it there.
+  // - `object-src 'none'` blocks legacy plugins (<embed>, <object>,
+  //   <applet>) — closes a class of obscure bypasses.
   headers.set("X-Frame-Options", "SAMEORIGIN");
   headers.set(
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: blob:",
       "font-src 'self' https://fonts.gstatic.com",
@@ -64,6 +78,7 @@ export function middleware(request: NextRequest) {
       "form-action 'self'",
       "frame-ancestors 'self'",
       "base-uri 'self'",
+      "object-src 'none'",
     ].join("; ")
   );
 
