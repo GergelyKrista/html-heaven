@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FS25 Field Guide</title>
+<style>
+:root {
+    --bg:     #121113;
+    --sf:     #1e1d20;
+    --sf2:    #28272b;
+    --gd:     #3D5C00;
+    --gl:     #6BD425;
+    --or:     #E8871E;
+    --tx:     #FFFFFF;
+    --mu:     #8a8a90;
+    --dg:     #e05555;
+    --bdr:    rgba(255,255,255,.07);
+    --szn-wi: #182537;
+    --szn-sp: #172b10;
+    --szn-su: #272100;
+    --szn-au: #271600;
+}
+body.light {
+    --bg:     #f2f1ec;
+    --sf:     #ffffff;
+    --sf2:    #eae8e1;
+    --gd:     #3D5C00;
+    --gl:     #3b7a00;
+    --or:     #c46a14;
+    --tx:     #18171a;
+    --mu:     #5c5c63;
+    --dg:     #c03535;
+    --bdr:    rgba(0,0,0,.09);
+    --szn-wi: rgba(80,120,200,.12);
+    --szn-sp: rgba(61,92,0,.1);
+    --szn-su: rgba(200,160,0,.1);
+    --szn-au: rgba(200,90,0,.1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body {
+    background:var(--bg); color:var(--tx);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    font-size:15px; line-height:1.55;
+    transition:background .2s,color .2s;
+}
+
+/* ── Header ── */
+header {
+    background:var(--gd);
+    padding:1.05rem 1.6rem;
+    display:flex; align-items:center; gap:.7rem;
+    border-bottom:2px solid rgba(107,212,37,.25);
+}
+header h1{font-size:1.3rem;font-weight:700;letter-spacing:-.3px;color:#fff}
+header p {color:rgba(255,255,255,.48);font-size:.8rem}
+.hdr-right{margin-left:auto;display:flex;gap:.45rem;flex-shrink:0}
+.hdr-btn {
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.22);
+    color:#fff; border-radius:6px;
+    padding:.32rem .75rem;
+    font-size:.78rem; font-weight:600;
+    cursor:pointer; transition:background .15s;
+}
+.hdr-btn:hover{background:rgba(255,255,255,.22)}
+
+/* ── Nav ── */
+nav {
+    background:var(--sf); display:flex;
+    overflow-x:auto; border-bottom:1px solid var(--sf2);
+    scrollbar-width:none;
+}
+nav::-webkit-scrollbar{display:none}
+nav button {
+    background:none; border:none;
+    border-bottom:2px solid transparent;
+    color:var(--mu); padding:.78rem 1.25rem;
+    cursor:pointer; font-size:.875rem;
+    white-space:nowrap; transition:color .15s;
+}
+nav button:hover{color:var(--tx)}
+nav button.active{color:var(--gl);border-bottom-color:var(--gl)}
+
+/* ── Layout ── */
+main{max-width:1100px;margin:0 auto;padding:1.65rem 1.4rem}
+.tab{display:none}
+.tab.active{display:block}
+h2{font-size:1.1rem;color:var(--gl);margin-bottom:1.15rem;padding-bottom:.43rem;border-bottom:1px solid var(--sf2)}
+h3{font-size:.9rem;font-weight:600;color:var(--or);margin-bottom:.48rem}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.35rem}
+@media(max-width:680px){.two-col{grid-template-columns:1fr}}
+
+/* ── Cards ── */
+.card{background:var(--sf);border-radius:7px;padding:.95rem 1.1rem;margin-bottom:.65rem}
+.cg{border-left:3px solid var(--gd)}
+.co{border-left:3px solid var(--or)}
+
+/* ── Callouts ── */
+.tip,.warn{border-radius:5px;padding:.52rem .78rem;font-size:.79rem;margin-top:.55rem;color:var(--mu)}
+.tip {background:rgba(107,212,37,.07);border:1px solid rgba(107,212,37,.17)}
+.tip  strong{color:var(--gl)}
+.warn{background:rgba(232,135,30,.07);border:1px solid rgba(232,135,30,.19)}
+.warn strong{color:var(--or)}
+
+/* ── Flowchart ── */
+.flow{display:flex;flex-direction:column;align-items:center}
+.flow-step {
+    width:100%;max-width:545px;
+    background:var(--sf);
+    border:1.5px solid var(--gd);
+    border-radius:7px; padding:.78rem .95rem;
+}
+.flow-step.cond{border-color:var(--or)}
+.flow-step.done{border-color:var(--gl)}
+
+.flow-head{display:flex;align-items:center;gap:.52rem;margin-bottom:.26rem}
+.flow-num {
+    width:21px;height:21px;border-radius:50%;
+    background:rgba(61,92,0,.55);color:var(--gl);
+    font-size:.67rem;font-weight:700;
+    display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.flow-step.cond .flow-num{background:rgba(232,135,30,.18);color:var(--or)}
+.flow-step.done .flow-num{background:rgba(107,212,37,.13);color:var(--gl)}
+.flow-title{font-weight:600;font-size:.89rem}
+.flow-badge {
+    margin-left:auto;flex-shrink:0;
+    font-size:.66rem;font-weight:600;
+    padding:.11rem .46rem;border-radius:20px;white-space:nowrap;
+}
+.breg {background:rgba(61,92,0,.5);   color:var(--gl)}
+.bcond{background:rgba(232,135,30,.15);color:var(--or)}
+.bdlc {background:rgba(232,135,30,.1);border:1px solid rgba(232,135,30,.25);color:var(--or)}
+
+.flow-desc{font-size:.79rem;color:var(--mu);padding-left:1.48rem;margin-bottom:.42rem}
+.flow-equip{display:flex;flex-wrap:wrap;gap:.28rem;padding-left:1.48rem}
+.eq-chip {
+    font-size:.7rem;background:var(--sf2);
+    color:var(--mu);border:1px solid var(--bdr);
+    border-radius:4px;padding:.11rem .43rem;
+}
+body.light .eq-chip{color:var(--tx)}
+
+.flow-con{width:1.5px;height:17px;background:rgba(107,212,37,.17);position:relative}
+.flow-con::after {
+    content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+    border-left:4px solid transparent;border-right:4px solid transparent;
+    border-top:5px solid rgba(107,212,37,.24);
+}
+body.light .flow-con{background:rgba(61,92,0,.25)}
+body.light .flow-con::after{border-top-color:rgba(61,92,0,.32)}
+
+/* ── Yield rows ── */
+.yrow{display:flex;justify-content:space-between;padding:.29rem 0;border-bottom:1px solid var(--sf2);font-size:.83rem}
+.yrow:last-child{border:none}
+.pos{color:var(--gl)}
+.neg{color:var(--dg)}
+.neu{color:var(--or)}
+
+/* ── Calendar ── */
+.cal-wrap{overflow-x:auto}
+.cal-table{width:100%;border-collapse:collapse;min-width:530px;font-size:.78rem}
+.cal-table th{padding:.46rem .25rem;text-align:center;color:var(--mu);font-weight:600;background:var(--sf2);font-size:.73rem}
+.cal-table th:first-child{text-align:left;padding-left:.82rem;color:var(--tx);min-width:112px}
+.cal-table td{padding:.36rem .25rem;text-align:center;border-bottom:1px solid var(--sf2)}
+.cal-table td:first-child{text-align:left;padding-left:.82rem;font-weight:500;font-size:.8rem}
+.cal-table tr:hover td{background:rgba(128,128,128,.05)}
+.szn-th{font-size:.68rem;font-weight:700;letter-spacing:.03em;text-transform:uppercase;padding:.26rem .25rem}
+body.light .szn-th{color:rgba(0,0,0,.45) !important}
+
+.ds{display:block;width:22px;height:14px;border-radius:3px;background:var(--gl);margin:0 auto}
+.dh{display:block;width:22px;height:14px;border-radius:3px;background:var(--or);margin:0 auto}
+.db{display:block;width:22px;height:14px;border-radius:3px;background:linear-gradient(90deg,var(--gl) 50%,var(--or) 50%);margin:0 auto}
+
+.cal-legend{display:flex;gap:1.05rem;margin-bottom:.8rem;font-size:.78rem}
+.cal-legend div{display:flex;align-items:center;gap:.36rem;color:var(--mu)}
+.ll{width:13px;height:13px;border-radius:3px}
+
+.cat-row td {
+    background:var(--sf2);color:var(--gl);
+    font-size:.68rem;font-weight:700;
+    text-transform:uppercase;letter-spacing:.06em;
+    padding:.35rem .82rem;border-top:2px solid var(--bg);
+}
+
+/* ── pH rows ── */
+.ph-row{display:flex;align-items:center;padding:.29rem .52rem;border-radius:4px;font-size:.78rem;margin-bottom:2px}
+.ph-range{min-width:73px;font-weight:600}
+.ph-label{flex:1;color:var(--mu)}
+.ph-chip{font-size:.68rem;font-weight:600;padding:.07rem .43rem;border-radius:20px}
+.ph-danger{background:rgba(224,85,85,.08)}
+.ph-warn  {background:rgba(232,135,30,.08)}
+.ph-ok    {background:rgba(107,212,37,.09)}
+
+/* ── PF list items ── */
+.pf-item{padding:.36rem 0;border-bottom:1px solid var(--sf2);font-size:.8rem}
+.pf-item:last-child{border:none}
+.pf-item-t{color:var(--tx);font-weight:600;margin-bottom:.13rem}
+.pf-item-d{color:var(--mu)}
+</style>
+</head>
+<body>
+
+<header>
+    <div>
+        <h1 id="hTitle"></h1>
+        <p  id="hSub"></p>
+    </div>
+    <div class="hdr-right">
+        <button class="hdr-btn" id="langBtn"  onclick="toggleLang()">HU</button>
+        <button class="hdr-btn" id="themeBtn" onclick="toggleTheme()">&#9728;</button>
+    </div>
+</header>
+
+<nav id="navBar"></nav>
+
+<main>
+    <div id="tab-workflow" class="tab active"></div>
+    <div id="tab-calendar" class="tab"></div>
+    <div id="tab-precision" class="tab"></div>
+</main>
+
+<script>
+let lang = 'en', theme = 'dark', activeTab = 'workflow';
+
+/* ══════════════════════════════════════════════
+   TRANSLATIONS
+══════════════════════════════════════════════ */
+const T = {
+en: {
+    appTitle: 'FS25 Field Guide',
+    appSub:   'Farming Simulator 25 — Field Management & Precision Farming',
+    tabs:   ['Workflow', 'Crop Calendar', 'Precision Farming'],
+    tabIds: ['workflow', 'calendar', 'precision'],
+    ui: { tip:'Tip', fix:'Fix', cropCol:'Crop' },
+
+    wf: {
+        heading: 'Field Work Cycle',
+        intro: 'Follow this sequence every growing cycle. Orange steps are conditional; bright-green steps mark key output moments.',
+        steps: [
+            { type:'cond', badge:'bdlc',  label:'Precision DLC',      title:'Soil Testing',
+              desc:'Tow the soil sampler across the field. Review pH, N, and OM maps in the Precision Farming app. Download prescription maps before spreading.',
+              equip:['Soil Sampler (tow-behind)','Yara N-Sensor','Precision Farming App'] },
+            { type:'cond', badge:'bcond', label:'If pH < 6.0',         title:'Lime Application',
+              desc:'Spread calcium carbonate (lime) to raise pH toward 6.0–7.0. Effect activates after rain. Use variable-rate spreading from the pH prescription map.',
+              equip:['Amazone ZA-TS 4200','Kuhn Axis 50.2 M-EMC','Rauch AXIS-H 50.2'] },
+            { type:'',     badge:'breg',  label:'Every 2–3 harvests',  title:'Plow or Spade',
+              desc:'Deep tillage to break compaction, eliminate weed seeds, and gain the +15 % plow yield bonus. Spading is gentler on soil structure.',
+              equip:['Horsch Tiger 6 LT','Lemken Diamant 11','Kverneland 2500 S'] },
+            { type:'',     badge:'breg',  label:'Every harvest',       title:'Cultivate',
+              desc:'Shallow tillage to prepare the seedbed and break down surface residues. Faster than plowing and required before every sowing.',
+              equip:['Horsch Joker 6 CT','Lemken Rubin 10','Väderstad Carrier 820'] },
+            { type:'',     badge:'breg',  label:'Before seeding',      title:'Pre-Seed Fertilizer',
+              desc:'Apply fertilizer stage 1. Use solid mineral, liquid, slurry, or manure. Precision DLC: load the N prescription map for variable-rate application.',
+              equip:['Amazone ZA-TS 4200','Fliegl Ox 6000 (slurry)','Joskin Quadra 6500 (manure)'] },
+            { type:'done', badge:'breg',  label:'Seasonal',            title:'Seeding',
+              desc:'Sow the crop appropriate for the season. See the Crop Calendar tab for optimal sowing windows per crop.',
+              equip:['Horsch Pronto 9 DC','Horsch Maestro 12 SW','Amazone Citan 15001-C'] },
+            { type:'cond', badge:'bcond', label:'Cereals mainly',      title:'Rolling',
+              desc:'Roll after seeding for small-seeded crops (wheat, barley). Improves seed–soil contact and reduces stone damage at harvest.',
+              equip:['Lemken Heliodor (roller section)','Väderstad Carrier 820','Cambridge roller'] },
+            { type:'',     badge:'breg',  label:'Early growth',        title:'Herbicide',
+              desc:'Spray before growth stage 4 to prevent weed yield loss. A freshly plowed field already has its weed state reset — spray may not be needed.',
+              equip:['Horsch Leeb 6 GS','Amazone UX 11200','Fendt Rogator 655'] },
+            { type:'',     badge:'breg',  label:'Mid-growth',          title:'Top-Dress Fertilizer',
+              desc:'Second fertilizer application (stage 2). Precision DLC: use the nitrogen map for variable-rate top dressing.',
+              equip:['Amazone ZA-TS 4200','Yara N-Sensor','Kuhn Axis 50.2 M-EMC'] },
+            { type:'done', badge:'breg',  label:'When ripe',           title:'Harvest',
+              desc:'Harvest at full ripeness (stage 6 of 6). Root crops, vegetables, cotton, rice, and sugarcane need dedicated harvesters (Grimme, Dewulf, Oxbo, Case IH Austoft).',
+              equip:['Claas Lexion 8900','John Deere X9 1100','AGCO Ideal 10 T'] },
+            { type:'',     badge:'breg',  label:'Post-harvest',        title:'Straw / Residue',
+              desc:'Collect straw bales or activate the straw chopper on the combine. Chopped straw builds soil organic matter over time (Precision DLC).',
+              equip:['Krone Comprima F 155 (round baler)','Claas Quadrant 5300 (square baler)','Combine straw chopper'] },
+            { type:'',     badge:'breg',  label:'Post-harvest',        title:'Stubble Cultivation',
+              desc:'Cultivate stubble to prepare for the next cycle. Then restart from step 1 (PF DLC) or step 3 (every 2–3 harvests).',
+              equip:['Horsch Joker 6 CT','Lemken Rubin 10','Bednar Swifter 12000'] },
+        ],
+        sb: {
+            plow:  { title:'Plow vs. Cultivate',
+                     body:'You do <em>not</em> need to plow before every sowing. Cultivating is faster and sufficient for most harvests. Plow or spade every 2–3 cycles to break compaction and reset the weed state.',
+                     tip:'Spaders (e.g. Horsch Tiger LT) give the same +15 % plow bonus without fully inverting the soil — better for organic matter retention in the Precision Farming DLC.' },
+            fert:  { title:'Fertilizer Stages',
+                     body:'Most crops accept two fertilizer applications. Without any fertilizer you get roughly half the potential yield. Both stages together unlock the full amount.',
+                     s1:'Stage 1', s1d:'— apply before or during seeding',
+                     s2:'Stage 2', s2d:'— apply at early-to-mid growth' },
+            weed:  { title:'Weed Timing',
+                     body:'Weeds appear at growth stages 2–4. Spray herbicide before stage 4. Plowing before sowing resets the weed state, so a freshly plowed field may not need immediate spraying.',
+                     warn:'Untreated weeds can cut your yield by up to 20 %.' },
+            yield: { title:'Yield Modifiers',
+                     rows:[
+                        {l:'No fertilizer applied',        v:'−50 % base yield',  c:'neg'},
+                        {l:'1× fertilizer',                v:'−25 % base yield',  c:'neu'},
+                        {l:'2× fertilizer',                v:'Full base yield',   c:'pos'},
+                        {l:'Plowed / spaded field',        v:'+15 %',             c:'pos'},
+                        {l:'Weed-free at harvest',         v:'+10 – 20 %',        c:'pos'},
+                        {l:'Optimal soil pH  (PF DLC)',    v:'Up to +20 %',       c:'pos'},
+                        {l:'Optimal nitrogen  (PF DLC)',   v:'Up to +20 %',       c:'pos'},
+                        {l:'Crop rotation  (PF DLC)',      v:'+10 % bonus',       c:'pos'},
+                        {l:'Same crop repeated  (PF DLC)', v:'−10 % penalty',    c:'neg'},
+                     ]}
+        }
+    },
+
+    cal: {
+        heading:'Crop Calendar',
+        intro:'Optimal sowing and harvest windows. Northern Hemisphere seasons.',
+        legend:['Sow window','Harvest window','Sow & Harvest'],
+        cropCol:'Crop',
+        seasons:[
+            {span:2,label:'Winter',cls:'szn-wi'},
+            {span:3,label:'Spring',cls:'szn-sp'},
+            {span:3,label:'Summer',cls:'szn-su'},
+            {span:3,label:'Autumn',cls:'szn-au'},
+            {span:1,label:'Winter',cls:'szn-wi'},
+        ],
+        months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        crops:[
+            // Winter Grains
+            'Wheat','Barley','Canola',
+            // Spring & Summer
+            'Oats','Corn','Soybeans','Sunflowers','Sorghum',
+            // Root Vegetables
+            'Sugar Beet','Potatoes','Carrots','Onions','Parsnips','Red Beets',
+            // Vegetables
+            'Peas','Green Beans','Spinach',
+            // Special & Tropical
+            'Cotton','Rice','Long Grain Rice','Sugarcane',
+            // Orchards & Vineyards
+            'Grapes','Olives',
+            // Cover Crops & Perennials
+            'Oilseed Radish','Grass','Poplar',
+        ],
+        categories:{
+            winter: 'Winter Grains',
+            spring: 'Spring & Summer Crops',
+            root:   'Root Vegetables',
+            veg:    'Vegetables',
+            special:'Special & Tropical Crops',
+            orchard:'Orchards & Vineyards',
+            cover:  'Cover Crops & Perennials',
+        },
+        notes:{
+            winter:   {title:'Winter Grains',          body:'Wheat, Barley, and Canola are sown Aug–Oct and overwintered. They are among the earliest harvests the following summer (Jun–Aug), freeing up fields for a second operation.'},
+            summer:   {title:'Spring & Summer Crops',  body:'Oats sow first in Mar–Apr. Corn, Soybeans, Sorghum follow in Apr–May. Sunflowers in Mar–Apr. Most harvest Aug–Nov. Soybeans and Sunflowers are last off the field in Oct–Nov.'},
+            root:     {title:'Root & Vegetable Crops', body:'Sugar Beet, Potatoes, Carrots, Onions, Parsnips, Red Beets, Peas, and Green Beans all need specialist harvesting equipment (Grimme, Dewulf, Oxbo). Spinach is harvestable year-round once established.'},
+            perennial:{title:'Special, Perennial & Cover', body:'Cotton, Rice, Sugarcane, Grapes, and Olives need dedicated harvesters. Oilseed Radish, Grass, and Poplar can be harvested year-round — ideal as cover crops or rotation fillers.'},
+        }
+    },
+
+    pf: {
+        heading:'Precision Farming DLC',
+        intro:'Adds soil health mechanics that directly affect yield. Manage pH, nitrogen, and organic matter for maximum output.',
+        ph:{
+            title:'Soil pH',
+            desc:'Most crops perform best between pH 6.0 and 7.0. Outside this range, nutrients become unavailable even with heavy fertilization.',
+            rows:[
+                {range:'< 5.5',    label:'Strongly acidic',   status:'Severe loss', cls:'ph-danger', cs:'background:rgba(224,85,85,.2);color:var(--dg)'},
+                {range:'5.5–6.0',  label:'Mildly acidic',     status:'Apply lime',  cls:'ph-warn',   cs:'background:rgba(232,135,30,.2);color:var(--or)'},
+                {range:'6.0–7.0',  label:'Optimal',           status:'Optimal',     cls:'ph-ok',     cs:'background:rgba(107,212,37,.2);color:var(--gl)'},
+                {range:'7.0–7.5',  label:'Slightly alkaline', status:'Caution',     cls:'ph-warn',   cs:'background:rgba(232,135,30,.2);color:var(--or)'},
+                {range:'> 7.5',    label:'Alkaline',          status:'Locked out',  cls:'ph-danger', cs:'background:rgba(224,85,85,.2);color:var(--dg)'},
+            ],
+            fix:'Spread lime (calcium carbonate). Effect activates after rainfall. Use the pH prescription map for variable-rate spreading.',
+        },
+        n:{
+            title:'Nitrogen (N)',
+            desc:'Nitrogen drives crop growth and is consumed each season. Replenish it every cycle.',
+            tiers:[
+                {level:'High demand',           crops:'Corn, potatoes, sugar beet — 2 full N applications needed'},
+                {level:'Medium demand',          crops:'Wheat, barley, canola, oats'},
+                {level:'Low demand — N-fixing',  crops:'Soybeans, clover — fix atmospheric N, enrich soil for the next crop'},
+            ],
+            warn:'Over-applying N wastes money without increasing yield. Use the nitrogen prescription map for variable-rate application.',
+            tip: 'Follow a high-demand crop (corn) with a legume (soybeans) to naturally restore N at no cost.',
+        },
+        sampling:{
+            title:'Soil Sampling Workflow',
+            steps:['Attach soil sampler to tractor',
+                   'Drive field — sampler collects automatically at intervals',
+                   'Open the Precision Farming tablet app in-game',
+                   'View per-zone maps: pH, N, organic matter',
+                   'Download prescription (variable-rate) maps',
+                   'Load map in ISOBUS spreader / sprayer — rate adjusts per zone'],
+            tip:'Best time to sample: after harvest, before the next cultivation pass. Resample every 2–3 years.',
+        },
+        om:{
+            title:'Organic Matter & EC',
+            omT:'Organic Matter (OM)', omD:'Builds over time by chopping and incorporating straw. Higher OM improves water retention and nutrient availability, reducing fertilizer need.',
+            ecT:'Electrical Conductivity (EC)', ecD:'Indicates soil texture and moisture capacity. Use EC zones to create variable seed-rate maps.',
+            tip:'Enable the straw chopper on your combine every harvest. Costs nothing, slowly raises OM across the whole field.',
+        },
+        rotation:{
+            title:'Crop Rotation',
+            desc:'Rotating crops each season gives a yield bonus and improves soil health. Growing the same crop twice in a row triggers a penalty.',
+            rows:[
+                {l:'Same crop, two seasons in a row', v:'−10 %',        c:'neg'},
+                {l:'Different crop this season',       v:'Bonus',        c:'pos'},
+                {l:'Legume in rotation',               v:'N enrichment', c:'pos'},
+            ],
+            tip:'Classic rotation: Wheat → Canola → Barley → Soybeans → repeat. Break it every few cycles with corn or root crops.',
+        },
+        organic:{
+            title:'Organic Fertilizers',
+            desc:'Manure, slurry, and digestate count as a fertilizer stage and also raise OM over time — two benefits in one pass.',
+            items:[
+                {name:'Solid manure',     note:'Slow release — incorporate before sowing'},
+                {name:'Slurry',           note:'Fast-acting — apply at early growth stages'},
+                {name:'Biogas digestate', note:'Highest N efficiency, ideal for variable-rate injection'},
+            ]
+        },
+    },
+},
+
+/* ══════════════════════════════════════════════
+   HUNGARIAN
+══════════════════════════════════════════════ */
+hu: {
+    appTitle: 'FS25 Mezőgazdálkodási útmutató',
+    appSub:   'Farming Simulator 25 — Táblakezelés és precíziós gazdálkodás',
+    tabs:   ['Munkafolyamat', 'Vetési naptár', 'Precíziós gazdálkodás'],
+    tabIds: ['workflow', 'calendar', 'precision'],
+    ui: { tip:'Tipp', fix:'Javítás', cropCol:'Növény' },
+
+    wf: {
+        heading: 'Táblamunka-ciklus',
+        intro: 'Kövesd ezt a sorrendet minden vegetációs ciklusban. A narancssárga lépések feltételesek; a zöld lépések a kulcstermelési pillanatokat jelölik.',
+        steps: [
+            { type:'cond', badge:'bdlc',  label:'Precíziós DLC',           title:'Talajmintavétel',
+              desc:'Húzd végig a talajmintavevőt a táblán. Tekintsd meg a pH, N és SZ térképeket a Precíziós gazdálkodás alkalmazásban. Töltsd le az előírás-térképeket szórás előtt.',
+              equip:['Talajmintavevő (vontatott)','Yara N-szenzor','Precíziós gazdálkodás App'] },
+            { type:'cond', badge:'bcond', label:'Ha pH < 6,0',              title:'Mésztrágyázás',
+              desc:'Szórj meszet (kalcium-karbonátot) a pH 6,0–7,0 tartományba emeléséhez. A hatás esőzés után aktiválódik. Változó dózishoz használd a pH-előírás-térképet.',
+              equip:['Amazone ZA-TS 4200','Kuhn Axis 50.2 M-EMC','Rauch AXIS-H 50.2'] },
+            { type:'',     badge:'breg',  label:'Minden 2–3. betakarításnál', title:'Szántás vagy lazítás',
+              desc:'Mélymunkával törd fel a tömörödést, semmisítsd meg a gyommagvakat, és szerezd meg a +15%-os szántási hozambónuszt. A lazítás kíméletesebb a talajszerkezetre.',
+              equip:['Horsch Tiger 6 LT','Lemken Diamant 11','Kverneland 2500 S'] },
+            { type:'',     badge:'breg',  label:'Minden betakarítás után',  title:'Kultivátoros talajmunka',
+              desc:'Sekély talajmunka a vetőágy előkészítéséhez és a felszíni növénymaradványok felaprításához. Gyorsabb a szántásnál, és minden vetés előtt szükséges.',
+              equip:['Horsch Joker 6 CT','Lemken Rubin 10','Väderstad Carrier 820'] },
+            { type:'',     badge:'breg',  label:'Vetés előtt',              title:'Vetés előtti trágyázás',
+              desc:'Juttass ki 1. fázisú trágyát. Szilárd ásványi, folyékony, híg- vagy istállótrágyát egyaránt használhatsz. Precíziós DLC esetén töltsd be a N előírás-térképet.',
+              equip:['Amazone ZA-TS 4200','Fliegl Ox 6000 (hígtrágya)','Joskin Quadra 6500 (istállótrágya)'] },
+            { type:'done', badge:'breg',  label:'Szezonális',               title:'Vetés',
+              desc:'Vesd el a szezonnak megfelelő növényt. Nézd meg a Vetési naptár lapot az egyes növények optimális vetési ablakaiért.',
+              equip:['Horsch Pronto 9 DC','Horsch Maestro 12 SW','Amazone Citan 15001-C'] },
+            { type:'cond', badge:'bcond', label:'Főleg kalászosoknál',      title:'Hengerezés',
+              desc:'Vetés után hengerezd el a kis magvú kalászosokat (búza, árpa). Javítja a mag–talaj érintkezést, és csökkenti a kőveszélyt betakarításkor.',
+              equip:['Lemken Heliodor (hengeres rész)','Väderstad Carrier 820','Cambridge-henger'] },
+            { type:'',     badge:'breg',  label:'Korai fejlődés',           title:'Gyomirtás',
+              desc:'Permetezz a 4. fejlődési stádium előtt a hozamveszteség megelőzésére. Frissen szántott táblán a gyomállapot visszaállt – azonnali permetezés általában nem szükséges.',
+              equip:['Horsch Leeb 6 GS','Amazone UX 11200','Fendt Rogator 655'] },
+            { type:'',     badge:'breg',  label:'Középső fejlődés',         title:'Fejtrágyázás',
+              desc:'Második trágyázási fázis (2. fázis). Precíziós DLC esetén használd a nitrogén-előírás-térképet a változó dózisú fejtrágya-kijuttatáshoz.',
+              equip:['Amazone ZA-TS 4200','Yara N-szenzor','Kuhn Axis 50.2 M-EMC'] },
+            { type:'done', badge:'breg',  label:'Érettségkor',              title:'Betakarítás',
+              desc:'Betakarítás teljes érettségkor (6/6 stádium). Gyökérnövényekhez, zöldségekhez, gyapothoz, rizshez és cukornádhoz dedikált betakarítógép kell (Grimme, Dewulf, Oxbo, Case IH Austoft).',
+              equip:['Claas Lexion 8900','John Deere X9 1100','AGCO Ideal 10 T'] },
+            { type:'',     badge:'breg',  label:'Betakarítás után',         title:'Szalma és maradékok',
+              desc:'Gyűjtsd be a szalmabalákat, vagy aktiváld a kombájn szalmadarálóját. A felaprított szalma idővel növeli a talaj szervesanyag-tartalmát (Precíziós DLC).',
+              equip:['Krone Comprima F 155 (körbálázó)','Claas Quadrant 5300 (nagybálázó)','Kombájn szalmadaráló'] },
+            { type:'',     badge:'breg',  label:'Betakarítás után',         title:'Tarló-kultivátoros talajmunka',
+              desc:'Kultivátorral dolgozd meg a tarlót a következő vetési ciklus előkészítéséhez. Ezután indulj az 1. (PF DLC) vagy a 3. lépéstől (minden 2–3. betakarításnál).',
+              equip:['Horsch Joker 6 CT','Lemken Rubin 10','Bednar Swifter 12000'] },
+        ],
+        sb: {
+            plow:  { title:'Szántás vs. kultivátor',
+                     body:'<em>Nem</em> kell minden vetés előtt szántani. A kultivátoros művelés gyorsabb és a legtöbb betakarítás esetén elegendő. Szánts vagy lazíts minden 2–3. ciklusban a tömörödés feloldásához és a gyomállapot visszaállításához.',
+                     tip:'A lazítók (pl. Horsch Tiger LT) ugyanolyan +15%-os hozambónuszt adnak, mint a szántás, de kíméletesebben bánnak a talajszerkezettel – ez kedvezőbb a szerves anyag megőrzése szempontjából a Precíziós DLC esetén.' },
+            fert:  { title:'Trágyázási fázisok',
+                     body:'A legtöbb növény két trágyázást fogad el. Trágyázás nélkül a potenciális termés kb. fele realizálódik. Mindkét fázis együtt nyitja meg a teljes termésmennyiséget.',
+                     s1:'1. fázis', s1d:'— vetés előtt vagy vetéskor alkalmazd',
+                     s2:'2. fázis', s2d:'— korai–középső fejlődési stádiumban alkalmazd' },
+            weed:  { title:'Gyomirtás időzítése',
+                     body:'A gyomok a 2–4. fejlődési stádiumban jelennek meg. Permetezz a 4. stádium előtt. A szántás visszaállítja a gyomállapotot, ezért frissen szántott táblán általában nem szükséges azonnali permetezés.',
+                     warn:'A kezeletlen gyomok a termés akár 20%-át is elvonhatják.' },
+            yield: { title:'Hozammódosítók',
+                     rows:[
+                        {l:'Nincs trágyázás',                      v:'−50% alaptermés',    c:'neg'},
+                        {l:'1× trágyázás',                         v:'−25% alaptermés',    c:'neu'},
+                        {l:'2× trágyázás',                         v:'Teljes alaptermés',  c:'pos'},
+                        {l:'Szántott / lazított tábla',            v:'+15%',               c:'pos'},
+                        {l:'Gyommentes betakarítás',               v:'+10–20%',            c:'pos'},
+                        {l:'Optimális pH  (PF DLC)',               v:'Akár +20%',          c:'pos'},
+                        {l:'Optimális nitrogén  (PF DLC)',         v:'Akár +20%',          c:'pos'},
+                        {l:'Növényforgó  (PF DLC)',                v:'+10% bónusz',        c:'pos'},
+                        {l:'Ugyanolyan növény ismételve  (PF DLC)',v:'−10% büntetés',      c:'neg'},
+                     ]}
+        }
+    },
+
+    cal: {
+        heading:'Vetési naptár',
+        intro:'Optimális vetési és betakarítási ablakok. Északi félteke évszakai.',
+        legend:['Vetési ablak','Betakarítási ablak','Vetés és betakarítás'],
+        cropCol:'Növény',
+        seasons:[
+            {span:2,label:'Tél',   cls:'szn-wi'},
+            {span:3,label:'Tavasz',cls:'szn-sp'},
+            {span:3,label:'Nyár',  cls:'szn-su'},
+            {span:3,label:'Ősz',   cls:'szn-au'},
+            {span:1,label:'Tél',   cls:'szn-wi'},
+        ],
+        months:['Jan','Feb','Már','Ápr','Máj','Jún','Júl','Aug','Sze','Okt','Nov','Dec'],
+        crops:[
+            // Őszi gabonák
+            'Búza','Árpa','Repce',
+            // Tavaszi és nyári
+            'Zab','Kukorica','Szójabab','Napraforgó','Cirok',
+            // Gyökérzöldségek
+            'Cukorrépa','Burgonya','Sárgarépa','Hagyma','Pasztinák','Cékla',
+            // Zöldségek
+            'Borsó','Zöldbab','Spenót',
+            // Különleges és trópusi
+            'Gyapot','Rizs','Hosszúszemű rizs','Cukornád',
+            // Gyümölcsösök és szőlők
+            'Szőlő','Olajbogyó',
+            // Takarónövények és évelők
+            'Olajretek','Fű','Nyárfa',
+        ],
+        categories:{
+            winter: 'Őszi gabonák',
+            spring: 'Tavaszi és nyári növények',
+            root:   'Gyökérzöldségek',
+            veg:    'Zöldségek',
+            special:'Különleges és trópusi növények',
+            orchard:'Gyümölcsösök és szőlők',
+            cover:  'Takarónövények és évelők',
+        },
+        notes:{
+            winter:   {title:'Őszi gabonák',                  body:'A búza és árpa szept.–okt.-ban vetendő, a repce aug.–szept.-ben. Telelnek, majd jún.–aug.-ban betakaríthatók. Korán felszabadul a tábla egy második műveletre.'},
+            summer:   {title:'Tavaszi és nyári növények',      body:'A zab márc.–ápr.-ban vetendő elsőként. A kukorica, szójabab, cirok ápr.–máj.-ban következik. Napraforgó márc.–ápr. A legtöbb betakarítás aug.–nov. Szójabab és napraforgó az utolsók: okt.–nov.'},
+            root:     {title:'Gyökér- és zöldségnövények',    body:'Cukorrépa, burgonya, sárgarépa, hagyma, pasztinák, cékla, borsó és zöldbab speciális betakarítógépet igényel (Grimme, Dewulf, Oxbo). A spenót megtelepedés után egész évben betakarítható.'},
+            perennial:{title:'Különleges, évelők és takaró',   body:'Gyapot, rizs, cukornád, szőlő és olajbogyó dedikált betakarítógépet igényel. Olajretek, fű és nyárfa egész évben betakarítható – ideális takarónövényként vagy forgatókitöltőként.'},
+        }
+    },
+
+    pf: {
+        heading:'Precíziós gazdálkodás DLC',
+        intro:'Olyan talaj-egészségügyi mechanikákat ad hozzá, amelyek közvetlenül befolyásolják a termést. Kezeld a pH-t, a nitrogént és a szerves anyagot a maximális hozamért.',
+        ph:{
+            title:'Talaj-pH',
+            desc:'A legtöbb növény pH 6,0–7,0 között teljesít a legjobban. Ezen a tartományon kívül a tápanyagok nehezen hozzáférhetők, még intenzív trágyázás esetén is.',
+            rows:[
+                {range:'< 5,5',    label:'Erősen savas',       status:'Súlyos veszteség', cls:'ph-danger', cs:'background:rgba(224,85,85,.2);color:var(--dg)'},
+                {range:'5,5–6,0',  label:'Enyhén savas',       status:'Mészezz',          cls:'ph-warn',   cs:'background:rgba(232,135,30,.2);color:var(--or)'},
+                {range:'6,0–7,0',  label:'Optimális tartomány',status:'Optimális',        cls:'ph-ok',     cs:'background:rgba(107,212,37,.2);color:var(--gl)'},
+                {range:'7,0–7,5',  label:'Enyhén lúgos',       status:'Óvatosan',         cls:'ph-warn',   cs:'background:rgba(232,135,30,.2);color:var(--or)'},
+                {range:'> 7,5',    label:'Lúgos',              status:'Zárolt',           cls:'ph-danger', cs:'background:rgba(224,85,85,.2);color:var(--dg)'},
+            ],
+            fix:'Szórj meszet (kalcium-karbonátot). A hatás esőzés után aktiválódik. Változó dózisú kijuttatáshoz használd a pH-előírás-térképet.',
+        },
+        n:{
+            title:'Nitrogén (N)',
+            desc:'A nitrogén a növekedés elsődleges hajtóereje, és minden szezonban felhasználódik. Ciklusonként pótolni kell.',
+            tiers:[
+                {level:'Nagy igény',             crops:'Kukorica, burgonya, cukorrépa – 2 teljes N kijuttatás szükséges'},
+                {level:'Közepes igény',           crops:'Búza, árpa, repce, zab'},
+                {level:'Kis igény – N-megkötő',  crops:'Szójabab, lóhere – légköri N-t kötnek meg, trágyázzák a talajt'},
+            ],
+            warn:'A túlzott N-kijuttatás pénzkidobás és nem növeli a termést. Változó dózishoz használd a nitrogén-előírás-térképet.',
+            tip: 'Kövesd a nagy igényű növényt (kukorica) hüvelyessel (szójabab), hogy ingyen visszaállítsd a N-szintet.',
+        },
+        sampling:{
+            title:'Talajmintavétel folyamata',
+            steps:['Szeresd fel a talajmintavevőt a traktorhoz',
+                   'Hajtsd végig a táblán – a mintavevő automatikusan gyűjt mintákat',
+                   'Nyisd meg a Precíziós gazdálkodás táblagép-alkalmazást',
+                   'Tekintsd meg az övezeti pH-, N- és szervesanyag-térképeket',
+                   'Töltsd le az előírás- (változó dózisú) térképeket',
+                   'Töltsd be a térképet az ISOBUS szórógépbe / permetezőbe – a gép automatikusan állítja az adagot'],
+            tip:'Legjobb mintavételi idő: betakarítás után, a következő kultivátoros művelés előtt. Táblánként 2–3 évente vegyél mintát.',
+        },
+        om:{
+            title:'Szerves anyag és EC',
+            omT:'Szerves anyag (SZ)', omD:'Idővel épül fel szalmadarálással és a talajba keveréssel. Magasabb SZ javítja a vízmegtartást és csökkenti a trágyaigényt.',
+            ecT:'Elektromos vezetőképesség (EC)', ecD:'Jelzi a talajszerkezetet és a nedvességtartó képességet. Használd az EC-zónákat változó vetési sűrűségű térképek készítéséhez.',
+            tip:'Minden betakarításkor kapcsold be a kombájn szalmadarálóját. Semmibe sem kerül, lassan emeli a szerves anyag tartalmat.',
+        },
+        rotation:{
+            title:'Növényforgó',
+            desc:'A növények szezonos váltogatása hozambónuszt ad és javítja a talaj egészségét. Ugyanolyan növény kétszeri termesztése egymás után büntetést von maga után.',
+            rows:[
+                {l:'Ugyanolyan növény egymás után',    v:'−10%',       c:'neg'},
+                {l:'Eltérő növény ezen a szezonban',   v:'Bónusz',     c:'pos'},
+                {l:'Hüvelyes a forgatásban',           v:'N-dúsítás',  c:'pos'},
+            ],
+            tip:'Klasszikus forgó: Búza → Repce → Árpa → Szójabab → ismétlés. Néhány évente kukoricával vagy gyökérnövénnyel törd meg.',
+        },
+        organic:{
+            title:'Szerves trágyák',
+            desc:'Az istállótrágya, hígtrágya és biogáz-maradék egy trágyázási fázisnak számít, és idővel növeli a szerves anyag tartalmat is – két haszon egyetlen menetben.',
+            items:[
+                {name:'Istállótrágya',   note:'Lassú kioldódású – vetés előtt keverd be'},
+                {name:'Hígtrágya',       note:'Gyors hatású – korai fejlődési stádiumban alkalmazd'},
+                {name:'Biogáz-maradék', note:'Legmagasabb N-hatékonyság, ideális változó dózisú injektáláshoz'},
+            ]
+        },
+    },
+},
+}; // end T
+
+/* ══════════════════════════════════════════════
+   CROP DATA (language-independent)
+══════════════════════════════════════════════ */
+// Index matches T[lang].cal.crops order exactly
+// Months: Jan=0 … Dec=11
+const CROP_DATA = [
+    // ── Winter Grains ──
+    {cat:'winter', sow:[0,0,0,0,0,0,0,0,1,1,0,0], harv:[0,0,0,0,0,0,1,1,0,0,0,0]}, // Wheat
+    {cat:'winter', sow:[0,0,0,0,0,0,0,0,1,1,0,0], harv:[0,0,0,0,0,1,1,1,0,0,0,0]}, // Barley
+    {cat:'winter', sow:[0,0,0,0,0,0,0,1,1,0,0,0], harv:[0,0,0,0,0,0,1,1,0,0,0,0]}, // Canola
+    // ── Spring & Summer ──
+    {cat:'spring', sow:[0,0,1,1,0,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,1,1,0,0,0,0]}, // Oats
+    {cat:'spring', sow:[0,0,0,1,1,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,1,1,1,1,0]}, // Corn
+    {cat:'spring', sow:[0,0,0,1,1,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,0,0,1,1,0]}, // Soybeans
+    {cat:'spring', sow:[0,0,1,1,0,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,0,0,1,1,0]}, // Sunflowers
+    {cat:'spring', sow:[0,0,0,1,1,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,1,1,0,0,0]}, // Sorghum
+    // ── Root Vegetables ──
+    {cat:'root',   sow:[0,0,1,1,0,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,0,0,1,1,0]}, // Sugar Beet
+    {cat:'root',   sow:[0,0,1,1,0,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,1,1,1,0,0]}, // Potatoes
+    {cat:'root',   sow:[0,0,0,1,1,1,1,0,0,0,0,0], harv:[0,0,0,0,0,0,0,1,1,1,1,0]}, // Carrots
+    {cat:'root',   sow:[0,0,1,1,0,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,1,1,0,0,0]}, // Onions
+    {cat:'root',   sow:[0,0,0,1,1,1,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,1,1,1,1,0]}, // Parsnips
+    {cat:'root',   sow:[0,0,0,1,1,1,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,1,1,1,1,0]}, // Red Beets
+    // ── Vegetables ──
+    {cat:'veg',    sow:[0,0,1,1,0,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,1,1,1,0,0,0]}, // Peas
+    {cat:'veg',    sow:[0,0,0,1,1,1,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,1,1,1,1,0]}, // Green Beans
+    {cat:'veg',    sow:[0,0,1,1,1,0,0,0,0,0,0,0], harv:[1,1,1,1,1,1,1,1,1,1,1,1]}, // Spinach
+    // ── Special & Tropical ──
+    {cat:'special',sow:[0,1,1,0,0,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,0,0,1,1,0]}, // Cotton
+    {cat:'special',sow:[0,0,0,1,1,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,1,1,0,0,0]}, // Rice
+    {cat:'special',sow:[0,0,0,1,0,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,0,1,0,0,0]}, // Long Grain Rice
+    {cat:'special',sow:[0,0,1,1,0,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,0,0,1,1,0]}, // Sugarcane
+    // ── Orchards & Vineyards ──
+    {cat:'orchard',sow:[0,0,1,1,1,0,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,0,1,1,0,0]}, // Grapes
+    {cat:'orchard',sow:[0,0,1,1,1,1,0,0,0,0,0,0], harv:[0,0,0,0,0,0,0,0,0,1,0,0]}, // Olives
+    // ── Cover Crops & Perennials ──
+    {cat:'cover',  sow:[0,0,1,1,1,1,1,1,1,1,0,0], harv:[1,1,1,1,1,1,1,1,1,1,1,1]}, // Oilseed Radish
+    {cat:'cover',  sow:[0,0,1,1,1,1,1,1,1,1,1,0], harv:[1,1,1,1,1,1,1,1,1,1,1,1]}, // Grass
+    {cat:'cover',  sow:[0,0,1,1,1,1,1,1,0,0,0,0], harv:[1,1,1,1,1,1,1,1,1,1,1,1]}, // Poplar
+];
+
+/* ══════════════════════════════════════════════
+   CONTROLS
+══════════════════════════════════════════════ */
+function toggleTheme() {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    document.body.classList.toggle('light', theme === 'light');
+    document.getElementById('themeBtn').innerHTML = theme === 'dark' ? '&#9728;' : '&#9790;';
+}
+
+function toggleLang() {
+    lang = lang === 'en' ? 'hu' : 'en';
+    document.getElementById('langBtn').textContent = lang === 'en' ? 'HU' : 'EN';
+    renderAll();
+}
+
+function showTab(id, btn) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    btn.classList.add('active');
+    activeTab = id;
+}
+
+/* ══════════════════════════════════════════════
+   RENDER: WORKFLOW
+══════════════════════════════════════════════ */
+function renderWorkflow(w, ui) {
+    const flowHTML = w.steps.map((s, i) => `
+        <div class="flow-step${s.type ? ' '+s.type : ''}">
+            <div class="flow-head">
+                <div class="flow-num">${i+1}</div>
+                <div class="flow-title">${s.title}</div>
+                <span class="flow-badge ${s.badge}">${s.label}</span>
+            </div>
+            <div class="flow-desc">${s.desc}</div>
+            <div class="flow-equip">${s.equip.map(e=>`<span class="eq-chip">${e}</span>`).join('')}</div>
+        </div>
+        ${i < w.steps.length-1 ? '<div class="flow-con"></div>' : ''}
+    `).join('');
+
+    const sb = w.sb;
+    const sideHTML = `
+        <h3>${sb.plow.title}</h3>
+        <div class="card cg">
+            <p style="font-size:.84rem;color:var(--mu)">${sb.plow.body}</p>
+            <div class="tip"><strong>${ui.tip}:</strong> ${sb.plow.tip}</div>
+        </div>
+        <h3>${sb.fert.title}</h3>
+        <div class="card co">
+            <p style="font-size:.84rem;color:var(--mu);margin-bottom:.52rem">${sb.fert.body}</p>
+            <div style="font-size:.82rem">
+                <div style="padding:.28rem 0;border-bottom:1px solid var(--sf2)"><span style="color:var(--gl)">${sb.fert.s1}</span> ${sb.fert.s1d}</div>
+                <div style="padding:.28rem 0"><span style="color:var(--gl)">${sb.fert.s2}</span> ${sb.fert.s2d}</div>
+            </div>
+        </div>
+        <h3>${sb.weed.title}</h3>
+        <div class="card cg">
+            <p style="font-size:.84rem;color:var(--mu)">${sb.weed.body}</p>
+            <div class="warn"><strong>&#9888;</strong> ${sb.weed.warn}</div>
+        </div>
+        <h3>${sb.yield.title}</h3>
+        <div class="card cg">
+            ${sb.yield.rows.map(r=>`<div class="yrow"><span>${r.l}</span><span class="${r.c}">${r.v}</span></div>`).join('')}
+        </div>
+    `;
+
+    document.getElementById('tab-workflow').innerHTML = `
+        <h2>${w.heading}</h2>
+        <p style="color:var(--mu);font-size:.81rem;margin-bottom:1.05rem">${w.intro}</p>
+        <div class="two-col">
+            <div><div class="flow">${flowHTML}</div></div>
+            <div>${sideHTML}</div>
+        </div>
+    `;
+}
+
+/* ══════════════════════════════════════════════
+   RENDER: CALENDAR
+══════════════════════════════════════════════ */
+function renderCalendar(c) {
+    const sznRow = '<th></th>' + c.seasons.map(s=>
+        `<th colspan="${s.span}" class="szn-th" style="background:var(--${s.cls});color:rgba(255,255,255,.42)">${s.label}</th>`
+    ).join('');
+
+    const monRow = `<th>${c.cropCol}</th>` + c.months.map(m=>`<th>${m}</th>`).join('');
+
+    let bodyRows = '';
+    let prevCat = null;
+    CROP_DATA.forEach((cd, i) => {
+        if (cd.cat !== prevCat) {
+            bodyRows += `<tr class="cat-row"><td colspan="13">${c.categories[cd.cat]}</td></tr>`;
+            prevCat = cd.cat;
+        }
+        let row = `<td>${c.crops[i]}</td>`;
+        for (let m = 0; m < 12; m++) {
+            if (cd.sow[m] && cd.harv[m]) row += `<td><span class="db"></span></td>`;
+            else if (cd.sow[m])           row += `<td><span class="ds"></span></td>`;
+            else if (cd.harv[m])          row += `<td><span class="dh"></span></td>`;
+            else                          row += `<td></td>`;
+        }
+        bodyRows += `<tr>${row}</tr>`;
+    });
+
+    const n = c.notes;
+    document.getElementById('tab-calendar').innerHTML = `
+        <h2>${c.heading}</h2>
+        <p style="color:var(--mu);font-size:.84rem;margin-bottom:.82rem">${c.intro}</p>
+        <div class="cal-legend">
+            <div><span class="ll" style="background:var(--gl)"></span>${c.legend[0]}</div>
+            <div><span class="ll" style="background:var(--or)"></span>${c.legend[1]}</div>
+            <div><span class="ll" style="background:linear-gradient(90deg,var(--gl) 50%,var(--or) 50%)"></span>${c.legend[2]}</div>
+        </div>
+        <div class="cal-wrap">
+            <table class="cal-table">
+                <thead><tr>${sznRow}</tr><tr>${monRow}</tr></thead>
+                <tbody>${bodyRows}</tbody>
+            </table>
+        </div>
+        <div class="two-col" style="margin-top:1.35rem">
+            <div>
+                <h3>${n.winter.title}</h3>
+                <div class="card cg"><p style="font-size:.8rem;color:var(--mu)">${n.winter.body}</p></div>
+                <h3>${n.summer.title}</h3>
+                <div class="card cg"><p style="font-size:.8rem;color:var(--mu)">${n.summer.body}</p></div>
+            </div>
+            <div>
+                <h3>${n.root.title}</h3>
+                <div class="card cg"><p style="font-size:.8rem;color:var(--mu)">${n.root.body}</p></div>
+                <h3>${n.perennial.title}</h3>
+                <div class="card cg"><p style="font-size:.8rem;color:var(--mu)">${n.perennial.body}</p></div>
+            </div>
+        </div>
+    `;
+}
+
+/* ══════════════════════════════════════════════
+   RENDER: PRECISION FARMING
+══════════════════════════════════════════════ */
+function renderPrecision(p, ui) {
+    const phRows = p.ph.rows.map(r=>`
+        <div class="ph-row ${r.cls}">
+            <span class="ph-range">${r.range}</span>
+            <span class="ph-label">${r.label}</span>
+            <span class="ph-chip" style="${r.cs}">${r.status}</span>
+        </div>`).join('');
+
+    const nTiers = p.n.tiers.map(t=>`
+        <div class="pf-item">
+            <div class="pf-item-t">${t.level}</div>
+            <div class="pf-item-d">${t.crops}</div>
+        </div>`).join('');
+
+    const sampSteps = p.sampling.steps.map(s=>`<li>${s}</li>`).join('');
+
+    const rotRows = p.rotation.rows.map(r=>`
+        <div class="yrow"><span>${r.l}</span><span class="${r.c}">${r.v}</span></div>`).join('');
+
+    const orgItems = p.organic.items.map(i=>`
+        <div class="pf-item">
+            <div class="pf-item-t">${i.name}</div>
+            <div class="pf-item-d">${i.note}</div>
+        </div>`).join('');
+
+    document.getElementById('tab-precision').innerHTML = `
+        <h2>${p.heading}</h2>
+        <p style="color:var(--mu);font-size:.84rem;margin-bottom:1.15rem">${p.intro}</p>
+        <div class="two-col">
+            <div>
+                <h3>${p.ph.title}</h3>
+                <div class="card cg">
+                    <p style="font-size:.84rem;color:var(--mu);margin-bottom:.78rem">${p.ph.desc}</p>
+                    ${phRows}
+                    <div class="tip" style="margin-top:.72rem"><strong>${ui.fix}:</strong> ${p.ph.fix}</div>
+                </div>
+                <h3>${p.n.title}</h3>
+                <div class="card co">
+                    <p style="font-size:.84rem;color:var(--mu);margin-bottom:.68rem">${p.n.desc}</p>
+                    ${nTiers}
+                    <div class="warn" style="margin-top:.58rem"><strong>&#9888;</strong> ${p.n.warn}</div>
+                    <div class="tip"><strong>${ui.tip}:</strong> ${p.n.tip}</div>
+                </div>
+            </div>
+            <div>
+                <h3>${p.sampling.title}</h3>
+                <div class="card cg">
+                    <ol style="font-size:.84rem;color:var(--mu);padding-left:1.1rem;line-height:2.05">${sampSteps}</ol>
+                    <div class="tip"><strong>${ui.tip}:</strong> ${p.sampling.tip}</div>
+                </div>
+                <h3>${p.om.title}</h3>
+                <div class="card cg">
+                    <p style="font-size:.84rem;color:var(--mu);margin-bottom:.52rem"><strong style="color:var(--tx)">${p.om.omT}</strong> — ${p.om.omD}</p>
+                    <p style="font-size:.84rem;color:var(--mu)"><strong style="color:var(--tx)">${p.om.ecT}</strong> — ${p.om.ecD}</p>
+                    <div class="tip"><strong>${ui.tip}:</strong> ${p.om.tip}</div>
+                </div>
+                <h3>${p.rotation.title}</h3>
+                <div class="card cg">
+                    <p style="font-size:.84rem;color:var(--mu);margin-bottom:.58rem">${p.rotation.desc}</p>
+                    ${rotRows}
+                    <div class="tip" style="margin-top:.55rem"><strong>${ui.tip}:</strong> ${p.rotation.tip}</div>
+                </div>
+                <h3>${p.organic.title}</h3>
+                <div class="card cg">
+                    <p style="font-size:.84rem;color:var(--mu);margin-bottom:.52rem">${p.organic.desc}</p>
+                    ${orgItems}
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+/* ══════════════════════════════════════════════
+   BOOT
+══════════════════════════════════════════════ */
+function renderAll() {
+    const d = T[lang];
+    document.getElementById('hTitle').textContent = d.appTitle;
+    document.getElementById('hSub').textContent   = d.appSub;
+    document.title = d.appTitle;
+
+    const nav = document.getElementById('navBar');
+    nav.innerHTML = '';
+    d.tabs.forEach((label, i) => {
+        const btn = document.createElement('button');
+        btn.textContent = label;
+        if (d.tabIds[i] === activeTab) btn.classList.add('active');
+        btn.onclick = () => showTab(d.tabIds[i], btn);
+        nav.appendChild(btn);
+    });
+
+    renderWorkflow(d.wf, d.ui);
+    renderCalendar(d.cal);
+    renderPrecision(d.pf, d.ui);
+}
+
+renderAll();
+</script>
+</body>
+</html>
