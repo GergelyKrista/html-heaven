@@ -5,22 +5,9 @@ import { normalizeTag, isValidCategory, TAG_RULES } from "@/lib/categories";
 import { getDB, recordSubmission } from "@/lib/db";
 import { ensureUserWithHandle } from "@/lib/users";
 import { assertSameOrigin } from "@/lib/security";
+import { checkAndRecord } from "@/lib/ratelimit";
 
-// Simple in-memory rate limit: 3 submissions per user per hour
-const rateLimitMap = new Map<string, number[]>();
-const RATE_LIMIT = 3;
-const RATE_WINDOW = 60 * 60 * 1000; // 1 hour
-
-function isRateLimited(userId: string): boolean {
-  const now = Date.now();
-  const timestamps = (rateLimitMap.get(userId) || []).filter(
-    (t) => now - t < RATE_WINDOW
-  );
-  if (timestamps.length >= RATE_LIMIT) return true;
-  timestamps.push(now);
-  rateLimitMap.set(userId, timestamps);
-  return false;
-}
+const SUBMIT_LIMIT_PER_HOUR = 3;
 
 export async function POST(request: NextRequest) {
   const originGate = assertSameOrigin(request);
@@ -36,11 +23,28 @@ export async function POST(request: NextRequest) {
   }
 
   const userId = session.user.email || session.user.name || "unknown";
-  if (isRateLimited(userId)) {
-    return NextResponse.json(
-      { error: "Too many submissions. Please wait before trying again." },
-      { status: 429 }
+
+  // D1-backed rate limit. A Worker-level in-memory Map wouldn't survive
+  // cold starts or cross-instance traffic.
+  try {
+    const db = await getDB();
+    const { allowed } = await checkAndRecord(
+      db,
+      userId,
+      "submit",
+      60 * 60,
+      SUBMIT_LIMIT_PER_HOUR
     );
+    if (!allowed) {
+      return NextResponse.json(
+        { error: "Too many submissions. Please wait before trying again." },
+        { status: 429 }
+      );
+    }
+  } catch (err) {
+    // If D1 is unreachable, fail open — don't block legitimate submitters
+    // over infra issues. Abuse is still bounded by auth + manual review.
+    console.error("Rate limit check failed:", err);
   }
 
   try {
