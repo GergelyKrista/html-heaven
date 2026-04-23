@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASTARTES LOADOUT COGITATOR v4.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:      #080c12;
+            --pnl:     #0e1319;
+            --pnl2:    #0c1017;
+            --bdr:     #1a2230;
+            --accent:  #d4762a;
+            --accent2: #e8913a;
+            --cyan:    #5a9ab5;
+            --red:     #c44040;
+            --std:     #8a8e94;
+            --mc:      #3aaa50;
+            --art:     #8855bb;
+            --rel:     #cc9a20;
+            --txt:     #c4ccd6;
+            --txt2:    #556270;
+            --txt3:    #3a4550;
+        }
+        *{box-sizing:border-box;margin:0;padding:0;}
+
+        body{
+            background:var(--bg);
+            color:var(--txt);
+            font-family:'Share Tech Mono',monospace;
+            font-size:13px;
+            padding:24px 32px;
+            min-height:100vh;
+        }
+        .container{max-width:1800px;margin:0 auto;}
+        .gothic{font-family:'Rajdhani',sans-serif;text-transform:uppercase;font-weight:600;}
+        .lbl{font-size:10px;color:var(--txt2);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;}
+        .panel{background:var(--pnl);border:1px solid var(--bdr);padding:18px 20px;}
+
+        /* ── HEADER ── */
+        .header{
+            display:flex;justify-content:space-between;align-items:flex-end;
+            border-bottom:1px solid var(--bdr);padding-bottom:16px;margin-bottom:20px;
+        }
+        .h-sub{font-size:11px;color:var(--txt2);letter-spacing:4px;margin-bottom:4px;}
+        .h-main{font-size:28px;color:var(--accent);font-weight:700;line-height:1;letter-spacing:2px;}
+        .h-ver{font-size:10px;color:var(--txt3);letter-spacing:1px;margin-top:5px;}
+        .h-meta{display:flex;gap:32px;}
+        .h-stat{text-align:right;}
+        .h-stat-val{font-size:15px;font-weight:700;margin-top:3px;}
+
+        /* ── CONTROLS ── */
+        .controls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+        select{
+            width:100%;background:var(--pnl);
+            border:1px solid var(--bdr);
+            color:var(--txt);padding:10px 14px;
+            font-family:'Share Tech Mono',monospace;font-size:13px;
+            cursor:pointer;outline:none;appearance:none;
+        }
+        select:hover{border-color:var(--accent);}
+        select:focus{border-color:var(--accent);}
+        select option{background:var(--pnl);color:var(--txt);}
+
+        /* ── MISSION BAR ── */
+        .mission-bar{
+            padding:12px 18px;margin-bottom:6px;
+            border-left:2px solid var(--accent);
+            background:rgba(212,118,42,0.04);
+            font-size:13px;color:var(--txt2);line-height:1.7;
+        }
+        .mission-bar strong{color:var(--txt);}
+
+        /* ── FACTION TAG ── */
+        .ftag{font-size:9px;padding:2px 8px;border:1px solid;letter-spacing:2px;font-weight:700;display:inline-block;}
+        .f-ty{color:#5aaa6a;border-color:#3a7a4a;}
+        .f-ch{color:#9a6acc;border-color:#6a4a8a;}
+        .f-mx{color:#bba040;border-color:#8a7a30;}
+
+        /* ── INTEL + REWARDS GRID ── */
+        .ir-grid{display:grid;grid-template-columns:1fr 280px;gap:14px;margin-bottom:20px;}
+
+        /* ── INTEL PANEL ── */
+        .intel-head{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bdr);}
+        .intel-title{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:2px;}
+        .hz-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px;}
+        .hz{
+            background:rgba(0,0,0,0.25);border-left:2px solid var(--txt3);
+            padding:10px 14px;font-size:12px;line-height:1.6;color:var(--txt2);
+        }
+        .hz.boss{border-left-color:var(--red);color:#c07070;}
+        .diff-mods{display:flex;flex-wrap:wrap;gap:5px;}
+        .mod{
+            font-size:9px;padding:3px 10px;
+            background:rgba(196,64,64,0.06);border:1px solid rgba(196,64,64,0.18);
+            color:#b06060;letter-spacing:0.5px;
+        }
+
+        /* ── REWARDS PANEL ── */
+        .rew-title{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:2px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--bdr);}
+        .rew-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin-bottom:12px;}
+        .rew-val{font-size:16px;font-weight:700;margin-top:2px;}
+        .rew-val.tier-STD{color:var(--std);}
+        .rew-val.tier-MC {color:var(--mc);}
+        .rew-val.tier-ART{color:var(--art);}
+        .rew-val.tier-REL{color:var(--rel);}
+        .rew-note{font-size:11px;color:var(--txt2);border-top:1px solid var(--bdr);padding-top:10px;line-height:1.6;}
+        .mortal-active{color:var(--red);font-weight:700;}
+        .mortal-off{color:var(--mc);}
+
+        /* ── TEAM GRID ── */
+        .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+
+        /* ── PLAYER COLUMN ── */
+        .pcol{background:var(--pnl2);border:1px solid var(--bdr);display:flex;flex-direction:column;}
+        .pcol-hdr{
+            padding:14px 16px;border-bottom:1px solid var(--bdr);
+            background:rgba(0,0,0,0.3);
+        }
+        .brother-lbl{font-size:10px;color:var(--txt3);letter-spacing:3px;margin-bottom:6px;}
+        .class-sel{
+            width:100%;background:var(--pnl);border:1px solid var(--bdr);
+            color:var(--txt);padding:8px 10px;font-family:'Share Tech Mono',monospace;font-size:12px;
+            cursor:pointer;outline:none;appearance:none;margin-bottom:8px;
+        }
+        .class-sel:hover{border-color:var(--accent);}
+        .role-badge{
+            display:inline-block;font-size:9px;padding:3px 10px;letter-spacing:2px;
+            border:1px solid var(--bdr);color:var(--txt2);font-weight:700;
+        }
+        .pcol-body{padding:14px 16px;flex:1;display:flex;flex-direction:column;}
+
+        /* ── MISSION ROLE ── */
+        .mission-role{
+            border-left:2px solid var(--accent);
+            padding:12px 14px;margin-bottom:14px;
+            font-size:12px;color:var(--txt);line-height:1.7;
+        }
+        .mission-role-title{font-size:10px;color:var(--accent);letter-spacing:3px;font-weight:700;margin-bottom:5px;}
+
+        /* ── ABILITY BOX ── */
+        .ability-box{
+            border-left:2px solid var(--cyan);
+            padding:10px 14px;margin-bottom:14px;
+        }
+        .ability-name{color:var(--cyan);font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:4px;}
+        .ability-desc{font-size:11px;color:var(--txt2);line-height:1.6;}
+
+        /* ── WEAPON CARD ── */
+        .w-card{
+            padding:8px 12px;
+            border-left:2px solid var(--txt3);
+            margin-bottom:5px;
+        }
+        .w-card.tier-STD{border-left-color:var(--std);}
+        .w-card.tier-MC {border-left-color:var(--mc);}
+        .w-card.tier-ART{border-left-color:var(--art);}
+        .w-card.tier-REL{border-left-color:var(--rel);}
+        .w-card.no-wpn{border-left-color:var(--txt3);opacity:0.25;}
+        .w-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;}
+        .w-slot{font-size:9px;color:var(--txt3);letter-spacing:2px;font-weight:700;}
+        .w-alt-btns{display:flex;gap:4px;align-items:center;}
+        .w-alt-btn{
+            background:transparent;border:1px solid var(--bdr);
+            color:var(--txt2);font-size:10px;cursor:pointer;padding:1px 6px;
+            font-family:'Share Tech Mono',monospace;line-height:1.4;
+        }
+        .w-alt-btn:hover{border-color:var(--accent);color:var(--accent);}
+        .w-base{font-size:13px;color:var(--txt);font-weight:700;margin-bottom:1px;}
+        .w-variant{font-size:11px;}
+        .w-variant.tier-STD{color:var(--std);}
+        .w-variant.tier-MC {color:var(--mc);}
+        .w-variant.tier-ART{color:var(--art);}
+        .w-variant.tier-REL{color:var(--rel);}
+
+        /* ── PERKS ── */
+        .perks-sep{border-top:1px solid var(--bdr);padding-top:12px;margin-top:10px;margin-bottom:10px;}
+        .perks-title{font-size:10px;color:var(--txt3);letter-spacing:3px;font-weight:700;margin-bottom:8px;}
+        .perk{
+            padding:6px 12px;margin-bottom:3px;
+            border-left:2px solid var(--txt3);
+        }
+        .perk.locked{opacity:0.18;}
+        .perk-line{display:flex;align-items:baseline;gap:8px;font-size:12px;line-height:1.6;}
+        .perk-name{font-weight:700;color:var(--accent);white-space:nowrap;}
+        .perk-cat{font-size:9px;letter-spacing:1px;white-space:nowrap;}
+        .perk-sep{color:var(--txt3);}
+        .perk-brief{color:var(--txt2);font-size:11px;}
+        .perk-locked-tag{font-size:9px;color:var(--red);letter-spacing:1px;margin-left:auto;white-space:nowrap;}
+
+        /* ── SYNERGY PANEL ── */
+        .syn-hdr{font-size:15px;color:var(--accent);font-weight:700;letter-spacing:2px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--bdr);}
+        .syn-item{display:flex;gap:16px;padding:12px 0;border-bottom:1px solid rgba(26,34,48,0.6);font-size:13px;line-height:1.8;}
+        .syn-item:last-child{border-bottom:none;padding-bottom:0;}
+        .syn-bullet{color:var(--accent);font-size:14px;flex-shrink:0;margin-top:3px;}
+        .syn-text em{color:var(--cyan);font-style:normal;font-weight:700;}
+        .syn-text strong{color:var(--txt);}
+
+        /* ── FACTION THEME ── */
+        body.fac-tyranid .hz.boss{border-left-color:#5aaa6a;color:#6aaa7a;}
+        body.fac-chaos   .hz.boss{border-left-color:#9a6acc;color:#aa7acc;}
+        body.fac-tyranid .mission-bar{border-left-color:#5aaa6a;}
+        body.fac-chaos   .mission-bar{border-left-color:#9a6acc;}
+        body.fac-mixed   .mission-bar{border-left-color:#bba040;}
+
+        /* ── KEYBOARD HINT ── */
+        .kbd-hint{text-align:center;color:var(--txt3);font-size:9px;letter-spacing:2px;margin-top:10px;}
+        .kbd{border:1px solid var(--bdr);padding:1px 6px;font-size:8px;color:var(--txt2);display:inline-block;margin:0 1px;}
+
+        .credits{text-align:center;color:var(--txt3);font-size:9px;letter-spacing:3px;margin-top:16px;padding-top:12px;border-top:1px solid var(--bdr);}
+
+        @media(max-width:1300px){.team-grid{grid-template-columns:1fr;}.ir-grid{grid-template-columns:1fr;}}
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <header class="header">
+        <div>
+            <div class="h-sub gothic">Astartes Tactical Network // Operations Cogitator</div>
+            <div class="h-main gothic">Loadout Cogitator v4.1</div>
+            <div class="h-ver">Warhammer 40,000: Space Marine 2 // All 12 Operations // 7 Classes</div>
+        </div>
+        <div class="h-meta">
+            <div class="h-stat"><div class="lbl">Experience</div><div class="h-stat-val" id="hXP">--</div></div>
+            <div class="h-stat"><div class="lbl">Requisition</div><div class="h-stat-val" id="hReq">--</div></div>
+            <div class="h-stat"><div class="lbl">Armory Data</div><div class="h-stat-val" id="hAD">--</div></div>
+            <div class="h-stat" style="text-align:right"><div class="lbl">Access Tier</div><div class="h-stat-val" id="hTier">--</div></div>
+        </div>
+    </header>
+
+    <div class="controls">
+        <div><div class="lbl">Operation Sector</div><select id="mSel"></select></div>
+        <div><div class="lbl">Threat Complexity</div><select id="dSel">
+            <option value="min">MINIMAL — THREAT LEVEL 1-5</option>
+            <option value="avg">AVERAGE — THREAT LEVEL 5-10</option>
+            <option value="sub">SUBSTANTIAL — THREAT LEVEL 10-15</option>
+            <option value="ruth" selected>RUTHLESS — THREAT LEVEL 15-20</option>
+            <option value="lethal">LETHAL — THREAT LEVEL 25</option>
+            <option value="abs">ABSOLUTE — THREAT LEVEL MAX</option>
+        </select></div>
+    </div>
+
+    <div class="mission-bar" id="mBar"></div>
+    <div id="mPips" style="display:flex;gap:3px;margin-bottom:14px;"></div>
+
+    <div class="ir-grid">
+        <div class="panel" id="intelPnl"></div>
+        <div class="panel" id="rewPnl"></div>
+    </div>
+
+    <div class="team-grid" id="teamGrid"></div>
+
+    <div class="panel" id="synPnl"></div>
+
+    <div class="credits gothic">Astartes Tactical Network // Build v4.1 // Operations Cogitator</div>
+    <div class="kbd-hint">NAVIGATE: <span class="kbd">←</span><span class="kbd">→</span> missions &nbsp;&nbsp; <span class="kbd">↑</span><span class="kbd">↓</span> difficulty</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════════════════════════
+const TIER_MAP   = { min:'STD', avg:'MC', sub:'ART', ruth:'REL', lethal:'REL', abs:'REL' };
+const TIER_LBL   = { STD:'STANDARD', MC:'MASTER-CRAFTED', ART:'ARTIFICER', REL:'RELIC' };
+const TIER_CLR   = { STD:'var(--std)', MC:'var(--mc)', ART:'var(--art)', REL:'var(--rel)' };
+const CLASS_ROLES = {
+    Tactical:   'VERSATILE ANCHOR',
+    Bulwark:    'SUPPORT ANCHOR',
+    Heavy:      'RANGED DEVASTATOR',
+    Sniper:     'PRECISION ELIMINATOR',
+    Vanguard:   'MOBILE AGGRESSOR',
+    Assault:    'MELEE PUNISHER',
+    Techmarine: 'AREA CONTROLLER',
+};
+
+// ── DIFFICULTY ──────────────────────────────────────────────────
+const DIFF = {
+    min:    { lbl:'MINIMAL',    lvl:'1–5',   tier:'STD', req:35,  xp:630,  ad:'None',          resp:'60s',  med:'50%', mortal:false,
+              mods:['Standard enemy HP and density','Full 60s respawn timer','Medicae restores 50% HP','No armour decay penalty'] },
+    avg:    { lbl:'AVERAGE',    lvl:'5–10',  tier:'MC',  req:55,  xp:945,  ad:'Master-Crafted', resp:'60s',  med:'35%', mortal:false,
+              mods:['Enemies +60% HP pool','Armour pool –25%','Medicae restores 35% HP','Minor ammo reduction'] },
+    sub:    { lbl:'SUBSTANTIAL',lvl:'10–15', tier:'ART', req:95,  xp:1260, ad:'Artificer',      resp:'90s',  med:'25%', mortal:true,
+              mods:['First incapacitation = Mortal Wound','Passive regen significantly slowed','Medicae 25% HP','No passive armour regen'] },
+    ruth:   { lbl:'RUTHLESS',   lvl:'15–20', tier:'REL', req:165, xp:1890, ad:'Relic',          resp:'120s', med:'20%', mortal:true,
+              mods:['Enemies ×4 HP','Ammo capacity reduced','Armour pool –55%','No passive regen — melee-only restore'] },
+    lethal: { lbl:'LETHAL',     lvl:'25',    tier:'REL', req:220, xp:2830, ad:'Relic',          resp:'120s', med:'15%', mortal:true,
+              mods:['Enraged Majoris at all times','Random Extremis spikes — no cooldown','All Ruthless modifiers active','Ammo cost tripled'] },
+    abs:    { lbl:'ABSOLUTE',   lvl:'MAX',   tier:'REL', req:500, xp:4000, ad:'Relic',          resp:'NONE', med:'10%', mortal:true,
+              mods:['NO RESPAWN — squad wipe ends the mission','3× Extremis spawn rate','Maximum enemy HP & aggression','Absolute mortality — one mistake ends it'] },
+};
+
+// ═══════════════════════════════════════════════════════════════
+// WEAPON VAULT
+// Each weapon: base, desc, STD/MC/ART/REL variant names, stats
+// Ranged stats: fp (firepower), rof, pierce, range, ammo (all /12 for bar, ammo is raw)
+// Melee stats:  str, spd, cleave (all /12), def (string)
+// ═══════════════════════════════════════════════════════════════
+const WV = {
+    // ── PRIMARY RANGED ──
+    melta_rifle:    {
+        base:'Melta Rifle', desc:'Short-range thermal annihilator. Generates Contested Health on every kill. Devastates armour.',
+        STD:'Melta Rifle',              MC:'Melta Rifle Mk.II',            ART:'Infernus Pattern Melta',        REL:'Grakus Reclamation-Alpha',
+        stats:{fp:11,rof:3,pierce:10,range:1,ammo:20}
+    },
+    auto_bolt_rifle:{
+        base:'Auto Bolt Rifle', desc:'High rate of fire bolt weapon. Excellent sustained horde suppression at medium range.',
+        STD:'Auto Bolt Rifle',          MC:'Auto Bolt Rifle Mk.II',        ART:'Tigrus Pattern Auto-Bolter',    REL:'Ophelian Annihilator-Alpha',
+        stats:{fp:3,rof:10,pierce:2,range:6,ammo:45}
+    },
+    bolt_rifle:     {
+        base:'Bolt Rifle', desc:'Balanced bolt weapon. Reliable across all ranges and threat types. Versatile backbone weapon.',
+        STD:'Bolt Rifle',               MC:'Bolt Rifle Mk.II',             ART:'Stalwart Pattern Boltgun',      REL:'Armageddon Pattern-Alpha',
+        stats:{fp:6,rof:5,pierce:5,range:8,ammo:30}
+    },
+    heavy_bolt_rfl: {
+        base:'Heavy Bolt Rifle', desc:'Larger shells with sustained fire capability. Superior stopping power against Majoris threats.',
+        STD:'Heavy Bolt Rifle',         MC:'Heavy Bolt Rifle Mk.II',       ART:'Drogos Pattern Heavy-Bolter',   REL:'Drogos Annihilator-Alpha',
+        stats:{fp:8,rof:4,pierce:6,range:7,ammo:25}
+    },
+    plasma_incin:   {
+        base:'Plasma Incinerator', desc:'Supercharged plasma bolts. Devastating vs Chaos power armour. Can overheat on sustained fire.',
+        STD:'Plasma Incinerator',       MC:'Plasma Incinerator Mk.II',     ART:'Voss Pattern Plasma Gun',       REL:'Vox Libera-Alpha',
+        stats:{fp:10,rof:3,pierce:9,range:7,ammo:12}
+    },
+    las_fusil:      {
+        base:'Las Fusil', desc:'High-power laser. One-shot Extremis elimination from any range. Headshots critical. Camo Cloak synergy.',
+        STD:'Las Fusil',                MC:'Las Fusil Mk.II',              ART:'Purgation Las-Rifle',           REL:'Grakus Vengeance-Alpha',
+        stats:{fp:12,rof:1,pierce:11,range:12,ammo:5}
+    },
+    instig_carbine: {
+        base:'Instigator Bolt Carbine', desc:'Burst-fire carbine with scope. Effective across all engagement distances.',
+        STD:'Instigator Bolt Carbine',  MC:'Instigator Carbine Mk.II',     ART:'Occulus Pattern Carbine',       REL:'Grakus Pattern-Alpha',
+        stats:{fp:5,rof:7,pierce:4,range:8,ammo:20}
+    },
+    occulus_carbine:{
+        base:'Occulus Bolt Carbine', desc:'Precision carbine with magnification. Long-range threat elimination between Grapnel engagements.',
+        STD:'Occulus Bolt Carbine',     MC:'Occulus Carbine Mk.II',        ART:'Stalker Occulus Carbine',       REL:'Grakus Reclamation-Beta',
+        stats:{fp:6,rof:4,pierce:5,range:10,ammo:15}
+    },
+    pyreblaster:    {
+        base:'Pyreblaster', desc:'Promethium flame weapon. Continuous burning AoE. Ideal for corridor denial and swarm control.',
+        STD:'Pyreblaster',              MC:'Pyreblaster Mk.II',            ART:'Infernus Pattern Pyreblaster',  REL:'Grakus Pyre-Alpha',
+        stats:{fp:8,rof:10,pierce:3,range:2,ammo:100}
+    },
+    multi_melta:    {
+        base:'Multi-Melta', desc:'Dual-barrel thermal weapon. Annihilates armour, flesh, and fortification at close range. Heavy Stance synergy.',
+        STD:'Multi-Melta',              MC:'Multi-Melta Mk.II',            ART:'Drogos Reclamation-Beta',       REL:'Drogos Reclamation-Alpha',
+        stats:{fp:12,rof:3,pierce:12,range:1,ammo:20}
+    },
+    heavy_bolter:   {
+        base:'Heavy Bolter', desc:'Relentless heavy bolt fire with no reload. Sustained devastation across all threat spectrums.',
+        STD:'Heavy Bolter',             MC:'Heavy Bolter Mk.II',           ART:'Drogos Pattern Heavy Bolter',   REL:'Drogos Vengeance-Alpha',
+        stats:{fp:7,rof:9,pierce:6,range:8,ammo:60}
+    },
+    heavy_plasma:   {
+        base:'Heavy Plasma Incinerator', desc:'Maximum plasma output. Shreds Terminator plate and Carnifex carapace. Highest piercing in class.',
+        STD:'Heavy Plasma Incinerator', MC:'Heavy Plasma Mk.II',           ART:'Kronus Heavy Plasma Cannon',    REL:'Vox Libera Heavy-Alpha',
+        stats:{fp:11,rof:2,pierce:11,range:7,ammo:8}
+    },
+    stalker_bsr:    {
+        base:'Bolt Sniper Rifle', desc:'Dedicated long-range precision bolt weapon. High damage at distance with scope. Quieter than Las Fusil.',
+        STD:'Bolt Sniper Rifle',        MC:'Bolt Sniper Rifle Mk.II',      ART:'Purgation Pattern Sniper',      REL:'Grakus Precision-Alpha',
+        stats:{fp:9,rof:2,pierce:7,range:11,ammo:8}
+    },
+    // ── SECONDARY ──
+    bolt_pistol:    {
+        base:'Bolt Pistol', desc:'Standard Astartes sidearm. Reliable finishing power and Contested Health via Gun Strike combos.',
+        STD:'Bolt Pistol',              MC:'Bolt Pistol Mk.II',            ART:'Stalker Bolt Pistol',           REL:'Ophelian Liberation-Alpha',
+        stats:{fp:5,rof:5,pierce:3,range:5,ammo:15}
+    },
+    plasma_pistol:  {
+        base:'Plasma Pistol', desc:'Charged plasma sidearm. Best secondary for elite damage. Overcharge for devastating single shot.',
+        STD:'Plasma Pistol',            MC:'Plasma Pistol Mk.II',          ART:'Voss Pattern Plasma Pistol',    REL:'Vox Libera-Alpha',
+        stats:{fp:9,rof:2,pierce:9,range:7,ammo:8}
+    },
+    heavy_bolt_pst: {
+        base:'Heavy Bolt Pistol', desc:'Greater stopping power than Bolt Pistol. Essential secondary for melee-focused classes.',
+        STD:'Heavy Bolt Pistol',        MC:'Heavy Bolt Pistol Mk.II',      ART:'Gorgon Pattern Pistol',         REL:'Gorgon Vengeance-Beta',
+        stats:{fp:7,rof:3,pierce:6,range:5,ammo:10}
+    },
+    inferno_pistol: {
+        base:'Inferno Pistol', desc:'Miniaturised melta pistol. Burns through elite targets that close to melee range.',
+        STD:'Inferno Pistol',           MC:'Inferno Pistol Mk.II',         ART:'Purgation Inferno Pistol',      REL:'Grakus Inferno-Alpha',
+        stats:{fp:10,rof:2,pierce:8,range:2,ammo:6}
+    },
+    // ── MELEE ──
+    chainsword:     {
+        base:'Chainsword', desc:'Motorized chainblade. Balanced speed and cleave. Fast Finisher chains on Majoris and below.',
+        STD:'Chainsword',               MC:'Chainsword Mk.II',             ART:'Aquila Pattern Chainsword',     REL:'Aquila Pattern-Alpha',
+        stats:{str:6,spd:8,cleave:5,def:'Balanced'}
+    },
+    power_sword:    {
+        base:'Power Sword', desc:'Molecular disruptor blade. Severs Chaos armour with ease. Fencing defence type enables safe parrying.',
+        STD:'Power Sword',              MC:'Power Sword Mk.II',            ART:'Tigrus Pattern Power Sword',    REL:'Alpha Pattern-Alpha',
+        stats:{str:9,spd:7,cleave:3,def:'Fencing'}
+    },
+    thunder_hammer: {
+        base:'Thunder Hammer', desc:'Crushing maul with shockwave. Destroys boss armour. Ground Pound synergy with Jump Pack.',
+        STD:'Thunder Hammer',           MC:'Thunder Hammer Mk.II',         ART:'Indomitus Pattern Hammer',      REL:'Indomitus Pattern-Beta',
+        stats:{str:12,spd:3,cleave:7,def:'Balanced'}
+    },
+    power_fist:     {
+        base:'Power Fist', desc:'Powered gauntlet with shockwave. Deceptive reach. Highest single-strike damage output.',
+        STD:'Power Fist',               MC:'Power Fist Mk.II',             ART:'Kronus Pattern Power Fist',     REL:'Alpha Pattern-Beta',
+        stats:{str:11,spd:4,cleave:2,def:'Balanced'}
+    },
+    combat_knife:   {
+        base:'Combat Knife', desc:'Fast blade. Maximises mobility and Finisher frequency. Camo Cloak exit window synergy.',
+        STD:'Combat Knife',             MC:'Combat Knife Mk.II',           ART:'Tigrus Pattern Blade',          REL:'Alpha Pattern Knife-Alpha',
+        stats:{str:5,spd:11,cleave:2,def:'Fencing'}
+    },
+    omnissian_axe:  {
+        base:'Omnissian Axe', desc:'Sacred Mechanicus weapon. Unique Omnissian Rush impale attack. Wide AoE cleave on standard strikes.',
+        STD:'Omnissian Axe',            MC:'Omnissian Axe Mk.II',          ART:'Adeptus Mechanicus War-Axe',    REL:'Omnissiah Pattern-Alpha',
+        stats:{str:10,spd:6,cleave:6,def:'Balanced'}
+    },
+    storm_shield:   {
+        base:'Storm Shield', desc:'Astartes combat shield. Blocks melee and ranged impacts. Enables shield bash. Bulwark identity — passive slot.',
+        STD:'Storm Shield',             MC:'Storm Shield Mk.II',           ART:'Aquila Pattern Storm Shield',   REL:'Alpha Pattern Storm Shield',
+        stats:{str:7,spd:6,cleave:2,def:'Shield'}
+    },
+};
+
+// ═══════════════════════════════════════════════════════════════
+// CLASSES — weapons, alts, perks, mission roles
+// alts: { faction: { slot: [wId, wId, ...] } }
+// First item in alts is the default recommendation
+// ═══════════════════════════════════════════════════════════════
+const CLASSES = {
+    Tactical: {
+        color:'#00d4ff', role:'VERSATILE ANCHOR',
+        ability:'Auspex Scan',
+        abilityDesc:'Reveals and marks all enemies in the target area for 8 seconds. Marked enemies take 50% more damage from all sources — applies simultaneously to the entire squad.',
+        alts:{
+            tyranid:{ primary:['melta_rifle','pyreblaster','auto_bolt_rifle'], secondary:['bolt_pistol'], melee:['chainsword'] },
+            chaos:  { primary:['plasma_incin','bolt_rifle','heavy_bolt_rfl'],  secondary:['bolt_pistol'], melee:['chainsword'] },
+            mixed:  { primary:['auto_bolt_rifle','plasma_incin','bolt_rifle'],  secondary:['bolt_pistol'], melee:['chainsword'] },
+        },
+        perks:[
+            { n:'Calibration',  cat:'CORE',      cost:25,  d:'Auspex Scan duration +8 seconds, but ignores Minoris-class enemies. Longer mark window for Extremis and Terminus elimination.' },
+            { n:'Stockpile',    cat:'TEAM',      cost:45,  d:'Equipment Charge restored by 1 for all Squad Members every 60 seconds. Critical for sustaining Melta and Auspex usage across long operations.' },
+            { n:'Radiant',      cat:'GEAR',      cost:60,  d:'Melee Finisher deals AoE damage in a 10-metre radius, scaled to difficulty. Converts single Finishers into squad-wide clearing events.' },
+            { n:'Transhuman',   cat:'SIGNATURE', cost:100, d:'All Squad Members restore 30% more Contested Health from Ranged Damage. Fundamentally transforms squad survivability in sustained firefights at Ruthless+.' },
+        ],
+        missionRoles:{
+            '01':'Primary Melta DPS and Auspex controller. Mark Zoanthropes immediately — their Psychic Scream halts all Armour regeneration. Follow with Melta burst on Carnifex weak points.',
+            '02':'Scan-shot coordinator. Mark the Hive Tyrant during Phase 1 for Sniper burst. Deploy Banner timing when Tyrant transitions to Phase 2 to absorb the psychic blast AoE.',
+            '03':'Vox jamming identification specialist. Hold the console during identification phase while Bulwark and Techmarine manage the perimeter assault.',
+            '04':'Purification rites executor. Hold and clear altar points while Bulwark manages melee. Auspex marks Chaos Sorcerers for instant Heavy elimination.',
+            '05':'Fire support coordinator. Scan Carnifex weak points during launch corridor breach. Stockpile perk sustains squad ammo across the full launch sequence.',
+            '06':'Ammo logistics backbone. Stockpile perk is mission-critical for the long transit. Scan Zoanthrope synapse nodes on the final charging platform before the last push.',
+            '07':'Underbelly marker and DPS amplifier. Scan the Bio-Titan underbelly vulnerability to amplify Heavy Multi-Melta output. Coordinates timing with Sniper leg-joint shots.',
+            '08':'Multi-target coordinator. Auspex marks Chaos Sorcerers while squad handles console destruction. Scan timing during the island alignment phase amplifies all ranged damage.',
+            '09':'Primary scanner for Trygon surface windows. Mark immediately when the Trygon surfaces — the 50% damage buff must land on Extremis priority targets during elevator hold.',
+            '10':'Relay cleansing executor and Mutalith scanner. Auspex marks the Mutalith Vortex Beast through its psychic storm, amplifying Techmarine Servo-Gun output.',
+            '11':'Puzzle alignment executor and Prime vulnerability scanner. Mark the Tyranid Prime simultaneously with Sniper shot for maximum coordinated burst damage.',
+            '12':'Mixed-threat coordinator. Auspex marks Chaos Sorcerers during ritual sequences — coordinated Heavy burst ends rituals before the 30-second Daemon summoning threshold.',
+        }
+    },
+    Bulwark: {
+        color:'#c5a059', role:'SUPPORT ANCHOR',
+        ability:'Chapter Banner',
+        abilityDesc:'Deploy a Chapter Banner that restores Armour to all Squad Members in its AoE for its full duration. Most impactful team support ability in the game — timing is everything.',
+        alts:{
+            tyranid:{ primary:['storm_shield'], secondary:['plasma_pistol','heavy_bolt_pst'], melee:['chainsword','power_fist'] },
+            chaos:  { primary:['storm_shield'], secondary:['plasma_pistol'],                  melee:['power_sword','thunder_hammer'] },
+            mixed:  { primary:['storm_shield'], secondary:['plasma_pistol'],                  melee:['power_sword','chainsword'] },
+        },
+        perks:[
+            { n:'Rejuvenate',      cat:'CORE',      cost:30,  d:'Chapter Banner activation revives all Incapacitated Squad Members in its AoE. One ability use can convert an impending wipe into a full squad recovery.' },
+            { n:'Condemnation',    cat:'TEAM',      cost:40,  d:'Contested Health fades 50% more slowly for all Squad Members. Dramatically extends the window to convert white health via ranged kills.' },
+            { n:'Aura of Wrath',   cat:'GEAR',      cost:65,  d:'Squad Members in banner AoE take 20% less Damage and banner lasts 20% longer. Stacks with Heavy Iron Halo Encompass perk for layered mitigation.' },
+            { n:'Revitalise',      cat:'SIGNATURE', cost:100, d:'Banner activation instantly restores maximum Contested Health to all Squad Members but recharges 50% slower. High-value panic button for Lethal and Absolute.' },
+        ],
+        missionRoles:{
+            '01':'Perimeter anchor during reactor defense. Banner deployed after Psychic Scream restores white health before it drains to zero. Hold flanks while Tactical and Vanguard execute Melta killing.',
+            '02':'Hive Tyrant melee aggro holder. Chapter Banner deployed immediately after phase-transition psychic blast — single most important Banner timing in the operation.',
+            '03':'Elevator perimeter defender and Cathedral hold specialist. Power Sword handles Rubric Marine melee while Techmarine Sentry covers the 360-degree approach.',
+            '04':'Altar point security. Holds detonation sites against Chaos Marine assault while Tactical executes purification rites. Banner prevents wipe during sorcerer binding attempts.',
+            '05':'Multi-station hold specialist. Chapter Banner with Revitalise sustains the squad during the simultaneous multi-objective launch sequence when all three Marines are separated.',
+            '06':'Charging station anchor. Holds the fixed stand-off position while Heavy and Tactical provide ranged suppression. Banner timing covers wave resets.',
+            '07':'Boss transition anchor. Banner deployed the moment Bio-Titan enters vulnerability phase to sustain the squad\'s aggressive push through acid zones and toxic pools.',
+            '08':'Island alignment protector. Holds the alignment point against melee assault while Sniper eliminates ranged threats. Banner timing during Sorcerer ritual binding provides critical mitigation.',
+            '09':'Elevator hold anchor. Banner with Revitalise perk is the single most impactful ability use in the final elevator phase — deployed during heavy wave resets.',
+            '10':'Chaos altar capture holder. Holds altar capture points against melee interruption while Heavy and Techmarine manage aerial and ranged threats.',
+            '11':'Stationary puzzle guard. Protects the router symbol alignment Marine from melee interruption. Power Sword efficiency against Tyranid Warrior bodyguards in the Prime encounter.',
+            '12':'Zeta generator anchor. Holds the primary generator against all melee threats independently while Heavy covers the Lambda generator with aerial suppression.',
+        }
+    },
+    Heavy: {
+        color:'#ff6b35', role:'RANGED DEVASTATOR',
+        ability:'Iron Halo',
+        abilityDesc:'Activates a powerful energy barrier blocking all incoming Ranged Damage for 14.93 seconds. Usable while moving. Squad-wide mitigation via Encompass perk. Core defensive cooldown.',
+        alts:{
+            tyranid:{ primary:['multi_melta','heavy_bolter'],  secondary:['plasma_pistol'], melee:[] },
+            chaos:  { primary:['heavy_plasma','heavy_bolter'], secondary:['plasma_pistol'], melee:[] },
+            mixed:  { primary:['heavy_bolter','heavy_plasma'], secondary:['plasma_pistol'], melee:[] },
+        },
+        perks:[
+            { n:'Encompass',     cat:'CORE',      cost:35,  d:'All Squad Members take 25% less Ranged Damage while Iron Halo is active. Transforms a personal barrier into a squad-wide protection bubble at 10m.' },
+            { n:'Resupply',      cat:'TEAM',      cost:50,  d:'Ammo Capacity for all Squad Members\' Weapons +25%. Addresses critical ammo starvation that appears at Ruthless difficulty and above.' },
+            { n:'Machine Power', cat:'GEAR',      cost:75,  d:'While Iron Halo is active, all Squad Members within 10m deal 10% more Ranged Damage. Pairs with Encompass for simultaneous offensive-defensive windows.' },
+            { n:'Unwaveringly',  cat:'SIGNATURE', cost:100, d:'In Heavy Stance, dealing Damage restores 15% more Contested Health and you cannot be knocked back. Enables indefinite Heavy Stance without interruption.' },
+        ],
+        missionRoles:{
+            '01':'Reactor platform anchor. Multi-Melta clears the exposed deck of all density in seconds. Iron Halo with Encompass absorbs the ranged spike damage during concentrated reactor stand-off waves.',
+            '02':'Gargoyle aerial suppression. Iron Halo blocks boss ranged phases and absorbs Tyrant psychic blast damage. Multi-Melta burst during Auspex Scan windows maximises Tyrant phase damage.',
+            '03':'Elevator 360-degree suppressor. Techmarine Sentry handles approach; Heavy covers the alternate axis with sustained bolt fire. Iron Halo protects during the jamming identification window.',
+            '04':'Heldrake counter and altar area suppressor. Iron Halo fully blocks Heldrake warp-fire. Multi-Melta eliminates Chaos Sorcerers within Auspex Scan vulnerability windows instantly.',
+            '05':'Launch corridor clearer. Multi-Melta clears Carnifex elite threats from the launch corridor. Iron Halo protects the squad during simultaneous station activation — no safe position otherwise.',
+            '06':'Train deck devastator. Multi-Melta in Heavy Stance clears the entire exposed train platform. Unwaveringly perk prevents knockback on the open deck where retreat is impossible.',
+            '07':'Underbelly burst executor. Concentrates all Multi-Melta output during Auspex-marked underbelly vulnerability windows — highest single DPS window in the entire operation.',
+            '08':'Open terrain suppressor. Iron Halo with Encompass protects squad during open-terrain console approaches. Heavy suppresses Chaos snipers and artillery during the island alignment phase.',
+            '09':'Platform hold suppressor. Heavy Bolter\'s sustained fire covers the elevator hold without reload. Iron Halo provides critical mitigation during the Trygon surface burst attack sequences.',
+            '10':'Mutalith storm suppressor. Iron Halo enables approach through the psychic storm. Servo-Gun and Multi-Melta combination provides the only reliable burst damage during storm phases.',
+            '11':'Breached hull dominator. Heavy Plasma Incinerator penetrates Tyranid Warrior bodyguard armour. Iron Halo covers the zero-gravity hull sections where positioning is severely constrained.',
+            '12':'Lambda generator defender and aerial suppressor. Sustained heavy fire suppresses Gargoyle aerial waves on the Lambda approach. Aerial fire covers Bulwark at Zeta independently.',
+        }
+    },
+    Sniper: {
+        color:'#22c55e', role:'PRECISION ELIMINATOR',
+        ability:'Camo Cloak',
+        abilityDesc:'Renders you invisible to all enemies for 10 seconds or until your next attack breaks it. First attack from Camo Cloak benefits from the Targeted perk\'s 75% damage bonus.',
+        alts:{
+            tyranid:{ primary:['las_fusil','stalker_bsr','instig_carbine'], secondary:['inferno_pistol','bolt_pistol'], melee:['combat_knife','power_sword'] },
+            chaos:  { primary:['las_fusil','stalker_bsr'],                  secondary:['bolt_pistol','inferno_pistol'], melee:['power_sword','combat_knife'] },
+            mixed:  { primary:['las_fusil'],                                secondary:['bolt_pistol'],                  melee:['combat_knife'] },
+        },
+        perks:[
+            { n:'Targeted',       cat:'CORE',      cost:25,  d:'First Ranged Attack breaking Camo Cloak deals 75% more Damage. On Las Fusil headshots, this frequently one-shots Extremis targets outright.' },
+            { n:'Ghost Step',     cat:'TEAM',      cost:45,  d:'After breaking Camo Cloak, remain hidden for 2 additional seconds. Allows repositioning and second-shot lining without breaking concealment.' },
+            { n:'Shadow Shroud',  cat:'GEAR',      cost:60,  d:'Camo Cloak deactivation startles and slows nearby enemies for 10 seconds. Disrupts Extremis attack sequences on cloak exit — buys critical escape time.' },
+            { n:'Signature Shot', cat:'SIGNATURE', cost:100, d:'3 consecutive Headshots restore Equipment Charge by 1. Enables near-infinite Camo Cloak uptime against enemies with large or exposed head hitboxes.' },
+        ],
+        missionRoles:{
+            '01':'Zoanthrope elimination priority. Las Fusil one-shots Zoanthropes before their Psychic Scream fires. Camo Cloak maintains concealment during Hormagaunt saturation phases.',
+            '02':'Hive Tyrant Targeted burst specialist. Camo Cloak then Las Fusil Targeted headshot during Tactical Auspex window attempts to burst Phase 1 HP and skip the phase transition.',
+            '03':'Rubric Marine Extremis eliminator. Las Fusil penetrates Terminator-grade automaton armour from elevated cover. Camo Cloak resets between cathedral altar destruction events.',
+            '04':'Chaos Sorcerer priority target. Las Fusil eliminates ritual-casting Sorcerers before they complete binding sequences. Camo Cloak provides re-positioning between Heldrake fire phases.',
+            '05':'Bio-Titan leg-joint breaker. Las Fusil is the only ranged weapon that reliably breaks leg-joint weak points from safe distance. Targeted perk delivers 75% bonus damage on each weak point shot.',
+            '06':'Zoanthrope synapse breaker. Las Fusil eliminates Zoanthrope synapse creatures on the final charging platform before the last push, breaking the synapse web that prevents swarm suppression.',
+            '07':'Boss weak-point specialist. Las Fusil breaks Bio-Titan leg joints to force vulnerability windows. Targeted perk from Camo Cloak maximises weak-point damage per shot.',
+            '08':'Sorcerer ritual interrupt via sniper fire. Las Fusil eliminates Chaos Sorcerer support units during island alignment and console destruction phases from elevated cover positions.',
+            '09':'Trygon surface window eliminator. Las Fusil concentrates output during Trygon surface appearances. Camo Cloak provides concealment during the buried tunneling phases.',
+            '10':'Mutalith weak-point sniper. Las Fusil penetrates the Mutalith Vortex Beast\'s hide during brief non-storm windows. Camo Cloak maintains concealment during warp rift spawn events.',
+            '11':'Tyranid Prime burst coordinator. Scan-shot synchronisation with Tactical Auspex delivers 50%+75% compound vulnerability on the Prime — potentially skipping the bodyguard phase.',
+            '12':'Chaos Sorcerer ritual disruptor. Las Fusil eliminates Sorcerers before ritual completion. Camo Cloak resets between Gargoyle wave sequences when ground exposure is lethal.',
+        }
+    },
+    Vanguard: {
+        color:'#3b82f6', role:'MOBILE AGGRESSOR',
+        ability:'Grapnel Launcher',
+        abilityDesc:'Fires a grapnel that propels you toward a targeted enemy, delivering an immediate Diving Kick that staggers the target and surrounding enemies. Repeatable mobile aggression tool.',
+        alts:{
+            tyranid:{ primary:['melta_rifle','instig_carbine'],    secondary:['bolt_pistol'], melee:['chainsword','combat_knife'] },
+            chaos:  { primary:['occulus_carbine','instig_carbine'],secondary:['bolt_pistol'], melee:['chainsword','power_sword']  },
+            mixed:  { primary:['melta_rifle','occulus_carbine'],   secondary:['bolt_pistol'], melee:['chainsword']               },
+        },
+        perks:[
+            { n:'Adrenaline Rush', cat:'CORE',      cost:30,  d:'Melee kills of Majoris-level or higher enemies restore 5% Health. With Grapnel mobility, enables continuous aggressive engagement without withdrawal.' },
+            { n:'Firestarter',     cat:'TEAM',      cost:45,  d:'All Squad Members restore Ability Charge 15% by performing Finishers on Majoris+. Accelerates ability cycling for the entire squad every engagement.' },
+            { n:'Shock Assault',   cat:'GEAR',      cost:60,  d:'Diving Kick deals 50% of its main Damage in a 5-metre radius around the impact point. Each Grapnel engage simultaneously clears surrounding Minoris.' },
+            { n:'Zeal',            cat:'SIGNATURE', cost:100, d:'Melee Finishers on Extremis and Terminus targets restore 30% Health for any Squad Member. High-value team sustain on elite Finisher chains.' },
+        ],
+        missionRoles:{
+            '01':'Aggressive horde entry and crane recovery specialist. Grapnel dives into Hormagaunt clusters generate Contested Health for the squad. Melta Rifle at close range post-grapple devastates armor.',
+            '02':'Gargoyle platform interceptor. Grapnel clears gargoyles from elevated positions before they can suppress platform holds. Melta Rifle handles Warrior-class threats during bridge charge deployment.',
+            '03':'Cathedral balcony clearer. Grapnel mobility eliminates Thousand Sons from all elevated positions that would otherwise suppress the stationary jamming identification phase.',
+            '04':'Catacomb aggressor. Grapnel closes distance in narrow catacomb corridors instantly, preventing Chaos Marines from establishing ranged lanes. Shock Assault clears cluster threats.',
+            '05':'Escort path clearer. Grapnel dives into Hormagaunt swarms blocking the battery barge escort route. Shock Assault perk turns each Grapnel into an area-clearing event for the carrier.',
+            '06':'Ravener ambush responder. Grapnel immediately reaches downed squad members, interrupting Ravener burrow-exit animations before they execute the killing strike on a downed Marine.',
+            '07':'Bio-Titan aggro disruptor. Grapnel dives onto leg-joint weak points when the Titan bends, enabling close-range Melta burst during vulnerability windows while Sniper fires from distance.',
+            '08':'Daemonette mobility counter. Grapnel matches Daemonette movement speed — diving kick staggers fast-assault waves before they can reach the squad during console destruction splits.',
+            '09':'Trygon tunnel interrupt specialist. Grapnel Diving Kick interrupts Trygon tunneling animations — the only reliable way to prevent the worst burrow-ambush damage spikes in the elevator hold.',
+            '10':'Warp rift rapid responder. Grapnel immediately closes on Daemon emergence positions during relay cleansing phases, preventing them from establishing formation before the relay channel completes.',
+            '11':'Hull section aggressor and balcony clearer. Grapnel mobility ensures no enemy retains an elevated position to interrupt the router symbol alignment phase. Melta Rifle handles Synapse creatures.',
+            '12':'Generator defense rapid responder. Grapnel enables rapid traversal between Zeta and Lambda generators when one comes under critical pressure, reinforcing without abandoning the other position.',
+        }
+    },
+    Assault: {
+        color:'#ef4444', role:'MELEE PUNISHER',
+        ability:'Jump Pack',
+        abilityDesc:'Enables powered aerial jumps and enhanced dashes. Unlocks Ground Pound and Diving Kick. Jump Pack charge refills from melee kills — creates a self-sustaining aggressive loop.',
+        alts:{
+            tyranid:{ primary:[], secondary:['heavy_bolt_pst'], melee:['chainsword','power_fist'] },
+            chaos:  { primary:[], secondary:['heavy_bolt_pst'], melee:['thunder_hammer','power_fist'] },
+            mixed:  { primary:[], secondary:['heavy_bolt_pst'], melee:['thunder_hammer','chainsword'] },
+        },
+        perks:[
+            { n:'Precise Strike', cat:'CORE',      cost:30,  d:'Ground Pound deals 100% more Damage but radius reduced 50%. Trade AoE clear for single-target devastation — optimal for boss and Extremis encounters.' },
+            { n:'Prowess',        cat:'TEAM',      cost:45,  d:'Melee Damage +15% against Majoris and Extremis enemies. Persistent bonus for exactly the threat types Assault engages most frequently.' },
+            { n:'Armour Temp.',   cat:'GEAR',      cost:65,  d:'Non-Finisher Gun Strikes also restore 1 Armour Segment. Enables sustained aggressive melee without total reliance on Finisher chains for armour.' },
+            { n:'Avenger',        cat:'SIGNATURE', cost:100, d:'Killing 7 enemies within 6 seconds restores Equipment Charge by 1. Hormagaunt and Cultist swarms make this trivially achievable — near-infinite Jump Pack.' },
+        ],
+        missionRoles:{
+            '01':'Crowd clearer and promethium fire zone traverser. Jump Pack aerial approach bypasses fire hazard ground zones. Chainsword cleave chains through Hormagaunt saturation during fuel-line phases.',
+            '02':'Hive Tyrant melee gap-closer. Jump Pack Ground Pound during Phase 1 melee phase bypasses the Tyrant\'s reach advantage. Avenger perk refills Jump Pack from Gargoyle swarm kills.',
+            '03':'Chaos Marine melee dominator. Thunder Hammer charged overhead strike destroys Rubric Marine automaton bodies. Ground Pound clears the elevator confined space when 360-degree melee pressure peaks.',
+            '04':'Chaos Sorcerer ritual interruptor. Jump Pack aerial approach closes distance to Sorcerers before they complete binding rituals. Ground Pound\'s radius handles surrounding Daemonette fast-assault.',
+            '05':'Escort path dominator. Jump Pack slams clear the battery barge escort corridor through Carnifex and Hormagaunt obstacles. Shock Assault Diving Kick turns each engagement into AoE clearance.',
+            '06':'Train deck melee suppressor. Chainsword clears Hormagaunt density on the open train deck between Heavy Multi-Melta bursts. Avenger perk makes Jump Pack self-sustaining across the entire transit.',
+            '07':'Bio-Titan leg joint melee breaker. Jump Pack aerial approach reaches elevated leg joints when the Titan rears. Thunder Hammer charged strike delivers close-range weak-point burst alongside Sniper fire.',
+            '08':'Sorcerer ritual interrupt cycle. Jump Pack Diving Kick interrupts Sorcerer ritual casts on a reliable timer. Shock Assault perk simultaneously damages surrounding Daemonette fast-assault waves.',
+            '09':'Elevator hold melee anchor. Chainsword continuous cleave chains prevent Hormagaunt density from overwhelming the hold. Avenger perk ensures near-infinite Jump Pack from the constant swarm kills.',
+            '10':'Chaos altar melee dominator. Jump Pack approach closes on Daemonette and Chaos Warrior melee threats before they can disrupt altar capture. Ground Pound handles clustered altar defender formations.',
+            '11':'Tyranid Warrior bodyguard eliminator. Thunder Hammer charged strikes eliminate Warrior bodyguards during the Prime encounter. Precise Strike delivers devastating Ground Pound on the isolated Prime.',
+            '12':'Generator defense gap-closer. Jump Pack enables traversal between split Zeta and Lambda generator positions. Chainsword handles Gargoyle landing waves that ground-based suppression misses.',
+        }
+    },
+    Techmarine: {
+        color:'#f59e0b', role:'AREA CONTROLLER',
+        ability:'Servo-Gun / Sentry',
+        abilityDesc:'Deploys Servo-Gun for autonomous threat suppression while you engage. Detects and activates Tarantula Sentry Guns in missions — fully automated turrets that independently track all threats.',
+        alts:{
+            tyranid:{ primary:['auto_bolt_rifle','heavy_bolt_rfl','bolt_rifle'], secondary:['plasma_pistol','inferno_pistol'], melee:['omnissian_axe','power_sword'] },
+            chaos:  { primary:['plasma_incin','bolt_rifle'],                     secondary:['plasma_pistol','inferno_pistol'], melee:['omnissian_axe','power_sword'] },
+            mixed:  { primary:['plasma_incin','auto_bolt_rifle'],                secondary:['plasma_pistol'],                  melee:['omnissian_axe']              },
+        },
+        perks:[
+            { n:'Indomitable',    cat:'CORE',      cost:30,  d:'While Servo-Gun is active, no control loss on Heavy Hits and cannot be knocked back. Enables stationary Servo-Gun in melee-heavy Tyranid swarm encounters.' },
+            { n:'Machine Spirit', cat:'TEAM',      cost:50,  d:'Tarantula Sentry Gun Damage +30% and Ammo +50%. Dramatically extends sentry effectiveness across longer objective defense phases.' },
+            { n:'Volatile',       cat:'GEAR',      cost:75,  d:'Sentry Gun explosion damage +1000% and radius +20%. Each sentry destruction becomes a massive squad-clearing AoE event — extremely high value in defense.' },
+            { n:'Designate',      cat:'SIGNATURE', cost:100, d:'Enemies hit by the Servo-Gun take 15% more Damage for 10 seconds. Stacks with Tactical Auspex Scan for devastating combined vulnerability on Extremis.' },
+        ],
+        missionRoles:{
+            '01':'Reactor defense autonomous coverage. Tarantula Sentry placed at the reactor chokepoint covers the primary approach without Marine presence, freeing Tactical and Vanguard for mobile threat response.',
+            '02':'Bridge approach controller. Sentry covers the approach avenue during bridge charge deployment. Servo-Gun designation on Gargoyle Extremis amplifies squad damage during aerial suppression phases.',
+            '03':'Elevator 360-degree controller. Tarantula Sentry covers the elevator approach axis autonomously — the only way to handle 360-degree ambush exposure without losing ground elsewhere in the cathedral.',
+            '04':'Catacomb chokepoint controller. Sentry placed at catacomb servo-skull escort bottleneck prevents Chaos Marine ambushes. Servo-Gun designation on Chaos Sorcerers prevents ritual completion.',
+            '05':'Dreadnought Valtus uplink maintainer. Repairs the Valtus fire-support link — each successful repair window opens a Dreadnought bombardment that clears the escort ambush position.',
+            '06':'Charging station controller. Tarantula Sentry covers the fixed stand-off position\'s primary axis. Volatile perk transforms sentry death into an AoE clearing event during heavy wave resets.',
+            '07':'Fortress cannon platform controller. Sentry covers the cannon activation panels during simultaneous operation. Designate perk on Bio-Titan extremities amplifies leg-joint damage from all sources.',
+            '08':'Console isolation controller. Sentry covers each isolated console during destruction sequence, enabling squad to split safely without leaving an undefended position.',
+            '09':'Elevator hold autonomous suppressor. Sentry on the elevator approach handles Hormagaunt filtering independently. Designate perk on Trygon during surface windows amplifies all squad damage output.',
+            '10':'Relay channel autonomous guardian. Sentry on the relay channel point allows one Marine to cleanse corruption hands-free while the sentry handles all incoming warp entity threats independently.',
+            '11':'Hull breach controller. Sentry placed at hull bulkhead openings prevents Tyranid surges from overwhelming the router symbol puzzle alignment phase.',
+            '12':'Ritual interrupt burst specialist. Servo-Gun Designate on Chaos Sorcerer combined with Heavy Multi-Melta burst provides the only team DPS combination sufficient to end rituals before the 30-second threshold.',
+        }
+    }
+};
+
+// ═══════════════════════════════════════════════════════════════
+// MISSIONS — all 12 operations
+// ═══════════════════════════════════════════════════════════════
+const MISSIONS = [
+    {
+        id:'01', name:'Inferno', planet:'Kadaku', faction:'tyranid',
+        desc:'Destroy a promethium refinery to deny the Tyranid swarm its biomass fuel and thin the invasion force threatening Kadaku.',
+        hazards:[
+            { t:'Massive Hormagaunt saturation — highest Minoris density in any phase during fuel-line defense. No respite between waves.', boss:false },
+            { t:'Crane mechanism must be manually reactivated in an exposed position with no cover during the reboot sequence.', boss:false },
+            { t:'Reactor defense stand-off — unrelenting multi-directional spawn waves with no safe repositioning zone available.', boss:false },
+            { t:'CARNIFEX ELITE: Heavily armoured and fast. Ranged damage alone is insufficient — Melta or Plasma mandatory.', boss:true },
+        ],
+        classes:['Tactical','Vanguard','Heavy'],
+        synergy:[
+            'THERMAL KILL-ZONE: <em>Tactical and Vanguard Melta Rifles</em> create overlapping close-range kill-zones during crane and reactor phases, <strong>generating Contested Health on every thermal kill</strong> — the squad heals by killing.',
+            'AUSPEX PRIORITY: <em>Tactical must mark Zoanthrope Extremis units first</em> — their Psychic Scream halts all Armour regeneration for the squad. One Auspex Scan buys the critical elimination window before debuff triggers.',
+            'IRON BASTION: <em>Heavy Iron Halo with Encompass perk</em> absorbs concentrated ranged spike damage during reactor stand-off, letting Tactical and Vanguard manage melee threats without armour collapse.',
+        ]
+    },
+    {
+        id:'02', name:'Decapitation', planet:'Avarax', faction:'tyranid',
+        desc:'Eliminate the Hive Tyrant personally commanding the Tyranid invasion of Avarax. Decapitate the swarm\'s intelligence.',
+        hazards:[
+            { t:'Bridge charge deployment under continuous Tyranid assault — split attention required during detonation sequence.', boss:false },
+            { t:'Gargoyle swarms harass elevated positions throughout approach and platform phases.', boss:false },
+            { t:'HIVE TYRANT PHASE 2: Reflects 50% of all ranged damage back to the attacker. Transition triggers a squad-wide psychic blast AoE.', boss:true },
+            { t:'Phase transition psychic blast simultaneously drains all squad white health — Banner timing is critical.', boss:true },
+        ],
+        classes:['Tactical','Sniper','Bulwark'],
+        synergy:[
+            'PHASE SKIP: <em>Tactical Auspex Scan</em> creates a 50% vulnerability window — <em>Sniper Las Fusil Relic headshots</em> can burst Phase 1 HP and potentially force Phase 2 before the psychic blast fires, <strong>eliminating the most dangerous moment</strong>.',
+            'ARMOR ANCHOR: <em>Bulwark Chapter Banner</em> deployed immediately after the psychic blast restores white health before it drains to zero — on Ruthless and above the blast alone forces Mortal Wounds without Banner coverage.',
+            'SCAN-SHOT CYCLE: <em>Tactical marks the Tyrant</em> while <em>Bulwark holds Banner-range melee aggro</em>, allowing Sniper to deliver uninterrupted precision fire from cover through every phase transition.',
+        ]
+    },
+    {
+        id:'03', name:'Vox Liberatis', planet:'Avarax', faction:'chaos',
+        desc:'Battle the Thousand Sons and locate the source of vox jamming that has blinded all Imperial communications across the sector.',
+        hazards:[
+            { t:'Elevator defense ascent — 360-degree ambush exposure in a confined kill-box with no lateral escape routes.', boss:false },
+            { t:'Cathedral altar destruction — three simultaneous ritual sites must be cleared before the Sorcerer seals them permanently.', boss:false },
+            { t:'Jamming identification phase — one Marine must remain stationary at the console under extreme sustained pressure.', boss:false },
+            { t:'RUBRIC MARINES throughout: Terminator-grade automaton troops. Plasma or Las weapons mandatory for reliable elimination.', boss:true },
+        ],
+        classes:['Sniper','Bulwark','Techmarine'],
+        synergy:[
+            'TURRET COVERAGE: <em>Techmarine Tarantula Sentry</em> covers the elevator 360-degree approach autonomously, freeing Bulwark and Sniper to focus on <strong>Rubric Marine Extremis elimination</strong> rather than Minoris swarm management.',
+            'ELITE PURGE: <em>Sniper Las Fusil</em> eliminates Rubric Marine Extremis from elevated cover — the Fencing defence Power Sword enables safe Bulwark parrying of Chaos melee attacks during the perimeter hold.',
+            'BANNER-SENTRY ANCHOR: <em>Bulwark Banner + Techmarine Sentry</em> on the jamming identification platform creates a sustainable hold through the <strong>full stationary vulnerability window</strong> without squad collapse.',
+        ]
+    },
+    {
+        id:'04', name:'Reliquary', planet:'Demerium', faction:'chaos',
+        desc:'Destroy the Warp Beacon summoning limitless Chaos reinforcements to Demerium before it fully corrupts the planet.',
+        hazards:[
+            { t:'Warp Beacon destruction — Chaos Marines and Rubric elites assault in waves during the multi-stage detonation sequence.', boss:false },
+            { t:'Servo-skull catacomb escort — narrow corridors severely punish cluster positioning and limit escape routes.', boss:false },
+            { t:'Chaos Sorcerer support units cast binding rituals — interrupt within 6 seconds or squad movement is locked.', boss:false },
+            { t:'HELDRAKE BOSS: Warp-fire breath creates full area-denial across the open arena. Cannot be outrun in open terrain.', boss:true },
+        ],
+        classes:['Heavy','Tactical','Bulwark'],
+        synergy:[
+            'AA SUPPRESSION: <em>Heavy Iron Halo fully blocks Heldrake warp-fire</em> during open arena phases — with Encompass perk, <strong>the entire squad takes 25% less ranged damage</strong>, enabling forward push during what should be mandatory withdrawal.',
+            'BEACON SECURITY: <em>Bulwark holds altar points</em> while <em>Tactical performs purification rites</em>, preventing Chaos Marine interruptions that would reset the detonation sequence progress and extend the operation.',
+            'SORCERER SWEEP: <em>Tactical Auspex Scan marks Chaos Sorcerers</em> for <em>Heavy Multi-Melta burst</em> — instantly ending ritual-cast sequences before the 6-second binding lock triggers squad immobilisation.',
+        ]
+    },
+    {
+        id:'05', name:'Fall of Atreus', planet:'Demerium', faction:'tyranid',
+        desc:'Reactivate an ancient Astartes Battle Barge and launch it to break the Tyranid orbital blockade strangling Demerium.',
+        hazards:[
+            { t:'Dreadnought Valtus fire-support link — Techmarine must maintain the uplink or bombardment support is lost mid-breach.', boss:false },
+            { t:'Fusion Battery barge escort — carrier is slow; squad cannot allow the objective to be surrounded or the mission stalls.', boss:false },
+            { t:'Ancient vessel launch sequence — simultaneous multi-station defense with no safe position available to any Marine.', boss:false },
+            { t:'CARNIFEX ELITES guard the launch corridor — melee engagement is unavoidable and close-range weapons are mandatory.', boss:true },
+        ],
+        classes:['Techmarine','Bulwark','Assault'],
+        synergy:[
+            'DREADNOUGHT UPLINK: <em>Techmarine repairs and maintains the Valtus link</em> — each successful repair opens a <strong>Dreadnought bombardment that clears escort ambush positions</strong> without consuming any squad resources.',
+            'CROWD CLEAR: <em>Assault Jump Pack slams</em> clear the battery barge escort path through Hormagaunt swarms — Shock Assault perk deals AoE damage around every Diving Kick landing, turning each engage into area suppression.',
+            'ANCHOR HOLD: <em>Bulwark Chapter Banner with Revitalise perk</em> sustains the squad during the simultaneous multi-station launch sequence when all three Marines are physically separated at different objective points.',
+        ]
+    },
+    {
+        id:'06', name:'Ballistic Engine', planet:'Avarax', faction:'tyranid',
+        desc:'Commandeer a Nova Cannon warhead and deliver it by rail for orbital deployment against the Tyranid fleet above Avarax.',
+        hazards:[
+            { t:'Open train deck defense — Hormagaunt density among the highest in any operation with zero cover on the exposed platform.', boss:false },
+            { t:'Charging station stand-off — squad must hold a fixed position through multiple wave cycles with no repositioning option.', boss:false },
+            { t:'Zoanthrope synapse web on final charging platform — synapse must be broken first or the swarm cannot be suppressed.', boss:false },
+            { t:'RAVENER TUNNELING AMBUSHES: Can down a player without warning during transit — constant positional awareness mandatory.', boss:true },
+        ],
+        classes:['Heavy','Vanguard','Tactical'],
+        synergy:[
+            'DECK ANNIHILATION: <em>Heavy Multi-Melta in Heavy Stance</em> clears the entire open train deck of Minoris and Majoris density in seconds — <em>Unwaveringly perk</em> prevents knockback on the exposed platform where retreat is impossible.',
+            'AMMO LOGISTICS: <em>Tactical Stockpile perk</em> restores Equipment Charge for all squad members every 60 seconds — <strong>mission-critical for maintaining Melta and Grapnel frequency</strong> across the extended rail transit without resupply.',
+            'TUNNELER RESPONSE: <em>Vanguard Grapnel Launcher</em> counters Ravener ambushes by immediately reaching downed squad members, interrupting Ravener burrow-exit animations before they execute the killing strike.',
+        ]
+    },
+    {
+        id:'07', name:'Termination', planet:'Agathon', faction:'tyranid',
+        desc:'Activate the fortress macro-cannons and destroy the Bio-Titan Norn Emissary before it dismantles the planet\'s last defensive bastion.',
+        hazards:[
+            { t:'Fortress cannon activation — three simultaneous panel operations under concentrated swarm assault with no squad proximity.', boss:false },
+            { t:'Acid rain environmental hazard — standing in the open continuously drains armour throughout the operation.', boss:false },
+            { t:'Toxic pool zones cover 40% of the arena floor — optimal DPS positioning requires accepting environmental damage.', boss:false },
+            { t:'BIO-TITAN NORN EMISSARY: Leg-joint weak points MUST be broken to force vulnerability windows — immune to all other damage.', boss:true },
+        ],
+        classes:['Tactical','Heavy','Sniper'],
+        synergy:[
+            'TITAN BREAKER: <em>Sniper Las Fusil with Targeted perk</em> is the only reliable weapon for breaking Bio-Titan leg joints from safe distance — the 75% Camo Cloak exit bonus delivers <strong>maximum weak-point damage per shot</strong>.',
+            'UNDERBELLY WINDOW: <em>Tactical Auspex Scan marks the exposed underbelly</em> — <em>Heavy Multi-Melta burst</em> in that window delivers peak DPS output, potentially skipping the Titan\'s enrage phase transition entirely.',
+            'HAZARD MANAGEMENT: <em>Heavy Iron Halo with Encompass</em> enables the entire squad to push through acid zones and toxic pools during vulnerability windows, accepting environmental damage to maximise the DPS timing window.',
+        ]
+    },
+    {
+        id:'08', name:'Obelisk', planet:'Demerium', faction:'chaos',
+        desc:'Destroy the Aurora device by disrupting its shield consoles scattered across Demerium battlefield under Chaos fire.',
+        hazards:[
+            { t:'Shield consoles are isolated and dispersed — squad must split across exposed open terrain to destroy them simultaneously.', boss:false },
+            { t:'Island alignment phase — must execute precise alignment under continuous Chaos Marine sniper and artillery fire.', boss:false },
+            { t:'Daemonette fast-assault waves between console phases — extremely high mobility threat that ignores armour positioning.', boss:false },
+            { t:'CHAOS SORCERER BOSS: Ritual sequences bind the entire squad — must be interrupted within 10 seconds or squad is immobilised.', boss:true },
+        ],
+        classes:['Bulwark','Assault','Sniper'],
+        synergy:[
+            'STUN CYCLE: <em>Assault Jump Pack Diving Kick interrupts Sorcerer ritual casts</em> on a reliable repeatable timer — <em>Shock Assault perk</em> simultaneously damages surrounding Daemonettes, turning each interrupt into a wave-clearing event.',
+            'ISLAND DEFENSE: <em>Bulwark holds the island alignment point</em> against melee assault while <em>Sniper eliminates Chaos Sorcerer support units</em> — two dedicated roles that operate completely independently without interfering.',
+            'BANNER TIMING: <em>Bulwark Chapter Banner</em> deployed the moment the Sorcerer begins binding provides <strong>20% damage reduction</strong> — Assault can then interrupt safely without armour loss on the approach run.',
+        ]
+    },
+    {
+        id:'09', name:'Exfiltration', planet:'Avarax', faction:'tyranid',
+        desc:'Recover a critical Mechanicus brain data center and exfiltrate to orbit before the Tyranids overwhelm the facility.',
+        hazards:[
+            { t:'Data center carrier significantly slower and cannot sprint — escort is the absolute priority throughout all transit phases.', boss:false },
+            { t:'Final elevator hold — squad must survive two full wave cycles with no retreat option and extremely limited space.', boss:false },
+            { t:'Hormagaunt pressure is unrelenting during elevator hold — melee threat never dissipates between wave resets.', boss:false },
+            { t:'TRYGON BOSS: Tunneling ambush with random burrow positions — constant positional awareness or instant incapacitation.', boss:true },
+        ],
+        classes:['Vanguard','Tactical','Bulwark'],
+        synergy:[
+            'TRYGON INTERRUPT: <em>Vanguard Grapnel Launcher Diving Kick interrupts Trygon tunneling animations</em> — prevents the worst burrow-ambush damage spikes that can instantly down a player with no warning or counterplay.',
+            'DATA HOLD: <em>Bulwark Chapter Banner with Revitalise perk</em> restores maximum Contested Health during the elevator hold — <strong>the single most impactful individual ability use</strong> in the final phase of this operation.',
+            'SCAN CONTROL: <em>Tactical Auspex Scan marks the Trygon</em> during surface windows and Extremis during the hold — the 50% damage buff on the highest priority target at the right moment determines whether the hold survives.',
+        ]
+    },
+    {
+        id:'10', name:'Vortex', planet:'Avarax', faction:'chaos',
+        desc:'Cleanse corrupted relays and hunt the Mutalith Vortex Beast before it tears a permanent Warp rift across the sector.',
+        hazards:[
+            { t:'Relay corruption cleansing — each relay requires stationary channeling while Chaos Marines and warp entities assault.', boss:false },
+            { t:'Chaos altar capture — multiple simultaneous capture points in open terrain with no natural cover positions.', boss:false },
+            { t:'Warp rift spawn events during relay phases — unpredictable Daemon emergence with no cooldown between events.', boss:false },
+            { t:'MUTALITH VORTEX BEAST: Psychic storm aura makes approach lethal — only Servo-Gun and Iron Halo enable sustained engagement.', boss:true },
+        ],
+        classes:['Techmarine','Heavy','Tactical'],
+        synergy:[
+            'STORM VISION: <em>Techmarine Servo-Gun tracks and fires on the Mutalith</em> through its psychic storm — the <strong>only sustained damage source that functions during peak storm phases</strong> when all other ranged fire is deflected.',
+            'RITUAL ANCHOR: <em>Heavy Iron Halo with Encompass</em> protects the entire squad during Chaos altar captures against heretic sniper volleys that otherwise suppress and prevent capture completion.',
+            'RELAY SECURITY: <em>Techmarine Tarantula Sentry</em> on the relay channel point allows one Marine to cleanse corruption hands-free while the sentry autonomously handles all incoming warp entity threats.',
+        ]
+    },
+    {
+        id:'11', name:'Reclamation', planet:'Orbit', faction:'tyranid',
+        desc:'Breach a Tyranid-infested Astartes strike cruiser in high orbit to reclaim its machine spirit and recover critical combat data.',
+        hazards:[
+            { t:'Sealed bulkheads open in sequence — each new hull section is a fresh ambush with no time to establish defensive positions.', boss:false },
+            { t:'Router symbol alignment puzzle — one Marine must remain stationary; any interruption resets the entire alignment sequence.', boss:false },
+            { t:'Zero-gravity zones in breached hull sections create unexpected movement constraints and eliminate retreat options.', boss:false },
+            { t:'TYRANID PRIME DUAL: Prime and bodyguard Warriors must be killed simultaneously — separate timings trigger full HP recovery.', boss:true },
+        ],
+        classes:['Tactical','Vanguard','Sniper'],
+        synergy:[
+            'PRIME BURST: <em>Tactical Auspex Scan</em> creates a simultaneous 50% vulnerability window — <em>Sniper Las Fusil Relic headshots</em> can eliminate Tyranid Prime bodyguard Warriors <strong>within a single scan window</strong>, forcing a solo Prime fight immediately.',
+            'PUZZLE COVER: <em>Vanguard Grapnel clears all elevated hull sections and balconies</em> while Tactical aligns reactor symbols — Grapnel mobility ensures no enemy retains an elevated position to interrupt the stationary alignment.',
+            'EXECUTION CHAIN: All three classes have high Finisher access — <em>Vanguard Zeal perk</em> restores 30% Health on Extremis Finishers, sustaining the entire squad through the reactor breach sequence without requiring Medicae.',
+        ]
+    },
+    {
+        id:'12', name:'Disruption', planet:'Avarax', faction:'mixed',
+        desc:'Reinforce Cadian defenders and prevent the Thousand Sons from completing a catastrophic ritual that would summon a Greater Daemon.',
+        hazards:[
+            { t:'Dual generator defense (Zeta and Lambda) — squad must split to hold both simultaneously; consolidation is not possible.', boss:false },
+            { t:'Gargoyle aerial waves during generator phases — extreme aerial density with no ground cover providing aerial protection.', boss:false },
+            { t:'Combined Tyranid and Chaos forces — threat type shifts rapidly between swarm and elite, demanding weapon flexibility.', boss:false },
+            { t:'CHAOS SORCERER RITUAL: Completes in 30 seconds if not interrupted — failure summons a Daemon and ends the mission.', boss:true },
+        ],
+        classes:['Bulwark','Heavy','Techmarine'],
+        synergy:[
+            'SECTOR HOLD: <em>Bulwark Chapter Banner holds Zeta generator</em> against all melee threats while <em>Heavy provides aerial suppression</em> of Gargoyle swarms on the Lambda generator — two fully independent holds requiring no coordination.',
+            'MIXED-THREAT RESPONSE: <em>Techmarine Plasma Incinerator handles Rubric Marine elites</em> while the <em>Tarantula Sentry covers Tyranid wave approaches</em> — one class simultaneously managing both factions through paired weapon and ability.',
+            'RITUAL INTERRUPT: <em>Techmarine Servo-Gun Designate combined with Heavy Multi-Melta burst</em> provides the <strong>only DPS combination sufficient to end ritual sequences</strong> before the 30-second Daemon summoning threshold.',
+        ]
+    }
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let curMission = '01';
+let curDiff    = 'ruth';
+let pClasses   = ['Tactical','Vanguard','Heavy'];
+// weaponSel[colIdx] = { primary:0, secondary:0, melee:0 }
+let wSel       = [{primary:0,secondary:0,melee:0},{primary:0,secondary:0,melee:0},{primary:0,secondary:0,melee:0}];
+
+function resetCol(colIdx) {
+    wSel[colIdx] = { primary:0, secondary:0, melee:0 };
+}
+function resetAllCols() {
+    wSel = [{primary:0,secondary:0,melee:0},{primary:0,secondary:0,melee:0},{primary:0,secondary:0,melee:0}];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════
+function tk() { return TIER_MAP[curDiff]; }
+function getAlts(cn, faction, slot) {
+    const c = CLASSES[cn];
+    if (!c || !c.alts) return [];
+    const fAlt = c.alts[faction] || c.alts.mixed || c.alts.tyranid || {};
+    return fAlt[slot] || [];
+}
+function getWId(colIdx, faction, slot) {
+    const cn   = pClasses[colIdx];
+    const alts = getAlts(cn, faction, slot);
+    if (!alts.length) return null;
+    const idx = Math.min(wSel[colIdx][slot] || 0, alts.length - 1);
+    return alts[idx];
+}
+function getMission() { return MISSIONS.find(m => m.id === curMission); }
+function getDiff()    { return DIFF[curDiff]; }
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — WEAPON CARD
+// ═══════════════════════════════════════════════════════════════
+function weaponCard(colIdx, slotKey, slotLabel) {
+    const mis  = getMission();
+    const tKey = tk();
+    const alts = getAlts(pClasses[colIdx], mis.faction, slotKey);
+    const selIdx = Math.min(wSel[colIdx][slotKey] || 0, Math.max(0, alts.length - 1));
+    const wId  = alts[selIdx] || null;
+
+    if (!wId) {
+        const msg = slotKey === 'primary' ? 'JUMP PACK — NO PRIMARY SLOT' : 'GUN STRIKE — NO MELEE WEAPON';
+        return `<div class="w-card no-wpn">
+            <div class="w-slot">${slotLabel}</div>
+            <div class="w-base" style="font-size:11px;color:var(--txt2)">${msg}</div>
+        </div>`;
+    }
+
+    const w       = WV[wId];
+    const variant = w[tKey];
+    const tcls    = wId === 'storm_shield' ? 'tier-STD' : `tier-${tKey}`;
+
+    const altHtml = alts.length > 1
+        ? `<div class="w-alt-btns">
+            <button class="w-alt-btn" onclick="cycleWpn(${colIdx},'${slotKey}',-1,event)">&#8249;</button>
+            <span style="font-size:9px;color:var(--txt2);align-self:center;">${selIdx+1}/${alts.length}</span>
+            <button class="w-alt-btn" onclick="cycleWpn(${colIdx},'${slotKey}',1,event)">&#8250;</button>
+          </div>`
+        : '';
+
+    return `<div class="w-card ${tcls}">
+        <div class="w-card-head">
+            <div class="w-slot">${slotLabel}</div>
+            ${altHtml}
+        </div>
+        <div class="w-base">${w.base}</div>
+        <div class="w-variant ${tcls}">${variant}</div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — PERK CARD
+// ═══════════════════════════════════════════════════════════════
+function perkCard(p, idx) {
+    const d = curDiff;
+    const locked = (idx===1 && d==='min') ||
+                   (idx===2 && ['min','avg'].includes(d)) ||
+                   (idx===3 && !['ruth','lethal','abs'].includes(d));
+    const catColors = { CORE:'var(--accent)', TEAM:'var(--cyan)', GEAR:'var(--mc)', SIGNATURE:'var(--rel)' };
+    const catClr = catColors[p.cat] || 'var(--txt2)';
+    // Extract first sentence as brief description
+    const brief = p.d.split(/\.\s/)[0] + '.';
+    return `<div class="perk ${locked?'locked':''}">
+        <div class="perk-line">
+            <span class="perk-name">${p.n}</span>
+            <span class="perk-cat" style="color:${catClr}">${p.cat}</span>
+            <span class="perk-sep">—</span>
+            <span class="perk-brief">${brief}</span>
+            ${locked ? '<span class="perk-locked-tag">LOCKED</span>' : ''}
+        </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — PLAYER COLUMN
+// ═══════════════════════════════════════════════════════════════
+function playerCol(colIdx) {
+    const cn  = pClasses[colIdx];
+    const cd  = CLASSES[cn];
+    const mis = getMission();
+    const missionRole = (cd.missionRoles && cd.missionRoles[mis.id]) || '';
+
+    const classOpts = Object.keys(CLASSES).map(k =>
+        `<option value="${k}" ${k===cn?'selected':''}>${k.toUpperCase()}</option>`
+    ).join('');
+
+    const perks = cd.perks.map((p,i) => perkCard(p,i)).join('');
+
+    return `<div class="pcol">
+        <div class="pcol-hdr">
+            <div class="brother-lbl">BATTLE-BROTHER 0${colIdx+1}</div>
+            <select class="class-sel" onchange="switchClass(${colIdx},this.value)">${classOpts}</select>
+            <div style="margin-top:4px"><span class="role-badge">${CLASS_ROLES[cn]||''}</span></div>
+        </div>
+        <div class="pcol-body">
+            ${missionRole ? `<div class="mission-role"><div class="mission-role-title">MISSION ROLE</div>${missionRole}</div>` : ''}
+            <div class="ability-box">
+                <div class="ability-name">ABILITY: ${cd.ability}</div>
+                <div class="ability-desc">${cd.abilityDesc}</div>
+            </div>
+            ${weaponCard(colIdx,'primary',  'PRIMARY WEAPON')}
+            ${weaponCard(colIdx,'secondary','SECONDARY WEAPON')}
+            ${weaponCard(colIdx,'melee',    'MELEE WEAPON')}
+            <div class="perks-sep"><div class="perks-title">RECOMMENDED PERKS</div></div>
+            ${perks}
+        </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER — MAIN
+// ═══════════════════════════════════════════════════════════════
+function render() {
+    const mis = getMission();
+    const dif = getDiff();
+    const tKey  = tk();
+    const tLbl  = TIER_LBL[tKey];
+    const tClr  = TIER_CLR[tKey];
+
+    // Faction body class
+    document.body.className = `fac-${mis.faction}`;
+
+    // ── HEADER ──
+    document.getElementById('hXP').innerHTML   = `<span style="color:${tClr}">${dif.xp.toLocaleString()}</span>`;
+    document.getElementById('hReq').innerHTML  = `<span style="color:${tClr}">${dif.req}R</span>`;
+    document.getElementById('hAD').innerHTML   = `<span style="color:${tClr}">${dif.ad||'None'}</span>`;
+    document.getElementById('hTier').innerHTML = `<span style="color:${tClr}">${tLbl} (LVL ${dif.lvl})</span>`;
+
+    // ── MISSION BAR ──
+    const fTagClass = { tyranid:'f-ty', chaos:'f-ch', mixed:'f-mx' }[mis.faction] || 'f-ty';
+    document.getElementById('mBar').innerHTML =
+        `<strong>${mis.name.toUpperCase()} // ${mis.planet}</strong> &nbsp;<span class="ftag ${fTagClass}">${mis.faction.toUpperCase()}</span>&nbsp; — ${mis.desc}`;
+
+    // ── MISSION PIPS ──
+    const mIdx = MISSIONS.findIndex(m => m.id === curMission);
+    document.getElementById('mPips').innerHTML = MISSIONS.map((m, i) => {
+        const isCur = i === mIdx;
+        const fClr  = { tyranid:'#5aaa6a', chaos:'#9a6acc', mixed:'#bba040' }[m.faction];
+        const bg    = isCur ? fClr : '#141a22';
+        const bdr   = isCur ? fClr : '#1a2230';
+        return `<div title="${m.id}: ${m.name}" onclick="selectMission('${m.id}')" style="flex:1;height:3px;background:${bg};border:1px solid ${bdr};cursor:pointer;transition:all 0.2s"></div>`;
+    }).join('');
+
+    // ── INTEL PANEL ──
+    const hzHtml  = mis.hazards.map(h=>`<div class="hz ${h.boss?'boss':''}">${h.t}</div>`).join('');
+    const modHtml = dif.mods.map(m=>`<div class="mod">${m}</div>`).join('');
+    document.getElementById('intelPnl').innerHTML = `
+        <div class="intel-head">
+            <div class="intel-title gothic">Field Intel &amp; Hazards</div>
+            <span class="ftag ${fTagClass}">${mis.faction.toUpperCase()}</span>
+        </div>
+        <div class="hz-grid">${hzHtml}</div>
+        <div class="lbl" style="margin-bottom:5px">Active Difficulty Modifiers — ${dif.lbl}</div>
+        <div class="diff-mods">${modHtml}</div>
+    `;
+
+    // ── REWARDS PANEL ──
+    const mortalHtml = dif.mortal
+        ? `<div><span class="mortal-active">MORTAL WOUND ACTIVE</span> — First incapacitation is permanent. No recovery without Banner Rejuvenate.</div>`
+        : `<div><span class="mortal-off">Mortal Wound: Inactive</span></div>`;
+    document.getElementById('rewPnl').innerHTML = `
+        <div class="rew-title gothic">Mission Rewards</div>
+        <div class="rew-grid">
+            <div><div class="lbl">Experience</div><div class="rew-val tier-${tKey}">${dif.xp.toLocaleString()} XP</div></div>
+            <div><div class="lbl">Requisition</div><div class="rew-val tier-${tKey}">${dif.req} R</div></div>
+            <div><div class="lbl">Armory Data</div><div class="rew-val tier-${tKey}">${dif.ad||'None'}</div></div>
+            <div><div class="lbl">Access Tier</div><div class="rew-val tier-${tKey}">${tLbl}</div></div>
+            <div><div class="lbl">Respawn</div><div class="rew-val" style="font-size:14px;color:var(--txt)">${dif.resp}</div></div>
+            <div><div class="lbl">Medicae HP</div><div class="rew-val" style="font-size:14px;color:var(--txt)">${dif.med}</div></div>
+        </div>
+        <div class="rew-note">${mortalHtml}</div>
+    `;
+
+    // ── TEAM GRID ──
+    document.getElementById('teamGrid').innerHTML = [0,1,2].map(i => playerCol(i)).join('');
+
+    // ── SYNERGY PANEL ──
+    const synItems = mis.synergy.map(s =>
+        `<div class="syn-item"><div class="syn-bullet">*</div><div class="syn-text">${s}</div></div>`
+    ).join('');
+    document.getElementById('synPnl').innerHTML = `
+        <div class="syn-hdr gothic">Tactical Cogitator // Team Composition &amp; Synergy Rationale</div>
+        ${synItems}
+    `;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EVENT HANDLERS
+// ═══════════════════════════════════════════════════════════════
+function selectMission(id) {
+    curMission = id;
+    document.getElementById('mSel').value = id;
+    pClasses = [...getMission().classes];
+    resetAllCols();
+    render();
+}
+
+function switchClass(colIdx, newClass) {
+    pClasses[colIdx] = newClass;
+    resetCol(colIdx);
+    render();
+}
+
+function cycleWpn(colIdx, slot, dir, evt) {
+    evt && evt.stopPropagation();
+    const mis  = getMission();
+    const alts = getAlts(pClasses[colIdx], mis.faction, slot);
+    if (!alts.length) return;
+    let i = (wSel[colIdx][slot] || 0) + dir;
+    if (i < 0) i = alts.length - 1;
+    if (i >= alts.length) i = 0;
+    wSel[colIdx][slot] = i;
+    render();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+(function init() {
+    const mSel = document.getElementById('mSel');
+    MISSIONS.forEach(m => {
+        const o = document.createElement('option');
+        o.value = m.id;
+        o.textContent = `${m.id}: ${m.name.toUpperCase()} — ${m.planet.toUpperCase()}`;
+        mSel.appendChild(o);
+    });
+
+    mSel.onchange = e => {
+        curMission = e.target.value;
+        // Restore recommended classes for new mission
+        pClasses = [...getMission().classes];
+        resetAllCols();
+        render();
+    };
+
+    document.getElementById('dSel').onchange = e => {
+        curDiff = e.target.value;
+        render();
+    };
+
+    // Keyboard navigation
+    const mIds  = MISSIONS.map(m => m.id);
+    const dKeys = ['min','avg','sub','ruth','lethal','abs'];
+    document.addEventListener('keydown', e => {
+        if (e.target.tagName === 'SELECT') return;
+        let changed = false;
+        if (e.key === 'ArrowRight') {
+            const idx = mIds.indexOf(curMission);
+            if (idx < mIds.length - 1) { curMission = mIds[idx + 1]; pClasses = [...getMission().classes]; resetAllCols(); changed = true; document.getElementById('mSel').value = curMission; }
+        } else if (e.key === 'ArrowLeft') {
+            const idx = mIds.indexOf(curMission);
+            if (idx > 0) { curMission = mIds[idx - 1]; pClasses = [...getMission().classes]; resetAllCols(); changed = true; document.getElementById('mSel').value = curMission; }
+        } else if (e.key === 'ArrowUp') {
+            const idx = dKeys.indexOf(curDiff);
+            if (idx < dKeys.length - 1) { curDiff = dKeys[idx + 1]; changed = true; document.getElementById('dSel').value = curDiff; }
+        } else if (e.key === 'ArrowDown') {
+            const idx = dKeys.indexOf(curDiff);
+            if (idx > 0) { curDiff = dKeys[idx - 1]; changed = true; document.getElementById('dSel').value = curDiff; }
+        }
+        if (changed) { e.preventDefault(); render(); }
+    });
+
+    render();
+})();
+</script>
+</body>
+</html>
