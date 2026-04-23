@@ -9,8 +9,41 @@ import { ProfileAppsSection } from "@/components/ProfileAppsSection";
 
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
+  let name = `@${handle}`;
+  let description = `${name} on HTML Heaven — creator profile.`;
+
+  try {
+    const db = await getDB();
+    const profile = await getProfileByHandle(db, handle);
+    if (profile) {
+      name = profile.name;
+      if (profile.bio) description = profile.bio;
+    }
+  } catch {
+    // fall back to defaults
+  }
+
+  const title = `${name} (@${handle}) — HTML Heaven`;
+  const url = `https://htmlheaven.com/u/${handle}`;
+
   return {
-    title: `@${handle} — HTML Heaven`,
+    title,
+    description,
+    openGraph: {
+      type: "profile",
+      url,
+      title,
+      description,
+      siteName: "HTML Heaven",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: url,
+    },
   };
 }
 
