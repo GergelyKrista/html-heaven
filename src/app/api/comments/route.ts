@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getDB, ensureUser, getComments, addComment } from "@/lib/db";
 import { postCommentToPR } from "@/lib/github";
+import { assertSameOrigin } from "@/lib/security";
 import { checkAndRecord } from "@/lib/ratelimit";
 
 const MAX_COMMENT_LENGTH = 500;
@@ -24,6 +25,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const originGate = assertSameOrigin(request);
+  if (originGate) return originGate;
+
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });

@@ -4,11 +4,15 @@ import { createSubmissionPR } from "@/lib/github";
 import { normalizeTag, isValidCategory, TAG_RULES } from "@/lib/categories";
 import { getDB, recordSubmission } from "@/lib/db";
 import { ensureUserWithHandle } from "@/lib/users";
+import { assertSameOrigin } from "@/lib/security";
 import { checkAndRecord } from "@/lib/ratelimit";
 
 const SUBMIT_LIMIT_PER_HOUR = 3;
 
 export async function POST(request: NextRequest) {
+  const originGate = assertSameOrigin(request);
+  if (originGate) return originGate;
+
   const session = await auth();
 
   if (!session?.user) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getDB, ensureUser, getUserFavorites, toggleFavorite } from "@/lib/db";
+import { assertSameOrigin } from "@/lib/security";
 
 export async function GET() {
   const session = await auth();
@@ -19,6 +20,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const originGate = assertSameOrigin(request);
+  if (originGate) return originGate;
+
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });

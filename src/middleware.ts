@@ -10,39 +10,47 @@ export function middleware(request: NextRequest) {
 
   const response = NextResponse.next();
   const headers = response.headers;
+  const path = request.nextUrl.pathname;
 
-  // Prevent clickjacking — site cannot be embedded in iframes on other domains
-  headers.set("X-Frame-Options", "SAMEORIGIN");
-
-  // Block MIME-type sniffing
+  // Shared headers — applied on every response
   headers.set("X-Content-Type-Options", "nosniff");
-
-  // Control referrer leakage — only send origin to external sites
   headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
-
-  // Restrict browser features — deny access to sensitive APIs
   headers.set(
     "Permissions-Policy",
     "camera=(), microphone=(), geolocation=(), payment=()"
   );
-
-  // Force HTTPS for 1 year, including subdomains
   headers.set(
     "Strict-Transport-Security",
     "max-age=31536000; includeSubDomains"
   );
 
-  // Content Security Policy
-  // - default: only same-origin
-  // - scripts: same-origin + inline (needed for Next.js hydration)
-  // - styles: same-origin + inline (needed for Tailwind)
-  // - images: same-origin + data URIs
-  // - fonts: same-origin + Google Fonts
-  // - frame-src: same-origin (for app iframes served from our domain)
-  // - connect: same-origin (API calls)
-  // - form-action: same-origin
-  // - frame-ancestors: same-origin (prevent our site from being iframed)
-  // - base-uri: same-origin (prevent base tag hijacking)
+  // Anything under /apps/ is user-submitted HTML. Treat it as untrusted
+  // third-party content even though it's served from our own origin.
+  //
+  // The CSP `sandbox` directive, applied at the HTTP header level, forces
+  // the document into a sandboxed browsing context with an **opaque
+  // origin** — even when opened top-level in a new tab or via direct URL.
+  // An opaque-origin page is cross-site with htmlheaven.com, so:
+  //   - the session cookie (SameSite=Lax) is NOT sent on fetches back to
+  //     /api/*, so submitted code can't act as the signed-in user.
+  //   - localStorage / sessionStorage / document.cookie are inaccessible.
+  //   - top-level navigation is only allowed by explicit user gesture
+  //     (keeps the "Back to HTML Heaven" badge click working).
+  //
+  // This is our primary defense against account takeover via a malicious
+  // submission opened in a new tab. Without it, same-origin code would
+  // pick up the logged-in user's session cookie and act on their behalf.
+  if (path.startsWith("/apps/")) {
+    headers.set(
+      "Content-Security-Policy",
+      "sandbox allow-scripts allow-popups allow-top-navigation-by-user-activation allow-forms allow-modals allow-pointer-lock allow-downloads"
+    );
+    // Don't set X-Frame-Options — we WANT to embed these in our own iframe.
+    return response;
+  }
+
+  // Main-site pages and API routes — standard clickjacking + CSP.
+  headers.set("X-Frame-Options", "SAMEORIGIN");
   headers.set(
     "Content-Security-Policy",
     [
