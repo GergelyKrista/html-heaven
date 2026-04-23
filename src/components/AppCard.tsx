@@ -7,6 +7,7 @@ import { ShareButton } from "./ShareButton";
 import { DeleteAppMenu } from "./DeleteAppMenu";
 import { useOwnership } from "./OwnershipProvider";
 import { AppPreviewModal } from "./AppPreviewModal";
+import { AppThumbnail } from "./AppThumbnail";
 
 // Deterministic color based on slug — each app gets a unique accent
 const cardAccents = [
@@ -50,8 +51,9 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
         onClick={openPreview}
         aria-label={`Preview ${app.title}`}
         type="button"
-        className="card-glow group flex w-full flex-col rounded-xl border border-border/60 bg-surface text-left transition-all duration-200 hover:bg-surface-2"
+        className="card-glow group flex w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-surface text-left transition-all duration-200 hover:bg-surface-2"
       >
+        <AppThumbnail app={app} />
         <div className="flex flex-1 flex-col p-4">
           {/* Top row: accent dot + primary tag, like count, author */}
           <div className="mb-3 flex items-center justify-between">

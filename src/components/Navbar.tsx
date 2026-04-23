@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useSession, signIn } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const links = [
   { href: "/browse", label: "Browse" },
@@ -13,21 +13,65 @@ const links = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const { data: session } = useSession();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [query, setQuery] = useState("");
+
+  // Keep the input in sync with the URL when viewing /browse?q=...
+  useEffect(() => {
+    if (pathname === "/browse") {
+      setQuery(searchParams.get("q") ?? "");
+    }
+  }, [pathname, searchParams]);
+
+  function submitSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const q = query.trim();
+    const target = q ? `/browse?q=${encodeURIComponent(q)}` : "/browse";
+    router.push(target);
+    setMenuOpen(false);
+  }
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border/50 bg-background/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
+      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
         <Link
           href="/"
-          className="group flex items-center gap-2.5 font-semibold tracking-tight"
+          className="group flex shrink-0 items-center gap-2.5 font-semibold tracking-tight"
         >
           <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary text-[13px] font-bold text-white transition-transform group-hover:scale-105">
             H
           </span>
           <span className="text-foreground">HTML Heaven</span>
         </Link>
+
+        {/* Desktop search */}
+        <form
+          onSubmit={submitSearch}
+          role="search"
+          className="relative hidden min-w-0 max-w-sm flex-1 md:block"
+        >
+          <svg
+            className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            strokeWidth={1.75}
+            aria-hidden
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" />
+          </svg>
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search apps…"
+            aria-label="Search apps"
+            className="h-8 w-full rounded-md border border-border bg-surface pl-8 pr-3 text-[13px] text-foreground placeholder:text-muted focus:border-border-light focus:outline-none"
+          />
+        </form>
 
         <div className="hidden items-center gap-0.5 md:flex">
           {links.map((link) => (
@@ -108,6 +152,27 @@ export function Navbar() {
 
       {menuOpen && (
         <div className="border-t border-border/50 px-4 py-2 md:hidden">
+          {/* Mobile search */}
+          <form onSubmit={submitSearch} role="search" className="relative mb-2 mt-1">
+            <svg
+              className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth={1.75}
+              aria-hidden
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-4.35-4.35M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15Z" />
+            </svg>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search apps…"
+              aria-label="Search apps"
+              className="h-9 w-full rounded-md border border-border bg-surface pl-8 pr-3 text-[13px] text-foreground placeholder:text-muted focus:border-border-light focus:outline-none"
+            />
+          </form>
           {links.map((link) => (
             <Link
               key={link.href}
