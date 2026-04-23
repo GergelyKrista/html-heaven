@@ -4,6 +4,7 @@ import { createSubmissionPR } from "@/lib/github";
 import { normalizeTag, isValidCategory, TAG_RULES } from "@/lib/categories";
 import { getDB, recordSubmission } from "@/lib/db";
 import { ensureUserWithHandle } from "@/lib/users";
+import { assertSameOrigin } from "@/lib/security";
 
 // Simple in-memory rate limit: 3 submissions per user per hour
 const rateLimitMap = new Map<string, number[]>();
@@ -22,6 +23,9 @@ function isRateLimited(userId: string): boolean {
 }
 
 export async function POST(request: NextRequest) {
+  const originGate = assertSameOrigin(request);
+  if (originGate) return originGate;
+
   const session = await auth();
 
   if (!session?.user) {

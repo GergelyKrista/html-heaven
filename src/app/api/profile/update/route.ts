@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth, githubFieldsFromSession } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { updateProfile, normalizeHandle, ensureUserWithHandle } from "@/lib/users";
+import { assertSameOrigin } from "@/lib/security";
 
 const MAX_BIO = 280;
 const MAX_FIELD = 100;
@@ -21,6 +22,9 @@ function normalizeUrl(s: string | null): string | null {
 }
 
 export async function POST(request: NextRequest) {
+  const originGate = assertSameOrigin(request);
+  if (originGate) return originGate;
+
   const session = await auth();
   if (!session?.user?.email) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
