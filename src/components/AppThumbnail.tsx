@@ -2,22 +2,21 @@
 
 import { useState } from "react";
 import type { AppMeta } from "@/types";
-import { CATEGORIES, isValidCategory } from "@/lib/categories";
 
-// Two-color gradient palettes chosen by slug hash — each app gets a
-// deterministic unique cover, so even without a real screenshot the grid
-// has visual variety you can scan.
+// Two-tone deep palettes picked by slug hash. Deliberately muted — the
+// grid is dark and typographic, so covers should feel like part of the
+// page, not a sticker book of rainbow gradients.
 const GRADIENTS = [
-  { from: "#f97316", to: "#e04a2f", glyph: "#fff" },  // orange → red
-  { from: "#22d3ee", to: "#3b82f6", glyph: "#fff" },  // cyan  → blue
-  { from: "#a78bfa", to: "#7c3aed", glyph: "#fff" },  // violet → purple
-  { from: "#10b981", to: "#059669", glyph: "#fff" },  // emerald → green
-  { from: "#f472b6", to: "#db2777", glyph: "#fff" },  // pink   → fuchsia
-  { from: "#fbbf24", to: "#d97706", glyph: "#fff" },  // amber  → orange
-  { from: "#64748b", to: "#334155", glyph: "#fff" },  // slate (utilitarian)
-  { from: "#f87171", to: "#dc2626", glyph: "#fff" },  // red
-  { from: "#34d399", to: "#0d9488", glyph: "#fff" },  // teal
-  { from: "#818cf8", to: "#4338ca", glyph: "#fff" },  // indigo
+  { from: "#1f2937", to: "#0f172a" }, // zinc / slate
+  { from: "#1e3a8a", to: "#0f172a" }, // deep blue → slate
+  { from: "#1e1b4b", to: "#0a0818" }, // indigo-black
+  { from: "#0f4c3a", to: "#052e2a" }, // deep forest
+  { from: "#581c87", to: "#2e1065" }, // aubergine
+  { from: "#7c2d12", to: "#431407" }, // rust
+  { from: "#0c4a6e", to: "#082f49" }, // deep ocean
+  { from: "#3f3f46", to: "#18181b" }, // graphite
+  { from: "#4c1d95", to: "#1e1b4b" }, // violet → indigo
+  { from: "#134e4a", to: "#042f2a" }, // deep teal
 ];
 
 function hashSlug(slug: string): number {
@@ -26,25 +25,20 @@ function hashSlug(slug: string): number {
   return Math.abs(h);
 }
 
-function categoryIcon(app: AppMeta): string {
-  // The first tag is the canonical category (enforced by submit API)
-  const first = app.tags[0];
-  if (first && isValidCategory(first)) {
-    const cat = CATEGORIES.find((c) => c.id === first);
-    if (cat) return cat.icon;
+// Take the first visible character of the title. Falls back to the slug
+// if the title is empty for some reason, and to "?" if both are empty.
+function monogram(app: AppMeta): string {
+  const src = (app.title || app.slug || "?").trim();
+  // Grab the first grapheme that isn't whitespace or a common emoji/zw joiner.
+  // Intl.Segmenter handles multi-codepoint clusters correctly.
+  if (typeof Intl !== "undefined" && "Segmenter" in Intl) {
+    const seg = new Intl.Segmenter(undefined, { granularity: "grapheme" });
+    for (const s of seg.segment(src)) {
+      const ch = s.segment;
+      if (/\S/.test(ch)) return ch.toUpperCase();
+    }
   }
-  // Legacy keyword inference for pre-category apps
-  const t = app.tags.map((x) => x.toLowerCase());
-  if (t.some((x) => ["games", "game", "arcade", "puzzle"].includes(x))) return "🎮";
-  if (t.some((x) => ["tools", "utilities", "calculator", "counter", "converter"].includes(x))) return "🛠️";
-  if (t.some((x) => ["creative", "art", "drawing", "music", "design"].includes(x))) return "🎨";
-  if (t.some((x) => ["learning", "education", "cheatsheet", "guide"].includes(x))) return "📚";
-  if (t.some((x) => ["productivity", "timer", "pomodoro"].includes(x))) return "⏱️";
-  if (t.some((x) => ["exercise", "fitness", "workout"].includes(x))) return "💪";
-  if (t.some((x) => ["travel"].includes(x))) return "✈️";
-  if (t.some((x) => ["ai-skill", "claude-skill", "anthropic"].includes(x))) return "🤖";
-  if (t.some((x) => ["fun", "humor"].includes(x))) return "✨";
-  return "📦";
+  return (src[0] ?? "?").toUpperCase();
 }
 
 export function AppThumbnail({
@@ -57,17 +51,16 @@ export function AppThumbnail({
 }) {
   const [imgError, setImgError] = useState(false);
   const grad = GRADIENTS[hashSlug(app.slug) % GRADIENTS.length];
-  const icon = categoryIcon(app);
+  const letter = monogram(app);
 
   // Only attempt an image if the app.json has a non-default thumbnail value.
-  // "thumbnail.png" is the placeholder every app.json ships with — we can't
-  // tell client-side whether the file actually exists, so we try to load it
-  // and fall back to procedural on error.
+  // We try to load it and fall back to procedural on error — bundled apps
+  // that ship a real thumbnail.png still get to show it.
   const hasThumb = !!app.thumbnail;
   const thumbUrl = hasThumb ? `/apps/${app.slug}/${app.thumbnail}` : null;
 
   return (
-    <div className={`${aspect} relative w-full overflow-hidden`}>
+    <div className={`${aspect} relative w-full overflow-hidden bg-surface-2`}>
       {/* Procedural cover — always rendered. Sits behind any real image. */}
       <div
         className="absolute inset-0"
@@ -75,33 +68,34 @@ export function AppThumbnail({
           background: `linear-gradient(135deg, ${grad.from} 0%, ${grad.to} 100%)`,
         }}
       >
-        {/* Subtle diagonal stripe overlay for texture */}
+        {/* Very subtle diagonal stripe texture */}
         <div
-          className="absolute inset-0 opacity-15"
+          className="absolute inset-0 opacity-[0.06]"
           style={{
             backgroundImage:
-              "repeating-linear-gradient(45deg, rgba(255,255,255,0.15) 0 1px, transparent 1px 14px)",
+              "repeating-linear-gradient(45deg, rgba(255,255,255,1) 0 1px, transparent 1px 28px)",
           }}
         />
-        {/* Radial highlight for depth */}
+        {/* Soft radial highlight — hints at depth without glossing */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(120% 80% at 25% 0%, rgba(255,255,255,0.2) 0%, transparent 55%)",
+              "radial-gradient(120% 80% at 20% 10%, rgba(255,255,255,0.08) 0%, transparent 55%)",
           }}
         />
-        {/* Category glyph */}
+        {/* Oversize monogram bleeding off the bottom-left corner.
+            Decorative, not loud — low opacity keeps it from competing
+            with the card title below. */}
         <div
-          className="absolute inset-0 flex items-center justify-center text-[54px] drop-shadow-sm sm:text-[64px]"
-          style={{ color: grad.glyph }}
           aria-hidden
+          className="pointer-events-none absolute -bottom-6 -left-2 select-none font-serif text-[9rem] font-black leading-none text-white/[0.1] sm:-bottom-8 sm:text-[11rem]"
         >
-          {icon}
+          {letter}
         </div>
       </div>
 
-      {/* Real thumbnail (if any) on top. Hidden on error. */}
+      {/* Real thumbnail on top when the file exists. Hidden on 404. */}
       {thumbUrl && !imgError && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
