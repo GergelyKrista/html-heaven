@@ -13,8 +13,13 @@ interface SubmissionData {
     author: string;
     tags: string[];
   };
+  // Display name shown in the PR body. We deliberately don't take the
+  // submitter's email here — the PR is public on a public repo, and
+  // email addresses written into PR bodies live forever in git history
+  // whether or not the PR merges. The GitHub username already identifies
+  // the author; the site-internal D1 `submissions` row keeps the email
+  // for ownership checks.
   submitterName: string;
-  submitterEmail: string;
 }
 
 export async function createSubmissionPR(data: SubmissionData): Promise<string> {
@@ -89,7 +94,7 @@ export async function createSubmissionPR(data: SubmissionData): Promise<string> 
     "",
     `**Type:** ${typeBadge}`,
     `**Author:** ${data.metadata.author}`,
-    `**Submitted by:** ${data.submitterName} (${data.submitterEmail})`,
+    `**Submitted by:** ${data.submitterName}`,
     `**Tags:** ${data.metadata.tags.join(", ")}`,
     "",
     `### Description`,

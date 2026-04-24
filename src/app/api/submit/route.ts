@@ -188,7 +188,6 @@ export async function POST(request: NextRequest) {
         tags,
       },
       submitterName: session.user.name || "Anonymous",
-      submitterEmail: session.user.email || "",
     });
 
     // Record the submission for ownership on delete + ensure the
