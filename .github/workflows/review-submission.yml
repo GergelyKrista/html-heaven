@@ -28,33 +28,41 @@ jobs:
       - name: Determine changed HTML files
         id: changed
         run: |
-          # Compare against the PR base (usually main)
+          # Compare against the PR base (usually main). Use -z so we get
+          # NUL-terminated records — keeps filenames with spaces, newlines,
+          # or shell metacharacters ($, backticks) safe when we pass them
+          # to the review script via xargs later. Writing to a file also
+          # avoids interpolating untrusted filenames into the workflow
+          # shell via ${{ }}.
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
           HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-          # Only files in apps/*/*.html that were added or modified (not deleted)
-          CHANGED=$(git diff --name-only --diff-filter=AM "$BASE_SHA" "$HEAD_SHA" -- 'apps/*/*.html' 'apps/*/*.htm' || true)
+          git diff --name-only -z --diff-filter=AM \
+            "$BASE_SHA" "$HEAD_SHA" \
+            -- 'apps/*/*.html' 'apps/*/*.htm' > changed.txt || true
+          if [ -s changed.txt ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
           echo "Changed HTML files:"
-          echo "$CHANGED"
-          echo "files<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGED" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          tr '\0' '\n' < changed.txt
 
       - name: Skip if no HTML changed
-        if: steps.changed.outputs.files == ''
-        run: |
-          echo "This PR doesn't add or modify any app HTML files — skipping auto-review."
-          exit 0
+        if: steps.changed.outputs.has_changes == 'false'
+        run: echo "This PR doesn't add or modify any app HTML files — skipping auto-review."
 
       - name: Run review script
         id: review
-        if: steps.changed.outputs.files != ''
+        if: steps.changed.outputs.has_changes == 'true'
         run: |
-          node scripts/review-submission.mjs ${{ steps.changed.outputs.files }} > review.json
+          # xargs -0 consumes NUL-delimited filenames and passes each as
+          # its own argv, so the shell never re-parses the filenames.
+          xargs -0 -a changed.txt node scripts/review-submission.mjs > review.json
           echo "Report:"
           cat review.json
 
       - name: Comment + label on PR
-        if: steps.changed.outputs.files != ''
+        if: steps.changed.outputs.has_changes == 'true'
         uses: actions/github-script@v7
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -152,7 +160,7 @@ jobs:
             await github.rest.issues.addLabels({ owner, repo, issue_number: prNumber, labels: [desired] });
 
       - name: Fail CI on critical
-        if: steps.changed.outputs.files != ''
+        if: steps.changed.outputs.has_changes == 'true'
         run: |
           VERDICT=$(node -e "console.log(JSON.parse(require('fs').readFileSync('review.json','utf-8')).overall)")
           echo "Verdict: $VERDICT"

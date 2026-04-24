@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { auth, githubFieldsFromSession } from "@/lib/auth";
+import { auth, githubFieldsFromSession, resolveUserId } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { ensureUserWithHandle, getProfileById } from "@/lib/users";
 
@@ -11,20 +11,21 @@ import { ensureUserWithHandle, getProfileById } from "@/lib/users";
  */
 export default async function ProfilePage() {
   const session = await auth();
-  if (!session?.user?.email) redirect("/api/auth/signin");
+  const userId = resolveUserId(session?.user);
+  if (!session?.user || !userId) redirect("/api/auth/signin");
 
   const db = await getDB();
   const { githubLogin, gh } = githubFieldsFromSession(session.user);
   await ensureUserWithHandle(
     db,
-    session.user.email,
+    userId,
     session.user.name || "Anonymous",
     session.user.image || null,
     githubLogin,
     gh
   );
 
-  const profile = await getProfileById(db, session.user.email);
+  const profile = await getProfileById(db, userId);
   if (profile?.handle) {
     redirect(`/u/${profile.handle}`);
   }

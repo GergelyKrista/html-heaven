@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, isAdminEmail } from "@/lib/auth";
+import { auth, isAdmin, resolveUserId } from "@/lib/auth";
 import { getDB, getSubmitter, markAppDeleted } from "@/lib/db";
 import { createDeletePR } from "@/lib/github";
 import { assertSameOrigin } from "@/lib/security";
@@ -13,7 +13,8 @@ export async function POST(request: NextRequest, { params }: Params) {
   if (originGate) return originGate;
 
   const session = await auth();
-  if (!session?.user?.email) {
+  const userId = resolveUserId(session?.user);
+  if (!session?.user || !userId) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
@@ -22,13 +23,26 @@ export async function POST(request: NextRequest, { params }: Params) {
     return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
   }
 
-  const userEmail = session.user.email;
   const userName = session.user.name || "Anonymous";
-  const admin = isAdminEmail(userEmail);
+  const admin = isAdmin(session.user);
+
+  // Ownership match: submissions.user_id may be either an email (legacy
+  // submission) or a github login (submitted by an emailless user), so
+  // we match against whichever form the caller's session carries. This
+  // matters because resolveUserId() now prefers email when present and
+  // falls through to login — the stored value might not match exactly.
+  function owns(submitter: string | null): boolean {
+    if (!submitter) return false;
+    const s = submitter.toLowerCase();
+    if (session?.user?.email && s === session.user.email.toLowerCase()) return true;
+    const login = (session?.user as { githubLogin?: string } | undefined)?.githubLogin;
+    if (login && s === login.toLowerCase()) return true;
+    return false;
+  }
 
   // Permission check:
   // - Admin can delete anything
-  // - Otherwise, user must be the original submitter (must have a row in submissions)
+  // - Otherwise, caller must match submissions.user_id.
   //   Apps with no submission record (pre-existing imports) can only be deleted by admin.
   const db = await getDB();
   if (!admin) {
@@ -39,7 +53,7 @@ export async function POST(request: NextRequest, { params }: Params) {
         { status: 403 }
       );
     }
-    if (submitter.toLowerCase() !== userEmail.toLowerCase()) {
+    if (!owns(submitter)) {
       return NextResponse.json(
         { error: "You can only delete apps you submitted." },
         { status: 403 }
@@ -63,7 +77,7 @@ export async function POST(request: NextRequest, { params }: Params) {
     // removed from the repo immediately.
     const result = await createDeletePR({
       slug,
-      deletedBy: userEmail,
+      deletedBy: userId,
       deletedByName: userName,
       reason,
       autoMerge: admin,
@@ -72,7 +86,7 @@ export async function POST(request: NextRequest, { params }: Params) {
     // Mark as deleted in D1 for instant UI hiding (bridges the ~90s
     // between merge and Cloudflare redeploy). Non-admin deletions stay
     // hidden until the PR is reviewed and merged.
-    await markAppDeleted(db, slug, userEmail, reason);
+    await markAppDeleted(db, slug, userId, reason);
 
     return NextResponse.json({
       success: true,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, githubFieldsFromSession } from "@/lib/auth";
-import { createSubmissionPR } from "@/lib/github";
+import { auth, githubFieldsFromSession, resolveUserId } from "@/lib/auth";
+import { createSubmissionPR, checkSlugAvailability } from "@/lib/github";
 import { normalizeTag, isValidCategory, TAG_RULES } from "@/lib/categories";
 import { getDB, recordSubmission } from "@/lib/db";
 import { ensureUserWithHandle } from "@/lib/users";
@@ -15,14 +15,13 @@ export async function POST(request: NextRequest) {
 
   const session = await auth();
 
-  if (!session?.user) {
+  const userId = resolveUserId(session?.user);
+  if (!session?.user || !userId) {
     return NextResponse.json(
       { error: "Authentication required" },
       { status: 401 }
     );
   }
-
-  const userId = session.user.email || session.user.name || "unknown";
 
   // D1-backed rate limit. A Worker-level in-memory Map wouldn't survive
   // cold starts or cross-instance traffic.
@@ -121,6 +120,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Refuse to overwrite an existing app. Without this, two users
+    // submitting apps with the same title produce the same slug, and
+    // the second merge silently overwrites the first's index.html +
+    // app.json — meanwhile the D1 submissions row still points at the
+    // original submitter because we use ON CONFLICT DO NOTHING there.
+    const availability = await checkSlugAvailability(slug);
+    if (!availability.available) {
+      return NextResponse.json(
+        { error: availability.message ?? "That slug is already taken." },
+        { status: 409 }
+      );
+    }
+
     // Branch on submission type. Bundled submissions carry an HTML file
     // that we commit to apps/<slug>/index.html; external submissions
     // carry a URL that we drop into app.json only.
@@ -199,7 +211,7 @@ export async function POST(request: NextRequest) {
       const { githubLogin, gh } = githubFieldsFromSession(session.user);
       await ensureUserWithHandle(
         db,
-        session.user.email || "unknown",
+        userId,
         session.user.name || "Anonymous",
         session.user.image || null,
         githubLogin,
@@ -208,7 +220,7 @@ export async function POST(request: NextRequest) {
       await recordSubmission(
         db,
         slug,
-        session.user.email || "unknown",
+        userId,
         session.user.name || "Anonymous"
       );
     } catch (err) {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, githubFieldsFromSession } from "@/lib/auth";
+import { auth, githubFieldsFromSession, resolveUserId } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { ensureUserWithHandle } from "@/lib/users";
 import { assertSameOrigin } from "@/lib/security";
@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
   if (originGate) return originGate;
 
   const session = await auth();
-  if (!session?.user?.email) {
+  const userId = resolveUserId(session?.user);
+  if (!session?.user || !userId) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
       const { githubLogin, gh } = githubFieldsFromSession(session.user);
       await ensureUserWithHandle(
         db,
-        session.user.email,
+        userId,
         session.user.name || "Anonymous",
         session.user.image || null,
         githubLogin,
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
       // Reset to whatever GitHub gave us (session image)
       await db
         .prepare("UPDATE users SET avatar = ? WHERE id = ?")
-        .bind(session.user.image || null, session.user.email)
+        .bind(session.user.image || null, userId)
         .run();
       return NextResponse.json({ success: true, avatar: session.user.image || null });
     } catch (error) {
@@ -84,7 +85,7 @@ export async function POST(request: NextRequest) {
     const { githubLogin, gh } = githubFieldsFromSession(session.user);
     await ensureUserWithHandle(
       db,
-      session.user.email,
+      userId,
       session.user.name || "Anonymous",
       session.user.image || null,
       githubLogin,
@@ -92,7 +93,7 @@ export async function POST(request: NextRequest) {
     );
     await db
       .prepare("UPDATE users SET avatar = ? WHERE id = ?")
-      .bind(body.dataUrl, session.user.email)
+      .bind(body.dataUrl, userId)
       .run();
     return NextResponse.json({ success: true, avatar: body.dataUrl });
   } catch (error) {
