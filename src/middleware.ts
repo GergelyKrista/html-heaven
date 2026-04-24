@@ -65,13 +65,20 @@ export function middleware(request: NextRequest) {
   // - `object-src 'none'` blocks legacy plugins (<embed>, <object>,
   //   <applet>) — closes a class of obscure bypasses.
   headers.set("X-Frame-Options", "SAMEORIGIN");
+  // img-src has to cover every avatar/thumbnail surface we render as
+  // <img src>. Today: self, data: URLs (D1-stored avatars + procedural
+  // thumbnails), blob: (client-side compression), and the GitHub avatar
+  // CDN (session.user.image in the navbar / profile / app detail). If
+  // we ever move avatars to R2 or a third-party CDN, add its host here
+  // or the signed-in UI silently falls back to initial-letter
+  // placeholders with no visible error.
   headers.set(
     "Content-Security-Policy",
     [
       "default-src 'self'",
       `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "img-src 'self' data: blob:",
+      "img-src 'self' data: blob: https://avatars.githubusercontent.com https://*.githubusercontent.com",
       "font-src 'self' https://fonts.gstatic.com",
       "frame-src 'self'",
       "connect-src 'self'",

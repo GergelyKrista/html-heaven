@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { auth } from "@/lib/auth";
+import { auth, resolveUserId } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { getProfileByHandle, getProfileStats, isFollowing, getUserAppSlugs } from "@/lib/users";
 import { getAllAppsSync } from "@/lib/apps";
@@ -64,11 +64,11 @@ export default async function UserProfilePage({
 
   // Viewer context
   const session = await auth();
-  const viewerEmail = session?.user?.email ?? null;
-  const isSelf = viewerEmail === profile.id;
+  const viewerId = resolveUserId(session?.user);
+  const isSelf = !!viewerId && viewerId === profile.id;
   const followedByMe =
-    viewerEmail && !isSelf
-      ? await isFollowing(db, viewerEmail, profile.id)
+    viewerId && !isSelf
+      ? await isFollowing(db, viewerId, profile.id)
       : false;
 
   // Resolve the user's apps from the manifest (they may have been deleted)
@@ -84,7 +84,7 @@ export default async function UserProfilePage({
         stats={stats}
         isSelf={isSelf}
         followedByMe={followedByMe}
-        isSignedIn={!!viewerEmail}
+        isSignedIn={!!viewerId}
       />
       <div className="mt-10">
         <div className="mb-4 flex items-baseline justify-between border-b border-border pb-2">

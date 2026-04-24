@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth, resolveUserId } from "@/lib/auth";
 import { getDB, ensureUser, toggleLike, getLikeCount, hasUserLiked } from "@/lib/db";
 import { assertSameOrigin } from "@/lib/security";
 
@@ -14,9 +14,8 @@ export async function GET(request: NextRequest) {
     const count = await getLikeCount(db, slug);
 
     const session = await auth();
-    const liked = session?.user?.email
-      ? await hasUserLiked(db, session.user.email, slug)
-      : false;
+    const viewerId = resolveUserId(session?.user);
+    const liked = viewerId ? await hasUserLiked(db, viewerId, slug) : false;
 
     return NextResponse.json({ count, liked });
   } catch (error) {
@@ -30,7 +29,8 @@ export async function POST(request: NextRequest) {
   if (originGate) return originGate;
 
   const session = await auth();
-  if (!session?.user?.email) {
+  const userId = resolveUserId(session?.user);
+  if (!session?.user || !userId) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
@@ -41,8 +41,8 @@ export async function POST(request: NextRequest) {
     }
 
     const db = await getDB();
-    await ensureUser(db, session.user.email, session.user.name || "Anonymous", session.user.image || null);
-    const isLiked = await toggleLike(db, session.user.email, slug);
+    await ensureUser(db, userId, session.user.name || "Anonymous", session.user.image || null);
+    const isLiked = await toggleLike(db, userId, slug);
     const count = await getLikeCount(db, slug);
 
     return NextResponse.json({ liked: isLiked, count });

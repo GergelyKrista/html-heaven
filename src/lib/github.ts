@@ -1,5 +1,81 @@
 import { Octokit } from "@octokit/rest";
 
+export interface SlugAvailability {
+  available: boolean;
+  /** Machine-readable reason the slug isn't available. */
+  reason?: "exists-on-main" | "pending-pr";
+  /** Human-readable message, safe to surface to the submitter. */
+  message?: string;
+}
+
+/**
+ * Check whether an app slug is free to take. A slug is unavailable if:
+ *
+ *   1. `apps/<slug>/app.json` already exists on `main` — a merged app
+ *      already has that slug, and we don't want silent overwrites via
+ *      `createOrUpdateFileContents`.
+ *   2. An **open** submission branch for the same slug already exists —
+ *      someone just submitted under that title and the PR hasn't merged
+ *      yet, so committing a second one would also overwrite the first.
+ *
+ * Closed / merged PRs don't block — by then outcome 1 catches it if it
+ * was merged, and nothing matters if it was rejected.
+ */
+export async function checkSlugAvailability(slug: string): Promise<SlugAvailability> {
+  const octokit = new Octokit({ auth: process.env.GITHUB_PAT });
+  const owner = process.env.GITHUB_OWNER!;
+  const repo = process.env.GITHUB_REPO!;
+
+  // (1) Already on main?
+  try {
+    await octokit.repos.getContent({
+      owner,
+      repo,
+      path: `apps/${slug}/app.json`,
+      ref: "main",
+    });
+    return {
+      available: false,
+      reason: "exists-on-main",
+      message: `Slug "${slug}" is already taken. Try a more specific title.`,
+    };
+  } catch (err: unknown) {
+    const status = (err as { status?: number })?.status;
+    if (status !== 404) {
+      // Any non-404 (rate limit, auth, transient) — fall open. The
+      // auto-reviewer still catches duplicate file content on the PR
+      // side, and the admin will see the conflict during manual review.
+      console.error("checkSlugAvailability getContent non-404:", err);
+    }
+  }
+
+  // (2) Open submission PR for this slug?
+  try {
+    // List open PRs whose head ref matches our submission/<slug>-<ts> pattern.
+    // The API filter is `head=<owner>:<ref>` for an exact ref; we don't know
+    // the timestamp suffix, so list recent open PRs and match the prefix.
+    const { data: prs } = await octokit.pulls.list({
+      owner,
+      repo,
+      state: "open",
+      per_page: 100,
+    });
+    const conflict = prs.find((pr) => pr.head?.ref?.startsWith(`submission/${slug}-`));
+    if (conflict) {
+      return {
+        available: false,
+        reason: "pending-pr",
+        message: `An open submission for "${slug}" is already waiting on review (#${conflict.number}). Pick a different title.`,
+      };
+    }
+  } catch (err) {
+    console.error("checkSlugAvailability pulls.list failed:", err);
+    // Fall open — see note above.
+  }
+
+  return { available: true };
+}
+
 interface SubmissionData {
   slug: string;
   hostingType: "bundled" | "external";
