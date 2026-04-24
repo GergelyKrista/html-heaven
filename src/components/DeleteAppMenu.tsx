@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface Props {
   slug: string;
@@ -104,9 +105,18 @@ export function DeleteAppMenu({ slug, title, compact = false }: Props) {
         </button>
       )}
 
-      {showModal && (
+      {showModal && typeof document !== "undefined" && createPortal(
+        // Render the modal at the body level via a portal so it escapes
+        // the AppCard's outer <button>. With the modal as a DOM child of
+        // that button, typing a space in the confirm-by-name input (e.g.
+        // "My App Name") bubbled up and synthesized a click on the
+        // button, popping the preview modal open behind the delete flow.
+        // stopPropagation on keyDown is a belt-and-suspenders so if this
+        // ever gets rendered inside an interactive ancestor again, the
+        // bug doesn't return.
         <div
           onClick={close}
+          onKeyDown={(e) => e.stopPropagation()}
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4"
         >
           <div
@@ -206,7 +216,8 @@ export function DeleteAppMenu({ slug, title, compact = false }: Props) {
               </>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
