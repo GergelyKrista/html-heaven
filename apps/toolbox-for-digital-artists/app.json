@@ -1,0 +1,18 @@
+{
+  "title": "Toolbox for Digital Artists",
+  "slug": "toolbox-for-digital-artists",
+  "description": "References and tools for digital artists.",
+  "author": "ambrusorban",
+  "tags": [
+    "tools",
+    "calculator",
+    "converter",
+    "generator",
+    "visualizer",
+    "color"
+  ],
+  "dateAdded": "2026-04-26",
+  "featured": false,
+  "hostingType": "bundled",
+  "thumbnail": "thumbnail.png"
+}
