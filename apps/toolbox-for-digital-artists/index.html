@@ -1,0 +1,3648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toolbox for Digital Artists</title>
+<style>
+/* ═══════════════════════════════════════════════════
+   THEME
+═══════════════════════════════════════════════════ */
+:root {
+    --bg:       #0c0c0d;
+    --sf:       #141416;
+    --sf2:      #1c1c1f;
+    --border:   #2a2a2e;
+    --border2:  #1f1f22;
+    --tx:       #ececed;
+    --tx-dim:   #9a9a9e;
+    --tx-mu:    #5c5c60;
+    --accent:   #ffffff;
+    --hl:       rgba(255,255,255,.04);
+}
+body.light {
+    --bg:       #f7f6f3;
+    --sf:       #ffffff;
+    --sf2:      #efedea;
+    --border:   #d6d4cf;
+    --border2:  #e4e2dd;
+    --tx:       #111113;
+    --tx-dim:   #46464a;
+    --tx-mu:    #8a8a8e;
+    --accent:   #000000;
+    --hl:       rgba(0,0,0,.03);
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+
+html { -webkit-text-size-adjust:100%; }
+
+body {
+    background:var(--bg);
+    color:var(--tx);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    transition: background .22s ease, color .22s ease;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'ss01', 'cv01';
+}
+
+/* ═══════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════ */
+.topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--bg);
+}
+header {
+    border-bottom: 1px solid var(--border);
+    padding: 1.3rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+.hdr-title {
+    display: flex;
+    flex-direction: column;
+    gap: .12rem;
+}
+header h1 {
+    font-size: .86rem;
+    font-weight: 600;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+}
+header p {
+    font-size: .73rem;
+    color: var(--tx-mu);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+.hdr-right { margin-left: auto; display: flex; gap: .5rem; }
+.icon-btn {
+    width: 34px; height: 34px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--tx);
+    cursor: pointer;
+    display: grid; place-items: center;
+    font-size: .95rem;
+    transition: background .15s, border-color .15s;
+}
+.icon-btn:hover { background: var(--sf); border-color: var(--tx-dim); }
+
+/* ═══════════════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════════════ */
+nav {
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+nav::-webkit-scrollbar { display: none; }
+nav button {
+    background: none;
+    border: none;
+    color: var(--tx-mu);
+    padding: 1rem 1.3rem;
+    cursor: pointer;
+    font-size: .72rem;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    font-family: inherit;
+    white-space: nowrap;
+    border-bottom: 1px solid transparent;
+    margin-bottom: -1px;
+    transition: color .15s, border-color .15s;
+}
+nav button:hover { color: var(--tx); }
+nav button.active { color: var(--tx); border-bottom-color: var(--accent); }
+
+/* ═══════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════ */
+main {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 4rem;
+}
+@media (max-width: 720px) {
+    header { padding: 1rem 1.2rem; }
+    nav { padding: 0 1rem; }
+    nav button { padding: .85rem 1rem; font-size: .68rem; }
+    main { padding: 2rem 1.2rem 3rem; }
+}
+
+.tab { display: none; }
+.tab.active { display: block; }
+
+.sec-head {
+    margin-bottom: 1.5rem;
+    padding-bottom: .6rem;
+    border-bottom: 1px solid var(--border);
+}
+.sec-head h2 {
+    font-size: 1.2rem;
+    font-weight: 500;
+    letter-spacing: -.01em;
+}
+.sec-head p {
+    font-size: .82rem;
+    color: var(--tx-mu);
+    margin-top: .25rem;
+}
+
+.sub-head {
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    color: var(--tx-dim);
+    margin: 2rem 0 .85rem;
+    padding-bottom: .35rem;
+    border-bottom: 1px solid var(--border2);
+}
+.sub-head:first-child { margin-top: 0; }
+
+/* ═══════════════════════════════════════════════════
+   TABLES
+═══════════════════════════════════════════════════ */
+.tbl-wrap { overflow-x: auto; margin-bottom: .5rem; }
+.tbl {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .85rem;
+}
+.tbl th {
+    text-align: left;
+    font-weight: 500;
+    font-size: .66rem;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--tx-mu);
+    padding: .65rem .8rem;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+.tbl th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+    padding-right: 1.7rem;
+}
+.tbl th.sortable:hover { color: var(--tx); }
+.tbl th.sortable::after {
+    content: '';
+    position: absolute;
+    right: .7rem;
+    top: 50%;
+    width: 0; height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 4px solid currentColor;
+    opacity: .25;
+    margin-top: -5px;
+}
+.tbl th.sortable::before {
+    content: '';
+    position: absolute;
+    right: .7rem;
+    top: 50%;
+    width: 0; height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 4px solid currentColor;
+    opacity: .25;
+    margin-top: 1px;
+}
+.tbl th.sorted-asc { color: var(--tx); }
+.tbl th.sorted-asc::after { opacity: 1; }
+.tbl th.sorted-desc { color: var(--tx); }
+.tbl th.sorted-desc::before { opacity: 1; }
+.tbl td {
+    padding: .7rem .8rem;
+    border-bottom: 1px solid var(--border2);
+    vertical-align: middle;
+}
+.tbl tr:hover td { background: var(--hl); }
+.mono {
+    font-family: 'JetBrains Mono', 'SF Mono', 'Consolas', 'Menlo', monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: .82rem;
+}
+.dim { color: var(--tx-dim); }
+.tiny { font-size: .75rem; }
+
+/* ═══════════════════════════════════════════════════
+   ASPECT RATIO GRID
+═══════════════════════════════════════════════════ */
+.ar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+}
+.ar-card {
+    background: var(--bg);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+}
+.ar-vis {
+    width: 100%;
+    height: 80px;
+    display: grid;
+    place-items: center;
+    border-bottom: 1px solid var(--border2);
+    padding-bottom: .65rem;
+}
+.ar-shape {
+    background: var(--tx-dim);
+    max-width: 100%;
+    max-height: 100%;
+    outline: 1px solid var(--tx);
+    outline-offset: 0;
+}
+.ar-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem;
+}
+.ar-ratio {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: 1.1rem;
+    font-weight: 500;
+    letter-spacing: -.01em;
+}
+.ar-dec {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .72rem;
+    color: var(--tx-mu);
+}
+.ar-name {
+    font-size: .78rem;
+    color: var(--tx-dim);
+}
+.ar-res {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .7rem;
+    color: var(--tx-mu);
+    line-height: 1.6;
+}
+
+/* Letterbox illustration */
+.lb-illus {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+.lb-card {
+    border: 1px solid var(--border);
+    padding: .85rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+.lb-frame {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: var(--sf);
+    border: 1px solid var(--border2);
+    display: grid;
+    place-items: center;
+    position: relative;
+    overflow: hidden;
+}
+.lb-content {
+    background: var(--tx-dim);
+    outline: 1px solid var(--tx);
+}
+.lb-caption {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .7rem;
+    color: var(--tx-dim);
+}
+.lb-caption strong { color: var(--tx); font-weight: 500; }
+
+/* ═══════════════════════════════════════════════════
+   COLOR CONVERTER
+═══════════════════════════════════════════════════ */
+.cc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+@media (max-width: 720px) {
+    .cc-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+
+.cc-preview {
+    border: 1px solid var(--border);
+    aspect-ratio: 1;
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem;
+    position: relative;
+}
+.cc-preview-inner {
+    width: 100%;
+    background: var(--sf2);
+    padding: .7rem .85rem;
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .8rem;
+    border-top: 1px solid rgba(255,255,255,.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+body.light .cc-preview-inner {
+    background: rgba(255,255,255,.85);
+    border-top-color: rgba(0,0,0,.08);
+}
+
+.cc-controls { display: flex; flex-direction: column; gap: 1.35rem; }
+
+.cc-group { }
+.cc-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: .4rem;
+}
+.cc-label {
+    font-size: .66rem;
+    font-weight: 600;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--tx-dim);
+}
+.cc-copy {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--tx-mu);
+    font-size: .62rem;
+    font-family: inherit;
+    padding: .18rem .5rem;
+    cursor: pointer;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    transition: color .15s, border-color .15s;
+}
+.cc-copy:hover { color: var(--tx); border-color: var(--tx-dim); }
+.cc-copy.copied { color: var(--tx); border-color: var(--tx); }
+
+.cc-hex-input {
+    width: 100%;
+    background: var(--sf);
+    border: 1px solid var(--border);
+    color: var(--tx);
+    padding: .65rem .75rem;
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: 1rem;
+    letter-spacing: .05em;
+}
+.cc-hex-input:focus { outline: none; border-color: var(--accent); }
+
+.cc-channels { display: flex; flex-direction: column; gap: .7rem; }
+.cc-channel {
+    display: grid;
+    grid-template-columns: 20px 1fr 58px;
+    gap: .7rem;
+    align-items: center;
+}
+.cc-ch-label {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .75rem;
+    color: var(--tx-dim);
+}
+.cc-ch-input {
+    background: var(--sf);
+    border: 1px solid var(--border);
+    color: var(--tx);
+    padding: .35rem .55rem;
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .8rem;
+    text-align: right;
+    width: 100%;
+}
+.cc-ch-input:focus { outline: none; border-color: var(--accent); }
+.cc-ch-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 2px;
+    background: var(--border);
+    outline: none;
+}
+.cc-ch-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px; height: 12px;
+    background: var(--tx);
+    border-radius: 50%;
+    cursor: pointer;
+}
+.cc-ch-slider::-moz-range-thumb {
+    width: 12px; height: 12px;
+    background: var(--tx);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+}
+
+.cc-cmyk {
+    display: flex;
+    gap: 1.2rem;
+    padding-top: .75rem;
+    border-top: 1px solid var(--border2);
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .75rem;
+    color: var(--tx-mu);
+}
+.cc-cmyk span strong { color: var(--tx); font-weight: 500; }
+
+/* ═══════════════════════════════════════════════════
+   COLOR HARMONIES
+═══════════════════════════════════════════════════ */
+.harmonies { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1.6rem; }
+.h-group { }
+.h-label-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: .6rem;
+    padding-bottom: .3rem;
+    border-bottom: 1px solid var(--border2);
+}
+.h-label {
+    font-size: .66rem;
+    font-weight: 600;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--tx-dim);
+}
+.h-label-hint {
+    font-size: .68rem;
+    color: var(--tx-mu);
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+}
+.h-strip {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+}
+@media (max-width: 720px) {
+    .h-strip {
+        grid-auto-flow: row;
+        grid-auto-columns: auto;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+.h-sw { display: flex; flex-direction: column; background: var(--bg); }
+.h-swc {
+    height: 60px;
+    cursor: pointer;
+    transition: opacity .15s;
+    position: relative;
+}
+.h-swc:hover { opacity: .85; }
+.h-swc.copied::after {
+    content: 'COPIED';
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-size: .62rem;
+    letter-spacing: .25em;
+    color: #0c0c0d;
+    background: rgba(255,255,255,.85);
+}
+.h-txt {
+    padding: .45rem .6rem .55rem;
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .68rem;
+    color: var(--tx-mu);
+    line-height: 1.55;
+}
+.h-txt .h-hex { color: var(--tx); display: block; font-size: .74rem; margin-bottom: .15rem; }
+.h-txt .h-code { display: block; }
+
+/* ═══════════════════════════════════════════════════
+   KELVIN / LIGHT CALCULATOR
+═══════════════════════════════════════════════════ */
+.kv-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+@media (max-width: 720px) { .kv-grid { grid-template-columns: 1fr; gap: 1.5rem; } }
+
+.kv-preview {
+    border: 1px solid var(--border);
+    aspect-ratio: 16/10;
+    display: flex;
+    align-items: flex-end;
+    padding: 1rem;
+}
+.kv-preview-inner {
+    width: 100%;
+    background: rgba(255,255,255,.85);
+    color: #0c0c0d;
+    padding: .7rem .85rem;
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .8rem;
+    border-top: 1px solid rgba(0,0,0,.08);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.kv-controls { display: flex; flex-direction: column; gap: 1.2rem; }
+
+.kv-ctrl-group {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: .35rem;
+}
+.kv-ctrl-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+.kv-ctrl-label {
+    font-size: .66rem;
+    font-weight: 600;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--tx-dim);
+}
+.kv-ctrl-hint {
+    font-size: .64rem;
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    color: var(--tx-mu);
+}
+.kv-slider-wrap {
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    gap: .7rem;
+    align-items: center;
+}
+.kv-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 10px;
+    border: 1px solid var(--border);
+    outline: none;
+}
+.kv-slider-temp {
+    background: linear-gradient(90deg,
+        #ff4a00 0%,
+        #ff7b2e 6%,
+        #ffa463 14%,
+        #ffcfa0 26%,
+        #ffe4c5 38%,
+        #fff1df 46%,
+        #fff4eb 52%,
+        #f7f0ff 60%,
+        #d2d9ff 72%,
+        #a4b7ff 86%,
+        #7a99ff 100%);
+}
+.kv-slider-bright {
+    background: linear-gradient(90deg, #0a0a0a 0%, var(--tx) 100%);
+}
+.kv-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    background: var(--tx);
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    cursor: pointer;
+}
+.kv-slider::-moz-range-thumb {
+    width: 14px; height: 14px;
+    background: var(--tx);
+    border: 2px solid var(--bg);
+    border-radius: 50%;
+    cursor: pointer;
+}
+.kv-num-wrap {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: .35rem;
+    align-items: center;
+}
+.kv-input {
+    background: var(--sf);
+    border: 1px solid var(--border);
+    color: var(--tx);
+    padding: .4rem .55rem;
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .85rem;
+    text-align: right;
+    width: 100%;
+}
+.kv-input:focus { outline: none; border-color: var(--accent); }
+.kv-unit {
+    font-size: .7rem;
+    color: var(--tx-mu);
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+}
+
+.kv-output { display: flex; flex-direction: column; }
+.kv-output-row {
+    display: grid;
+    grid-template-columns: 60px 1fr auto;
+    gap: 1rem;
+    align-items: center;
+    padding: .55rem 0;
+    border-bottom: 1px solid var(--border2);
+}
+.kv-output-row:last-child { border-bottom: none; }
+.kv-output-label {
+    font-size: .66rem;
+    font-weight: 600;
+    letter-spacing: .24em;
+    text-transform: uppercase;
+    color: var(--tx-dim);
+}
+.kv-output-val {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .82rem;
+    color: var(--tx);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.kv-preset-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin-top: 1.2rem;
+}
+.kv-preset {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--tx-dim);
+    padding: .35rem .65rem;
+    font-family: inherit;
+    font-size: .7rem;
+    letter-spacing: .05em;
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+}
+.kv-preset:hover { color: var(--tx); border-color: var(--tx-dim); }
+.kv-preset .kv-preset-k {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    color: var(--tx-mu);
+    margin-right: .4rem;
+}
+.kv-preset:hover .kv-preset-k { color: var(--tx-dim); }
+
+/* ═══════════════════════════════════════════════════
+   MATERIAL SWATCHES
+═══════════════════════════════════════════════════ */
+.swatch {
+    display: inline-block;
+    width: 22px; height: 14px;
+    border: 1px solid var(--border);
+    vertical-align: middle;
+    margin-right: .5rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   NOTES / INFO
+═══════════════════════════════════════════════════ */
+.note {
+    margin-top: 1.75rem;
+    padding: 1rem 1.2rem;
+    border-left: 2px solid var(--tx-dim);
+    background: var(--sf);
+    font-size: .82rem;
+    color: var(--tx-dim);
+}
+.note.top { margin-top: 0; margin-bottom: 2rem; }
+.note strong { color: var(--tx); font-weight: 500; }
+.note p + p { margin-top: .5rem; }
+.note .mono { color: var(--tx); }
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+@media (max-width: 720px) { .two-col { grid-template-columns: 1fr; gap: 1.5rem; } }
+
+footer {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 2rem;
+    border-top: 1px solid var(--border);
+    font-size: .7rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--tx-mu);
+}
+
+/* ═══════════════════════════════════════════════════
+   CAMERA SHOTS
+═══════════════════════════════════════════════════ */
+.shot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: .5rem;
+}
+.shot-card {
+    background: var(--bg);
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: .55rem;
+}
+.shot-vis {
+    aspect-ratio: 16/9;
+    background: var(--sf);
+    border: 1px solid var(--border2);
+    color: var(--tx-dim);
+    overflow: hidden;
+}
+.shot-vis svg { width: 100%; height: 100%; display: block; }
+.shot-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem;
+    margin-top: .2rem;
+}
+.shot-name {
+    font-size: .92rem;
+    font-weight: 500;
+    letter-spacing: -.005em;
+    color: var(--tx);
+}
+.shot-abbr {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .65rem;
+    color: var(--tx-mu);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.shot-desc {
+    font-size: .78rem;
+    color: var(--tx-dim);
+    line-height: 1.5;
+}
+.shot-meta {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: .35rem .7rem;
+    font-size: .73rem;
+    border-top: 1px solid var(--border2);
+    padding-top: .6rem;
+    margin-top: auto;
+}
+.shot-meta dt {
+    color: var(--tx-mu);
+    font-size: .6rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    padding-top: .15rem;
+}
+.shot-meta dd { color: var(--tx-dim); line-height: 1.45; }
+.shot-meta dd em { color: var(--tx); font-style: normal; font-weight: 500; }
+
+/* ═══════════════════════════════════════════════════
+   PALETTE GENERATOR
+═══════════════════════════════════════════════════ */
+.palette-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+.palette-gen {
+    background: var(--tx);
+    color: var(--bg);
+    border: none;
+    padding: .8rem 1.4rem;
+    font-family: inherit;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity .15s;
+}
+.palette-gen:hover { opacity: .85; }
+.palette-harmony {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .72rem;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+}
+.palette-harmony strong {
+    color: var(--tx);
+    font-weight: 500;
+}
+.palette-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-auto-rows: 110px;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+}
+@media (max-width: 720px) {
+    .palette-grid { grid-auto-rows: 88px; }
+}
+.palette-cell {
+    position: relative;
+    padding: .55rem .6rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform .12s ease;
+}
+.palette-cell:hover { z-index: 2; }
+.palette-cell:hover .palette-copy { opacity: 1; }
+.palette-hex {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .82rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    line-height: 1.1;
+}
+.palette-rgb {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .62rem;
+    opacity: .72;
+    margin-top: .2rem;
+    letter-spacing: .02em;
+}
+.palette-copy {
+    position: absolute;
+    top: .45rem;
+    right: .55rem;
+    font-family: inherit;
+    font-size: .58rem;
+    font-weight: 500;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity .15s;
+    pointer-events: none;
+}
+.palette-cell.copied .palette-copy {
+    opacity: 1;
+    pointer-events: none;
+}
+input.palette-hex-edit {
+    background: transparent;
+    color: inherit;
+    /* Permanent affordance: faint dashed underline shows the cell is editable */
+    border: 1px solid transparent;
+    border-bottom: 1px dashed currentColor;
+    padding: 0 .15rem;
+    margin: 0 -.15rem;
+    width: 7.2ch;
+    text-transform: uppercase;
+    cursor: text;
+    border-radius: 2px;
+    opacity: .85;
+    transition: border-color .12s, background .12s, opacity .12s;
+}
+input.palette-hex-edit:hover { opacity: 1; border-color: currentColor; }
+input.palette-hex-edit:focus {
+    outline: none;
+    opacity: 1;
+    border-color: currentColor;
+    background: rgba(0,0,0,.18);
+}
+@media (max-width: 720px) {
+    .palette-rgb { display: none; }
+    .palette-hex { font-size: .72rem; }
+    input.palette-hex-edit { font-size: .72rem; width: 7ch; }
+}
+
+.palette-lock {
+    position: absolute;
+    top: .4rem;
+    left: .45rem;
+    width: 22px; height: 22px;
+    padding: 0;
+    border: 1px solid currentColor;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    opacity: .35;
+    transition: opacity .15s, background .15s;
+    z-index: 3;
+}
+.palette-cell:hover .palette-lock { opacity: .85; }
+.palette-lock:hover { opacity: 1; }
+.palette-lock svg { width: 11px; height: 11px; pointer-events: none; display: block; }
+.palette-cell.locked-col .palette-lock {
+    opacity: 1;
+    background: currentColor;
+}
+/* Use the cell's own swatch color (set inline as --swatch) for the icon fill,
+   so the lock badge stays inverted against the swatch in both light & dark mode
+   instead of clashing with the page background. */
+.palette-cell.locked-col .palette-lock svg { color: var(--swatch); }
+
+/* Editable base row: framed with thin top/bottom rules in currentColor so it's
+   visible across whatever the swatch color is. The dashed underline on its hex
+   input then doubles as the "this is editable" affordance. */
+.palette-row-base {
+    box-shadow:
+        inset 0  2px 0 0 currentColor,
+        inset 0 -2px 0 0 currentColor;
+}
+.palette-row-base::after {
+    content: 'BASE';
+    position: absolute;
+    top: .4rem;
+    right: .55rem;
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .52rem;
+    letter-spacing: .18em;
+    font-weight: 600;
+    opacity: .55;
+    pointer-events: none;
+}
+.palette-row-base:hover::after { opacity: 0; }  /* hide so it doesn't fight the COPIED indicator */
+
+/* ═══════════════════════════════════════════════════
+   COLOR-BLINDNESS PALETTE PREVIEW (under palette tab)
+═══════════════════════════════════════════════════ */
+.cvd-palette-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+}
+.cvd-palette-row-label {
+    grid-column: 1 / -1;
+    background: var(--sf);
+    padding: .5rem .8rem;
+    font-size: .65rem;
+    font-weight: 600;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: var(--tx-dim);
+}
+.cvd-palette-cell {
+    aspect-ratio: 1.4/1;
+    display: flex;
+    align-items: flex-end;
+    padding: .35rem .5rem;
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .62rem;
+}
+
+/* ═══════════════════════════════════════════════════
+   RESOLUTION & DPI
+═══════════════════════════════════════════════════ */
+.res-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+    margin-bottom: 2rem;
+}
+@media (max-width: 720px) { .res-grid { grid-template-columns: 1fr; } }
+.res-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.res-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    align-items: center;
+    gap: .8rem;
+}
+.res-label {
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--tx-mu);
+}
+.res-input-pair {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto;
+    gap: .5rem;
+    align-items: center;
+}
+.res-input {
+    background: var(--sf);
+    border: 1px solid var(--border);
+    color: var(--tx);
+    padding: .55rem .7rem;
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .82rem;
+    width: 100%;
+}
+.res-input:focus { outline: 1px solid var(--tx-dim); }
+.res-unit {
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+    font-size: .72rem;
+    color: var(--tx-mu);
+}
+.res-summary {
+    background: var(--sf);
+    border: 1px solid var(--border);
+    padding: 1rem 1.2rem;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: .5rem 1.2rem;
+    font-size: .82rem;
+}
+.res-summary dt {
+    color: var(--tx-mu);
+    font-size: .65rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+.res-summary dd {
+    color: var(--tx);
+    font-family: 'JetBrains Mono','SF Mono',Consolas,monospace;
+}
+.res-presets {
+    display: flex;
+    gap: .35rem;
+    flex-wrap: wrap;
+    margin-top: .5rem;
+}
+.res-preset {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--tx-dim);
+    padding: .35rem .65rem;
+    font-family: inherit;
+    font-size: .68rem;
+    letter-spacing: .08em;
+    cursor: pointer;
+    transition: color .15s, border-color .15s;
+}
+.res-preset:hover { color: var(--tx); border-color: var(--tx-dim); }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<header>
+    <div class="hdr-title">
+        <h1>Toolbox</h1>
+        <p>for Digital Artists</p>
+    </div>
+    <div class="hdr-right">
+        <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="Toggle theme">&#9789;</button>
+    </div>
+</header>
+
+<nav id="navBar">
+    <button class="active" data-tab="aspect">Aspect Ratios</button>
+    <button data-tab="shots">Camera Shots and Movement</button>
+    <button data-tab="codecs">Codecs &amp; Data Rates</button>
+    <button data-tab="color">Color Calculator</button>
+    <button data-tab="palette">Color Palette Generator</button>
+    <button data-tab="lenses">Lenses</button>
+    <button data-tab="light">Light Calculator</button>
+    <button data-tab="materials">Material attributes</button>
+    <button data-tab="resolution">Resolution &amp; DPI</button>
+    <button data-tab="social">Social Media References</button>
+</nav>
+</div>
+
+<main>
+
+<!-- ══════════════════════════════════════════════
+     ASPECT RATIOS
+══════════════════════════════════════════════ -->
+<section id="tab-aspect" class="tab active">
+    <div class="sec-head">
+        <h2>Aspect Ratios</h2>
+        <p>Reference of common ratios across mobile, desktop, broadcast, and cinema.</p>
+    </div>
+
+    <div class="note top">
+        <p><strong>Letterboxing &amp; Pillarboxing.</strong> When a picture's aspect ratio differs from the display's, the image is scaled to fit one dimension and the remaining space is filled with black bars. <strong>Letterbox</strong> bars are horizontal (wider content on a narrower display — e.g.&nbsp;2.39:1 film on a 16:9 TV). <strong>Pillarbox</strong> bars are vertical (narrower content on a wider display — e.g.&nbsp;4:3 broadcast on a 16:9 TV). <strong>Windowbox</strong> occurs when both types appear together. Avoid "pan &amp; scan" cropping in preservation work — letterboxing keeps the director's framing intact.</p>
+        <p><strong>Rule of thumb.</strong> If <span class="mono">content_ratio &gt; display_ratio</span> → letterbox. If <span class="mono">content_ratio &lt; display_ratio</span> → pillarbox. If equal → full-frame. The ratio values below (e.g.&nbsp;2.39) are the width-divided-by-height decimal form.</p>
+        <p><strong>Flat</strong> (1.85:1) and <strong>Scope</strong> (2.39:1) are the two theatrical projection standards. Scope is shot with anamorphic lenses that squeeze the image 2× horizontally onto a 4-perf 35mm frame.</p>
+        <p><strong>IMAX Digital</strong> (1.90:1) differs from <strong>IMAX Film</strong> (1.43:1, 15-perf 70mm). Modern IMAX release prints often combine both for "expanded aspect ratio" sequences.</p>
+        <p><strong>Univisium</strong> (2.00:1) was proposed by Vittorio Storaro as a unified ratio for film and television — now widely used by Netflix originals.</p>
+
+        <div class="lb-illus" aria-hidden="true">
+            <div class="lb-card">
+                <div class="lb-frame">
+                    <div class="lb-content" style="width:95%; aspect-ratio:2.39;"></div>
+                </div>
+                <div class="lb-caption"><strong>Letterbox</strong> — 2.39:1 in 16:9</div>
+            </div>
+            <div class="lb-card">
+                <div class="lb-frame">
+                    <div class="lb-content" style="height:95%; aspect-ratio:4/3;"></div>
+                </div>
+                <div class="lb-caption"><strong>Pillarbox</strong> — 4:3 in 16:9</div>
+            </div>
+            <div class="lb-card">
+                <div class="lb-frame">
+                    <div class="lb-content" style="width:95%; aspect-ratio:16/9;"></div>
+                </div>
+                <div class="lb-caption"><strong>Full-frame</strong> — 16:9 in 16:9</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sub-head">Phone &amp; Mobile</div>
+    <div class="ar-grid" id="ar-phone"></div>
+
+    <div class="sub-head">Desktop &amp; Monitor</div>
+    <div class="ar-grid" id="ar-desktop"></div>
+
+    <div class="sub-head">Broadcast &amp; Streaming</div>
+    <div class="ar-grid" id="ar-tv"></div>
+
+    <div class="sub-head">Film &amp; Cinema</div>
+    <div class="ar-grid" id="ar-cinema"></div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     LENSES
+══════════════════════════════════════════════ -->
+<section id="tab-lenses" class="tab">
+    <div class="sec-head">
+        <h2>Camera Lenses</h2>
+        <p>Focal length reference with field of view, typical apertures, and primary use cases (full-frame / 35mm equivalent). Click any column header to sort.</p>
+    </div>
+
+    <div class="tbl-wrap">
+        <table class="tbl" id="lensTbl">
+            <thead>
+                <tr>
+                    <th class="sortable" data-k="range" data-num="1">Focal Length</th>
+                    <th class="sortable" data-k="type">Type</th>
+                    <th class="sortable" data-k="fov" data-num="1">FOV</th>
+                    <th class="sortable" data-k="f" data-num="1">Typical ƒ</th>
+                    <th class="sortable" data-k="use">Primary Use</th>
+                    <th class="sortable" data-k="char">Character</th>
+                </tr>
+            </thead>
+            <tbody id="lensTable"></tbody>
+        </table>
+    </div>
+
+    <div class="two-col">
+        <div>
+            <div class="sub-head">Aperture (ƒ-stop)</div>
+            <div class="note" style="border-color:var(--tx-dim); margin-top:0">
+                <p>The ƒ-stop is the ratio of focal length to aperture diameter. Smaller number = wider aperture = more light &amp; shallower depth of field.</p>
+                <p class="mono" style="font-size:.78rem; color:var(--tx)">ƒ/1.4 · ƒ/2 · ƒ/2.8 · ƒ/4 · ƒ/5.6 · ƒ/8 · ƒ/11 · ƒ/16 · ƒ/22</p>
+                <p>Each full stop halves or doubles the light reaching the sensor.</p>
+            </div>
+        </div>
+        <div>
+            <div class="sub-head">T-stop vs ƒ-stop</div>
+            <div class="note" style="border-color:var(--tx-dim); margin-top:0">
+                <p><strong>ƒ-stop</strong> is geometric (theoretical light-gathering). <strong>T-stop</strong> is measured transmission, accounting for glass absorption losses.</p>
+                <p>Cinema lenses are calibrated in T-stops for exposure consistency across a lens set. Stills lenses use ƒ-stops.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="two-col" style="margin-top:.5rem">
+        <div>
+            <div class="sub-head">Crop Factor</div>
+            <div class="note" style="border-color:var(--tx-dim); margin-top:0">
+                <p>Smaller sensors crop the image circle. To get full-frame equivalent focal length, multiply by the crop factor:</p>
+                <p class="mono tiny" style="color:var(--tx)">APS-C (Canon) 1.6× · APS-C (Nikon/Sony/Fuji) 1.5× · Micro 4/3 2.0× · Super 35 1.5× · 1" sensor 2.7×</p>
+            </div>
+        </div>
+        <div>
+            <div class="sub-head">Prime vs Zoom</div>
+            <div class="note" style="border-color:var(--tx-dim); margin-top:0">
+                <p><strong>Prime</strong> — fixed focal length. Wider maximum aperture, sharper, smaller, forces compositional intent.</p>
+                <p><strong>Zoom</strong> — variable focal length. Flexible, slower apertures (usually ƒ/2.8 at best for pro zooms, ƒ/4–5.6 consumer).</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     COLOR
+══════════════════════════════════════════════ -->
+<section id="tab-color" class="tab">
+    <div class="sec-head">
+        <h2>Color Converter</h2>
+        <p>Live conversion between HEX, RGB, HSL, and CMYK. Edit any value to update the rest. Harmonies update below.</p>
+    </div>
+
+    <div class="cc-grid">
+        <div class="cc-preview" id="ccPreview">
+            <div class="cc-preview-inner">
+                <div id="ccHexOut">#E8871E</div>
+                <div class="dim" id="ccRgbOut" style="font-size:.72rem; margin-top:.15rem">rgb(232, 135, 30)</div>
+            </div>
+        </div>
+
+        <div class="cc-controls">
+
+            <div class="cc-group">
+                <div class="cc-label-row">
+                    <span class="cc-label">HEX</span>
+                    <button class="cc-copy" data-copy="hex">Copy</button>
+                </div>
+                <input class="cc-hex-input" id="ccHex" type="text" value="#E8871E" spellcheck="false" autocomplete="off">
+            </div>
+
+            <div class="cc-group">
+                <div class="cc-label-row">
+                    <span class="cc-label">RGB</span>
+                    <button class="cc-copy" data-copy="rgb">Copy</button>
+                </div>
+                <div class="cc-channels">
+                    <div class="cc-channel">
+                        <span class="cc-ch-label">R</span>
+                        <input class="cc-ch-slider" type="range" min="0" max="255" id="ccR-s" value="232">
+                        <input class="cc-ch-input"  type="number" min="0" max="255" id="ccR-n" value="232">
+                    </div>
+                    <div class="cc-channel">
+                        <span class="cc-ch-label">G</span>
+                        <input class="cc-ch-slider" type="range" min="0" max="255" id="ccG-s" value="135">
+                        <input class="cc-ch-input"  type="number" min="0" max="255" id="ccG-n" value="135">
+                    </div>
+                    <div class="cc-channel">
+                        <span class="cc-ch-label">B</span>
+                        <input class="cc-ch-slider" type="range" min="0" max="255" id="ccB-s" value="30">
+                        <input class="cc-ch-input"  type="number" min="0" max="255" id="ccB-n" value="30">
+                    </div>
+                </div>
+            </div>
+
+            <div class="cc-group">
+                <div class="cc-label-row">
+                    <span class="cc-label">HSL</span>
+                    <button class="cc-copy" data-copy="hsl">Copy</button>
+                </div>
+                <div class="cc-channels">
+                    <div class="cc-channel">
+                        <span class="cc-ch-label">H</span>
+                        <input class="cc-ch-slider" type="range" min="0" max="360" id="ccH-s" value="32">
+                        <input class="cc-ch-input"  type="number" min="0" max="360" id="ccH-n" value="32">
+                    </div>
+                    <div class="cc-channel">
+                        <span class="cc-ch-label">S</span>
+                        <input class="cc-ch-slider" type="range" min="0" max="100" id="ccS-s" value="81">
+                        <input class="cc-ch-input"  type="number" min="0" max="100" id="ccS-n" value="81">
+                    </div>
+                    <div class="cc-channel">
+                        <span class="cc-ch-label">L</span>
+                        <input class="cc-ch-slider" type="range" min="0" max="100" id="ccL-s" value="51">
+                        <input class="cc-ch-input"  type="number" min="0" max="100" id="ccL-n" value="51">
+                    </div>
+                </div>
+            </div>
+
+            <div class="cc-cmyk">
+                <span>C <strong id="ccC">0</strong></span>
+                <span>M <strong id="ccM">42</strong></span>
+                <span>Y <strong id="ccY">87</strong></span>
+                <span>K <strong id="ccK">9</strong></span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="sub-head" style="margin-top:2.5rem">Color Harmonies</div>
+    <p class="tiny dim" style="margin-top:-.4rem; margin-bottom:1rem">
+        Suggested palettes derived from the current color. Click any swatch to copy its HEX value.
+    </p>
+
+    <div class="harmonies">
+        <div class="h-group">
+            <div class="h-label-row">
+                <span class="h-label">Complementary</span>
+                <span class="h-label-hint">Base &amp; hue + 180°</span>
+            </div>
+            <div class="h-strip" id="chComp"></div>
+        </div>
+        <div class="h-group">
+            <div class="h-label-row">
+                <span class="h-label">Analogous</span>
+                <span class="h-label-hint">Base hue ± 30°</span>
+            </div>
+            <div class="h-strip" id="chAna"></div>
+        </div>
+        <div class="h-group">
+            <div class="h-label-row">
+                <span class="h-label">Triadic</span>
+                <span class="h-label-hint">Hue + 0° / +120° / +240°</span>
+            </div>
+            <div class="h-strip" id="chTri"></div>
+        </div>
+        <div class="h-group">
+            <div class="h-label-row">
+                <span class="h-label">Tetradic (Rectangle)</span>
+                <span class="h-label-hint">Hue + 0° / +60° / +180° / +240° — two complementary pairs</span>
+            </div>
+            <div class="h-strip" id="chTet"></div>
+        </div>
+        <div class="h-group">
+            <div class="h-label-row">
+                <span class="h-label">Square</span>
+                <span class="h-label-hint">Hue + 0° / +90° / +180° / +270° — four hues evenly spaced</span>
+            </div>
+            <div class="h-strip" id="chSq"></div>
+        </div>
+        <div class="h-group">
+            <div class="h-label-row">
+                <span class="h-label">Monochromatic</span>
+                <span class="h-label-hint">Same hue &amp; saturation, varied lightness</span>
+            </div>
+            <div class="h-strip" id="chMono"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     COLOR PALETTE GENERATOR
+══════════════════════════════════════════════ -->
+<section id="tab-palette" class="tab">
+    <div class="sec-head">
+        <h2>Color Palette Generator</h2>
+        <p>Five harmonious base colors, each with five monochromatic shades from light to dark. Press <strong>Generate</strong> for a new palette. Click any swatch to copy its hex.</p>
+    </div>
+
+    <div class="palette-controls">
+        <button class="palette-gen" id="paletteGen">Generate Palette</button>
+        <span class="palette-harmony"><span class="dim">Harmony:</span> <strong id="paletteHarmony">—</strong></span>
+    </div>
+
+    <div class="palette-grid" id="paletteGrid"></div>
+
+    <p class="dim tiny" style="margin-top:.6rem">
+        Click the lock icon to keep a column across regenerations. Click any swatch to copy its hex.
+        The middle row (marked <strong>BASE</strong>) is editable — click its hex, type a new value,
+        press Enter. The other four rows are derived shades. Typing a hex rebuilds the column as a
+        monochromatic scale around your color and auto-locks it.
+    </p>
+
+    <div class="sub-head" style="margin-top:2.5rem">Accessibility — Color Vision Deficiency Preview</div>
+    <p class="dim tiny" style="margin-bottom:1rem">
+        How this palette appears to viewers with the four most common types of color blindness.
+        Useful for UI, charts, signage, and brand work where color must remain readable across audiences.
+    </p>
+    <div id="cvdPalettePreview"></div>
+
+    <div class="note">
+        <p><strong>How it works.</strong> Each press picks a random base hue, then derives four more hues using one of seven classical harmony rules (analogous, complementary, split-complementary, triadic, tetradic, square, or compound). Saturation and lightness are nudged within each group to keep the result useable rather than neon. For each base color, five monochromatic shades are generated by varying lightness on a perceptual curve while tapering saturation at the extremes — the same trick that prevents pure-hue tints and shades from looking radioactive.</p>
+        <p><strong>Reading the grid.</strong> Columns are independent harmonies. Rows go light&nbsp;→&nbsp;dark (top to bottom). The lightest row is good for backgrounds and tints; the darkest is good for text on light fills. The middle row (framed and marked <strong>BASE</strong>) is the "true" hue of each base color and is the only editable cell — type a hex there to seed a fresh monochromatic scale for that column from your color.</p>
+        <p><strong>Theory cheat-sheet.</strong> <em>Analogous</em> (3–5 hues within ~60° on the wheel) feels calm and natural — landscapes, brand systems with a single dominant tone. <em>Complementary</em> (180° apart) is the highest-contrast pair — use one as the dominant 70–80% and the other as accent (Itten's 70/30 rule). <em>Split-complementary</em> swaps the harsh complement for its two neighbours, keeping contrast without the optical buzz. <em>Triadic</em> (3 hues 120° apart) is balanced and vivid; let one lead. <em>Tetradic</em> (a rectangle on the wheel — two complementary pairs at <em>unequal</em> spacing, e.g.&nbsp;0°/60° and 180°/240°) is rich and asymmetric; usually pick one pair as dominant. <em>Square</em> (four hues exactly 90° apart — a special case of tetradic) is the most balanced four-hue scheme: maximum variety with even visual weight, but it can feel busy unless one hue clearly leads. <em>Compound</em> (analogous + complement) is the Coolors-style "interesting but safe" default.</p>
+        <p><strong>CVD prevalence &amp; method.</strong> Roughly 8% of men and 0.5% of women of Northern European descent have some form of red-green color vision deficiency. Tritanopia and full achromatopsia are very rare (&lt; 0.01%). The simulation uses Brettel/Viénot/Mollon transformation matrices on sRGB values directly — a perceptual approximation that's visually accurate enough for design preview. For critical accessibility work, also test with hardware filters (e.g.&nbsp;Sim Daltonism, Stark plug-ins). Don't rely on color alone — pair with shape, position, or text label, and keep luminance contrast high.</p>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     MATERIALS
+══════════════════════════════════════════════ -->
+<section id="tab-materials" class="tab">
+    <div class="sec-head">
+        <h2>Materials</h2>
+        <p>Reference values for IOR (dielectrics), F₀ reflectance (metals), and albedo (diffuse reflectance of surfaces). Click any column header to sort.</p>
+    </div>
+
+    <div class="sub-head">Dielectrics — Index of Refraction</div>
+    <div class="tbl-wrap">
+        <table class="tbl" id="dielectricTbl">
+            <thead>
+                <tr>
+                    <th class="sortable" data-k="name">Material</th>
+                    <th class="sortable" data-k="ior" data-num="1">IOR</th>
+                    <th class="sortable" data-k="cat">Category</th>
+                    <th class="sortable" data-k="note">Notes</th>
+                </tr>
+            </thead>
+            <tbody id="dielectricTable"></tbody>
+        </table>
+    </div>
+
+    <div class="sub-head">Metals — F₀ Reflectance (RGB)</div>
+    <div class="tbl-wrap">
+        <table class="tbl" id="metalTbl">
+            <thead>
+                <tr>
+                    <th class="sortable" data-k="name">Metal</th>
+                    <th class="sortable" data-k="r" data-num="1">F₀ R</th>
+                    <th class="sortable" data-k="g" data-num="1">F₀ G</th>
+                    <th class="sortable" data-k="b" data-num="1">F₀ B</th>
+                    <th>Approx HEX</th>
+                    <th>Color</th>
+                </tr>
+            </thead>
+            <tbody id="metalTable"></tbody>
+        </table>
+    </div>
+
+    <div class="sub-head">Albedo — Surface Diffuse Reflectance</div>
+    <div class="tbl-wrap">
+        <table class="tbl" id="albedoTbl">
+            <thead>
+                <tr>
+                    <th class="sortable" data-k="name">Surface</th>
+                    <th class="sortable" data-k="a" data-num="1">Albedo</th>
+                    <th class="sortable" data-k="hex">Approx HEX</th>
+                    <th>Color</th>
+                    <th class="sortable" data-k="note">Notes</th>
+                </tr>
+            </thead>
+            <tbody id="albedoTable"></tbody>
+        </table>
+    </div>
+
+    <div class="note">
+        <p><strong>IOR</strong> is the ratio of the speed of light in vacuum to its speed in the material. Used for dielectric (non-metallic) surfaces in PBR workflows. Converts to Fresnel F₀ via <span class="mono">((n-1)/(n+1))²</span>.</p>
+        <p><strong>F₀</strong> is the reflectance at normal incidence. Metals use measured RGB triplets because their reflectance is wavelength-dependent (tinted specular). Source: "Real-Time Rendering" / Naty Hoffman.</p>
+        <p><strong>Albedo</strong> is the fraction of incident light diffusely reflected. Used for diffuse/base color in PBR. Albedo values are measured under D65 illumination; HEX approximations below are for reference only.</p>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     LIGHT
+══════════════════════════════════════════════ -->
+<section id="tab-light" class="tab">
+    <div class="sec-head">
+        <h2>Light Calculator</h2>
+        <p>Kelvin → RGB / HEX / HSL converter for CGI lighting and color-temperature work.</p>
+    </div>
+
+    <div class="kv-grid">
+        <div class="kv-preview" id="kvPreview">
+            <div class="kv-preview-inner">
+                <div id="kvKelvinOut">5600 K · 100%</div>
+                <div class="dim" id="kvHexOut" style="font-size:.72rem; margin-top:.15rem">#FFF0E8</div>
+            </div>
+        </div>
+
+        <div class="kv-controls">
+
+            <div class="kv-ctrl-group">
+                <div class="kv-ctrl-label-row">
+                    <span class="kv-ctrl-label">Temperature</span>
+                    <span class="kv-ctrl-hint">Hue — position on the Planckian locus</span>
+                </div>
+                <div class="kv-slider-wrap">
+                    <input type="range" class="kv-slider kv-slider-temp" id="kvSlider" min="1000" max="15000" step="50" value="5600">
+                    <div class="kv-num-wrap">
+                        <input type="number" class="kv-input" id="kvInput" min="1000" max="40000" step="50" value="5600">
+                        <span class="kv-unit">K</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kv-ctrl-group">
+                <div class="kv-ctrl-label-row">
+                    <span class="kv-ctrl-label">Brightness</span>
+                    <span class="kv-ctrl-hint">Luminance — scaled in linear light</span>
+                </div>
+                <div class="kv-slider-wrap">
+                    <input type="range" class="kv-slider kv-slider-bright" id="kvBrightness" min="0" max="100" step="1" value="100">
+                    <div class="kv-num-wrap">
+                        <input type="number" class="kv-input" id="kvBrightnessNum" min="0" max="100" step="1" value="100">
+                        <span class="kv-unit">%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="kv-output">
+                <div class="kv-output-row">
+                    <span class="kv-output-label">Chroma</span>
+                    <span class="kv-output-val dim" id="kvNominal">#FFF0E8 @ 100%</span>
+                    <span></span>
+                </div>
+                <div class="kv-output-row">
+                    <span class="kv-output-label">HEX</span>
+                    <span class="kv-output-val" id="kvHex">#FFF0E8</span>
+                    <button class="cc-copy" data-kv-copy="hex">Copy</button>
+                </div>
+                <div class="kv-output-row">
+                    <span class="kv-output-label">RGB</span>
+                    <span class="kv-output-val" id="kvRgb">255, 240, 232</span>
+                    <button class="cc-copy" data-kv-copy="rgb">Copy</button>
+                </div>
+                <div class="kv-output-row">
+                    <span class="kv-output-label">HSL</span>
+                    <span class="kv-output-val" id="kvHsl">21°, 100%, 95%</span>
+                    <button class="cc-copy" data-kv-copy="hsl">Copy</button>
+                </div>
+                <div class="kv-output-row">
+                    <span class="kv-output-label">Linear</span>
+                    <span class="kv-output-val" id="kvLin">1.000, 0.887, 0.822</span>
+                    <button class="cc-copy" data-kv-copy="lin">Copy</button>
+                </div>
+            </div>
+
+            <div class="kv-preset-row" id="kvPresets"></div>
+
+        </div>
+    </div>
+
+    <div class="sub-head" style="margin-top:2.5rem">Reference Color Temperatures</div>
+    <div class="tbl-wrap">
+        <table class="tbl" id="kvTbl">
+            <thead>
+                <tr>
+                    <th class="sortable" data-k="k" data-num="1">Kelvin</th>
+                    <th class="sortable" data-k="name">Source</th>
+                    <th>Swatch</th>
+                    <th class="sortable" data-k="cat">Category</th>
+                    <th class="sortable" data-k="note">Notes</th>
+                </tr>
+            </thead>
+            <tbody id="kvRefTable"></tbody>
+        </table>
+    </div>
+
+    <div class="two-col">
+        <div>
+            <div class="sub-head">Inverse Square Law</div>
+            <div class="note" style="border-color:var(--tx-dim); margin-top:0">
+                <p>Light falls off with the square of distance: <span class="mono">E ∝ 1/d²</span>. Doubling the distance from a point source reduces illuminance to <strong>¼</strong>. Halving it quadruples the level.</p>
+                <p>Practical rule: <strong>+1 stop</strong> ≈ distance × 0.707. <strong>−1 stop</strong> ≈ distance × 1.414. Large soft sources violate the law at close range because they are no longer point-like.</p>
+            </div>
+        </div>
+        <div>
+            <div class="sub-head">Color Temperature Basics</div>
+            <div class="note" style="border-color:var(--tx-dim); margin-top:0">
+                <p>Kelvin describes the color a black body radiator emits at that temperature — <em>lower K = warmer (red/orange), higher K = cooler (blue)</em>. The eye is <em>chromatically adaptive</em>; cameras are not.</p>
+                <p class="mono tiny" style="color:var(--tx)">Candle 1850 · Tungsten 3200 · Daylight 5600 · Overcast 6500 · Shade 7500+</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="two-col" style="margin-top:.5rem">
+        <div>
+            <div class="sub-head">Three-Point Lighting</div>
+            <div class="note" style="border-color:var(--tx-dim); margin-top:0">
+                <p><strong>Key</strong> — primary light, sets exposure and direction. Usually ~45° off-axis and slightly above eye line.</p>
+                <p><strong>Fill</strong> — opposite the key, softens shadows. Controlled by <em>key-to-fill ratio</em> (e.g.&nbsp;2:1 soft, 4:1 dramatic, 8:1 film noir).</p>
+                <p><strong>Back / rim</strong> — separates subject from background. Placed behind and above, often slightly warmer or cooler than key.</p>
+            </div>
+        </div>
+        <div>
+            <div class="sub-head">CTO &amp; CTB Gels</div>
+            <div class="note" style="border-color:var(--tx-dim); margin-top:0">
+                <p><strong>CTO</strong> (Color Temperature Orange) warms daylight sources toward tungsten. <strong>CTB</strong> (Color Temperature Blue) cools tungsten toward daylight.</p>
+                <p class="mono tiny" style="color:var(--tx)">Full CTO ≈ 5500 → 2900 K · ½ CTO ≈ 5500 → 3800 K · ¼ CTO ≈ 5500 → 4500 K</p>
+                <p>Gel strength is measured in <strong>mireds</strong> (1000000/K). Mired shift is additive — this is why gels combine linearly.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="two-col" style="margin-top:.5rem">
+        <div>
+            <div class="sub-head">CRI vs TLCI</div>
+            <div class="note" style="border-color:var(--tx-dim); margin-top:0">
+                <p><strong>CRI (Ra)</strong> — Color Rendering Index, how accurately a source reveals object colors vs. a reference. 100 = perfect, 95+ = excellent, &lt;80 = poor on skin tones.</p>
+                <p><strong>TLCI</strong> — Television Lighting Consistency Index, engineered for video/cinema sensors. Often diverges from CRI for LEDs; trust TLCI when working on camera.</p>
+            </div>
+        </div>
+        <div>
+            <div class="sub-head">Exposure Math</div>
+            <div class="note" style="border-color:var(--tx-dim); margin-top:0">
+                <p>Each <strong>stop</strong> doubles or halves exposure. Reciprocity: <span class="mono">shutter × aperture_area × ISO ≈ const</span>.</p>
+                <p class="mono tiny" style="color:var(--tx)">1s · 1/2 · 1/4 · 1/8 · 1/15 · 1/30 · 1/60 · 1/125 · 1/250 · 1/500 · 1/1000 · 1/2000</p>
+                <p><strong>180° shutter rule</strong> — for natural motion blur in video, set shutter ≈ 1/(2 × fps). e.g.&nbsp;24 fps → 1/48 s; 60 fps → 1/120 s.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="note">
+        <p><strong>Kelvin is hue, brightness is luminance.</strong> Color temperature defines <em>chromaticity</em> (where the light sits on the Planckian locus); how much light is emitted is a separate quantity (lumens, candela, lux). This calculator treats them independently: the temperature slider changes hue, the brightness slider scales intensity without shifting hue.</p>
+        <p><strong>Why scale in linear light.</strong> Multiplying sRGB-gamma-encoded values directly would shift hue because the sRGB transfer function is non-linear. The correct sequence is <span class="mono">sRGB → linearize → multiply by B → gamma-encode → clamp</span>. The "Linear" row already reflects the scaled linear triplet you can hand to a render engine.</p>
+        <p><strong>Approximation.</strong> The Kelvin → RGB calculation uses the Tanner Helland approximation of the Planckian locus (valid ~1000–40000 K). Values below ~1200 K or above ~25000 K are extrapolations. For critical color work use the CIE D-series illuminants (D50, D55, D65, D75) which are tabulated spectra, not black-body.</p>
+        <p><strong>Render-engine workflow.</strong> Most PBR lights separate <em>color</em> from <em>intensity</em>. The cleanest approach: set brightness to 100% here, use the "Linear" triplet as the light's color input, and drive physical intensity (lumens/watts/candelas) with the engine's own parameter. Use brightness &lt; 100% only when you want a pre-scaled value (e.g.&nbsp;for a diffuse albedo swatch or an SDR UI color).</p>
+        <p><strong>Display limits.</strong> Real lights can easily exceed sRGB's dynamic range. On an SDR screen, high intensities simply clip — use an HDR pipeline or tone-map if you need accurate high-luminance preview.</p>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     CAMERA SHOTS
+══════════════════════════════════════════════ -->
+<section id="tab-shots" class="tab">
+    <div class="sec-head">
+        <h2>Camera Shots</h2>
+        <p>Shot sizes, angles, and movements — purpose, lighting watch-outs, and lens recommendations, with iconic film references.</p>
+    </div>
+
+    <div class="note top">
+        <p><strong>Naming.</strong> Terminology varies between feature drama, documentary, and commercial work. The breakpoints below follow common feature-film practice (American Cinematographer Manual / ASC); the BBC uses slightly different boundaries (e.g.&nbsp;"BCU" for big close-up).</p>
+        <p><strong>Stylized framing.</strong> Each card shows a silhouette of how the subject sits in the frame — for actual stills, search the listed title and DP in your reference library (<em>shotdeck.com</em>, <em>film-grab.com</em>, <em>evanerichards.com</em>).</p>
+        <p><strong>Lens caveat.</strong> All focal lengths are quoted in 35mm / full-frame equivalent. Multiply by your camera's crop factor for an APS-C, S35, or M4/3 body (see Lenses tab).</p>
+    </div>
+
+    <div class="sub-head">Shot Sizes — How Much of the Subject Is in Frame</div>
+    <div class="shot-grid" id="shot-sizes"></div>
+
+    <div class="sub-head">Camera Angles — Where the Camera Sits Relative to the Subject</div>
+    <div class="shot-grid" id="shot-angles"></div>
+
+    <div class="sub-head">Camera Movement — How the Camera Travels</div>
+    <div class="shot-grid" id="shot-moves"></div>
+
+    <div class="note">
+        <p><strong>Lighting principle, regardless of shot.</strong> The closer the camera gets, the more forgiving (or unforgiving) the light becomes. Wide shots tolerate broad sources and high contrast; close-ups demand soft, well-positioned key light, careful shadow control, and frequently a fill or eye-light to keep the eyes alive. As shot size tightens, the ratio between key and fill usually narrows (4:1 or 8:1 for moody wides; 2:1 or 3:1 for traditional close-ups).</p>
+        <p><strong>Lens choice and emotion.</strong> Wide focal lengths (≤ 35mm) draw the viewer into the space and exaggerate distance and motion. Normal lenses (40–58mm) feel neutral and naturalistic. Long lenses (≥ 85mm) compress space, isolate the subject, and flatter faces — but they require more light, more distance, and steadier support.</p>
+        <p><strong>Eye-line and frame edge.</strong> When a subject looks off-screen, leave more "nose room" on the side they face. When they look straight to camera (POV-adjacent), centre the eye-line for confrontation, off-centre for unease.</p>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     SOCIAL MEDIA
+══════════════════════════════════════════════ -->
+<section id="tab-social" class="tab">
+    <div class="sec-head">
+        <h2>Social Media Specs</h2>
+        <p>Recommended dimensions, aspect ratios, supported formats, and file-size limits for the major platforms.</p>
+    </div>
+
+    <div class="note top">
+        <p><strong>Specs change.</strong> Platforms update their layouts and limits constantly — always cross-check the official help pages before final delivery for paid work. Values below reflect each platform's published guidance as of early 2026.</p>
+        <p><strong>Always upload @2x.</strong> Where a value is shown as <em>"min × min · rec × rec"</em>, the second dimension is what to upload — the platform downscales for display. Uploading the bare minimum produces visibly soft assets on retina screens.</p>
+        <p><strong>Aspect ratio first.</strong> Aspect ratio drives crop; pixel dimensions drive sharpness. A 1080×1350 (4:5) post stays sharp on every device — a 1200×627 link card is letterboxed in mobile feeds. Pick the ratio for the surface, then size up.</p>
+        <p><strong>Codec defaults.</strong> All video specs assume H.264 (AVC) Main or High profile, AAC-LC audio at 128 kbps+, ≤ 60 fps. Use H.265/HEVC only when explicitly supported (TikTok, X Premium).</p>
+    </div>
+
+    <div id="social-tables"></div>
+
+    <div class="note">
+        <p><strong>Universal safe areas.</strong> For 9:16 vertical content (Stories, Reels, TikToks, Shorts), keep all critical elements inside the centre <span class="mono">1080×1420</span> rectangle — roughly 250 px is consumed by top/bottom UI overlays (handle, captions, action buttons) on every platform.</p>
+        <p><strong>Profile photo cropping.</strong> Every platform crops avatars to a circle for display — even when the upload is square. Centre the face and leave at least 15% breathing room from the corners.</p>
+        <p><strong>File-size pragmatism.</strong> Stay well under the maximum. Compression artefacts appear when platforms re-encode oversized files. For images, target ≤ 2 MB JPG at quality 85; for video, target ≤ 25 Mbps for 1080p / ≤ 50 Mbps for 4K.</p>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     CODECS & DATA RATES
+══════════════════════════════════════════════ -->
+<section id="tab-codecs" class="tab">
+    <div class="sec-head">
+        <h2>Codecs &amp; Data Rates</h2>
+        <p>Reference data rates and storage requirements for common cinema and broadcast codecs at 1080p24 and 2160p24, with per-minute and per-hour estimates. Click any column header to sort.</p>
+    </div>
+
+    <div class="note top">
+        <p><strong>Data rate vs file size.</strong> Manufacturer-quoted bitrates are the <em>average</em> data rate. ProRes and DNx are constant-bitrate (CBR); RAW formats are usually variable (VBR). Per-minute file size = bitrate × 60 / 8 — but expect ±10% on real footage depending on noise and motion.</p>
+        <p><strong>Audio.</strong> Numbers below are video-only. Add ~1.5 MB / minute for 48 kHz 24-bit stereo PCM, ~6 MB / minute for 8-channel.</p>
+        <p><strong>Why it matters.</strong> A 4K ARRI ProRes 4444 XQ shoot at 30 minutes per card is still 60 GB. Plan card counts, transfer time, and online/offline strategy on data rate, not on duration.</p>
+    </div>
+
+    <div class="sub-head">Acquisition / Camera Codecs</div>
+    <div class="tbl-wrap">
+        <table class="tbl" id="codecAcqTbl">
+            <thead>
+                <tr>
+                    <th class="sortable" data-k="name">Codec</th>
+                    <th class="sortable" data-k="kind">Type</th>
+                    <th class="sortable" data-k="rate1080" data-num="1">1080p24 (Mb/s)</th>
+                    <th class="sortable" data-k="rate4k" data-num="1">2160p24 (Mb/s)</th>
+                    <th class="sortable" data-k="gb1080" data-num="1">GB/min @ 1080</th>
+                    <th class="sortable" data-k="gb4k" data-num="1">GB/min @ 4K</th>
+                    <th class="sortable" data-k="note">Notes</th>
+                </tr>
+            </thead>
+            <tbody id="codecAcqTbody"></tbody>
+        </table>
+    </div>
+
+    <div class="sub-head">Intermediate / Mastering Codecs</div>
+    <div class="tbl-wrap">
+        <table class="tbl" id="codecIntTbl">
+            <thead>
+                <tr>
+                    <th class="sortable" data-k="name">Codec</th>
+                    <th class="sortable" data-k="kind">Type</th>
+                    <th class="sortable" data-k="rate1080" data-num="1">1080p24 (Mb/s)</th>
+                    <th class="sortable" data-k="rate4k" data-num="1">2160p24 (Mb/s)</th>
+                    <th class="sortable" data-k="gb1080" data-num="1">GB/min @ 1080</th>
+                    <th class="sortable" data-k="gb4k" data-num="1">GB/min @ 4K</th>
+                    <th class="sortable" data-k="note">Notes</th>
+                </tr>
+            </thead>
+            <tbody id="codecIntTbody"></tbody>
+        </table>
+    </div>
+
+    <div class="sub-head">Delivery / Streaming Codecs</div>
+    <div class="tbl-wrap">
+        <table class="tbl" id="codecDelTbl">
+            <thead>
+                <tr>
+                    <th class="sortable" data-k="name">Codec</th>
+                    <th class="sortable" data-k="kind">Type</th>
+                    <th class="sortable" data-k="rate1080" data-num="1">1080p24 (Mb/s)</th>
+                    <th class="sortable" data-k="rate4k" data-num="1">2160p24 (Mb/s)</th>
+                    <th class="sortable" data-k="gb1080" data-num="1">GB/min @ 1080</th>
+                    <th class="sortable" data-k="gb4k" data-num="1">GB/min @ 4K</th>
+                    <th class="sortable" data-k="note">Notes</th>
+                </tr>
+            </thead>
+            <tbody id="codecDelTbody"></tbody>
+        </table>
+    </div>
+
+    <div class="note">
+        <p><strong>Bitrate scaling.</strong> Frame rate is the dominant axis: bitrate at 60p is ≈ 2.5× the listed 24p figure for ProRes/DNx; HEVC and H.264 scale closer to ≈ 2× because of inter-frame compression.</p>
+        <p><strong>Bit depth.</strong> 12-bit log codecs (BRAW, RED RAW, ProRes 4444) hold ~13–14 stops of useful range; 10-bit 4:2:2 (ProRes 422 family) holds ~10 stops; 8-bit 4:2:0 (consumer H.264) starts to band in flat skies and shadows after a single grade.</p>
+        <p><strong>Chroma subsampling.</strong> 4:4:4 = full-resolution chroma (good for keying, VFX). 4:2:2 = half horizontal chroma (broadcast standard). 4:2:0 = quarter chroma (web/consumer).</p>
+    </div>
+</section>
+
+<!-- ══════════════════════════════════════════════
+     RESOLUTION & DPI
+══════════════════════════════════════════════ -->
+<section id="tab-resolution" class="tab">
+    <div class="sec-head">
+        <h2>Resolution &amp; DPI</h2>
+        <p>Convert between pixel dimensions and physical print size at a given DPI, and estimate uncompressed file size at common bit depths. Edit any field — the others update live.</p>
+    </div>
+
+    <div class="res-grid">
+        <div class="res-block">
+            <div class="sub-head" style="margin-top:0">Pixels</div>
+            <div class="res-input-pair">
+                <input class="res-input" type="number" id="rsPxW" value="3000" min="1">
+                <span class="res-unit">×</span>
+                <input class="res-input" type="number" id="rsPxH" value="2000" min="1">
+                <span class="res-unit">px</span>
+            </div>
+
+            <div class="sub-head">DPI / PPI</div>
+            <div class="res-input-pair" style="grid-template-columns: 1fr auto;">
+                <input class="res-input" type="number" id="rsDpi" value="300" min="1">
+                <span class="res-unit">dpi</span>
+            </div>
+        </div>
+
+        <div class="res-block">
+            <div class="sub-head" style="margin-top:0">Print Size — Inches</div>
+            <div class="res-input-pair">
+                <input class="res-input" type="number" id="rsInW" value="10" min="0.01" step="0.01">
+                <span class="res-unit">×</span>
+                <input class="res-input" type="number" id="rsInH" value="6.67" min="0.01" step="0.01">
+                <span class="res-unit">in</span>
+            </div>
+
+            <div class="sub-head">Print Size — Centimetres</div>
+            <div class="res-input-pair">
+                <input class="res-input" type="number" id="rsCmW" value="25.4" min="0.01" step="0.01">
+                <span class="res-unit">×</span>
+                <input class="res-input" type="number" id="rsCmH" value="16.93" min="0.01" step="0.01">
+                <span class="res-unit">cm</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="sub-head">Common Print &amp; Screen Presets</div>
+    <div class="res-presets" id="rsPresets"></div>
+
+    <div class="sub-head" style="margin-top:2rem">Summary</div>
+    <dl class="res-summary" id="rsSummary"></dl>
+
+    <div class="note">
+        <p><strong>DPI vs PPI.</strong> Strictly, <em>PPI</em> (pixels per inch) describes the digital image; <em>DPI</em> (dots per inch) describes the printer's output. Most software conflates the two — they're equivalent for the purpose of "how big will this print at acceptable sharpness?".</p>
+        <p><strong>Sharpness targets.</strong> 300 DPI is the photographic-print standard for arm's-length viewing. 240 DPI is fine for most inkjet output. 150 DPI is acceptable for posters viewed from &gt; 1 m. Billboards print at 30–75 DPI because viewing distance is huge.</p>
+        <p><strong>File-size formula.</strong> Uncompressed size = width × height × channels × bits-per-channel ÷ 8. The estimates assume RGB (3 channels) or RGBA (4 channels) and don't account for any compression — actual JPEG / PNG / TIFF files are typically 5–30% of the 16-bit RGBA value.</p>
+    </div>
+</section>
+
+</main>
+
+<footer>
+    Pocket Guide · Monochrome
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   THEME
+═══════════════════════════════════════════════════ */
+let theme = 'dark';
+function toggleTheme() {
+    theme = theme === 'dark' ? 'light' : 'dark';
+    document.body.classList.toggle('light', theme === 'light');
+    document.getElementById('themeBtn').innerHTML = theme === 'dark' ? '&#9789;' : '&#9728;';
+}
+
+/* ═══════════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════════ */
+document.querySelectorAll('nav button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        btn.classList.add('active');
+    });
+});
+
+/* ═══════════════════════════════════════════════════
+   SHARED — SORTABLE TABLES
+═══════════════════════════════════════════════════ */
+function attachSort(tableEl, data, render) {
+    let state = { k: null, dir: null };
+    const ths = tableEl.querySelectorAll('thead th');
+    ths.forEach(th => {
+        if (!th.classList.contains('sortable')) return;
+        th.addEventListener('click', () => {
+            const k = th.dataset.k;
+            const numeric = th.dataset.num === '1';
+            if (state.k === k) state.dir = state.dir === 'asc' ? 'desc' : 'asc';
+            else { state.k = k; state.dir = 'asc'; }
+            const firstNum = v => {
+                const m = String(v).match(/-?[\d.]+/);
+                return m ? parseFloat(m[0]) : 0;
+            };
+            const sorted = data.slice().sort((a, b) => {
+                let av = a[k], bv = b[k];
+                if (numeric) { av = firstNum(av); bv = firstNum(bv); }
+                else { av = String(av).toLowerCase(); bv = String(bv).toLowerCase(); }
+                if (av < bv) return state.dir === 'asc' ? -1 : 1;
+                if (av > bv) return state.dir === 'asc' ? 1 : -1;
+                return 0;
+            });
+            ths.forEach(t => t.classList.remove('sorted-asc', 'sorted-desc'));
+            th.classList.add('sorted-' + state.dir);
+            render(sorted);
+        });
+    });
+}
+
+/* ═══════════════════════════════════════════════════
+   ASPECT RATIOS
+═══════════════════════════════════════════════════ */
+const ASPECTS = {
+    phone: [
+        { r:'3:4',      d:'0.75', name:'iPad / tablet portrait',  res:['1536×2048','2048×2732'] },
+        { r:'9:16',     d:'0.56', name:'Smartphone (older)',      res:['1080×1920','1440×2560'] },
+        { r:'9:18',     d:'0.50', name:'Galaxy S8 / S9',          res:['1080×2160'] },
+        { r:'9:19.5',   d:'0.46', name:'iPhone 12 – 15',          res:['1170×2532','1179×2556'] },
+        { r:'9:20',     d:'0.45', name:'Pixel / modern Android',  res:['1080×2400','1440×3200'] },
+        { r:'9:21',     d:'0.43', name:'Sony Xperia tall',         res:['1644×3840'] },
+    ],
+    desktop: [
+        { r:'5:4',  d:'1.25', name:'Legacy CRT',              res:['1280×1024'] },
+        { r:'4:3',  d:'1.33', name:'Classic monitor / iPad',   res:['1024×768','1600×1200','2048×1536'] },
+        { r:'3:2',  d:'1.50', name:'Chromebook / Surface',     res:['2256×1504','2880×1920'] },
+        { r:'16:10',d:'1.60', name:'MacBook / workstation',    res:['1920×1200','2560×1600','3840×2400'] },
+        { r:'16:9', d:'1.78', name:'HD / UHD standard',         res:['1920×1080','2560×1440','3840×2160'] },
+        { r:'21:9', d:'2.37', name:'Ultrawide',                res:['2560×1080','3440×1440','5120×2160'] },
+        { r:'32:9', d:'3.56', name:'Super ultrawide',           res:['3840×1080','5120×1440'] },
+    ],
+    tv: [
+        { r:'4:3',     d:'1.33', name:'SDTV (NTSC / PAL)',     res:['720×480','720×576'] },
+        { r:'16:9',    d:'1.78', name:'HDTV',                   res:['1280×720','1920×1080'] },
+        { r:'16:9',    d:'1.78', name:'UHD / 4K broadcast',     res:['3840×2160'] },
+        { r:'16:9',    d:'1.78', name:'8K broadcast',           res:['7680×4320'] },
+        { r:'2:1',     d:'2.00', name:'Univisium / Netflix',    res:['3840×1920'] },
+        { r:'1.85:1',  d:'1.85', name:'Flat — some streaming',  res:['1998×1080 DCI'] },
+    ],
+    cinema: [
+        { r:'1.33:1', d:'1.33', name:'Silent / early Academy',        res:['Super 8, 16mm'] },
+        { r:'1.37:1', d:'1.37', name:'Academy (sound era)',            res:['35mm 4-perf'] },
+        { r:'1.43:1', d:'1.43', name:'IMAX film (15/70)',              res:['70mm 15-perf'] },
+        { r:'1.66:1', d:'1.66', name:'European widescreen / Super 16', res:['Super 16'] },
+        { r:'1.78:1', d:'1.78', name:'Digital 16:9 cinema',            res:['3840×2160','4096×2304'] },
+        { r:'1.85:1', d:'1.85', name:'Flat — theatrical standard',      res:['1998×1080 DCI 2K','3996×2160 DCI 4K'] },
+        { r:'1.90:1', d:'1.90', name:'IMAX Digital / full-frame DCI',   res:['2048×1080','4096×2160'] },
+        { r:'2.00:1', d:'2.00', name:'Univisium',                        res:['3840×1920'] },
+        { r:'2.20:1', d:'2.20', name:'70mm Todd-AO',                     res:['—'] },
+        { r:'2.35:1', d:'2.35', name:'CinemaScope (pre-1970)',           res:['—'] },
+        { r:'2.39:1', d:'2.39', name:'Scope — modern anamorphic',        res:['2048×858 DCI 2K','4096×1716 DCI 4K'] },
+        { r:'2.55:1', d:'2.55', name:'Original CinemaScope 4-track',     res:['—'] },
+        { r:'2.76:1', d:'2.76', name:'Ultra Panavision 70',              res:['Ben-Hur, Hateful Eight'] },
+    ],
+};
+
+function parseRatio(r) {
+    if (r.includes(':')) {
+        const [a, b] = r.split(':').map(parseFloat);
+        return a / b;
+    }
+    return parseFloat(r);
+}
+
+function buildAspectCard(a) {
+    const ratioNum = parseRatio(a.r);
+    const card = document.createElement('div');
+    card.className = 'ar-card';
+    card.innerHTML = `
+        <div class="ar-vis">
+            <div class="ar-shape" style="aspect-ratio:${ratioNum};"></div>
+        </div>
+        <div class="ar-head">
+            <span class="ar-ratio">${a.r}</span>
+            <span class="ar-dec">${a.d}:1</span>
+        </div>
+        <div class="ar-name">${a.name}</div>
+        <div class="ar-res">${a.res.join(' · ')}</div>
+    `;
+    return card;
+}
+
+function setAspectShape(card, ratioNum) {
+    const shape = card.querySelector('.ar-shape');
+    const maxW = 150, maxH = 70;
+    if (ratioNum >= maxW / maxH) {
+        shape.style.width  = maxW + 'px';
+        shape.style.height = (maxW / ratioNum) + 'px';
+    } else {
+        shape.style.height = maxH + 'px';
+        shape.style.width  = (maxH * ratioNum) + 'px';
+    }
+}
+
+['phone','desktop','tv','cinema'].forEach(group => {
+    const container = document.getElementById('ar-' + group);
+    ASPECTS[group].forEach(a => {
+        const card = buildAspectCard(a);
+        container.appendChild(card);
+        setAspectShape(card, parseRatio(a.r));
+    });
+});
+
+/* ═══════════════════════════════════════════════════
+   LENSES
+═══════════════════════════════════════════════════ */
+const LENSES = [
+    { range:'8 – 14mm',   type:'Fisheye / Ultra-wide', fov:'180° – 114°', f:'ƒ/2.8 – ƒ/4',    use:'VR, action, creative distortion',     char:'Extreme distortion, curved horizons' },
+    { range:'14 – 24mm',  type:'Wide',                  fov:'114° – 84°',  f:'ƒ/1.8 – ƒ/4',    use:'Landscape, architecture, astro',       char:'Strong perspective, edge stretching' },
+    { range:'24 – 35mm',  type:'Standard Wide',         fov:'84° – 63°',   f:'ƒ/1.4 – ƒ/2.8',  use:'Street, documentary, environmental',   char:'Natural, immersive' },
+    { range:'35mm',       type:'Classic Wide',          fov:'63°',         f:'ƒ/1.4 – ƒ/2',    use:'Film look, reportage, wedding',        char:'Slightly wider than human focus' },
+    { range:'50mm',       type:'Normal "Nifty Fifty"',  fov:'47°',         f:'ƒ/1.2 – ƒ/2',    use:'General, low-light, first prime',      char:'Matches human central vision' },
+    { range:'85mm',       type:'Short Telephoto',       fov:'28°',         f:'ƒ/1.2 – ƒ/1.8',  use:'Portraits — "the portrait lens"',      char:'Flattering compression, creamy bokeh' },
+    { range:'100 – 135mm',type:'Medium Telephoto',      fov:'24° – 18°',   f:'ƒ/2 – ƒ/2.8',    use:'Tight portraits, fashion, concerts',    char:'Strong subject isolation' },
+    { range:'200mm',      type:'Telephoto',             fov:'12°',         f:'ƒ/2.8 – ƒ/4',    use:'Sports, wildlife, stage',               char:'Heavy compression, tight framing' },
+    { range:'300 – 400mm',type:'Long Telephoto',        fov:'8° – 6°',     f:'ƒ/2.8 – ƒ/5.6',  use:'Sports, wildlife, safaris',             char:'Very shallow DOF, needs support' },
+    { range:'500 – 800mm',type:'Super Telephoto',       fov:'5° – 3°',     f:'ƒ/4 – ƒ/6.3',    use:'Distant wildlife, moon, birding',       char:'Tripod required, heat shimmer visible' },
+    { range:'60 – 105mm', type:'Macro',                  fov:'40° – 24°',   f:'ƒ/2.8',          use:'Close-up 1:1, product, details',        char:'Razor-thin DOF up close' },
+    { range:'17 / 24 / 50mm', type:'Tilt-Shift',        fov:'—',           f:'ƒ/4',            use:'Architecture, miniature effect',         char:'Controls focus plane & perspective' },
+];
+function renderLenses(arr) {
+    document.getElementById('lensTable').innerHTML = arr.map(l => `
+        <tr>
+            <td class="mono">${l.range}</td>
+            <td>${l.type}</td>
+            <td class="mono dim">${l.fov}</td>
+            <td class="mono dim">${l.f}</td>
+            <td>${l.use}</td>
+            <td class="dim tiny">${l.char}</td>
+        </tr>`).join('');
+}
+renderLenses(LENSES);
+attachSort(document.getElementById('lensTbl'), LENSES, renderLenses);
+
+/* ═══════════════════════════════════════════════════
+   COLOR CONVERSION UTILITIES
+═══════════════════════════════════════════════════ */
+function hexToRgb(hex) {
+    hex = hex.replace('#','').trim();
+    if (hex.length === 3) hex = hex.split('').map(c => c+c).join('');
+    if (!/^[0-9a-f]{6}$/i.test(hex)) return null;
+    const n = parseInt(hex, 16);
+    return { r:(n>>16)&255, g:(n>>8)&255, b:n&255 };
+}
+function rgbToHex(r,g,b) {
+    return '#' + [r,g,b].map(x => Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,'0')).join('').toUpperCase();
+}
+function rgbToHsl(r,g,b) {
+    r/=255; g/=255; b/=255;
+    const max=Math.max(r,g,b), min=Math.min(r,g,b);
+    let h, s, l=(max+min)/2;
+    if (max===min) { h=0; s=0; }
+    else {
+        const d = max-min;
+        s = l > 0.5 ? d/(2-max-min) : d/(max+min);
+        if (max===r)      h = ((g-b)/d + (g<b?6:0));
+        else if (max===g) h = ((b-r)/d + 2);
+        else              h = ((r-g)/d + 4);
+        h *= 60;
+    }
+    return { h:Math.round(h), s:Math.round(s*100), l:Math.round(l*100) };
+}
+function hslToRgb(h,s,l) {
+    h=((h%360)+360)%360 / 360; s/=100; l/=100;
+    let r,g,b;
+    if (s===0) { r=g=b=l; }
+    else {
+        const hue2rgb = (p,q,t) => {
+            if (t<0) t+=1; if (t>1) t-=1;
+            if (t<1/6) return p+(q-p)*6*t;
+            if (t<1/2) return q;
+            if (t<2/3) return p+(q-p)*(2/3-t)*6;
+            return p;
+        };
+        const q = l<0.5 ? l*(1+s) : l+s-l*s;
+        const p = 2*l - q;
+        r = hue2rgb(p,q,h+1/3);
+        g = hue2rgb(p,q,h);
+        b = hue2rgb(p,q,h-1/3);
+    }
+    return { r:Math.round(r*255), g:Math.round(g*255), b:Math.round(b*255) };
+}
+function rgbToCmyk(r,g,b) {
+    const rr=r/255, gg=g/255, bb=b/255;
+    const k = 1 - Math.max(rr,gg,bb);
+    if (k>=1) return {c:0,m:0,y:0,k:100};
+    const c = (1-rr-k)/(1-k);
+    const m = (1-gg-k)/(1-k);
+    const y = (1-bb-k)/(1-k);
+    return { c:Math.round(c*100), m:Math.round(m*100), y:Math.round(y*100), k:Math.round(k*100) };
+}
+function srgbToLinear(c) {
+    const v = c / 255;
+    return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+}
+function linearToSrgb(v) {
+    v = Math.max(0, Math.min(1, v));
+    const c = v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055;
+    return Math.round(c * 255);
+}
+
+/* ═══════════════════════════════════════════════════
+   COLOR CONVERTER
+═══════════════════════════════════════════════════ */
+const $ = id => document.getElementById(id);
+let ccState = { r:232, g:135, b:30 };
+let ccUpdating = false;
+
+function ccRenderAll() {
+    ccUpdating = true;
+    const { r,g,b } = ccState;
+    const hex = rgbToHex(r,g,b);
+    const hsl = rgbToHsl(r,g,b);
+    const cmyk = rgbToCmyk(r,g,b);
+
+    document.getElementById('ccPreview').style.background = hex;
+    $('ccHexOut').textContent = hex;
+    $('ccRgbOut').textContent = `rgb(${r}, ${g}, ${b})`;
+
+    const lum = (0.299*r + 0.587*g + 0.114*b);
+    const preview = document.getElementById('ccPreview');
+    preview.querySelector('.cc-preview-inner').style.color = lum > 128 ? '#0c0c0d' : '#ececed';
+
+    $('ccHex').value = hex;
+    $('ccR-s').value = r; $('ccR-n').value = r;
+    $('ccG-s').value = g; $('ccG-n').value = g;
+    $('ccB-s').value = b; $('ccB-n').value = b;
+    $('ccH-s').value = hsl.h; $('ccH-n').value = hsl.h;
+    $('ccS-s').value = hsl.s; $('ccS-n').value = hsl.s;
+    $('ccL-s').value = hsl.l; $('ccL-n').value = hsl.l;
+    $('ccC').textContent = cmyk.c;
+    $('ccM').textContent = cmyk.m;
+    $('ccY').textContent = cmyk.y;
+    $('ccK').textContent = cmyk.k;
+
+    renderHarmonies();
+    ccUpdating = false;
+}
+
+function ccSetFromRgb(r,g,b) {
+    ccState = {
+        r: Math.max(0, Math.min(255, r|0)),
+        g: Math.max(0, Math.min(255, g|0)),
+        b: Math.max(0, Math.min(255, b|0)),
+    };
+    ccRenderAll();
+}
+
+$('ccHex').addEventListener('input', e => {
+    if (ccUpdating) return;
+    const rgb = hexToRgb(e.target.value);
+    if (rgb) ccSetFromRgb(rgb.r, rgb.g, rgb.b);
+});
+
+['R','G','B'].forEach(ch => {
+    ['s','n'].forEach(suffix => {
+        $(`cc${ch}-${suffix}`).addEventListener('input', e => {
+            if (ccUpdating) return;
+            const val = parseInt(e.target.value) || 0;
+            const key = ch.toLowerCase();
+            const newState = { ...ccState, [key]: val };
+            ccSetFromRgb(newState.r, newState.g, newState.b);
+        });
+    });
+});
+
+['H','S','L'].forEach(ch => {
+    ['s','n'].forEach(suffix => {
+        $(`cc${ch}-${suffix}`).addEventListener('input', () => {
+            if (ccUpdating) return;
+            const h = parseInt($('ccH-n').value) || 0;
+            const s = parseInt($('ccS-n').value) || 0;
+            const l = parseInt($('ccL-n').value) || 0;
+            const realH = (ch==='H' && suffix==='s') ? parseInt($('ccH-s').value) : h;
+            const realS = (ch==='S' && suffix==='s') ? parseInt($('ccS-s').value) : s;
+            const realL = (ch==='L' && suffix==='s') ? parseInt($('ccL-s').value) : l;
+            const rgb = hslToRgb(realH, realS, realL);
+            ccSetFromRgb(rgb.r, rgb.g, rgb.b);
+        });
+    });
+});
+
+document.querySelectorAll('.cc-copy[data-copy]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+        const { r,g,b } = ccState;
+        let text = '';
+        if (btn.dataset.copy === 'hex')  text = rgbToHex(r,g,b);
+        if (btn.dataset.copy === 'rgb')  text = `rgb(${r}, ${g}, ${b})`;
+        if (btn.dataset.copy === 'hsl')  { const h = rgbToHsl(r,g,b); text = `hsl(${h.h}, ${h.s}%, ${h.l}%)`; }
+        flashCopy(btn, text);
+    });
+});
+
+async function flashCopy(btn, text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        btn.classList.add('copied');
+        const orig = btn.textContent;
+        btn.textContent = 'Copied';
+        setTimeout(() => { btn.classList.remove('copied'); btn.textContent = orig; }, 1200);
+    } catch (err) {
+        btn.textContent = 'Failed';
+        setTimeout(() => btn.textContent = 'Copy', 1200);
+    }
+}
+
+/* ═══════════════════════════════════════════════════
+   COLOR HARMONIES
+═══════════════════════════════════════════════════ */
+function hslEntry(h, s, l) {
+    h = ((h % 360) + 360) % 360;
+    s = Math.max(0, Math.min(100, s));
+    l = Math.max(0, Math.min(100, l));
+    const rgb = hslToRgb(h, s, l);
+    const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+    return {
+        hex,
+        rgb: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+        hsl: `hsl(${Math.round(h)}, ${Math.round(s)}%, ${Math.round(l)}%)`,
+    };
+}
+
+function buildHarmonies(r, g, b) {
+    const { h, s, l } = rgbToHsl(r, g, b);
+    return {
+        complementary: [ hslEntry(h,s,l), hslEntry(h+180,s,l) ],
+        analogous: [ hslEntry(h-30,s,l), hslEntry(h,s,l), hslEntry(h+30,s,l) ],
+        triadic: [ hslEntry(h,s,l), hslEntry(h+120,s,l), hslEntry(h+240,s,l) ],
+        tetradic: [ hslEntry(h,s,l), hslEntry(h+60,s,l), hslEntry(h+180,s,l), hslEntry(h+240,s,l) ],
+        square: [ hslEntry(h,s,l), hslEntry(h+90,s,l), hslEntry(h+180,s,l), hslEntry(h+270,s,l) ],
+        monochromatic: [-30,-15,0,15,30].map(d => hslEntry(h, s, l + d)),
+    };
+}
+
+function stripHTML(items) {
+    return items.map(x => `
+        <div class="h-sw">
+            <div class="h-swc" style="background:${x.hex};" data-hex="${x.hex}" title="Click to copy ${x.hex}"></div>
+            <div class="h-txt">
+                <span class="h-hex">${x.hex}</span>
+                <span class="h-code">${x.rgb}</span>
+                <span class="h-code">${x.hsl}</span>
+            </div>
+        </div>`).join('');
+}
+
+function renderHarmonies() {
+    const { r,g,b } = ccState;
+    const h = buildHarmonies(r, g, b);
+    $('chComp').innerHTML = stripHTML(h.complementary);
+    $('chAna').innerHTML  = stripHTML(h.analogous);
+    $('chTri').innerHTML  = stripHTML(h.triadic);
+    $('chTet').innerHTML  = stripHTML(h.tetradic);
+    $('chSq').innerHTML   = stripHTML(h.square);
+    $('chMono').innerHTML = stripHTML(h.monochromatic);
+}
+
+document.addEventListener('click', async e => {
+    const sw = e.target.closest('.h-swc');
+    if (!sw) return;
+    const hex = sw.dataset.hex;
+    try {
+        await navigator.clipboard.writeText(hex);
+        sw.classList.add('copied');
+        setTimeout(() => sw.classList.remove('copied'), 900);
+    } catch (err) { /* clipboard blocked */ }
+});
+
+ccRenderAll();
+
+/* ═══════════════════════════════════════════════════
+   MATERIALS — DATA
+═══════════════════════════════════════════════════ */
+const DIELECTRICS = [
+    { name:'Vacuum',                ior:'1.000', cat:'Reference',      note:'Reference value' },
+    { name:'Air (sea level)',       ior:'1.0003',cat:'Gas',            note:'Standard atmospheric' },
+    { name:'Ice',                   ior:'1.31',  cat:'Solid',          note:'Crystalline H₂O' },
+    { name:'Water (20 °C)',         ior:'1.333', cat:'Liquid',         note:'Clean fresh water' },
+    { name:'Ethanol',               ior:'1.36',  cat:'Liquid',         note:'Pure' },
+    { name:'Plexiglass / PMMA',     ior:'1.49',  cat:'Plastic',        note:'Acrylic, cast' },
+    { name:'Polycarbonate',         ior:'1.58',  cat:'Plastic',        note:'Lexan / Makrolon' },
+    { name:'Polystyrene',           ior:'1.55',  cat:'Plastic',        note:'Rigid / clear' },
+    { name:'Nylon',                 ior:'1.53',  cat:'Plastic',        note:'PA 6/6' },
+    { name:'Olive oil',             ior:'1.47',  cat:'Liquid',         note:'Extra virgin' },
+    { name:'Fused silica',          ior:'1.458', cat:'Glass',          note:'Quartz glass' },
+    { name:'Borosilicate glass',    ior:'1.47',  cat:'Glass',          note:'Pyrex / lab ware' },
+    { name:'Crown glass',           ior:'1.52',  cat:'Glass',          note:'Common window / optical' },
+    { name:'Flint glass',           ior:'1.62',  cat:'Glass',          note:'High-dispersion optical' },
+    { name:'Quartz (crystal)',      ior:'1.544', cat:'Crystal',        note:'SiO₂ — birefringent' },
+    { name:'Amber',                 ior:'1.55',  cat:'Organic',        note:'Fossil resin' },
+    { name:'Pearl',                 ior:'1.53',  cat:'Organic',        note:'Nacre / mother of pearl' },
+    { name:'Emerald',               ior:'1.57',  cat:'Gemstone',       note:'Beryl' },
+    { name:'Topaz',                 ior:'1.63',  cat:'Gemstone',       note:'' },
+    { name:'Jade',                  ior:'1.67',  cat:'Gemstone',       note:'Jadeite / nephrite' },
+    { name:'Ruby / Sapphire',       ior:'1.77',  cat:'Gemstone',       note:'Corundum' },
+    { name:'Zircon',                ior:'1.95',  cat:'Gemstone',       note:'' },
+    { name:'Cubic zirconia',        ior:'2.16',  cat:'Gemstone',       note:'Diamond simulant' },
+    { name:'Diamond',               ior:'2.417', cat:'Gemstone',       note:'Highest common' },
+    { name:'Moissanite',            ior:'2.65',  cat:'Gemstone',       note:'Silicon carbide' },
+    { name:'Rutile (TiO₂)',         ior:'2.9',   cat:'Crystal',        note:'Exceptionally high' },
+    { name:'Human skin',            ior:'1.38',  cat:'Organic',        note:'SSS approximation' },
+    { name:'Human eye — lens',      ior:'1.41',  cat:'Organic',        note:'Crystalline lens' },
+    { name:'Asphalt',               ior:'1.64',  cat:'Composite',      note:'Bitumen binder' },
+    { name:'Concrete',              ior:'1.55',  cat:'Composite',      note:'Set portland' },
+];
+
+function renderDielectrics(arr) {
+    document.getElementById('dielectricTable').innerHTML = arr.map(d => `
+        <tr>
+            <td>${d.name}</td>
+            <td class="mono">${d.ior}</td>
+            <td class="dim tiny">${d.cat}</td>
+            <td class="dim tiny">${d.note}</td>
+        </tr>`).join('');
+}
+renderDielectrics(DIELECTRICS);
+attachSort(document.getElementById('dielectricTbl'), DIELECTRICS, renderDielectrics);
+
+// F0 values from "Real-Time Rendering" / Naty Hoffman, linear space
+const METALS = [
+    { name:'Silver',      r:0.972, g:0.960, b:0.915 },
+    { name:'Aluminum',    r:0.913, g:0.921, b:0.925 },
+    { name:'Gold',        r:1.000, g:0.766, b:0.336 },
+    { name:'Copper',      r:0.955, g:0.638, b:0.538 },
+    { name:'Chromium',    r:0.549, g:0.556, b:0.554 },
+    { name:'Nickel',      r:0.660, g:0.609, b:0.526 },
+    { name:'Titanium',    r:0.542, g:0.497, b:0.449 },
+    { name:'Cobalt',      r:0.662, g:0.655, b:0.634 },
+    { name:'Platinum',    r:0.672, g:0.637, b:0.585 },
+    { name:'Iron',        r:0.562, g:0.565, b:0.578 },
+    { name:'Brass',       r:0.910, g:0.778, b:0.423 },
+    { name:'Bronze',      r:0.550, g:0.472, b:0.425 },
+    { name:'Palladium',   r:0.733, g:0.697, b:0.652 },
+    { name:'Zinc',        r:0.664, g:0.824, b:0.850 },
+    { name:'Tungsten',    r:0.504, g:0.498, b:0.478 },
+    { name:'Lead',        r:0.632, g:0.626, b:0.641 },
+    { name:'Mercury',     r:0.781, g:0.780, b:0.778 },
+    { name:'Steel',       r:0.560, g:0.570, b:0.580 },
+];
+
+function renderMetals(arr) {
+    document.getElementById('metalTable').innerHTML = arr.map(m => {
+        const R = Math.round(m.r*255);
+        const G = Math.round(m.g*255);
+        const B = Math.round(m.b*255);
+        const hex = rgbToHex(R,G,B);
+        return `
+        <tr>
+            <td>${m.name}</td>
+            <td class="mono">${m.r.toFixed(3)}</td>
+            <td class="mono">${m.g.toFixed(3)}</td>
+            <td class="mono">${m.b.toFixed(3)}</td>
+            <td class="mono dim">${hex}</td>
+            <td><span class="swatch" style="background:${hex}"></span></td>
+        </tr>`;
+    }).join('');
+}
+renderMetals(METALS);
+attachSort(document.getElementById('metalTbl'), METALS, renderMetals);
+
+const ALBEDO = [
+    { name:'Fresh snow',         a:'0.80 – 0.90', hex:'#F2F2F2', note:'Highest natural albedo' },
+    { name:'Old / melting snow', a:'0.40 – 0.70', hex:'#B8B8B5', note:'Contaminated, granular' },
+    { name:'Sea ice',             a:'0.50 – 0.70', hex:'#C2CCD0', note:'Depends on age' },
+    { name:'White plaster / paint', a:'0.85',      hex:'#EEECE5', note:'Studio walls' },
+    { name:'Clean concrete (new)', a:'0.30 – 0.55', hex:'#AFA99F', note:'Freshly poured' },
+    { name:'Weathered concrete',   a:'0.17 – 0.27', hex:'#7D776E', note:'Aged urban surface' },
+    { name:'Dry sand (desert)',    a:'0.40',       hex:'#C6AD7E', note:'Sahara ≈ 0.45' },
+    { name:'Wet sand',             a:'0.25',       hex:'#A0875E', note:'' },
+    { name:'Dry clay soil',        a:'0.33',       hex:'#9E7E5E', note:'' },
+    { name:'Dark earth / topsoil', a:'0.17',       hex:'#4A3A2A', note:'Loam' },
+    { name:'Grass (green)',        a:'0.25',       hex:'#5A6D3A', note:'Mowed, healthy' },
+    { name:'Deciduous forest',     a:'0.15 – 0.18', hex:'#3E4B2A', note:'Leafed canopy' },
+    { name:'Coniferous forest',    a:'0.08 – 0.15', hex:'#2A3722', note:'Dark needles' },
+    { name:'Tree bark',            a:'0.15',       hex:'#5E4A38', note:'Average broadleaf' },
+    { name:'Brick (red)',          a:'0.20 – 0.40', hex:'#8A4A34', note:'Fired clay' },
+    { name:'Asphalt (fresh)',      a:'0.04',       hex:'#202020', note:'Lowest common albedo' },
+    { name:'Asphalt (weathered)',  a:'0.12',       hex:'#4C4C4C', note:'Sun-bleached' },
+    { name:'Coal',                 a:'0.04',       hex:'#1C1C1C', note:'Anthracite' },
+    { name:'Charcoal',             a:'0.04',       hex:'#181818', note:'' },
+    { name:'Water (ocean)',         a:'0.06',       hex:'#2E4A5C', note:'At sun near horizon, higher' },
+    { name:'Water (lake, overhead)', a:'0.10',     hex:'#3A5A70', note:'Sun high' },
+    { name:'Moon (avg)',            a:'0.12',       hex:'#5A5A58', note:'Bond albedo' },
+    { name:'Earth (avg)',           a:'0.30',       hex:'#6E7480', note:'Global average' },
+    { name:'Mars (avg)',            a:'0.25',       hex:'#8A5A3E', note:'Oxidized surface' },
+    { name:'Venus',                 a:'0.75',       hex:'#E8DFC8', note:'Cloud-covered' },
+    { name:'Blackbody reference',   a:'0.02',       hex:'#0C0C0C', note:'Near-perfect absorber' },
+];
+
+function renderAlbedo(arr) {
+    document.getElementById('albedoTable').innerHTML = arr.map(x => `
+        <tr>
+            <td>${x.name}</td>
+            <td class="mono">${x.a}</td>
+            <td class="mono dim">${x.hex.toUpperCase()}</td>
+            <td><span class="swatch" style="background:${x.hex}"></span></td>
+            <td class="dim tiny">${x.note}</td>
+        </tr>`).join('');
+}
+renderAlbedo(ALBEDO);
+attachSort(document.getElementById('albedoTbl'), ALBEDO, renderAlbedo);
+
+/* ═══════════════════════════════════════════════════
+   LIGHT / KELVIN CALCULATOR
+═══════════════════════════════════════════════════ */
+// Tanner Helland approximation of the Planckian locus.
+// Valid range roughly 1000–40000 K. Output clamped to 0–255.
+function kelvinToRgb(k) {
+    const t = Math.max(1000, k) / 100;
+    let r, g, b;
+    if (t <= 66) {
+        r = 255;
+        g = 99.4708025861 * Math.log(t) - 161.1195681661;
+        if (t <= 19) b = 0;
+        else         b = 138.5177312231 * Math.log(t - 10) - 305.0447927307;
+    } else {
+        r = 329.698727446 * Math.pow(t - 60, -0.1332047592);
+        g = 288.1221695283 * Math.pow(t - 60, -0.0755148492);
+        b = 255;
+    }
+    const clamp = x => Math.max(0, Math.min(255, Math.round(x)));
+    return { r: clamp(r), g: clamp(g), b: clamp(b) };
+}
+
+const KELVIN_PRESETS = [
+    { k:1850, label:'Candle' },
+    { k:2700, label:'Warm LED' },
+    { k:3200, label:'Tungsten' },
+    { k:4000, label:'Fluorescent' },
+    { k:5000, label:'D50' },
+    { k:5600, label:'Daylight' },
+    { k:6500, label:'D65' },
+    { k:7500, label:'North sky' },
+    { k:10000,label:'Blue sky' },
+];
+
+const KELVIN_REFERENCE = [
+    { k:1000,  name:'Dim candle, low flame',      cat:'Fire',         note:'Deep orange-red' },
+    { k:1850,  name:'Candle, match flame',         cat:'Fire',         note:'Warm orange' },
+    { k:2000,  name:'High-pressure sodium lamp',   cat:'Discharge',    note:'Street lighting' },
+    { k:2400,  name:'Tungsten 40W',                cat:'Incandescent', note:'Domestic bulb' },
+    { k:2700,  name:'Warm-white LED / CFL',        cat:'LED',          note:'"Soft white" replacement' },
+    { k:2800,  name:'Tungsten 60W',                cat:'Incandescent', note:'Domestic bulb' },
+    { k:3000,  name:'Tungsten 100W',               cat:'Incandescent', note:'Domestic / hotel lobby' },
+    { k:3200,  name:'Tungsten studio / photoflood',cat:'Incandescent', note:'Standard cine tungsten' },
+    { k:3400,  name:'Halogen photo lamp',          cat:'Incandescent', note:'Slightly whiter halogen' },
+    { k:4000,  name:'Fluorescent warm white',      cat:'Discharge',    note:'Commercial indoor' },
+    { k:4100,  name:'Moonlight (full)',            cat:'Natural',      note:'Sun reflected off lunar surface' },
+    { k:4300,  name:'Early-morning sun',            cat:'Natural',      note:'Low-angle' },
+    { k:5000,  name:'D50 print viewing',            cat:'Reference',    note:'Graphic arts standard' },
+    { k:5400,  name:'Mid-morning sunlight',         cat:'Natural',      note:'' },
+    { k:5500,  name:'Electronic flash / strobe',    cat:'Flash',        note:'Camera strobe reference' },
+    { k:5600,  name:'HMI / daylight-balanced cine', cat:'Discharge',    note:'"Daylight" on set' },
+    { k:6000,  name:'Noon direct sunlight',         cat:'Natural',      note:'Clear day' },
+    { k:6500,  name:'D65 / sRGB display white',     cat:'Reference',    note:'Video, web, Rec.709' },
+    { k:7000,  name:'Overcast daylight',            cat:'Natural',      note:'Diffuse cloud' },
+    { k:7500,  name:'North sky / open shade',       cat:'Natural',      note:'Indirect sun' },
+    { k:9000,  name:'Blue sky (zenith)',            cat:'Natural',      note:'' },
+    { k:10000, name:'Clear blue sky',               cat:'Natural',      note:'High altitude' },
+    { k:12000, name:'Polar / deep-shadow sky',      cat:'Natural',      note:'Extreme blue' },
+    { k:15000, name:'Blue hour',                    cat:'Natural',      note:'Twilight top of sky' },
+];
+
+let kvState = { k: 5600, b: 1.0 };
+
+// Scale chromaticity by brightness in linear light, then gamma-encode back to sRGB.
+// This preserves hue across brightness changes (ratio of channels is invariant).
+function kelvinScaled(k, brightness) {
+    const nominal = kelvinToRgb(k);
+    const linR = srgbToLinear(nominal.r) * brightness;
+    const linG = srgbToLinear(nominal.g) * brightness;
+    const linB = srgbToLinear(nominal.b) * brightness;
+    return {
+        nominal,
+        linear: { r: linR, g: linG, b: linB },
+        srgb:   { r: linearToSrgb(linR), g: linearToSrgb(linG), b: linearToSrgb(linB) },
+    };
+}
+
+function kvRender() {
+    const k = Math.max(1000, Math.min(40000, kvState.k | 0));
+    const bPct = Math.max(0, Math.min(100, kvState.b * 100));
+    kvState.k = k;
+    kvState.b = bPct / 100;
+
+    const res = kelvinScaled(k, kvState.b);
+    const nomHex = rgbToHex(res.nominal.r, res.nominal.g, res.nominal.b);
+    const hex = rgbToHex(res.srgb.r, res.srgb.g, res.srgb.b);
+    const hsl = rgbToHsl(res.srgb.r, res.srgb.g, res.srgb.b);
+
+    const preview = document.getElementById('kvPreview');
+    preview.style.background = hex;
+
+    $('kvKelvinOut').textContent = `${k} K · ${Math.round(bPct)}%`;
+    $('kvHexOut').textContent = hex;
+    $('kvNominal').textContent = `${nomHex} @ 100%`;
+    $('kvHex').textContent = hex;
+    $('kvRgb').textContent = `${res.srgb.r}, ${res.srgb.g}, ${res.srgb.b}`;
+    $('kvHsl').textContent = `${hsl.h}°, ${hsl.s}%, ${hsl.l}%`;
+    $('kvLin').textContent = `${res.linear.r.toFixed(3)}, ${res.linear.g.toFixed(3)}, ${res.linear.b.toFixed(3)}`;
+
+    const slider = $('kvSlider');
+    if (document.activeElement !== slider) slider.value = Math.min(15000, k);
+    const input = $('kvInput');
+    if (document.activeElement !== input) input.value = k;
+
+    const brSlider = $('kvBrightness');
+    if (document.activeElement !== brSlider) brSlider.value = Math.round(bPct);
+    const brInput = $('kvBrightnessNum');
+    if (document.activeElement !== brInput) brInput.value = Math.round(bPct);
+}
+
+function kvSet(k) {
+    kvState.k = k;
+    kvRender();
+}
+function kvSetBrightness(bPct) {
+    kvState.b = Math.max(0, Math.min(100, bPct)) / 100;
+    kvRender();
+}
+
+$('kvSlider').addEventListener('input', e => kvSet(parseInt(e.target.value) || 5600));
+$('kvInput').addEventListener('input', e => {
+    const v = parseInt(e.target.value);
+    if (!isNaN(v)) kvSet(v);
+});
+$('kvBrightness').addEventListener('input', e => kvSetBrightness(parseInt(e.target.value)));
+$('kvBrightnessNum').addEventListener('input', e => {
+    const v = parseInt(e.target.value);
+    if (!isNaN(v)) kvSetBrightness(v);
+});
+
+// Presets
+const kvPresetsEl = document.getElementById('kvPresets');
+kvPresetsEl.innerHTML = KELVIN_PRESETS.map(p =>
+    `<button class="kv-preset" data-k="${p.k}"><span class="kv-preset-k">${p.k}</span>${p.label}</button>`
+).join('');
+kvPresetsEl.querySelectorAll('.kv-preset').forEach(btn => {
+    btn.addEventListener('click', () => kvSet(parseInt(btn.dataset.k)));
+});
+
+// Copy buttons for kelvin outputs — copies the currently-displayed (scaled) values
+document.querySelectorAll('[data-kv-copy]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const res = kelvinScaled(kvState.k, kvState.b);
+        const { r, g, b } = res.srgb;
+        const hsl = rgbToHsl(r, g, b);
+        let text = '';
+        if (btn.dataset.kvCopy === 'hex') text = rgbToHex(r, g, b);
+        if (btn.dataset.kvCopy === 'rgb') text = `rgb(${r}, ${g}, ${b})`;
+        if (btn.dataset.kvCopy === 'hsl') text = `hsl(${hsl.h}, ${hsl.s}%, ${hsl.l}%)`;
+        if (btn.dataset.kvCopy === 'lin') {
+            text = `${res.linear.r.toFixed(3)}, ${res.linear.g.toFixed(3)}, ${res.linear.b.toFixed(3)}`;
+        }
+        flashCopy(btn, text);
+    });
+});
+
+// Reference table
+function renderKvRef(arr) {
+    document.getElementById('kvRefTable').innerHTML = arr.map(x => {
+        const rgb = kelvinToRgb(x.k);
+        const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+        return `
+        <tr>
+            <td class="mono">${x.k} K</td>
+            <td>${x.name}</td>
+            <td><span class="swatch" style="background:${hex}"></span><span class="mono dim tiny">${hex}</span></td>
+            <td class="dim tiny">${x.cat}</td>
+            <td class="dim tiny">${x.note}</td>
+        </tr>`;
+    }).join('');
+}
+renderKvRef(KELVIN_REFERENCE);
+attachSort(document.getElementById('kvTbl'), KELVIN_REFERENCE, renderKvRef);
+
+kvRender();
+
+/* ═══════════════════════════════════════════════════
+   CAMERA SHOTS
+═══════════════════════════════════════════════════ */
+const SHOT_SIZES = [
+    {
+        name: 'Extreme Wide / Extreme Long Shot',
+        abbr: 'EWS · ELS',
+        svg: `<svg viewBox="0 0 100 56" preserveAspectRatio="xMidYMid meet">
+            <path d="M 0 50 L 18 38 L 32 45 L 48 34 L 64 43 L 80 32 L 100 46 L 100 56 L 0 56 Z" fill="currentColor" opacity=".18"/>
+            <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" opacity=".4" stroke-width=".4"/>
+            <circle cx="50" cy="46.4" r=".7" fill="currentColor"/>
+            <rect x="49.55" y="47" width=".9" height="3" fill="currentColor"/>
+        </svg>`,
+        desc: 'Subject is dwarfed by the environment — geography, scale, and isolation dominate. Often used to open a sequence or punctuate a chapter.',
+        use: 'Establishing place, expressing solitude, contrast of human vs. landscape, epic scope.',
+        light: 'Natural light usually dictates everything. Watch the sun angle (golden/blue hour adds depth); haze and atmospherics give scale. Practical fixtures need to be huge to register — favour shooting around them.',
+        lens: 'Wide to ultra-wide primes 14–28mm, or long lens 100–300mm to compress vast distances (telephoto wide).',
+        film: '<em>Lawrence of Arabia</em> (Lean / Young, 1962); <em>2001: A Space Odyssey</em> (Kubrick / Unsworth, 1968); <em>The Revenant</em> (Iñárritu / Lubezki, 2015).'
+    },
+    {
+        name: 'Wide / Long Shot',
+        abbr: 'WS · LS',
+        svg: `<svg viewBox="0 0 100 56" preserveAspectRatio="xMidYMid meet">
+            <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" opacity=".3" stroke-width=".4"/>
+            <circle cx="50" cy="14" r="3.2" fill="currentColor"/>
+            <path d="M 46.5 17.5 L 53.5 17.5 L 55 36 L 52.5 36 L 52.5 50 L 47.5 50 L 47.5 36 L 45 36 Z" fill="currentColor"/>
+        </svg>`,
+        desc: 'Full figure visible with significant headroom and surrounding space. Subject and environment share roughly equal weight.',
+        use: 'Establishing geography of a scene, blocking actor relationships, choreography (dance, fight, action), comedy bits where physicality matters.',
+        light: 'Bigger source-to-subject distances; soft sources need to be larger to wrap. Be mindful of background contrast — keep separation between subject and walls (back-light or value contrast).',
+        lens: '24–35mm for immersive wides, 50mm for naturalistic full shots. Avoid going too wide on faces unless distortion is intentional.',
+        film: '<em>The Shining</em> (Kubrick / Alcott, 1980 — corridor wides); <em>Drive</em> (Refn / Sigel, 2011); <em>There Will Be Blood</em> (Anderson / Elswit, 2007).'
+    },
+    {
+        name: 'Full Shot',
+        abbr: 'FS',
+        svg: `<svg viewBox="0 0 100 56" preserveAspectRatio="xMidYMid meet">
+            <circle cx="50" cy="8" r="4.2" fill="currentColor"/>
+            <path d="M 45 12.5 L 55 12.5 L 57.5 32 L 53 32 L 53 54 L 47 54 L 47 32 L 42.5 32 Z" fill="currentColor"/>
+        </svg>`,
+        desc: 'Subject fills the frame head to toe with minimal margin. Body language, costume, and posture become the primary information.',
+        use: 'Costume reveals, dance, physical performance, characters defined by their stance or silhouette.',
+        light: 'Top-down or three-quarter sources work best to model the whole body without flattening. Beware floor reflections washing out shadow detail; flag the floor if needed.',
+        lens: '35–50mm for natural proportions; 85mm full-shot for a flatter, more "fashion" look (requires distance).',
+        film: '<em>The Grand Budapest Hotel</em> (Anderson / Yeoman, 2014); <em>Wonka</em>-era musical numbers; classic Astaire/Kelly Hollywood numbers (always full shot to show the feet).'
+    },
+    {
+        name: 'Medium Long Shot / Cowboy',
+        abbr: 'MLS · 3/4',
+        svg: `<svg viewBox="0 0 100 56" preserveAspectRatio="xMidYMid meet">
+            <circle cx="50" cy="11" r="5.5" fill="currentColor"/>
+            <path d="M 42 17 L 58 17 L 63 56 L 37 56 Z" fill="currentColor"/>
+        </svg>`,
+        desc: 'Frames from roughly mid-thigh up — also called the "cowboy shot" because it kept the holster visible in westerns.',
+        use: 'Conversation with body language, standoffs, hands-in-pockets behaviour, transitions between wide and medium without losing posture.',
+        light: 'A practical eye-line key starts to matter; you can begin shaping the face. Watch hand shadows on the body if hands are gesturing.',
+        lens: '40–50mm. Sergio Leone famously favoured the cowboy shot framing on 50–75mm with deep focus.',
+        film: '<em>The Good, the Bad and the Ugly</em> (Leone / Delli Colli, 1966); <em>No Country for Old Men</em> (Coens / Deakins, 2007).'
+    },
+    {
+        name: 'Medium Shot',
+        abbr: 'MS',
+        svg: `<svg viewBox="0 0 100 56" preserveAspectRatio="xMidYMid meet">
+            <circle cx="50" cy="13" r="7.2" fill="currentColor"/>
+            <path d="M 38 21 L 62 21 L 70 56 L 30 56 Z" fill="currentColor"/>
+        </svg>`,
+        desc: 'Waist up. The default workhorse shot for dialogue — close enough to read expression, wide enough to register gesture and the immediate space.',
+        use: 'Two-person dialogue, exposition, interview-style coverage. Often paired with OTS in shot/reverse-shot.',
+        light: 'Standard portrait lighting playbook applies — soft 45° key, fill at 2:1 or 3:1, gentle backlight for separation. Watch background bleed-through if light is on a stand behind subject.',
+        lens: '50mm "normal" or 35mm if the environment matters; 85mm for a flatter, more flattering compression.',
+        film: '<em>Heat</em> (Mann / Spinotti, 1995 — diner scene); <em>Pulp Fiction</em> (Tarantino / Sekula, 1994); virtually any Sorkin walk-and-talk.'
+    },
+    {
+        name: 'Medium Close-Up',
+        abbr: 'MCU',
+        svg: `<svg viewBox="0 0 100 56" preserveAspectRatio="xMidYMid meet">
+            <circle cx="50" cy="16" r="11" fill="currentColor"/>
+            <path d="M 32 27 L 68 27 L 78 56 L 22 56 Z" fill="currentColor"/>
+        </svg>`,
+        desc: 'Chest up. The "TV news" framing — face dominates but shoulders anchor the body in space.',
+        use: 'Emotional dialogue, reactions, confessions, podcast-style framing. Common A-camera in modern coverage.',
+        light: 'Eye light becomes essential. Hard sources start to show pores and texture — choose softness deliberately based on character. Hair light on dark hair against dark background helps.',
+        lens: '50–85mm. Standard "interview" framing is 85mm at f/2 – f/2.8 for soft background fall-off.',
+        film: '<em>The Silence of the Lambs</em> (Demme / Fujimoto, 1991 — direct-address MCUs); <em>Marriage Story</em> (Baumbach / Delbonnel, 2019).'
+    },
+    {
+        name: 'Close-Up',
+        abbr: 'CU',
+        svg: `<svg viewBox="0 0 100 56" preserveAspectRatio="xMidYMid meet">
+            <ellipse cx="50" cy="30" rx="20" ry="26" fill="currentColor"/>
+        </svg>`,
+        desc: 'Face fills the frame from forehead to chin (or just below). Maximum emotional intimacy.',
+        use: 'Climactic emotion, internal moments, reactions to off-screen events, "the moment of decision".',
+        light: 'Every imperfection is visible. Diffusion (1/8 or 1/4 Black Pro-Mist), softer keys, careful catch-light placement. For faces, key at 30–45° from camera with fill controlled by ratio. Avoid harsh top-light unless deliberately villainous.',
+        lens: '85–135mm at f/2 – f/2.8. Long-lens close-ups flatten facial features flatteringly and throw the background to creamy bokeh.',
+        film: '<em>The Passion of Joan of Arc</em> (Dreyer / Maté, 1928 — the canonical close-up film); <em>Persona</em> (Bergman / Nykvist, 1966); <em>Once Upon a Time in the West</em> (Leone / Delli Colli, 1968).'
+    },
+    {
+        name: 'Extreme Close-Up',
+        abbr: 'ECU · BCU',
+        svg: `<svg viewBox="0 0 100 56" preserveAspectRatio="xMidYMid meet">
+            <ellipse cx="50" cy="42" rx="65" ry="36" fill="currentColor"/>
+            <ellipse cx="34" cy="22" rx="9" ry="3.8" fill="var(--bg)"/>
+            <ellipse cx="66" cy="22" rx="9" ry="3.8" fill="var(--bg)"/>
+            <circle cx="34" cy="22" r="2.6" fill="currentColor"/>
+            <circle cx="66" cy="22" r="2.6" fill="currentColor"/>
+        </svg>`,
+        desc: 'Single feature in frame — eyes, mouth, hand, the trigger of a gun. Strips away context and forces the viewer to fixate on detail.',
+        use: 'Tension peaks, reveals, "the eyes have it", graphic / abstract beats. Sergio Leone built entire showdowns on cuts between ECU eyes.',
+        light: 'Tiny eye lights or rings can register strongly. Macro work means almost no depth of field — focus is critical. Soft side or kicker light separates the iris from skin.',
+        lens: 'Macro lens (90–105mm macro) or 100–200mm with extension tubes. Even with long lenses, expect to be very close.',
+        film: '<em>The Good, the Bad and the Ugly</em> (Leone, 1966 — final standoff); <em>Requiem for a Dream</em> (Aronofsky / Libatique, 2000); <em>Drive</em> (Refn / Sigel, 2011).'
+    },
+    {
+        name: 'Insert',
+        abbr: 'INSERT',
+        svg: `<svg viewBox="0 0 100 56" preserveAspectRatio="xMidYMid meet">
+            <rect x="20" y="14" width="60" height="32" fill="currentColor" opacity=".15"/>
+            <rect x="32" y="22" width="36" height="16" fill="currentColor" opacity=".55" rx="1"/>
+            <line x1="36" y1="28" x2="64" y2="28" stroke="var(--bg)" stroke-width=".7"/>
+            <line x1="36" y1="32" x2="58" y2="32" stroke="var(--bg)" stroke-width=".7"/>
+        </svg>`,
+        desc: 'Detail shot of an object — a watch face, a note, a phone screen, a hand turning a key. Carries narrative information rather than emotion.',
+        use: 'Plot points, evidence, time/location stamps, montage rhythm. Shot separately from coverage, often by a second unit.',
+        light: 'Total control: small sources and bounce cards can be inches from the object. Beware reflections on screens, glass, polished metal — polariser or angle change usually fixes it.',
+        lens: 'Macro 50–100mm. Aperture stopped down (f/8 – f/11) to keep the whole object in focus.',
+        film: '<em>Kill Bill</em> (Tarantino / Richardson, 2003 — sword close-ups); <em>Phantom Thread</em> (Anderson, 2017); virtually all Hitchcock plot-device cuts.'
+    },
+];
+
+const SHOT_ANGLES = [
+    {
+        name: 'Eye Level',
+        abbr: 'NEUTRAL',
+        svg: `<svg viewBox="0 0 100 56">
+            <line x1="0" y1="48" x2="100" y2="48" stroke="currentColor" opacity=".3"/>
+            <circle cx="72" cy="22" r="3" fill="currentColor"/>
+            <line x1="72" y1="25" x2="72" y2="40" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="40" x2="68" y2="48" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="40" x2="76" y2="48" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="30" x2="66" y2="35" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="30" x2="78" y2="35" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="14" y="20" width="13" height="9" fill="currentColor"/>
+            <polygon points="27,21 33,24.5 27,28" fill="currentColor"/>
+            <line x1="33" y1="24.5" x2="69" y2="22" stroke="currentColor" opacity=".4" stroke-dasharray="2,2"/>
+        </svg>`,
+        desc: 'Camera at the subject\'s eye height. The most neutral, conversational angle — neither glorifies nor diminishes.',
+        use: 'Default for dialogue, naturalistic drama. Conveys equality and direct identification with the subject.',
+        light: 'No special considerations beyond standard portrait lighting. The most "honest" angle for testing your light setup.',
+        lens: 'Any focal length — choice depends on shot size, not the angle.',
+        film: '<em>The Social Network</em> (Fincher / Cronenweth, 2010); most Linklater dialogue work; default for Ozu in his 1m-tall "tatami shots".'
+    },
+    {
+        name: 'High Angle',
+        abbr: 'HIGH',
+        svg: `<svg viewBox="0 0 100 56">
+            <line x1="0" y1="48" x2="100" y2="48" stroke="currentColor" opacity=".3"/>
+            <circle cx="72" cy="32" r="3" fill="currentColor"/>
+            <line x1="72" y1="35" x2="72" y2="44" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="44" x2="68" y2="48" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="44" x2="76" y2="48" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="38" x2="66" y2="42" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="38" x2="78" y2="42" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="14" y="9" width="13" height="9" fill="currentColor" transform="rotate(20 20.5 13.5)"/>
+            <polygon points="27,12 33,18 25,18" fill="currentColor"/>
+            <line x1="29" y1="18" x2="68" y2="30" stroke="currentColor" opacity=".4" stroke-dasharray="2,2"/>
+        </svg>`,
+        desc: 'Camera looks down at the subject. Compresses the figure and visually diminishes power.',
+        use: 'Showing vulnerability, isolation, defeat, surveillance. Also useful for crowd geometry and revealing layout.',
+        light: 'Top-light from above the camera reads naturally; watch for raccoon eyes (deep orbital shadows) — add bounce or eye light. Shadows lengthen on the floor below subject and become part of the composition.',
+        lens: '24–50mm to keep the geometric distortion of looking down feeling spatial; longer lenses flatten the angle\'s impact.',
+        film: '<em>Citizen Kane</em> (Welles / Toland, 1941 — diminished Kane); <em>The Lord of the Rings</em> (Jackson / Lesnie, 2001 — hobbits); <em>Joker</em> (Phillips / Sher, 2019).'
+    },
+    {
+        name: 'Low Angle',
+        abbr: 'LOW',
+        svg: `<svg viewBox="0 0 100 56">
+            <line x1="0" y1="48" x2="100" y2="48" stroke="currentColor" opacity=".3"/>
+            <circle cx="72" cy="14" r="3" fill="currentColor"/>
+            <line x1="72" y1="17" x2="72" y2="32" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="32" x2="68" y2="42" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="32" x2="76" y2="42" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="22" x2="66" y2="28" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="72" y1="22" x2="78" y2="28" stroke="currentColor" stroke-width="1.4"/>
+            <rect x="14" y="38" width="13" height="9" fill="currentColor" transform="rotate(-20 20.5 42.5)"/>
+            <polygon points="27,38 33,32 25,32" fill="currentColor"/>
+            <line x1="29" y1="32" x2="69" y2="20" stroke="currentColor" opacity=".4" stroke-dasharray="2,2"/>
+        </svg>`,
+        desc: 'Camera looks up at the subject. Subject becomes towering, dominant, often heroic or threatening.',
+        use: 'Power, authority, intimidation, monumentality. Heroes in capes, villains in doorways, kids looking at adults.',
+        light: 'Practicals and the ceiling become dominant compositional elements — light the ceiling deliberately or accept it as a black void. Underlight from below adds menace; a key from above-camera can rim the jawline strongly.',
+        lens: '21–35mm for dramatic looming distortion; 50mm for a more grounded heroic angle.',
+        film: '<em>Citizen Kane</em> (Welles, 1941 — Kane in his hall); <em>The Dark Knight</em> (Nolan / Pfister, 2008 — Joker interrogation); <em>There Will Be Blood</em> (Anderson / Elswit, 2007).'
+    },
+    {
+        name: 'Dutch / Canted Angle',
+        abbr: 'DUTCH',
+        svg: `<svg viewBox="0 0 100 56">
+            <g transform="rotate(-15 50 28)">
+                <line x1="-10" y1="42" x2="110" y2="42" stroke="currentColor" opacity=".3"/>
+                <circle cx="50" cy="14" r="4.5" fill="currentColor"/>
+                <path d="M 44 19 L 56 19 L 60 42 L 40 42 Z" fill="currentColor"/>
+            </g>
+            <line x1="2" y1="6" x2="2" y2="50" stroke="currentColor" opacity=".5"/>
+            <line x1="2" y1="50" x2="98" y2="50" stroke="currentColor" opacity=".5"/>
+        </svg>`,
+        desc: 'The camera is rolled — horizon tilts. Creates instability, disorientation, dread.',
+        use: 'Psychological tension, drug states, action chaos, comic-book stylisation, Expressionist horror.',
+        light: 'Lighting setup is unchanged but the visible shadow direction now reads "wrong" relative to the world — lean into it. Horizons in the background (windows, doorframes) become diagonals; place them deliberately.',
+        lens: 'Wider lenses (24–35mm) amplify the tilt; long lenses can make it feel intentional rather than chaotic.',
+        film: '<em>The Third Man</em> (Reed / Krasker, 1949 — defining example); <em>Battlefield Earth</em> (notoriously over-used); <em>Thor</em> (Branagh / Sigel, 2011).'
+    },
+    {
+        name: "Bird's Eye / Top-Down",
+        abbr: 'OVERHEAD',
+        svg: `<svg viewBox="0 0 100 56">
+            <rect x="20" y="6" width="60" height="44" fill="none" stroke="currentColor" opacity=".25"/>
+            <circle cx="50" cy="22" r="5" fill="currentColor"/>
+            <path d="M 42 27 L 58 27 L 60 42 L 40 42 Z" fill="currentColor"/>
+            <line x1="44" y1="14" x2="56" y2="14" stroke="currentColor" opacity=".35" stroke-width=".5"/>
+            <line x1="44" y1="46" x2="56" y2="46" stroke="currentColor" opacity=".35" stroke-width=".5"/>
+        </svg>`,
+        desc: 'Camera looks straight down — God\'s-eye view. Subject becomes graphic shape, often pattern-like.',
+        use: 'Omniscient narration, choreography (Busby Berkeley), tableaux of bodies/objects, urban geometry, pure design moments.',
+        light: 'Hardest angle to light cleanly — the camera position throws shadows into the scene. Use space lights, bounce, or a large soft top-source rigged off-camera. Polished floors reflect the rig; mat them down.',
+        lens: '14–24mm to fit the floor; longer lenses for graphic isolation. Drones and jib arms make this a routine shot now.',
+        film: '<em>The Shining</em> (Kubrick / Alcott, 1980 — Jack at the typewriter); <em>Magnolia</em> (Anderson / Elswit, 1999); Wes Anderson tabletop inserts.'
+    },
+    {
+        name: 'Over-the-Shoulder',
+        abbr: 'OTS',
+        svg: `<svg viewBox="0 0 100 56">
+            <ellipse cx="80" cy="32" rx="14" ry="22" fill="currentColor" opacity=".55"/>
+            <circle cx="35" cy="22" r="9" fill="currentColor"/>
+            <path d="M 24 30 L 46 30 L 52 56 L 18 56 Z" fill="currentColor"/>
+        </svg>`,
+        desc: 'Frames one subject through the back of another\'s shoulder/head. Defines a relationship and a point of view simultaneously.',
+        use: 'Dialogue coverage, confrontations, romantic exchanges, interviews. The default cutting partner of a reverse OTS.',
+        light: 'The foreground shoulder is usually in shadow — a soft kicker on its silhouette adds dimension. The far subject\'s key should not spill onto the foreground head (use flags / barn doors).',
+        lens: '50–85mm for naturalistic OTS; 100mm+ for tight, isolated psychological OTS where the shoulder is barely there.',
+        film: '<em>Heat</em> (Mann / Spinotti, 1995); <em>The Lord of the Rings</em> trilogy (Jackson / Lesnie); <em>Killers of the Flower Moon</em> (Scorsese / Prieto, 2023).'
+    },
+    {
+        name: 'Point of View',
+        abbr: 'POV',
+        svg: `<svg viewBox="0 0 100 56">
+            <rect x="6" y="4" width="88" height="48" fill="none" stroke="currentColor" opacity=".3" stroke-dasharray="2,2"/>
+            <circle cx="50" cy="20" r="6" fill="currentColor"/>
+            <path d="M 42 26 L 58 26 L 62 50 L 38 50 Z" fill="currentColor"/>
+            <line x1="20" y1="46" x2="80" y2="46" stroke="currentColor" opacity=".25"/>
+        </svg>`,
+        desc: 'The camera occupies the subject\'s eye-line, showing what they see. Often paired with a reaction shot for context.',
+        use: 'Identification with a character, suspense (we know what they see), supernatural perspectives, video-game-influenced action.',
+        light: 'Light the scene as if for the subject\'s eye-line, not the camera\'s — the camera is invisible. Be wary of camera shadow appearing on subjects when very low or very high.',
+        lens: 'Match the perceived "eye" — humans see roughly 35–50mm. GoPros and ultra-wides break verisimilitude unless that\'s the point (POV of a creature, a child, a drug trip).',
+        film: '<em>Lady in the Lake</em> (Montgomery, 1947 — entire film in POV); <em>Hardcore Henry</em> (Naishuller, 2015); <em>Halloween</em> opening (Carpenter / Cundey, 1978).'
+    },
+    {
+        name: 'Two-Shot / Group Shot',
+        abbr: 'TWO · GROUP',
+        svg: `<svg viewBox="0 0 100 56">
+            <line x1="0" y1="50" x2="100" y2="50" stroke="currentColor" opacity=".25"/>
+            <circle cx="34" cy="14" r="6" fill="currentColor"/>
+            <path d="M 26 20 L 42 20 L 46 50 L 22 50 Z" fill="currentColor"/>
+            <circle cx="66" cy="14" r="6" fill="currentColor"/>
+            <path d="M 58 20 L 74 20 L 78 50 L 54 50 Z" fill="currentColor"/>
+        </svg>`,
+        desc: 'Two (or more) subjects share the frame. The space between them carries as much meaning as their faces.',
+        use: 'Establishing relationships, comedic duos, romantic geometry, confrontations played in a single frame instead of cuts.',
+        light: 'Both subjects need their key — a single broad source or two complementary keys (one each, motivated). Watch for one face being plus-half-stop hotter unless intentional. Background separation matters more with two heads competing for attention.',
+        lens: '35–50mm to keep both in frame at conversational distance; 85mm if you can step back and want compression / shallow DOF on both.',
+        film: '<em>Annie Hall</em> (Allen / Willis, 1977 — split-screen and shared frames); <em>Punch-Drunk Love</em> (Anderson / Elswit, 2002); <em>The Trial of the Chicago 7</em> (Sorkin / Kaminski, 2020).'
+    },
+];
+
+const SHOT_MOVES = [
+    {
+        name: 'Pan',
+        abbr: 'PAN',
+        svg: `<svg viewBox="0 0 100 56">
+            <rect x="34" y="20" width="32" height="20" fill="currentColor" opacity=".7"/>
+            <circle cx="60" cy="29" r="2" fill="var(--bg)"/>
+            <path d="M 14 30 Q 50 30 86 30" fill="none" stroke="currentColor" opacity=".5" stroke-dasharray="2,2"/>
+            <polygon points="86,30 80,27 80,33" fill="currentColor"/>
+            <polygon points="14,30 20,27 20,33" fill="currentColor"/>
+        </svg>`,
+        desc: 'Camera rotates horizontally on a fixed point — body stays put, head turns.',
+        use: 'Following lateral action, revealing space, connecting two pieces of geography in one shot, "look from A to B" beats.',
+        light: 'Lighting must be consistent across the entire arc — sources at the start of the pan are still on at the end. Watch for lights swinging into frame at extremes.',
+        lens: 'Wider lenses (24–35mm) feel natural; long lenses (≥ 100mm) "whip" panicly and are commonly used for transition whip pans (Edgar Wright, Tony Scott).',
+        film: '<em>Goodfellas</em> (Scorsese / Ballhaus, 1990 — Copacabana entrance); <em>Children of Men</em> (Cuarón / Lubezki, 2006).'
+    },
+    {
+        name: 'Tilt',
+        abbr: 'TILT',
+        svg: `<svg viewBox="0 0 100 56">
+            <rect x="34" y="20" width="32" height="20" fill="currentColor" opacity=".7"/>
+            <path d="M 50 6 Q 50 28 50 50" fill="none" stroke="currentColor" opacity=".5" stroke-dasharray="2,2"/>
+            <polygon points="50,6 47,12 53,12" fill="currentColor"/>
+            <polygon points="50,50 47,44 53,44" fill="currentColor"/>
+        </svg>`,
+        desc: 'Camera rotates vertically on a fixed point — head nods up or down.',
+        use: 'Revealing a tall subject (skyscraper, monster, statue), discovering something on the floor, scale reveals.',
+        light: 'Top of the tilt may include sky/practical, bottom may need fill — exposure can shift wildly across the move. Plan ND or use auto-iris on broadcast cameras (rarely on cinema).',
+        lens: 'Wide angles for spatial drama; long lens tilts for selective reveal.',
+        film: '<em>Vertigo</em> (Hitchcock / Burks, 1958 — bell tower); <em>Jurassic Park</em> (Spielberg / Kamiński, 1993 — first dino tilt-up).'
+    },
+    {
+        name: 'Dolly / Truck',
+        abbr: 'DOLLY',
+        svg: `<svg viewBox="0 0 100 56">
+            <rect x="34" y="20" width="32" height="20" fill="currentColor" opacity=".7"/>
+            <line x1="14" y1="46" x2="86" y2="46" stroke="currentColor" opacity=".4" stroke-dasharray="3,2"/>
+            <polygon points="86,46 80,43 80,49" fill="currentColor"/>
+            <polygon points="14,46 20,43 20,49" fill="currentColor"/>
+            <circle cx="42" cy="46" r="2" fill="currentColor"/>
+            <circle cx="58" cy="46" r="2" fill="currentColor"/>
+        </svg>`,
+        desc: 'Whole camera/dolly rolls along a track. "Dolly in/out" is forward/back, "truck/crab" is sideways.',
+        use: 'Pushing in for emotional emphasis, pulling out for revelation, lateral truck for moving conversations or showing layers of a space.',
+        light: 'Practicals must be motivated for the entire travel — what looks great at start mark may go dark at end mark. Plan eye-light and key positions for the whole move, not just the start.',
+        lens: '35–50mm (wider feels immersive; longer feels selective). Push-ins are often 35mm; pull-outs reveal more, also wider.',
+        film: '<em>Jaws</em> (Spielberg / Butler, 1975 — beach push-in); <em>The Shining</em> (Kubrick / Alcott, 1980 — Steadicam-but-dolly-feeling tracking); <em>Goodfellas</em> Copacabana.'
+    },
+    {
+        name: 'Tracking / Trucking',
+        abbr: 'TRACK',
+        svg: `<svg viewBox="0 0 100 56">
+            <circle cx="34" cy="22" r="5" fill="currentColor"/>
+            <path d="M 28 27 L 40 27 L 44 50 L 24 50 Z" fill="currentColor"/>
+            <rect x="58" y="22" width="14" height="10" fill="currentColor"/>
+            <polygon points="72,23 78,27 72,31" fill="currentColor"/>
+            <line x1="14" y1="52" x2="86" y2="52" stroke="currentColor" opacity=".4" stroke-dasharray="3,2"/>
+            <polygon points="86,52 80,49 80,55" fill="currentColor"/>
+        </svg>`,
+        desc: 'Camera moves alongside or behind a moving subject, keeping framing constant. Often on a dolly, Steadicam, gimbal, or vehicle.',
+        use: 'Following walks-and-talks, action sequences, immersive subjective travel. The signature shot of long-take cinema.',
+        light: 'Light a path, not a position — sources need to cover the full length of the move. Battery-powered tube lights and LED panels rigged off-camera are now standard. Watch the shadow of the rig itself.',
+        lens: '24–35mm for immersive following; 50mm for steadier perceived distance; 85mm+ tracking is hard but creates "watched" tension.',
+        film: '<em>Children of Men</em> (Cuarón / Lubezki, 2006 — car ambush); <em>1917</em> (Mendes / Deakins, 2019); <em>Birdman</em> (Iñárritu / Lubezki, 2014).'
+    },
+    {
+        name: 'Crane / Jib',
+        abbr: 'CRANE',
+        svg: `<svg viewBox="0 0 100 56">
+            <rect x="34" y="40" width="32" height="12" fill="currentColor" opacity=".7"/>
+            <path d="M 50 8 Q 50 26 50 40" fill="none" stroke="currentColor" opacity=".5" stroke-dasharray="2,2"/>
+            <polygon points="50,8 47,14 53,14" fill="currentColor"/>
+            <line x1="14" y1="50" x2="36" y2="50" stroke="currentColor" opacity=".25"/>
+            <line x1="64" y1="50" x2="86" y2="50" stroke="currentColor" opacity=".25"/>
+        </svg>`,
+        desc: 'Vertical camera travel, often combined with horizontal — rises from ground level to overhead, or lifts off a face into the room.',
+        use: 'Endings (lift away to reveal scope), beginnings (descend into a scene), spectacle, transitions between intimate and epic.',
+        light: 'Lighting must work at all heights — what was a backlight at 1m may become a key at 4m. Sky-line risers and rigged sources avoid the crane casting shadows.',
+        lens: '24–35mm for the most spatial impact during the move.',
+        film: '<em>Touch of Evil</em> (Welles / Metty, 1958 — opening crane); <em>Atonement</em> (Wright / McGarvey, 2007 — Dunkirk beach crane).'
+    },
+    {
+        name: 'Steadicam',
+        abbr: 'STEADI',
+        svg: `<svg viewBox="0 0 100 56">
+            <circle cx="50" cy="14" r="4" fill="currentColor"/>
+            <path d="M 44 19 L 56 19 L 58 36 L 42 36 Z" fill="currentColor"/>
+            <line x1="50" y1="36" x2="50" y2="48" stroke="currentColor" stroke-width="2"/>
+            <rect x="42" y="48" width="16" height="6" fill="currentColor"/>
+            <rect x="40" y="22" width="20" height="8" fill="currentColor" opacity=".5"/>
+        </svg>`,
+        desc: 'Body-mounted stabilised rig — operator walks, camera floats. Smoothness of dolly without rails.',
+        use: 'Long takes in real environments, following actors through architecture (kitchens, hallways, fight choreography), immersive but composed handheld.',
+        light: 'Whole space must be lit — there\'s nowhere to hide a stand. Practicals, china balls on dimmers, and operator-following lights are standard. Plan operator paths around the rig\'s shadow.',
+        lens: '21–35mm for navigability; longer lenses are doable but punish any wobble.',
+        film: '<em>Goodfellas</em> Copacabana (1990); <em>The Shining</em> hedge maze (1980); <em>Boogie Nights</em> (Anderson / Elswit, 1997 — pool party).'
+    },
+    {
+        name: 'Handheld',
+        abbr: 'HH',
+        svg: `<svg viewBox="0 0 100 56">
+            <g transform="rotate(-3 50 28)">
+                <rect x="34" y="20" width="32" height="20" fill="currentColor" opacity=".7"/>
+            </g>
+            <g transform="rotate(4 50 28) translate(2 1)">
+                <rect x="34" y="20" width="32" height="20" fill="none" stroke="currentColor" opacity=".4" stroke-dasharray="2,1"/>
+            </g>
+            <g transform="rotate(-2 50 28) translate(-3 -1)">
+                <rect x="34" y="20" width="32" height="20" fill="none" stroke="currentColor" opacity=".25" stroke-dasharray="2,1"/>
+            </g>
+        </svg>`,
+        desc: 'Camera operated off the shoulder (or shoulder-rigged) — natural micro-movement and weight transfer remain visible.',
+        use: 'Documentary realism, urgency, vérité drama, war and crisis sequences. A signal of "this is real, you are inside it".',
+        light: 'Operator needs freedom — favour overhead practicals and ambient bounce over precisely placed stands. Battery LEDs on the rig itself or held by a focus puller add fill.',
+        lens: '21–35mm zooms or primes — wider hides shake, narrower stretches the operator\'s endurance.',
+        film: '<em>Saving Private Ryan</em> (Spielberg / Kamiński, 1998); <em>Bourne</em> trilogy (Greengrass / Wood, 2002–07); <em>Kingdom of Heaven</em> battle work (Scott / Mathieson, 2005).'
+    },
+    {
+        name: 'Zoom',
+        abbr: 'ZOOM',
+        svg: `<svg viewBox="0 0 100 56">
+            <rect x="14" y="10" width="72" height="36" fill="none" stroke="currentColor" opacity=".25" stroke-dasharray="2,2"/>
+            <rect x="34" y="20" width="32" height="20" fill="currentColor" opacity=".7"/>
+            <line x1="14" y1="10" x2="34" y2="20" stroke="currentColor" opacity=".4"/>
+            <line x1="86" y1="10" x2="66" y2="20" stroke="currentColor" opacity=".4"/>
+            <line x1="14" y1="46" x2="34" y2="40" stroke="currentColor" opacity=".4"/>
+            <line x1="86" y1="46" x2="66" y2="40" stroke="currentColor" opacity=".4"/>
+        </svg>`,
+        desc: 'Optical change of focal length without moving the camera. The image scales without parallax — distinct from a dolly, which has perspective shift.',
+        use: '70s New Hollywood feel (Altman, Kubrick), documentary punch-ins, surveillance / observational tone, reframing without re-blocking.',
+        light: 'Exposure may shift as you zoom in (some zoom lenses ramp aperture); confirm T-stop consistency across the range. Background contrast becomes more important on the long end.',
+        lens: 'A cinema zoom (Angénieux Optimo, Fujinon Cabrio, Zeiss CZ.2). Stills zooms breathe more and ramp aperture more often.',
+        film: '<em>Barry Lyndon</em> (Kubrick / Alcott, 1975 — slow zoom-outs into landscape); <em>Jackie Brown</em> (Tarantino / Richardson, 1997).'
+    },
+    {
+        name: 'Dolly Zoom (Vertigo)',
+        abbr: 'DOLLY-ZOOM',
+        svg: `<svg viewBox="0 0 100 56">
+            <rect x="38" y="22" width="24" height="18" fill="currentColor" opacity=".75"/>
+            <path d="M 14 6 L 38 22 L 38 40 L 14 50" fill="none" stroke="currentColor" opacity=".4"/>
+            <path d="M 86 6 L 62 22 L 62 40 L 86 50" fill="none" stroke="currentColor" opacity=".4"/>
+            <line x1="48" y1="48" x2="52" y2="48" stroke="currentColor"/>
+            <polygon points="52,48 48,46 48,50" fill="currentColor"/>
+        </svg>`,
+        desc: 'Dolly in while zooming out (or vice versa). Subject size stays constant; the background expands or compresses violently. Disorientation, dread, dawning realisation.',
+        use: 'Psychological turning points — the moment a character understands something terrible. Use sparingly; it is loud.',
+        light: 'Background depth becomes the visual story — make sure there is something at varying distances behind the subject, lit with depth (separation, atmospherics).',
+        lens: 'A cinema zoom matched to the dolly speed; pre-mark start and end focal lengths and dolly positions and rehearse together.',
+        film: '<em>Vertigo</em> (Hitchcock / Burks, 1958 — namesake); <em>Jaws</em> (Spielberg / Butler, 1975 — beach realisation); <em>Goodfellas</em> diner (Scorsese / Ballhaus, 1990).'
+    },
+    {
+        name: 'Rack Focus',
+        abbr: 'RACK',
+        svg: `<svg viewBox="0 0 100 56">
+            <circle cx="32" cy="28" r="14" fill="currentColor" opacity=".25"/>
+            <circle cx="68" cy="28" r="14" fill="currentColor"/>
+            <path d="M 32 14 Q 50 20 68 14" fill="none" stroke="currentColor" opacity=".4" stroke-dasharray="2,2"/>
+            <polygon points="68,14 64,11 64,17" fill="currentColor"/>
+        </svg>`,
+        desc: 'Focus point shifts from one plane to another mid-shot. The frame is unchanged but attention is redirected by sharpness.',
+        use: 'Directing the eye, revealing a hidden element, internal monologue beats, transitions between two ideas in one frame.',
+        light: 'Wide-open apertures (used for shallow DOF rack focus) need ND or controlled light — full sun + f/1.4 + 800 ISO is impossible without heavy ND. Background bokeh shape depends on iris blades and any practicals in the defocused plane.',
+        lens: 'Fast primes (35mm, 50mm, 85mm at f/1.4–2). Long lenses make the rack more dramatic; wide lenses make it almost imperceptible.',
+        film: '<em>Citizen Kane</em> (Welles / Toland, 1941 — pioneered deep + rack focus); <em>The Social Network</em> (Fincher / Cronenweth, 2010); virtually every Sorkin dialogue scene.'
+    },
+];
+
+function renderShots(targetId, list) {
+    document.getElementById(targetId).innerHTML = list.map(s => `
+        <div class="shot-card">
+            <div class="shot-vis">${s.svg}</div>
+            <div class="shot-head">
+                <div class="shot-name">${s.name}</div>
+                <div class="shot-abbr">${s.abbr}</div>
+            </div>
+            <div class="shot-desc">${s.desc}</div>
+            <dl class="shot-meta">
+                <dt>Use</dt><dd>${s.use}</dd>
+                <dt>Light</dt><dd>${s.light}</dd>
+                <dt>Lens</dt><dd>${s.lens}</dd>
+                <dt>Films</dt><dd>${s.film}</dd>
+            </dl>
+        </div>`).join('');
+}
+renderShots('shot-sizes',  SHOT_SIZES);
+renderShots('shot-angles', SHOT_ANGLES);
+renderShots('shot-moves',  SHOT_MOVES);
+
+/* ═══════════════════════════════════════════════════
+   SOCIAL MEDIA SPECS
+═══════════════════════════════════════════════════ */
+const SOCIAL = [
+    {
+        name: 'Facebook',
+        rows: [
+            { asset:'Profile picture',     size:'320×320 min · 1080×1080 rec',                            ratio:'1:1',                fmt:'JPG, PNG',                                  max:'30 MB',                  note:'Displays 170×170 desktop, 128×128 mobile, 36×36 thumbnail. Cropped to circle.' },
+            { asset:'Cover photo',         size:'851×315 desktop · 640×360 mobile · 1640×624 retina',     ratio:'~2.7:1',             fmt:'JPG, PNG',                                  max:'30 MB',                  note:'Different crops on desktop vs mobile — keep critical content centred.' },
+            { asset:'Feed image (link)',   size:'1200×630',                                                ratio:'1.91:1',             fmt:'JPG, PNG',                                  max:'30 MB',                  note:'Open Graph preview standard. Min 600×315 to avoid downgrade to text-only.' },
+            { asset:'Feed image (square)', size:'1080×1080',                                                ratio:'1:1',                fmt:'JPG, PNG',                                  max:'30 MB',                  note:'Universal good performer.' },
+            { asset:'Feed image (portrait)',size:'1080×1350',                                              ratio:'4:5',                fmt:'JPG, PNG',                                  max:'30 MB',                  note:'Tallest aspect ratio that fits without cropping in mobile feed.' },
+            { asset:'Feed video',          size:'1280×720 HD · 1920×1080 FHD',                             ratio:'16:9, 1:1, 4:5',     fmt:'MP4, MOV (H.264 + AAC)',                    max:'4 GB',                   note:'Up to 240 min. ≤ 30 fps recommended; stereo audio ≥ 128 kbps.' },
+            { asset:'Story',               size:'1080×1920',                                                ratio:'9:16',               fmt:'JPG, PNG, MP4, MOV',                        max:'4 GB video',             note:'Photo cards 5 s; video cards up to 60 s. Safe area: 250 px top/bottom.' },
+            { asset:'Reel',                size:'1080×1920',                                                ratio:'9:16',               fmt:'MP4, MOV (H.264 + AAC)',                    max:'4 GB',                   note:'Up to 90 s. Reuse Reels on Instagram via cross-posting.' },
+            { asset:'Event cover',         size:'1920×1005',                                                ratio:'~1.91:1',            fmt:'JPG, PNG',                                  max:'30 MB',                  note:'Cropped further on mobile — keep titles clear of edges.' },
+            { asset:'Group cover',         size:'1640×856',                                                 ratio:'~1.91:1',            fmt:'JPG, PNG',                                  max:'30 MB',                  note:'Wider than the page cover — different crop logic.' },
+        ],
+    },
+    {
+        name: 'Instagram',
+        rows: [
+            { asset:'Profile picture',     size:'320×320 min · 1080×1080 rec',                            ratio:'1:1',                fmt:'JPG, PNG',                                  max:'—',                       note:'Displays 110×110 (mobile), cropped to circle.' },
+            { asset:'Square post',         size:'1080×1080',                                                ratio:'1:1',                fmt:'JPG, PNG',                                  max:'30 MB',                  note:'Default grid look. Resampled if > 1080 px wide.' },
+            { asset:'Portrait post',       size:'1080×1350',                                                ratio:'4:5',                fmt:'JPG, PNG',                                  max:'30 MB',                  note:'Tallest in-feed real estate — favoured by the algorithm.' },
+            { asset:'Landscape post',      size:'1080×566',                                                 ratio:'1.91:1',             fmt:'JPG, PNG',                                  max:'30 MB',                  note:'Smallest visual footprint in feed; good for graphics with text.' },
+            { asset:'Carousel',            size:'1080×1080 or 1080×1350',                                  ratio:'1:1, 4:5',           fmt:'JPG, PNG',                                  max:'30 MB / image',          note:'Up to 20 cards. All cards must share aspect ratio.' },
+            { asset:'Story',               size:'1080×1920',                                                ratio:'9:16',               fmt:'JPG, PNG, MP4, MOV',                        max:'4 GB video',             note:'Safe zone 1080×1420 centred; ~250 px UI top/bottom (handle, stickers, reactions).' },
+            { asset:'Reel',                size:'1080×1920',                                                ratio:'9:16',               fmt:'MP4, MOV (H.264 + AAC)',                    max:'4 GB',                   note:'15 s – 90 s (some accounts 3 min). Cover: 1080×1920 uploaded, displays 420×654 in grid.' },
+            { asset:'Reel cover',          size:'1080×1920 (uploaded) → 420×654 (grid)',                  ratio:'9:16 → ~1:1.55',     fmt:'JPG, PNG',                                  max:'—',                       note:'Design with both crops in mind — vertical cover and centred grid thumbnail.' },
+            { asset:'Feed video',          size:'1080×1080 / 1080×1350 / 1080×1920',                       ratio:'1:1, 4:5, 9:16',     fmt:'MP4, MOV (H.264 + AAC)',                    max:'4 GB',                   note:'Up to 60 min for long-form video uploads.' },
+            { asset:'Bio',                 size:'150 characters',                                           ratio:'—',                  fmt:'text + emoji',                              max:'—',                       note:'Line breaks count.' },
+        ],
+    },
+    {
+        name: 'LinkedIn',
+        rows: [
+            { asset:'Profile photo',       size:'400×400 rec · max 7680×4320',                             ratio:'1:1',                fmt:'JPG, PNG, GIF (no anim.)',                  max:'8 MB',                   note:'Cropped to circle. Solid neutral background reads best in feed thumbnails.' },
+            { asset:'Background banner (personal)', size:'1584×396',                                       ratio:'4:1',                fmt:'JPG, PNG',                                  max:'8 MB',                   note:'Avatar overlaps lower-left corner — keep critical content right-of-centre.' },
+            { asset:'Company logo',        size:'300×300 · 60×60 (square logo)',                           ratio:'1:1',                fmt:'JPG, PNG',                                  max:'4 MB',                   note:'Square logo appears next to company name in feeds and follow buttons.' },
+            { asset:'Company page cover',  size:'1128×191',                                                 ratio:'~5.9:1',             fmt:'JPG, PNG',                                  max:'8 MB',                   note:'Separate from personal banner — much more cinematic ratio.' },
+            { asset:'Feed post (link)',    size:'1200×627',                                                 ratio:'1.91:1',             fmt:'JPG, PNG, GIF',                             max:'100 MB',                 note:'Open Graph image for shared links.' },
+            { asset:'Feed post (square)',  size:'1080×1080',                                                ratio:'1:1',                fmt:'JPG, PNG, GIF',                             max:'100 MB',                 note:'Universal sharable format.' },
+            { asset:'Feed post (portrait)',size:'1080×1350',                                                ratio:'4:5',                fmt:'JPG, PNG, GIF',                             max:'100 MB',                 note:'Maximum mobile real estate for native uploads.' },
+            { asset:'Feed video',          size:'256×144 min · 4096×2304 max',                              ratio:'1:2.4 to 2.4:1',     fmt:'MP4, ASF, AVI, MPEG, MOV, MKV, WMV',        max:'5 GB',                   note:'3 s – 10 min. H.264 + AAC; ≤ 30 fps recommended.' },
+            { asset:'Article cover',       size:'1200×644',                                                 ratio:'~1.91:1',            fmt:'JPG, PNG',                                  max:'5 MB',                   note:'Newsletter and long-form article hero.' },
+            { asset:'Document/carousel',   size:'1080×1080 or 1080×1350',                                   ratio:'1:1, 4:5',           fmt:'PDF, DOCX, PPTX',                            max:'100 MB',                 note:'Up to 300 pages. Native carousel — strong dwell-time format.' },
+            { asset:'Event cover',         size:'1920×1005',                                                ratio:'~1.91:1',            fmt:'JPG, PNG',                                  max:'2 MB',                   note:'' },
+        ],
+    },
+    {
+        name: 'Substack',
+        rows: [
+            { asset:'Publication logo',    size:'256×256 min · 1080×1080 rec',                              ratio:'1:1',                fmt:'JPG, PNG',                                  max:'—',                       note:'Used as site icon and email-sender avatar.' },
+            { asset:'Publication header',  size:'1100×400',                                                 ratio:'~2.75:1',            fmt:'JPG, PNG',                                  max:'—',                       note:'Web only — does not appear in email.' },
+            { asset:'Author/profile photo',size:'256×256',                                                  ratio:'1:1',                fmt:'JPG, PNG',                                  max:'—',                       note:'Cropped to circle in author byline.' },
+            { asset:'Post header image',   size:'1456×816 displayed · upload ≥ 1920×1080',                  ratio:'16:9',               fmt:'JPG, PNG',                                  max:'—',                       note:'Used in email hero, web post header, and social previews.' },
+            { asset:'Inline post image',   size:'≤ 1456 px wide',                                           ratio:'free',               fmt:'JPG, PNG, GIF, WEBP',                       max:'—',                       note:'Email clients downscale aggressively — keep file size lean for deliverability.' },
+            { asset:'Note image',          size:'1080×1080 or 1080×1350',                                  ratio:'1:1, 4:5',           fmt:'JPG, PNG',                                  max:'—',                       note:'Notes feed (Substack\'s short-form surface).' },
+            { asset:'Embedded video',      size:'≤ 1920×1080',                                              ratio:'16:9',               fmt:'MP4 (native) · YouTube/Vimeo/Loom embeds',  max:'~100 MB native',         note:'For long-form, embed externally — Substack throttles native video.' },
+            { asset:'Podcast show art',    size:'3000×3000',                                                ratio:'1:1',                fmt:'JPG, PNG',                                  max:'500 KB',                 note:'Apple Podcasts spec — required for podcast publishing.' },
+            { asset:'Podcast episode art', size:'3000×3000',                                                ratio:'1:1',                fmt:'JPG, PNG',                                  max:'500 KB',                 note:'Optional per-episode override.' },
+        ],
+    },
+    {
+        name: 'TikTok',
+        rows: [
+            { asset:'Profile photo',       size:'200×200 min · 1080×1080 rec',                              ratio:'1:1',                fmt:'JPG, PNG',                                  max:'5 MB',                   note:'Cropped to circle. Animated avatars supported for some accounts (LIVE).' },
+            { asset:'Video',               size:'1080×1920 rec · 720×1280 min',                            ratio:'9:16 (also 1:1, 16:9)', fmt:'MP4, MOV, MPEG, AVI, FLV, WebM, 3GP',    max:'287.6 MB iOS · 72 MB Android · 4 GB web', note:'3 s – 10 min. H.264/H.265, AAC. Bottom 484 px UI overlay (caption, profile, action buttons).' },
+            { asset:'Cover image (thumbnail)', size:'1080×1920 (extracted from frame)',                    ratio:'9:16',               fmt:'JPG, PNG',                                  max:'—',                       note:'Auto-extracted from chosen video frame. Profile grid crops to ~1:1.3.' },
+            { asset:'Photo carousel',      size:'1080×1920',                                                ratio:'9:16',               fmt:'JPG, PNG',                                  max:'5 MB / image',           note:'Up to 35 images. Supports background music like a video post.' },
+            { asset:'In-feed ad video',    size:'720×1280 min · 1080×1920 rec',                            ratio:'9:16, 1:1, 16:9',    fmt:'MP4, MOV, MPEG, AVI',                       max:'500 MB',                 note:'5 – 60 s; ≥ 30 fps. Bitrate ≥ 516 Kbps.' },
+            { asset:'Bio',                 size:'80 characters',                                            ratio:'—',                  fmt:'text + emoji',                              max:'—',                       note:'One clickable URL allowed (1k+ followers).' },
+            { asset:'Display name',        size:'30 characters',                                            ratio:'—',                  fmt:'text',                                      max:'—',                       note:'Editable every 7 days.' },
+        ],
+    },
+    {
+        name: 'X (Twitter)',
+        rows: [
+            { asset:'Profile photo',       size:'400×400',                                                  ratio:'1:1',                fmt:'JPG, PNG, WEBP',                            max:'2 MB',                   note:'Displays 200×200, cropped to circle.' },
+            { asset:'Header banner',       size:'1500×500',                                                 ratio:'3:1',                fmt:'JPG, PNG, GIF (no anim.)',                  max:'5 MB',                   note:'Avatar overlaps lower-left ~250×250 area — design around it.' },
+            { asset:'Single post image',   size:'1600×900 rec · 1200×675 displayed',                       ratio:'16:9',               fmt:'JPG, PNG, WEBP, GIF',                       max:'5 MB (JPG/PNG/WEBP) · 15 MB (GIF)', note:'Up to 4 images per post. Portrait 1080×1350 also supported (4:5).' },
+            { asset:'Multi-image post',    size:'1200×600 each',                                            ratio:'2:1',                fmt:'JPG, PNG, WEBP',                            max:'5 MB ea.',               note:'2-image: side-by-side. 3-image: large left + 2 stacked right. 4-image: 2×2 grid.' },
+            { asset:'Twitter Card (summary_large_image)', size:'800×418 (min 300×157)',                   ratio:'1.91:1',             fmt:'JPG, PNG, WEBP',                            max:'5 MB',                   note:'Open Graph meta tag for link previews.' },
+            { asset:'Video',               size:'1280×720 rec · min 32×32 · max 1920×1200',                ratio:'16:9, 1:1, 9:16',    fmt:'MP4 (H.264 + AAC), MOV',                    max:'512 MB free · 8 GB Premium', note:'0.5 s – 2:20 free; up to 4 hours Premium. ≤ 60 fps.' },
+            { asset:'Live broadcast',      size:'1280×720',                                                 ratio:'16:9',               fmt:'RTMP stream',                               max:'—',                       note:'X Live (formerly Periscope). Audio-only Spaces use a separate flow.' },
+            { asset:'Bio',                 size:'160 characters',                                           ratio:'—',                  fmt:'text + emoji',                              max:'—',                       note:'URLs count as their full character length (no t.co shortening).' },
+        ],
+    },
+];
+
+const socialContainer = document.getElementById('social-tables');
+socialContainer.innerHTML = SOCIAL.map(p => `
+    <div class="sub-head">${p.name}</div>
+    <div class="tbl-wrap">
+        <table class="tbl">
+            <thead>
+                <tr>
+                    <th>Asset</th>
+                    <th>Recommended Size</th>
+                    <th>Aspect</th>
+                    <th>Formats</th>
+                    <th>Max File</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${p.rows.map(r => `
+                    <tr>
+                        <td><strong>${r.asset}</strong></td>
+                        <td class="mono tiny">${r.size}</td>
+                        <td class="mono tiny">${r.ratio}</td>
+                        <td class="dim tiny">${r.fmt}</td>
+                        <td class="mono tiny">${r.max}</td>
+                        <td class="dim tiny">${r.note}</td>
+                    </tr>`).join('')}
+            </tbody>
+        </table>
+    </div>
+`).join('');
+
+/* ═══════════════════════════════════════════════════
+   COLOR PALETTE GENERATOR
+═══════════════════════════════════════════════════ */
+const HARMONIES = [
+    {
+        name: 'Analogous',
+        // Six hues spread symmetrically across a ~120° arc
+        offsets: [-60, -36, -12, 12, 36, 60],
+    },
+    {
+        name: 'Complementary',
+        // Three near base + three near complement
+        offsets: [-20, 0, 20, 160, 180, 200],
+    },
+    {
+        name: 'Split-Complementary',
+        // Two near base + two on each side of the complement
+        offsets: [0, 15, 150, 165, 195, 210],
+    },
+    {
+        name: 'Triadic',
+        // Three triadic lobes, each as a pair (warm + cool variant per lobe)
+        offsets: [0, 15, 115, 125, 235, 245],
+    },
+    {
+        name: 'Tetradic',
+        // True rectangle (0/60 + 180/240) with bridge tones at 30 and 210
+        offsets: [0, 30, 60, 180, 210, 240],
+    },
+    {
+        name: 'Square',
+        // Four hues exactly 90° apart + bridge tones at 45 between pairs
+        offsets: [0, 45, 90, 180, 225, 270],
+    },
+    {
+        name: 'Compound',
+        // Analogous trio near base + analogous pair near complement
+        offsets: [-30, 0, 30, 165, 180, 195],
+    },
+];
+
+// Five lightness stops top→bottom (light to dark) on a perceptual curve.
+// Saturation tapers at extremes so very light tints don't look chalky and
+// very dark shades don't go black-with-a-hint.
+const SHADE_STOPS = [
+    { l: 88, sScale: 0.55 },
+    { l: 72, sScale: 0.85 },
+    { l: 56, sScale: 1.00 },  // the "true" hue row
+    { l: 40, sScale: 0.95 },
+    { l: 24, sScale: 0.80 },
+];
+
+function pickHarmony() {
+    return HARMONIES[Math.floor(Math.random() * HARMONIES.length)];
+}
+
+let currentPalette = null;
+const lockedCols = new Set();
+let cvdReady = false;
+
+const LOCK_OPEN_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H9V7a3 3 0 0 1 5.83-1 1 1 0 0 0 1.94-.5A5 5 0 0 0 12 2z"/></svg>';
+const LOCK_CLOSED_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 1 1 6 0v3H9z"/></svg>';
+
+function buildColumn(h, s) {
+    return SHADE_STOPS.map(stop => {
+        const ss = Math.max(10, Math.min(100, Math.round(s * stop.sScale)));
+        const rgb = hslToRgb(h, ss, stop.l);
+        return {
+            hex: rgbToHex(rgb.r, rgb.g, rgb.b),
+            r: rgb.r, g: rgb.g, b: rgb.b,
+            h: Math.round(h), s: ss, l: stop.l,
+            baseH: h, baseS: s,
+        };
+    });
+}
+
+function generatePalette(previous = null) {
+    const harmony = pickHarmony();
+    const baseHue = Math.floor(Math.random() * 360);
+    // Pick a base saturation in a usable range (avoid muddy < 35 and neon > 90)
+    const baseSat = 55 + Math.floor(Math.random() * 30);
+
+    const columns = harmony.offsets.map((off, i) => {
+        if (previous && lockedCols.has(i) && previous.columns[i]) {
+            return previous.columns[i];
+        }
+        const h = ((baseHue + off) % 360 + 360) % 360;
+        const sJitter = (i % 2 === 0 ? -1 : 1) * (4 + Math.floor(Math.random() * 6));
+        const s = Math.max(35, Math.min(92, baseSat + sJitter));
+        return buildColumn(h, s);
+    });
+
+    return {
+        harmony: harmony.name,
+        baseHue,
+        columns,
+    };
+}
+
+function paletteCellTextColor(r, g, b) {
+    // Standard luminance — flip text color for legibility
+    const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+    return lum > 140 ? '#0c0c0d' : '#f4f4f5';
+}
+
+const MIDDLE_ROW = 2; // only the "true hue" row is user-editable
+
+function renderPalette(palette) {
+    currentPalette = palette;
+    document.getElementById('paletteHarmony').textContent = palette.harmony;
+    const grid = document.getElementById('paletteGrid');
+    // Row-major: row 0 across all 5 columns, then row 1, etc.
+    let html = '';
+    for (let row = 0; row < SHADE_STOPS.length; row++) {
+        for (let col = 0; col < palette.columns.length; col++) {
+            const c = palette.columns[col][row];
+            const txt = paletteCellTextColor(c.r, c.g, c.b);
+            const isLocked = lockedCols.has(col);
+            const lockBtn = row === 0
+                ? `<button class="palette-lock" data-col="${col}" aria-label="${isLocked ? 'Unlock' : 'Lock'} column" title="${isLocked ? 'Unlock' : 'Lock'} column">${isLocked ? LOCK_CLOSED_SVG : LOCK_OPEN_SVG}</button>`
+                : '';
+            const hexEl = row === MIDDLE_ROW
+                ? `<input class="palette-hex palette-hex-edit" type="text" data-col="${col}" value="${c.hex}" maxlength="7" spellcheck="false" autocomplete="off" aria-label="Edit base hex (column ${col + 1})">`
+                : `<div class="palette-hex">${c.hex}</div>`;
+            const rowClasses = ['palette-cell'];
+            if (isLocked) rowClasses.push('locked-col');
+            if (row === MIDDLE_ROW) rowClasses.push('palette-row-base');
+            html += `
+                <div class="${rowClasses.join(' ')}" data-hex="${c.hex}" data-col="${col}" data-row="${row}" style="background:${c.hex}; color:${txt}; --swatch:${c.hex}">
+                    ${lockBtn}
+                    <span class="palette-copy">Copied</span>
+                    ${hexEl}
+                    <div class="palette-rgb">rgb(${c.r}, ${c.g}, ${c.b})</div>
+                    <div class="palette-rgb">hsl(${c.h}, ${c.s}%, ${c.l}%)</div>
+                </div>`;
+        }
+    }
+    grid.innerHTML = html;
+
+    // Notify CVD palette preview only after its module has finished initialising —
+    // before then, `const CVD_TYPES` is in the TDZ and even `typeof` throws.
+    if (cvdReady) renderCvdPalettePreview();
+}
+
+document.getElementById('paletteGen').addEventListener('click', () => {
+    renderPalette(generatePalette(currentPalette));
+});
+
+// Typing a hex into the middle-row cell rebuilds the whole column as a
+// monochromatic scale around that hex's hue+saturation, while preserving the
+// exact value the user typed in the middle cell (so it doesn't snap to a
+// SHADE_STOPS lightness). Auto-locks the column.
+function applyHexToColumn(col, raw) {
+    let hex = raw.trim();
+    if (!/^#?[0-9a-f]{6}$/i.test(hex)) return false;
+    if (!hex.startsWith('#')) hex = '#' + hex;
+    hex = hex.toUpperCase();
+    const rgb = hexToRgb(hex);
+    if (!rgb) return false;
+    const hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    currentPalette.columns[col] = buildColumn(hsl.h, hsl.s);
+    currentPalette.columns[col][MIDDLE_ROW] = {
+        hex, r: rgb.r, g: rgb.g, b: rgb.b,
+        h: hsl.h, s: hsl.s, l: hsl.l,
+    };
+    lockedCols.add(col);
+    renderPalette(currentPalette);
+    return true;
+}
+
+document.getElementById('paletteGrid').addEventListener('click', async e => {
+    const lockBtn = e.target.closest('.palette-lock');
+    if (lockBtn) {
+        e.stopPropagation();
+        const col = parseInt(lockBtn.dataset.col, 10);
+        if (lockedCols.has(col)) lockedCols.delete(col);
+        else lockedCols.add(col);
+        // Re-render in-place so lock indicators update on every cell of the column
+        renderPalette(currentPalette);
+        return;
+    }
+    // Don't treat clicks on the editable hex input as a copy action
+    if (e.target.closest('.palette-hex-edit')) return;
+    const cell = e.target.closest('.palette-cell');
+    if (!cell) return;
+    const hex = cell.dataset.hex;
+    try {
+        await navigator.clipboard.writeText(hex);
+        cell.classList.add('copied');
+        setTimeout(() => cell.classList.remove('copied'), 900);
+    } catch (err) {
+        alert('Could not copy to clipboard: ' + err.message);
+    }
+});
+
+// Editable hex on the middle row — commit on Enter or blur, restore on Escape.
+function commitHexInput(input) {
+    const col = +input.dataset.col;
+    if (!applyHexToColumn(col, input.value)) {
+        // Restore last valid value if the user typed something invalid
+        input.value = currentPalette.columns[col][MIDDLE_ROW].hex;
+    }
+}
+document.getElementById('paletteGrid').addEventListener('keydown', e => {
+    const input = e.target.closest('.palette-hex-edit');
+    if (!input) return;
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        commitHexInput(input);
+        input.blur();
+    } else if (e.key === 'Escape') {
+        e.preventDefault();
+        const col = +input.dataset.col;
+        input.value = currentPalette.columns[col][MIDDLE_ROW].hex;
+        input.blur();
+    }
+});
+document.getElementById('paletteGrid').addEventListener('change', e => {
+    const input = e.target.closest('.palette-hex-edit');
+    if (input) commitHexInput(input);
+});
+// Select-all on focus so it's easy to retype
+document.getElementById('paletteGrid').addEventListener('focusin', e => {
+    const input = e.target.closest('.palette-hex-edit');
+    if (input) input.select();
+});
+
+renderPalette(generatePalette());
+
+/* ═══════════════════════════════════════════════════
+   CODECS & DATA RATES
+═══════════════════════════════════════════════════ */
+// rate1080 / rate4k in Mb/s. GB/min derived: rate * 60 / 8 / 1000
+function withGb(arr) {
+    return arr.map(c => ({
+        ...c,
+        gb1080: c.rate1080 ? +(c.rate1080 * 60 / 8 / 1000).toFixed(2) : 0,
+        gb4k:   c.rate4k   ? +(c.rate4k   * 60 / 8 / 1000).toFixed(2) : 0,
+    }));
+}
+
+const CODEC_ACQ = withGb([
+    { name: 'ProRes 422 Proxy',   kind: '10-bit 4:2:2',  rate1080: 45,    rate4k: 184,   note: 'Offline editing, fastest decode' },
+    { name: 'ProRes 422 LT',      kind: '10-bit 4:2:2',  rate1080: 102,   rate4k: 410,   note: 'Broadcast offline / online for short-form' },
+    { name: 'ProRes 422',         kind: '10-bit 4:2:2',  rate1080: 147,   rate4k: 589,   note: 'Broadcast acquisition standard' },
+    { name: 'ProRes 422 HQ',      kind: '10-bit 4:2:2',  rate1080: 220,   rate4k: 884,   note: 'High-end acquisition / mastering' },
+    { name: 'ProRes 4444',        kind: '12-bit 4:4:4:4', rate1080: 330,  rate4k: 1320,  note: 'Includes alpha; VFX-friendly' },
+    { name: 'ProRes 4444 XQ',     kind: '12-bit 4:4:4:4', rate1080: 500,  rate4k: 2000,  note: 'Highest ProRes; HDR acquisition' },
+    { name: 'DNxHR LB',           kind: '8-bit 4:2:2',   rate1080: 0,     rate4k: 145,   note: 'Avid offline at 4K' },
+    { name: 'DNxHR SQ',           kind: '8-bit 4:2:2',   rate1080: 0,     rate4k: 410,   note: 'Avid online standard quality' },
+    { name: 'DNxHR HQ',           kind: '8-bit 4:2:2',   rate1080: 0,     rate4k: 615,   note: 'Avid online high quality' },
+    { name: 'DNxHR HQX',          kind: '12-bit 4:2:2',  rate1080: 0,     rate4k: 920,   note: 'HDR / wide-gamut delivery' },
+    { name: 'DNxHR 444',          kind: '12-bit 4:4:4',  rate1080: 0,     rate4k: 1240,  note: 'VFX, finishing' },
+    { name: 'BRAW 3:1',           kind: '12-bit RAW',    rate1080: 0,     rate4k: 580,   note: 'Blackmagic RAW, near-visually-lossless' },
+    { name: 'BRAW 5:1',           kind: '12-bit RAW',    rate1080: 0,     rate4k: 350,   note: 'Default BRAW shooting ratio' },
+    { name: 'BRAW 8:1',           kind: '12-bit RAW',    rate1080: 0,     rate4k: 220,   note: 'Long-form / multicam' },
+    { name: 'BRAW 12:1',          kind: '12-bit RAW',    rate1080: 0,     rate4k: 145,   note: 'Smallest BRAW, broadcast/proxy' },
+    { name: 'RED RAW HQ (R3D)',   kind: '16-bit RAW',    rate1080: 0,     rate4k: 1900,  note: '~5:1 compression on Helium / Komodo' },
+    { name: 'RED RAW MQ (R3D)',   kind: '16-bit RAW',    rate1080: 0,     rate4k: 950,   note: '~9:1 compression' },
+    { name: 'RED RAW LQ (R3D)',   kind: '16-bit RAW',    rate1080: 0,     rate4k: 470,   note: '~18:1, common acquisition ratio' },
+    { name: 'ARRIRAW',            kind: '12-bit RAW',    rate1080: 0,     rate4k: 2640,  note: 'Uncompressed Bayer; ALEXA 35 / Mini LF' },
+    { name: 'ARRI ProRes 4444 XQ',kind: '12-bit 4:4:4:4', rate1080: 500,  rate4k: 2000,  note: 'Onboard ProRes from ALEXA' },
+    { name: 'Sony X-OCN LT',      kind: '16-bit RAW',    rate1080: 0,     rate4k: 1100,  note: 'VENICE / FX9; lighter than Standard' },
+    { name: 'Sony X-OCN ST',      kind: '16-bit RAW',    rate1080: 0,     rate4k: 1700,  note: 'VENICE standard onboard recording' },
+    { name: 'Sony XAVC-I',        kind: '10-bit 4:2:2',  rate1080: 222,   rate4k: 600,   note: 'Intra-frame; broadcast standard' },
+    { name: 'Canon Cinema RAW LT',kind: '12-bit RAW',    rate1080: 0,     rate4k: 1000,  note: 'C500/C700/C300 III' },
+]);
+
+const CODEC_INT = withGb([
+    { name: 'ProRes 422 HQ',     kind: '10-bit 4:2:2',  rate1080: 220,  rate4k: 884,   note: 'Color round-trips, online edit' },
+    { name: 'ProRes 4444',       kind: '12-bit 4:4:4:4', rate1080: 330, rate4k: 1320,  note: 'VFX plates, alpha keys' },
+    { name: 'ProRes 4444 XQ',    kind: '12-bit 4:4:4:4', rate1080: 500, rate4k: 2000,  note: 'HDR mastering, log-grade interim' },
+    { name: 'DNxHR HQX',         kind: '12-bit 4:2:2',  rate1080: 0,    rate4k: 920,   note: 'Avid HDR / Dolby Vision interchange' },
+    { name: 'DNxHR 444',         kind: '12-bit 4:4:4',  rate1080: 0,    rate4k: 1240,  note: 'Avid finishing & VFX' },
+    { name: 'Cineform 422',      kind: '10-bit 4:2:2',  rate1080: 100,  rate4k: 400,   note: 'GoPro/legacy proxy & online' },
+    { name: 'TIFF sequence',     kind: '16-bit RGB',    rate1080: 1500, rate4k: 6000,  note: 'Uncompressed VFX delivery' },
+    { name: 'EXR (PIZ)',         kind: '16/32-bit float',rate1080: 700, rate4k: 2800,  note: 'OpenEXR; HDR/scene-linear standard' },
+]);
+
+const CODEC_DEL = withGb([
+    { name: 'H.264 web (web high)',  kind: '8-bit 4:2:0',  rate1080: 12,    rate4k: 35,   note: 'YouTube/Vimeo recommended upload' },
+    { name: 'H.264 broadcast',       kind: '8-bit 4:2:2',  rate1080: 50,    rate4k: 0,    note: 'XDCAM HD422 broadcast contribution' },
+    { name: 'H.264 Blu-ray',         kind: '8-bit 4:2:0',  rate1080: 40,    rate4k: 0,    note: 'BD-50 typical peak ~38 Mb/s' },
+    { name: 'HEVC (H.265) 10-bit',   kind: '10-bit 4:2:0', rate1080: 8,     rate4k: 25,   note: 'Apple TV / streaming HDR baseline' },
+    { name: 'HEVC UHD Blu-ray',      kind: '10-bit 4:2:0', rate1080: 0,     rate4k: 80,   note: 'UHD-BD peak up to ~108 Mb/s' },
+    { name: 'AV1 streaming',         kind: '10-bit 4:2:0', rate1080: 5,     rate4k: 18,   note: 'Newer codec, ~30% better than HEVC' },
+    { name: 'Netflix 4K HDR',        kind: '10-bit HEVC',  rate1080: 0,     rate4k: 16,   note: 'Variable; per-shot encoder optimization' },
+    { name: 'YouTube 4K SDR',        kind: '8-bit VP9/AV1',rate1080: 0,     rate4k: 20,   note: 'Server-side re-encode; upload at 35-45' },
+    { name: 'YouTube 4K HDR',        kind: '10-bit VP9',   rate1080: 0,     rate4k: 25,   note: 'Server-side re-encode' },
+    { name: 'JPEG 2000 (DCP)',       kind: '12-bit XYZ',   rate1080: 250,   rate4k: 500,  note: 'Theatrical DCP; max 250 Mb/s spec' },
+    { name: 'IMF JPEG 2000',         kind: '12-bit',       rate1080: 200,   rate4k: 800,  note: 'Netflix/SMPTE master delivery' },
+    { name: 'ProRes 422 (delivery)', kind: '10-bit 4:2:2', rate1080: 147,   rate4k: 589,  note: 'Common broadcast deliverable' },
+]);
+
+function fmtMbps(v)  { return v ? v.toLocaleString() : '—'; }
+function fmtGbMin(v) { return v ? v.toFixed(2) : '—'; }
+
+function renderCodecRows(tbodyId, rows) {
+    document.getElementById(tbodyId).innerHTML = rows.map(c => `
+        <tr>
+            <td>${c.name}</td>
+            <td class="dim">${c.kind}</td>
+            <td class="mono">${fmtMbps(c.rate1080)}</td>
+            <td class="mono">${fmtMbps(c.rate4k)}</td>
+            <td class="mono">${fmtGbMin(c.gb1080)}</td>
+            <td class="mono">${fmtGbMin(c.gb4k)}</td>
+            <td class="dim tiny">${c.note}</td>
+        </tr>`).join('');
+}
+
+renderCodecRows('codecAcqTbody', CODEC_ACQ);
+renderCodecRows('codecIntTbody', CODEC_INT);
+renderCodecRows('codecDelTbody', CODEC_DEL);
+attachSort(document.getElementById('codecAcqTbl'), CODEC_ACQ, rows => renderCodecRows('codecAcqTbody', rows));
+attachSort(document.getElementById('codecIntTbl'), CODEC_INT, rows => renderCodecRows('codecIntTbody', rows));
+attachSort(document.getElementById('codecDelTbl'), CODEC_DEL, rows => renderCodecRows('codecDelTbody', rows));
+
+/* ═══════════════════════════════════════════════════
+   COLOR-BLINDNESS SIMULATOR (palette preview)
+   Brettel/Viénot/Mollon approximation matrices applied
+   to gamma-encoded sRGB. Renders the active palette under
+   each CVD type — lives in the Palette Generator tab.
+═══════════════════════════════════════════════════ */
+const CVD_TYPES = [
+    { key: 'protan', name: 'Protanopia',    prev: '~1% of men',         m: [[0.567,0.433,0.000],[0.558,0.442,0.000],[0.000,0.242,0.758]] },
+    { key: 'deutan', name: 'Deuteranopia',  prev: '~6% of men',         m: [[0.625,0.375,0.000],[0.700,0.300,0.000],[0.000,0.300,0.700]] },
+    { key: 'tritan', name: 'Tritanopia',    prev: '< 0.01%',            m: [[0.950,0.050,0.000],[0.000,0.433,0.567],[0.000,0.475,0.525]] },
+    { key: 'achro',  name: 'Achromatopsia', prev: '< 0.003% (full)',    m: [[0.299,0.587,0.114],[0.299,0.587,0.114],[0.299,0.587,0.114]] },
+];
+
+function applyMatrix(rgb, m) {
+    const r = m[0][0]*rgb.r + m[0][1]*rgb.g + m[0][2]*rgb.b;
+    const g = m[1][0]*rgb.r + m[1][1]*rgb.g + m[1][2]*rgb.b;
+    const b = m[2][0]*rgb.r + m[2][1]*rgb.g + m[2][2]*rgb.b;
+    return { r: Math.max(0, Math.min(255, Math.round(r))),
+             g: Math.max(0, Math.min(255, Math.round(g))),
+             b: Math.max(0, Math.min(255, Math.round(b))) };
+}
+
+function renderCvdPalettePreview() {
+    const host = document.getElementById('cvdPalettePreview');
+    if (!host || !currentPalette) return;
+    // Use middle (true-hue) row of each column
+    const baseRow = currentPalette.columns.map(col => col[2]);
+    const rows = [{ key: 'orig', name: 'Original (Trichromatic)', prev: 'Baseline' }, ...CVD_TYPES];
+    host.innerHTML = rows.map(r => `
+        <div class="cvd-palette-row-label">${r.name} <span class="dim" style="font-weight:400; letter-spacing:.04em; text-transform:none">— ${r.prev}</span></div>
+        <div class="cvd-palette-grid" style="margin-bottom:1rem">
+            ${baseRow.map(c => {
+                const rgb = r.m ? applyMatrix({r:c.r,g:c.g,b:c.b}, r.m) : {r:c.r,g:c.g,b:c.b};
+                const hex = rgbToHex(rgb.r, rgb.g, rgb.b);
+                const txt = paletteCellTextColor(rgb.r, rgb.g, rgb.b);
+                return `<div class="cvd-palette-cell" style="background:${hex}; color:${txt}">${hex}</div>`;
+            }).join('')}
+        </div>`).join('');
+}
+
+cvdReady = true;
+renderCvdPalettePreview();
+
+/* ═══════════════════════════════════════════════════
+   RESOLUTION & DPI
+═══════════════════════════════════════════════════ */
+const RES_PRESETS = [
+    { label: '4×6 in (photo)',     in: [4, 6] },
+    { label: '5×7 in (photo)',     in: [5, 7] },
+    { label: '8×10 in (photo)',    in: [8, 10] },
+    { label: '11×14 in (poster)',  in: [11, 14] },
+    { label: '16×20 in (poster)',  in: [16, 20] },
+    { label: '24×36 in (poster)',  in: [24, 36] },
+    { label: 'A6  (105×148mm)',    cm: [10.5, 14.8] },
+    { label: 'A5  (148×210mm)',    cm: [14.8, 21.0] },
+    { label: 'A4  (210×297mm)',    cm: [21.0, 29.7] },
+    { label: 'A3  (297×420mm)',    cm: [29.7, 42.0] },
+    { label: 'A2  (420×594mm)',    cm: [42.0, 59.4] },
+    { label: 'A1  (594×841mm)',    cm: [59.4, 84.1] },
+    { label: 'A0  (841×1189mm)',   cm: [84.1, 118.9] },
+    { label: '1080p screen',       px: [1920, 1080], dpi: 96 },
+    { label: '4K UHD screen',      px: [3840, 2160], dpi: 96 },
+];
+
+const rsPxW = document.getElementById('rsPxW');
+const rsPxH = document.getElementById('rsPxH');
+const rsDpi = document.getElementById('rsDpi');
+const rsInW = document.getElementById('rsInW');
+const rsInH = document.getElementById('rsInH');
+const rsCmW = document.getElementById('rsCmW');
+const rsCmH = document.getElementById('rsCmH');
+const rsPresetsEl = document.getElementById('rsPresets');
+const rsSummary = document.getElementById('rsSummary');
+
+let rsUpdating = false;
+
+function fmtBytes(b) {
+    if (b < 1024) return `${b.toFixed(0)} B`;
+    if (b < 1024**2) return `${(b/1024).toFixed(1)} KB`;
+    if (b < 1024**3) return `${(b/1024**2).toFixed(1)} MB`;
+    return `${(b/1024**3).toFixed(2)} GB`;
+}
+
+function renderRsSummary(pxW, pxH) {
+    const mp = (pxW * pxH) / 1_000_000;
+    const px = pxW * pxH;
+    const sizes = [
+        { label: '8-bit RGB',   bytes: px * 3 },
+        { label: '8-bit RGBA',  bytes: px * 4 },
+        { label: '16-bit RGB',  bytes: px * 6 },
+        { label: '16-bit RGBA', bytes: px * 8 },
+        { label: '32-bit float RGB',  bytes: px * 12 },
+        { label: '32-bit float RGBA', bytes: px * 16 },
+    ];
+    rsSummary.innerHTML = `
+        <dt>Total pixels</dt><dd>${px.toLocaleString()} (${mp.toFixed(2)} MP)</dd>
+        <dt>Aspect ratio</dt><dd>${(pxW/pxH).toFixed(3)} : 1</dd>
+        ${sizes.map(s => `<dt>${s.label}</dt><dd>${fmtBytes(s.bytes)}</dd>`).join('')}`;
+}
+
+function rsUpdateFromPx() {
+    if (rsUpdating) return; rsUpdating = true;
+    const pxW = +rsPxW.value, pxH = +rsPxH.value, dpi = +rsDpi.value;
+    if (pxW > 0 && pxH > 0 && dpi > 0) {
+        rsInW.value = (pxW / dpi).toFixed(2);
+        rsInH.value = (pxH / dpi).toFixed(2);
+        rsCmW.value = (pxW / dpi * 2.54).toFixed(2);
+        rsCmH.value = (pxH / dpi * 2.54).toFixed(2);
+        renderRsSummary(pxW, pxH);
+    }
+    rsUpdating = false;
+}
+
+function rsUpdateFromIn() {
+    if (rsUpdating) return; rsUpdating = true;
+    const inW = +rsInW.value, inH = +rsInH.value, dpi = +rsDpi.value;
+    if (inW > 0 && inH > 0 && dpi > 0) {
+        const pxW = Math.round(inW * dpi), pxH = Math.round(inH * dpi);
+        rsPxW.value = pxW; rsPxH.value = pxH;
+        rsCmW.value = (inW * 2.54).toFixed(2);
+        rsCmH.value = (inH * 2.54).toFixed(2);
+        renderRsSummary(pxW, pxH);
+    }
+    rsUpdating = false;
+}
+
+function rsUpdateFromCm() {
+    if (rsUpdating) return; rsUpdating = true;
+    const cmW = +rsCmW.value, cmH = +rsCmH.value, dpi = +rsDpi.value;
+    if (cmW > 0 && cmH > 0 && dpi > 0) {
+        const inW = cmW / 2.54, inH = cmH / 2.54;
+        const pxW = Math.round(inW * dpi), pxH = Math.round(inH * dpi);
+        rsPxW.value = pxW; rsPxH.value = pxH;
+        rsInW.value = inW.toFixed(2); rsInH.value = inH.toFixed(2);
+        renderRsSummary(pxW, pxH);
+    }
+    rsUpdating = false;
+}
+
+rsPxW.addEventListener('input', rsUpdateFromPx);
+rsPxH.addEventListener('input', rsUpdateFromPx);
+rsDpi.addEventListener('input', rsUpdateFromPx);
+rsInW.addEventListener('input', rsUpdateFromIn);
+rsInH.addEventListener('input', rsUpdateFromIn);
+rsCmW.addEventListener('input', rsUpdateFromCm);
+rsCmH.addEventListener('input', rsUpdateFromCm);
+
+rsPresetsEl.innerHTML = RES_PRESETS.map((p, i) =>
+    `<button class="res-preset" data-i="${i}">${p.label}</button>`).join('');
+rsPresetsEl.addEventListener('click', e => {
+    const btn = e.target.closest('.res-preset');
+    if (!btn) return;
+    const p = RES_PRESETS[+btn.dataset.i];
+    if (p.px) {
+        rsDpi.value = p.dpi;
+        rsPxW.value = p.px[0]; rsPxH.value = p.px[1];
+        rsUpdateFromPx();
+    } else if (p.in) {
+        rsInW.value = p.in[0]; rsInH.value = p.in[1];
+        rsUpdateFromIn();
+    } else if (p.cm) {
+        rsCmW.value = p.cm[0]; rsCmH.value = p.cm[1];
+        rsUpdateFromCm();
+    }
+});
+
+rsUpdateFromPx();
+</script>
+</body>
+</html>
