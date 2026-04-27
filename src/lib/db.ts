@@ -336,3 +336,68 @@ export async function unmarkAppDeleted(db: D1Database, slug: string) {
     .bind(slug)
     .run();
 }
+
+// Activity feed — union of recent likes, comments, and submissions
+// across all users. Used by the right-side rail on wide screens to give
+// the site a "people are here" feel.
+export type ActivityType = "like" | "comment" | "submission";
+
+export interface ActivityEvent {
+  type: ActivityType;
+  appSlug: string;
+  userId: string;
+  userName: string | null;
+  userAvatar: string | null;
+  userHandle: string | null;
+  ts: string;
+}
+
+interface ActivityRow {
+  type: string;
+  app_slug: string;
+  user_id: string;
+  user_name: string | null;
+  user_avatar: string | null;
+  user_handle: string | null;
+  ts: string;
+}
+
+export async function getRecentActivity(
+  db: D1Database,
+  limit = 15
+): Promise<ActivityEvent[]> {
+  const result = await db
+    .prepare(
+      `SELECT 'like' AS type, l.app_slug, l.user_id,
+              u.name AS user_name, u.avatar AS user_avatar, u.handle AS user_handle,
+              l.created_at AS ts
+       FROM likes l LEFT JOIN users u ON u.id = l.user_id
+       WHERE l.created_at > datetime('now', '-30 days')
+       UNION ALL
+       SELECT 'comment' AS type, c.app_slug, c.user_id,
+              c.user_name, c.user_avatar, u.handle AS user_handle,
+              c.created_at AS ts
+       FROM comments c LEFT JOIN users u ON u.id = c.user_id
+       WHERE c.created_at > datetime('now', '-30 days')
+       UNION ALL
+       SELECT 'submission' AS type, s.app_slug, s.user_id,
+              s.user_name, u.avatar AS user_avatar, u.handle AS user_handle,
+              s.submitted_at AS ts
+       FROM submissions s LEFT JOIN users u ON u.id = s.user_id
+       WHERE s.submitted_at > datetime('now', '-30 days')
+       ORDER BY ts DESC
+       LIMIT ?`
+    )
+    .bind(limit)
+    .all<ActivityRow>();
+
+  return result.results.map((r) => ({
+    type: r.type as ActivityType,
+    appSlug: r.app_slug,
+    userId: r.user_id,
+    userName: r.user_name,
+    userAvatar: r.user_avatar,
+    userHandle: r.user_handle,
+    ts: r.ts,
+  }));
+}
