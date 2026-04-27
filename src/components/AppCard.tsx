@@ -39,20 +39,38 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
   const showDelete = canDelete(app.slug);
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  function openPreview(e: React.MouseEvent) {
-    // Ignore clicks on the action buttons cluster
+  function openPreview(e: React.MouseEvent | React.KeyboardEvent) {
+    // Ignore activations on the action buttons cluster
     const target = e.target as HTMLElement;
     if (target.closest("[data-card-actions]")) return;
     setPreviewOpen(true);
   }
 
+  function onCardKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    // Restore button-like keyboard behaviour: Enter or Space opens the
+    // preview. Skip if the activation was inside an inner control.
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const target = e.target as HTMLElement;
+    if (target.closest("[data-card-actions]")) return;
+    e.preventDefault();
+    setPreviewOpen(true);
+  }
+
+  // Card root is a <div role="button"> rather than an actual <button>
+  // because the action cluster inside (Favorite / Share / Delete) renders
+  // its own <button>s — and HTML doesn't allow nested buttons. React 19
+  // bails hydration when it finds them and detaches every event handler
+  // in the subtree, which manifests as cards looking fine but being
+  // completely unclickable.
   return (
     <>
-      <button
+      <div
+        role="button"
+        tabIndex={0}
         onClick={openPreview}
+        onKeyDown={onCardKeyDown}
         aria-label={`Preview ${app.title}`}
-        type="button"
-        className="card-glow group flex w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-surface text-left transition-all duration-200 hover:bg-surface-2"
+        className="card-glow group flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border/60 bg-surface text-left transition-all duration-200 hover:bg-surface-2"
       >
         <AppThumbnail app={app} />
         <div className="flex flex-1 flex-col p-4">
@@ -93,8 +111,11 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
             )}
           </h3>
 
-          {/* Description */}
-          <p className="mb-4 line-clamp-2 text-[13px] leading-relaxed text-muted-light">
+          {/* Description — reserve two lines of vertical space even when
+              the actual description is one line, so cards in a row align
+              their footers (otherwise the row's flex wrapper takes the
+              tallest card's height and shorter ones look misaligned). */}
+          <p className="mb-4 line-clamp-2 min-h-[2.5rem] text-[13px] leading-relaxed text-muted-light">
             {app.description}
           </p>
 
@@ -120,7 +141,8 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
             </div>
           </div>
         </div>
-      </button>
+
+      </div>
 
       {previewOpen && (
         <AppPreviewModal app={app} onClose={() => setPreviewOpen(false)} />
