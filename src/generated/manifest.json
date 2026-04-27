@@ -1,5 +1,38 @@
 [
   {
+    "title": "Toolbox for Digital Artists",
+    "slug": "toolbox-for-digital-artists",
+    "description": "References and tools for digital artists.",
+    "author": "ambrusorban",
+    "tags": [
+      "tools",
+      "calculator",
+      "converter",
+      "generator",
+      "visualizer",
+      "color"
+    ],
+    "dateAdded": "2026-04-26",
+    "featured": false,
+    "hostingType": "bundled",
+    "thumbnail": "thumbnail.png"
+  },
+  {
+    "title": "ValCust",
+    "slug": "valcust",
+    "description": "Play customs with friends",
+    "author": "GergelyKrista",
+    "tags": [
+      "games",
+      "multiplayer",
+      "fps"
+    ],
+    "dateAdded": "2026-04-24",
+    "featured": false,
+    "hostingType": "bundled",
+    "thumbnail": "thumbnail.png"
+  },
+  {
     "title": "Farming Simulator 25 Companion",
     "slug": "farming-simulator-25-companion",
     "description": "A simple workflow guide and calendar for Farming Simulator 25.\r\nSwitch between English and Hungarian version.\r\nLight and dark mode included button.",

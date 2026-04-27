@@ -2,8 +2,14 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  // Force HTTPS
-  if (request.headers.get("x-forwarded-proto") === "http") {
+  // Force HTTPS — only in production. Next's dev server injects
+  // `x-forwarded-proto: http` on every request, so without the env
+  // guard the dev site redirects to https://localhost and the browser
+  // ERR_SSL_PROTOCOL_ERRORs.
+  if (
+    process.env.NODE_ENV === "production" &&
+    request.headers.get("x-forwarded-proto") === "http"
+  ) {
     const httpsUrl = request.url.replace("http://", "https://");
     return NextResponse.redirect(httpsUrl, 301);
   }
