@@ -38,10 +38,10 @@ export function AppCarousel({ apps }: { apps: AppMeta[] }) {
 
       <div
         ref={scrollRef}
-        className="carousel-scroll flex gap-3 overflow-x-auto py-1"
+        className="carousel-scroll flex gap-4 overflow-x-auto py-1"
       >
         {apps.map((app) => (
-          <div key={app.slug} className="carousel-item w-[280px] flex-shrink-0">
+          <div key={app.slug} className="carousel-item w-[320px] flex-shrink-0">
             <AppCard app={app} />
           </div>
         ))}

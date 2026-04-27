@@ -39,53 +39,71 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
   const showDelete = canDelete(app.slug);
   const [previewOpen, setPreviewOpen] = useState(false);
 
-  function openPreview(e: React.MouseEvent) {
-    // Ignore clicks on the action buttons cluster
+  function openPreview(e: React.MouseEvent | React.KeyboardEvent) {
+    // Ignore activations on the action buttons cluster
     const target = e.target as HTMLElement;
     if (target.closest("[data-card-actions]")) return;
     setPreviewOpen(true);
   }
 
+  function onCardKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    // Restore button-like keyboard behaviour: Enter or Space opens the
+    // preview. Skip if the activation was inside an inner control.
+    if (e.key !== "Enter" && e.key !== " ") return;
+    const target = e.target as HTMLElement;
+    if (target.closest("[data-card-actions]")) return;
+    e.preventDefault();
+    setPreviewOpen(true);
+  }
+
+  // Card root is a <div role="button"> rather than an actual <button>
+  // because the action cluster inside (Favorite / Share / Delete) renders
+  // its own <button>s — and HTML doesn't allow nested buttons. React 19
+  // bails hydration when it finds them and detaches every event handler
+  // in the subtree, which manifests as cards looking fine but being
+  // completely unclickable.
   return (
     <>
-      <button
+      <div
+        role="button"
+        tabIndex={0}
         onClick={openPreview}
+        onKeyDown={onCardKeyDown}
         aria-label={`Preview ${app.title}`}
-        type="button"
-        className="card-glow group flex w-full flex-col overflow-hidden rounded-xl border border-border/60 bg-surface text-left transition-all duration-200 hover:bg-surface-2"
+        className="card-glow group flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border/60 bg-surface text-left transition-all duration-200 hover:bg-surface-2"
       >
         <AppThumbnail app={app} />
-        <div className="flex flex-1 flex-col p-4">
+        <div className="flex flex-1 flex-col p-5">
           {/* Top row: accent dot + primary tag, like count, author */}
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className={`h-2 w-2 rounded-full ${accent.dot}`} />
-              <span className="text-[11px] font-medium uppercase tracking-wider text-muted">
+              <span className="text-[12px] font-medium uppercase tracking-wider text-muted">
                 {app.tags[0]}
               </span>
             </div>
             <div className="flex items-center gap-2">
               {likeCount !== undefined && likeCount > 0 && (
                 <span
-                  className="flex items-center gap-0.5 text-[11px] font-medium text-muted"
+                  className="flex items-center gap-0.5 text-[12px] font-medium text-muted"
                   title={`${likeCount} like${likeCount === 1 ? "" : "s"}`}
                 >
-                  <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                  <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                     <path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" />
                   </svg>
                   {likeCount}
                 </span>
               )}
-              <span className="text-[11px] text-muted/60">{app.author}</span>
+              <span className="text-[12px] text-muted/60">{app.author}</span>
             </div>
           </div>
 
           {/* Title */}
-          <h3 className="mb-1.5 flex items-center gap-1.5 text-[15px] font-semibold leading-snug text-foreground">
+          <h3 className="mb-2 flex items-center gap-1.5 text-[17px] font-semibold leading-snug text-foreground">
             <span className="line-clamp-1">{app.title}</span>
             {isExternal(app) && (
               <span
-                className="inline-flex shrink-0 items-center rounded bg-surface-3 px-1 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-muted"
+                className="inline-flex shrink-0 items-center rounded bg-surface-3 px-1 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-muted"
                 title="Hosted on the submitter's own domain — opens in a new tab"
               >
                 ↗ ext
@@ -93,8 +111,11 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
             )}
           </h3>
 
-          {/* Description */}
-          <p className="mb-4 line-clamp-2 text-[13px] leading-relaxed text-muted-light">
+          {/* Description — reserve two lines of vertical space even when
+              the actual description is one line, so cards in a row align
+              their footers (otherwise the row's flex wrapper takes the
+              tallest card's height and shorter ones look misaligned). */}
+          <p className="mb-4 line-clamp-2 min-h-[2.75rem] text-[14px] leading-relaxed text-muted-light">
             {app.description}
           </p>
 
@@ -104,7 +125,7 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
               {app.tags.slice(0, 2).map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-md bg-surface-3 px-2 py-0.5 text-[11px] font-medium text-muted"
+                  className="rounded-md bg-surface-3 px-2 py-0.5 text-[12px] font-medium text-muted"
                 >
                   {tag}
                 </span>
@@ -120,7 +141,8 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
             </div>
           </div>
         </div>
-      </button>
+
+      </div>
 
       {previewOpen && (
         <AppPreviewModal app={app} onClose={() => setPreviewOpen(false)} />

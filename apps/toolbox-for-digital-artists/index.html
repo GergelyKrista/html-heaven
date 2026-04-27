@@ -1115,9 +1115,147 @@ input.palette-hex-edit:focus {
     transition: color .15s, border-color .15s;
 }
 .res-preset:hover { color: var(--tx); border-color: var(--tx-dim); }
+
+/* ═══════════════════════════════════════════════════
+   SPLASH / TITLE CARD
+═══════════════════════════════════════════════════ */
+.splash {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: var(--bg);
+    color: var(--tx);
+    display: grid;
+    place-items: center;
+    padding: 2rem;
+    overflow: hidden;
+    transition: opacity .35s ease, visibility 0s linear .35s;
+}
+.splash.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.splash::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 80px 80px;
+    background-position: center center;
+    opacity: .55;
+    pointer-events: none;
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 25%, transparent 70%);
+            mask-image: radial-gradient(ellipse at center, #000 25%, transparent 70%);
+}
+.splash-inner {
+    position: relative;
+    max-width: 760px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.85rem;
+    text-align: center;
+}
+.splash-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    font-size: .68rem;
+    font-weight: 600;
+    letter-spacing: .35em;
+    text-transform: uppercase;
+    color: var(--tx-mu);
+}
+.splash-eyebrow::before,
+.splash-eyebrow::after {
+    content: "";
+    width: 32px;
+    height: 1px;
+    background: var(--border);
+}
+.splash-title {
+    font-size: clamp(2.4rem, 7.5vw, 4.8rem);
+    font-weight: 500;
+    letter-spacing: -.025em;
+    line-height: 1.02;
+}
+.splash-title em {
+    display: block;
+    font-style: normal;
+    font-weight: 300;
+    color: var(--tx-dim);
+    margin-top: .15em;
+}
+.splash-sub {
+    font-size: .74rem;
+    color: var(--tx-dim);
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    max-width: 600px;
+    line-height: 1.9;
+}
+.splash-btn {
+    margin-top: .4rem;
+    background: var(--tx);
+    color: var(--bg);
+    border: 1px solid var(--tx);
+    padding: 1rem 2.4rem;
+    font-family: inherit;
+    font-size: .74rem;
+    font-weight: 600;
+    letter-spacing: .26em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .15s, color .15s, transform .15s, border-color .15s;
+}
+.splash-btn:hover {
+    background: var(--bg);
+    color: var(--tx);
+    transform: translateY(-1px);
+}
+.splash-btn:focus-visible {
+    outline: 2px solid var(--tx-mu);
+    outline-offset: 4px;
+}
+.splash-foot {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: .62rem;
+    letter-spacing: .3em;
+    text-transform: uppercase;
+    color: var(--tx-mu);
+    pointer-events: none;
+}
+@media (max-width: 520px) {
+    .splash { padding: 1.5rem; }
+    .splash-eyebrow { font-size: .62rem; gap: .55rem; }
+    .splash-eyebrow::before,
+    .splash-eyebrow::after { width: 18px; }
+    .splash-sub { font-size: .68rem; letter-spacing: .12em; line-height: 1.75; }
+    .splash-btn { padding: .9rem 1.8rem; letter-spacing: .2em; }
+    .splash-foot { font-size: .58rem; letter-spacing: .22em; }
+}
+body.splash-open { overflow: hidden; }
 </style>
 </head>
-<body>
+<body class="splash-open">
+
+<div id="splash" class="splash" role="dialog" aria-labelledby="splashTitle" aria-modal="true">
+    <div class="splash-inner">
+        <div class="splash-eyebrow">A Workspace</div>
+        <h1 id="splashTitle" class="splash-title">Toolbox<em>for Digital Artists</em></h1>
+        <p class="splash-sub">Aspect ratios &middot; Camera shots &middot; Codecs &middot; Color &middot; Lenses &middot; Light &middot; Materials &middot; Resolution &middot; Social specs</p>
+        <button class="splash-btn" id="splashStart" type="button">Start to work</button>
+    </div>
+    <div class="splash-foot">Press &nbsp;Enter&nbsp; or click the button to begin</div>
+</div>
 
 <div class="topbar">
 <header>
@@ -1861,6 +1999,34 @@ function toggleTheme() {
     document.body.classList.toggle('light', theme === 'light');
     document.getElementById('themeBtn').innerHTML = theme === 'dark' ? '&#9789;' : '&#9728;';
 }
+
+/* ═══════════════════════════════════════════════════
+   SPLASH / TITLE CARD
+═══════════════════════════════════════════════════ */
+(function initSplash() {
+    const splash = document.getElementById('splash');
+    const startBtn = document.getElementById('splashStart');
+    if (!splash || !startBtn) return;
+
+    function dismiss() {
+        splash.classList.add('hidden');
+        document.body.classList.remove('splash-open');
+        document.removeEventListener('keydown', onKey);
+        // Move focus to first nav button so keyboard users land in the app.
+        const firstNav = document.querySelector('nav#navBar button');
+        if (firstNav) firstNav.focus();
+    }
+    function onKey(e) {
+        if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            dismiss();
+        }
+    }
+    startBtn.addEventListener('click', dismiss);
+    document.addEventListener('keydown', onKey);
+    // Focus the start button so Enter/Space dismisses immediately.
+    setTimeout(() => startBtn.focus(), 50);
+})();
 
 /* ═══════════════════════════════════════════════════
    TABS

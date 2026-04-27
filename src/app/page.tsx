@@ -52,16 +52,16 @@ export default async function HomePage() {
         <section className="mx-auto max-w-6xl px-4 pb-4 pt-14 sm:px-6">
           <div className="mb-6 flex items-end justify-between">
             <div>
-              <h2 className="flex items-baseline gap-2 text-lg font-semibold">
+              <h2 className="flex items-baseline gap-2 text-xl font-semibold">
                 <span aria-hidden>🆕</span> Latest
               </h2>
-              <p className="mt-0.5 text-[12px] text-muted">
+              <p className="mt-1 text-[13px] text-muted">
                 Just added to the collection.
               </p>
             </div>
             <Link
               href="/browse?sort=newest"
-              className="text-[13px] font-medium text-muted transition-colors hover:text-foreground"
+              className="text-[14px] font-medium text-muted transition-colors hover:text-foreground"
             >
               View all
             </Link>
@@ -75,21 +75,21 @@ export default async function HomePage() {
         <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
           <div className="mb-6 flex items-end justify-between">
             <div>
-              <h2 className="flex items-baseline gap-2 text-lg font-semibold">
+              <h2 className="flex items-baseline gap-2 text-xl font-semibold">
                 <span aria-hidden>🔥</span> Top this week
               </h2>
-              <p className="mt-0.5 text-[12px] text-muted">
+              <p className="mt-1 text-[13px] text-muted">
                 The apps with the most likes right now.
               </p>
             </div>
             <Link
               href="/browse?sort=popular"
-              className="text-[13px] font-medium text-muted transition-colors hover:text-foreground"
+              className="text-[14px] font-medium text-muted transition-colors hover:text-foreground"
             >
               See all
             </Link>
           </div>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {/* Defensive cap — getTopApps already limits to 6 but belt-and-suspenders
                 keeps the grid at exactly two rows of three on desktop */}
             {top.slice(0, 6).map((app) => (
@@ -102,10 +102,10 @@ export default async function HomePage() {
       {/* All apps grid */}
       <section className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
         <div className="mb-6 flex items-end justify-between">
-          <h2 className="text-lg font-semibold">All apps</h2>
-          <span className="text-[13px] text-muted">{appCount} apps</span>
+          <h2 className="text-xl font-semibold">All apps</h2>
+          <span className="text-[14px] text-muted">{appCount} apps</span>
         </div>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {allApps.map((app) => (
             <AppCard key={app.slug} app={app} />
           ))}
