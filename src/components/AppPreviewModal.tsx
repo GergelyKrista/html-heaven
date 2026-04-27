@@ -9,6 +9,7 @@ import { FavoriteButton } from "./FavoriteButton";
 import { LikeButton } from "./LikeButton";
 import { ShareButton } from "./ShareButton";
 import { AppThumbnail } from "./AppThumbnail";
+import { CommentsSection } from "./CommentsSection";
 
 interface Props {
   app: AppMeta;
@@ -86,7 +87,10 @@ export function AppPreviewModal({ app, onClose }: Props) {
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-lg overflow-hidden rounded-t-2xl border border-border bg-surface shadow-xl sm:rounded-2xl"
+        // Two-column layout on sm+: app info on the left, comments on
+        // the right. The modal capped at max-h so long comment threads
+        // scroll inside the column rather than blowing out the viewport.
+        className="relative flex w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl border border-border bg-surface shadow-xl sm:max-h-[88vh] sm:flex-row sm:rounded-2xl"
       >
         {/* Close button */}
         <button
@@ -99,79 +103,95 @@ export function AppPreviewModal({ app, onClose }: Props) {
           </svg>
         </button>
 
-        {/* Hero thumbnail */}
-        <AppThumbnail app={app} aspect="aspect-[2/1]" />
+        {/* Left column — app info, scrolls if needed */}
+        <div className="flex min-h-0 flex-col overflow-y-auto sm:w-1/2 sm:flex-shrink-0 sm:border-r sm:border-border/50">
+          {/* Hero thumbnail */}
+          <AppThumbnail app={app} aspect="aspect-[2/1]" />
 
-        {/* Header block */}
-        <div className="px-5 pb-4 pt-6 sm:px-6">
-          {/* Tags row */}
-          {app.tags.length > 0 && (
-            <div className="mb-3 flex flex-wrap gap-1.5">
-              {app.tags.slice(0, 4).map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-md bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
-
-          <h2 className="text-xl font-bold leading-tight text-foreground">{app.title}</h2>
-          <p className="mt-2 text-[14px] leading-relaxed text-muted-light">
-            {app.description}
-          </p>
-
-          <p className="mt-3 text-[12px] text-muted">Added {dateStr}</p>
-        </div>
-
-        {/* Submitter card */}
-        <div className="border-y border-border/50 bg-surface-2/40 px-5 py-4 sm:px-6">
-          {loading ? (
-            <div className="text-[13px] text-muted">Loading submitter info...</div>
-          ) : meta?.submitter ? (
-            <SubmitterBlock submitter={meta.submitter} stats={meta.stats} likeCount={meta.likeCount} />
-          ) : (
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-3 text-[13px] font-semibold text-muted">
-                {app.author[0]?.toUpperCase() || "?"}
+          {/* Header block */}
+          <div className="px-5 pb-4 pt-6 sm:px-6">
+            {/* Tags row */}
+            {app.tags.length > 0 && (
+              <div className="mb-3 flex flex-wrap gap-1.5">
+                {app.tags.slice(0, 4).map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-md bg-surface-2 px-2 py-0.5 text-[11px] font-medium text-muted"
+                  >
+                    {tag}
+                  </span>
+                ))}
               </div>
-              <div>
-                <p className="text-[14px] font-medium">{app.author}</p>
-                <p className="text-[12px] text-muted">
-                  {meta?.likeCount ?? 0} {meta?.likeCount === 1 ? "like" : "likes"}
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
+            )}
 
-        {/* Action row + launch */}
-        <div className="flex flex-col gap-3 px-5 py-4 sm:px-6">
-          <div className="flex flex-wrap items-center gap-2">
-            <FavoriteButton slug={app.slug} />
-            <LikeButton slug={app.slug} />
-            <ShareButton title={app.title} url={shareUrl} />
+            <h2 className="text-xl font-bold leading-tight text-foreground">{app.title}</h2>
+            <p className="mt-2 text-[14px] leading-relaxed text-muted-light">
+              {app.description}
+            </p>
+
+            <p className="mt-3 text-[12px] text-muted">Added {dateStr}</p>
           </div>
 
-          <a
-            href={appUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={onClose}
-            className="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary text-[14px] font-semibold text-white transition-colors hover:bg-primary-hover"
-          >
-            {external ? `Open on ${externalHost}` : "Launch app"}
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
-            </svg>
-          </a>
-          {external && (
-            <p className="text-center text-[11px] text-muted">
-              External link — opens on the submitter&apos;s own domain.
-            </p>
-          )}
+          {/* Submitter card */}
+          <div className="border-y border-border/50 bg-surface-2/40 px-5 py-4 sm:px-6">
+            {loading ? (
+              <div className="text-[13px] text-muted">Loading submitter info…</div>
+            ) : meta?.submitter ? (
+              <SubmitterBlock submitter={meta.submitter} stats={meta.stats} likeCount={meta.likeCount} />
+            ) : (
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-surface-3 text-[13px] font-semibold text-muted">
+                  {app.author[0]?.toUpperCase() || "?"}
+                </div>
+                <div>
+                  <p className="text-[14px] font-medium">{app.author}</p>
+                  <p className="text-[12px] text-muted">
+                    {meta?.likeCount ?? 0} {meta?.likeCount === 1 ? "like" : "likes"}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Action row + launch */}
+          <div className="flex flex-col gap-3 px-5 py-4 sm:px-6">
+            <div className="flex flex-wrap items-center gap-2">
+              <FavoriteButton slug={app.slug} />
+              <LikeButton slug={app.slug} />
+              <ShareButton title={app.title} url={shareUrl} />
+            </div>
+
+            <a
+              href={appUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={onClose}
+              className="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary text-[14px] font-semibold text-white transition-colors hover:bg-primary-hover"
+            >
+              {external ? `Open on ${externalHost}` : "Launch app"}
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+              </svg>
+            </a>
+            {external && (
+              <p className="text-center text-[11px] text-muted">
+                External link — opens on the submitter&apos;s own domain.
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Right column — comments. Scrollable list with the input
+            pinned to the bottom by CommentsSection's modal variant. */}
+        <div className="flex min-h-0 flex-1 flex-col border-t border-border/50 bg-surface-2/20 sm:border-t-0">
+          <div className="flex items-center justify-between border-b border-border/50 px-4 py-3 sm:px-5">
+            <h3 className="text-[13px] font-semibold uppercase tracking-wider text-muted">
+              Comments
+            </h3>
+          </div>
+          <div className="min-h-0 flex-1 overflow-hidden px-4 py-3 sm:px-5">
+            <CommentsSection slug={app.slug} variant="modal" />
+          </div>
         </div>
       </div>
     </div>

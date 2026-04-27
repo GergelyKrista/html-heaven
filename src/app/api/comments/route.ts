@@ -16,7 +16,11 @@ export async function GET(request: NextRequest) {
 
   try {
     const db = await getDB();
-    const comments = await getComments(db, slug);
+    // Pass the viewer id so getComments can include their own vote
+    // alongside the aggregate score.
+    const session = await auth();
+    const viewerId = resolveUserId(session?.user);
+    const comments = await getComments(db, slug, viewerId);
     return NextResponse.json({ comments });
   } catch (error) {
     console.error("Comments GET error:", error);
@@ -67,7 +71,7 @@ export async function POST(request: NextRequest) {
       // Silently skip if PR not found or GitHub API fails
     }
 
-    const comments = await getComments(db, slug);
+    const comments = await getComments(db, slug, userId);
     return NextResponse.json({ comments });
   } catch (error) {
     console.error("Comments POST error:", error);
