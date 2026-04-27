@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth, resolveUserId } from "@/lib/auth";
-import { getDB, ensureUser, getComments, addComment } from "@/lib/db";
+import {
+  getDB,
+  ensureUser,
+  getComments,
+  addComment,
+  getCommentParentInfo,
+} from "@/lib/db";
 import { postCommentToPR } from "@/lib/github";
 import { assertSameOrigin } from "@/lib/security";
 import { checkAndRecord } from "@/lib/ratelimit";
@@ -39,8 +45,13 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const body = await request.json() as { slug?: string; text?: string };
+    const body = (await request.json()) as {
+      slug?: string;
+      text?: string;
+      parentId?: number | null;
+    };
     const { slug, text } = body;
+    const rawParent = body.parentId;
 
     if (!slug || typeof slug !== "string") {
       return NextResponse.json({ error: "Invalid slug" }, { status: 400 });
@@ -56,19 +67,46 @@ export async function POST(request: NextRequest) {
     const userName = session.user.name || "Anonymous";
     const userAvatar = session.user.image || null;
 
+    // Resolve a parent reference if the client sent one. We allow only
+    // one level of nesting: replies must point at a top-level comment
+    // and must belong to the same app.
+    let parentId: number | null = null;
+    if (rawParent != null) {
+      if (typeof rawParent !== "number" || !Number.isFinite(rawParent) || rawParent <= 0) {
+        return NextResponse.json({ error: "Invalid parentId" }, { status: 400 });
+      }
+      const parent = await getCommentParentInfo(db, rawParent);
+      if (!parent) {
+        return NextResponse.json({ error: "Parent comment not found" }, { status: 400 });
+      }
+      if (parent.appSlug !== slug) {
+        return NextResponse.json(
+          { error: "Parent comment belongs to a different app" },
+          { status: 400 }
+        );
+      }
+      // Flatten: if the user clicked Reply on something that was itself
+      // a reply, redirect the new comment to the original top-level
+      // parent so the thread stays one level deep.
+      parentId = parent.parentId ?? rawParent;
+    }
+
     const { allowed } = await checkAndRecord(db, userId, "comment", 60 * 60, COMMENTS_PER_HOUR);
     if (!allowed) {
       return NextResponse.json({ error: "Too many comments. Try again later." }, { status: 429 });
     }
 
     await ensureUser(db, userId, userName, userAvatar);
-    await addComment(db, userId, userName, userAvatar, slug, text.trim());
+    await addComment(db, userId, userName, userAvatar, slug, text.trim(), parentId);
 
-    // Post to GitHub PR (best effort — don't fail the request if this fails)
-    try {
-      await postCommentToPR(slug, text.trim(), userName);
-    } catch {
-      // Silently skip if PR not found or GitHub API fails
+    // Post to GitHub PR (best effort — don't fail the request if this
+    // fails; replies are not mirrored to GitHub).
+    if (parentId === null) {
+      try {
+        await postCommentToPR(slug, text.trim(), userName);
+      } catch {
+        // Silently skip if PR not found or GitHub API fails
+      }
     }
 
     const comments = await getComments(db, slug, userId);
