@@ -1,9 +1,13 @@
 name: Auto-review submission
 
 # Runs on any PR that touches apps/ — i.e. new submissions or delete PRs.
-# Posts a review comment and applies either "auto-approved" or
-# "needs-review" labels so the admin knows at a glance which PRs
-# deserve their attention.
+# Two jobs in one workflow:
+#   1. Static-analyse the submitted HTML, post a review comment, label
+#      the PR, and fail CI on critical findings.
+#   2. (Same-repo PRs only) headless-render every changed app, save
+#      apps/<slug>/thumbnail.png, and push the new files back to the PR
+#      branch — so contributors don't have to remember to regenerate
+#      thumbnails when they update their HTML.
 on:
   pull_request:
     types: [opened, synchronize, reopened]
@@ -11,7 +15,7 @@ on:
       - "apps/**"
 
 permissions:
-  contents: read
+  contents: write        # for pushing auto-generated thumbnails
   pull-requests: write   # for comment + labels
   issues: write          # labels live on the issue side
 
@@ -168,3 +172,76 @@ jobs:
             echo "::error::Submission flagged as critical by auto-review. Admin merge required."
             exit 1
           fi
+
+      # ───────────────────────────────────────────────────────────────
+      # Auto-thumbnail steps. Same-repo PRs only — fork PRs get a
+      # read-only GITHUB_TOKEN regardless of declared permissions, so
+      # we can't push back to their branches.
+      # ───────────────────────────────────────────────────────────────
+
+      - name: Set up Node
+        if: steps.changed.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies + Chromium
+        if: steps.changed.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          npm ci
+          npx playwright install chromium --with-deps
+
+      - name: Generate manifest (copies app HTML into public/ with back badge)
+        if: steps.changed.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        run: npm run generate-manifest
+
+      - name: Headless-render each changed app
+        if: steps.changed.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          # Static server pointing at public/ — what take-thumbnails.mjs
+          # expects (it requests /apps/<slug>/index.html). Python's
+          # http.server is preinstalled on the runner; faster than
+          # `npx serve` which would download a package first.
+          python3 -m http.server 3000 --directory public > /dev/null 2>&1 &
+          SERVER_PID=$!
+
+          # Wait up to 30s for the server.
+          for i in $(seq 1 30); do
+            if curl -s -o /dev/null http://localhost:3000/; then break; fi
+            sleep 1
+          done
+
+          # Extract slug names from the NUL-delimited list of changed paths.
+          SLUGS=$(tr '\0' '\n' < changed.txt | sed -nE 's|^apps/([^/]+)/.*|\1|p' | sort -u)
+          echo "Slugs to shoot: $SLUGS"
+
+          # --force so we always re-capture for any HTML that changed in
+          # this PR. The script skips externally-hosted apps automatically.
+          for slug in $SLUGS; do
+            BASE_URL=http://localhost:3000 \
+              node scripts/take-thumbnails.mjs --force "$slug" \
+              || echo "::warning::Failed to shoot $slug"
+          done
+
+          kill $SERVER_PID 2>/dev/null || true
+
+      - name: Commit + push thumbnails back to the PR branch
+        if: steps.changed.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name == github.repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add apps/*/thumbnail.png 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "No thumbnail changes to commit."
+          else
+            git commit -m "🤖 Auto-generate thumbnails for changed apps"
+            # We checked out at head.sha (detached). Push that commit
+            # onto the PR's branch ref.
+            git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
+          fi
+
+      - name: Note when fork PR thumbnails are skipped
+        if: steps.changed.outputs.has_changes == 'true' && github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          echo "::warning::Fork PR — skipping auto-thumbnail because the workflow's GITHUB_TOKEN is read-only on fork PRs. Admin should run scripts/take-thumbnails.mjs manually before merge."
