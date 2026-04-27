@@ -44,8 +44,14 @@ CREATE TABLE IF NOT EXISTS comments (
   user_avatar TEXT,
   app_slug TEXT NOT NULL,
   text TEXT NOT NULL,
-  created_at TEXT DEFAULT (datetime('now'))
+  created_at TEXT DEFAULT (datetime('now')),
+  -- Threading: NULL for a top-level comment, otherwise the id of the
+  -- top-level comment this is a reply to. Threads only nest one level
+  -- deep — replying to a reply is rejected at the API layer so this
+  -- column never points at another reply.
+  parent_id INTEGER
 );
+CREATE INDEX IF NOT EXISTS idx_comments_parent ON comments(parent_id);
 
 -- Up/down votes on individual comments. One vote per user per comment;
 -- value is +1 (upvote) or -1 (downvote). Deleting the row clears the

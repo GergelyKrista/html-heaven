@@ -94,8 +94,16 @@ export async function hasUserFavorited(db: D1Database, userId: string, slug: str
 }
 
 // Comments — joined against comment_votes to return aggregate score
-// and the requesting viewer's own vote (for highlighting the up/down
-// button in the UI). Pass viewerId=null for unauthenticated callers.
+// and the requesting viewer's own vote, then assembled into a tree.
+//
+// Top-level comments are sorted by score DESC (so the most-upvoted
+// floats to the top), with created_at DESC as a tiebreaker. Replies
+// under each parent are sorted by created_at ASC so the conversation
+// reads in order.
+//
+// We fetch up to 200 comments (top-level + replies combined) which is
+// plenty for any one app's preview modal; thread-heavy apps can paginate
+// later. Pass viewerId=null for unauthenticated callers.
 export async function getComments(
   db: D1Database,
   slug: string,
@@ -104,15 +112,15 @@ export async function getComments(
   const result = await db
     .prepare(
       `SELECT
-         c.id, c.user_name, c.user_avatar, c.app_slug, c.text, c.created_at,
+         c.id, c.user_name, c.user_avatar, c.app_slug, c.text, c.created_at, c.parent_id,
          COALESCE(SUM(v.value), 0)         AS score,
          COALESCE(SUM(CASE WHEN v.user_id = ? THEN v.value ELSE 0 END), 0) AS user_vote
        FROM comments c
        LEFT JOIN comment_votes v ON v.comment_id = c.id
        WHERE c.app_slug = ?
        GROUP BY c.id
-       ORDER BY c.created_at DESC
-       LIMIT 50`
+       ORDER BY c.created_at ASC
+       LIMIT 200`
     )
     .bind(viewerId ?? "", slug)
     .all<{
@@ -122,11 +130,25 @@ export async function getComments(
       app_slug: string;
       text: string;
       created_at: string;
+      parent_id: number | null;
       score: number;
       user_vote: number;
     }>();
 
-  return result.results.map((r) => ({
+  type CommentRow = {
+    id: number;
+    userName: string;
+    userAvatar: string | null;
+    appSlug: string;
+    text: string;
+    createdAt: string;
+    score: number;
+    userVote: -1 | 0 | 1;
+    parentId: number | null;
+    replies?: CommentRow[];
+  };
+
+  const all: CommentRow[] = result.results.map((r) => ({
     id: r.id,
     userName: r.user_name,
     userAvatar: r.user_avatar,
@@ -134,8 +156,40 @@ export async function getComments(
     text: r.text,
     createdAt: r.created_at,
     score: r.score ?? 0,
-    userVote: ((r.user_vote === 1 ? 1 : r.user_vote === -1 ? -1 : 0)) as -1 | 0 | 1,
+    userVote: (r.user_vote === 1 ? 1 : r.user_vote === -1 ? -1 : 0) as -1 | 0 | 1,
+    parentId: r.parent_id,
   }));
+
+  const byId = new Map<number, CommentRow>();
+  const topLevel: CommentRow[] = [];
+  for (const c of all) {
+    byId.set(c.id, c);
+    if (c.parentId === null) {
+      c.replies = [];
+      topLevel.push(c);
+    }
+  }
+  // Walk a second time to attach replies. Replies whose parent has
+  // disappeared (shouldn't happen but defensively) are silently dropped.
+  for (const c of all) {
+    if (c.parentId !== null) {
+      const parent = byId.get(c.parentId);
+      if (parent && parent.replies) parent.replies.push(c);
+    }
+  }
+  // Top-level: highest score first, recency as tiebreaker.
+  topLevel.sort((a, b) => {
+    if (b.score !== a.score) return b.score - a.score;
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+  // Replies: chronological so a thread reads in order.
+  for (const t of topLevel) {
+    t.replies?.sort(
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+    );
+  }
+
+  return topLevel;
 }
 
 /**
@@ -185,19 +239,36 @@ export async function getCommentSlug(
   return row?.app_slug ?? null;
 }
 
+/**
+ * Look up a candidate parent comment so the API can validate it before
+ * accepting a reply. Returns null when the comment doesn't exist.
+ */
+export async function getCommentParentInfo(
+  db: D1Database,
+  commentId: number
+): Promise<{ appSlug: string; parentId: number | null } | null> {
+  const row = await db
+    .prepare("SELECT app_slug, parent_id FROM comments WHERE id = ?")
+    .bind(commentId)
+    .first<{ app_slug: string; parent_id: number | null }>();
+  if (!row) return null;
+  return { appSlug: row.app_slug, parentId: row.parent_id };
+}
+
 export async function addComment(
   db: D1Database,
   userId: string,
   userName: string,
   userAvatar: string | null,
   slug: string,
-  text: string
+  text: string,
+  parentId: number | null = null
 ) {
   await db
     .prepare(
-      "INSERT INTO comments (user_id, user_name, user_avatar, app_slug, text) VALUES (?, ?, ?, ?, ?)"
+      "INSERT INTO comments (user_id, user_name, user_avatar, app_slug, text, parent_id) VALUES (?, ?, ?, ?, ?, ?)"
     )
-    .bind(userId, userName, userAvatar, slug, text)
+    .bind(userId, userName, userAvatar, slug, text, parentId)
     .run();
 }
 
@@ -264,4 +335,69 @@ export async function unmarkAppDeleted(db: D1Database, slug: string) {
     .prepare("DELETE FROM app_deletions WHERE app_slug = ?")
     .bind(slug)
     .run();
+}
+
+// Activity feed — union of recent likes, comments, and submissions
+// across all users. Used by the right-side rail on wide screens to give
+// the site a "people are here" feel.
+export type ActivityType = "like" | "comment" | "submission";
+
+export interface ActivityEvent {
+  type: ActivityType;
+  appSlug: string;
+  userId: string;
+  userName: string | null;
+  userAvatar: string | null;
+  userHandle: string | null;
+  ts: string;
+}
+
+interface ActivityRow {
+  type: string;
+  app_slug: string;
+  user_id: string;
+  user_name: string | null;
+  user_avatar: string | null;
+  user_handle: string | null;
+  ts: string;
+}
+
+export async function getRecentActivity(
+  db: D1Database,
+  limit = 15
+): Promise<ActivityEvent[]> {
+  const result = await db
+    .prepare(
+      `SELECT 'like' AS type, l.app_slug, l.user_id,
+              u.name AS user_name, u.avatar AS user_avatar, u.handle AS user_handle,
+              l.created_at AS ts
+       FROM likes l LEFT JOIN users u ON u.id = l.user_id
+       WHERE l.created_at > datetime('now', '-30 days')
+       UNION ALL
+       SELECT 'comment' AS type, c.app_slug, c.user_id,
+              c.user_name, c.user_avatar, u.handle AS user_handle,
+              c.created_at AS ts
+       FROM comments c LEFT JOIN users u ON u.id = c.user_id
+       WHERE c.created_at > datetime('now', '-30 days')
+       UNION ALL
+       SELECT 'submission' AS type, s.app_slug, s.user_id,
+              s.user_name, u.avatar AS user_avatar, u.handle AS user_handle,
+              s.submitted_at AS ts
+       FROM submissions s LEFT JOIN users u ON u.id = s.user_id
+       WHERE s.submitted_at > datetime('now', '-30 days')
+       ORDER BY ts DESC
+       LIMIT ?`
+    )
+    .bind(limit)
+    .all<ActivityRow>();
+
+  return result.results.map((r) => ({
+    type: r.type as ActivityType,
+    appSlug: r.app_slug,
+    userId: r.user_id,
+    userName: r.user_name,
+    userAvatar: r.user_avatar,
+    userHandle: r.user_handle,
+    ts: r.ts,
+  }));
 }

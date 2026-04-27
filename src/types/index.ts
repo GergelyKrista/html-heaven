@@ -38,6 +38,14 @@ export interface Comment {
   score: number;
   /** Current viewer's vote: 1 (up), -1 (down), or 0 (no vote / signed out). */
   userVote: -1 | 0 | 1;
+  /**
+   * Parent comment id when this comment is a reply, otherwise null.
+   * The model only allows one level of nesting — replies' parents are
+   * always top-level comments.
+   */
+  parentId: number | null;
+  /** Replies to this comment, chronological. Only present on top-level comments. */
+  replies?: Comment[];
 }
 
 export interface AppStats {

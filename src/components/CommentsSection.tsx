@@ -7,11 +7,11 @@ import type { Comment } from "@/types";
 interface Props {
   slug: string;
   /**
-   * "page" — the original layout used inside /app/<slug>; section header,
-   *          large input area, generous spacing.
-   * "modal" — used inside AppPreviewModal; no header (the modal already
-   *           labels the column), tighter spacing, scrollable list with
-   *           the input pinned at the bottom by the parent.
+   * "page" — original layout used inside /app/<slug>; section header,
+   *          generous spacing.
+   * "modal" — used inside AppPreviewModal; no header (the modal column
+   *           already labels itself), tighter spacing, scrollable list
+   *           with the composer pinned at the bottom.
    */
   variant?: "page" | "modal";
 }
@@ -32,6 +32,18 @@ export function CommentsSection({ slug, variant = "page" }: Props) {
       .catch(() => {});
   }, [slug]);
 
+  // Server is the source of truth; passing null parentId means top-level.
+  async function postComment(value: string, parentId: number | null) {
+    const res = await fetch("/api/comments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ slug, text: value, parentId }),
+    });
+    const data = (await res.json()) as { comments?: Comment[]; error?: string };
+    if (!res.ok) throw new Error(data.error || "Failed");
+    if (data.comments) setComments(data.comments);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!text.trim() || loading) return;
@@ -40,14 +52,7 @@ export function CommentsSection({ slug, variant = "page" }: Props) {
     setError("");
 
     try {
-      const res = await fetch("/api/comments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug, text: text.trim() }),
-      });
-      const data = (await res.json()) as { comments?: Comment[]; error?: string };
-      if (!res.ok) throw new Error(data.error || "Failed");
-      if (data.comments) setComments(data.comments);
+      await postComment(text.trim(), null);
       setText("");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to post comment");
@@ -55,21 +60,18 @@ export function CommentsSection({ slug, variant = "page" }: Props) {
     setLoading(false);
   }
 
-  // Optimistic vote: toggle locally, then send. Roll back on error.
+  // Optimistic vote: works on either top-level or reply. Walks the tree.
   async function vote(comment: Comment, dir: -1 | 1) {
     if (!session?.user) return;
-    // Click on the same direction → clear; otherwise set new direction.
     const newValue = comment.userVote === dir ? 0 : dir;
     const delta = newValue - comment.userVote;
 
-    // Optimistic update
-    setComments((prev) =>
-      prev.map((c) =>
-        c.id === comment.id
-          ? { ...c, userVote: newValue, score: c.score + delta }
-          : c
-      )
-    );
+    // Optimistic update — apply to comment in place via tree walk.
+    setComments((prev) => updateInTree(prev, comment.id, (c) => ({
+      ...c,
+      userVote: newValue,
+      score: c.score + delta,
+    })));
 
     try {
       const res = await fetch(
@@ -82,23 +84,18 @@ export function CommentsSection({ slug, variant = "page" }: Props) {
       );
       if (!res.ok) throw new Error("vote failed");
       const data = (await res.json()) as { score: number; userVote: -1 | 0 | 1 };
-      // Reconcile with server's authoritative score.
-      setComments((prev) =>
-        prev.map((c) =>
-          c.id === comment.id
-            ? { ...c, score: data.score, userVote: data.userVote }
-            : c
-        )
-      );
+      setComments((prev) => updateInTree(prev, comment.id, (c) => ({
+        ...c,
+        score: data.score,
+        userVote: data.userVote,
+      })));
     } catch {
       // Roll back on failure.
-      setComments((prev) =>
-        prev.map((c) =>
-          c.id === comment.id
-            ? { ...c, userVote: comment.userVote, score: comment.score }
-            : c
-        )
-      );
+      setComments((prev) => updateInTree(prev, comment.id, (c) => ({
+        ...c,
+        userVote: comment.userVote,
+        score: comment.score,
+      })));
     }
   }
 
@@ -111,6 +108,10 @@ export function CommentsSection({ slug, variant = "page" }: Props) {
   }
 
   const isModal = variant === "modal";
+  const totalCount = comments.reduce(
+    (sum, c) => sum + 1 + (c.replies?.length ?? 0),
+    0
+  );
 
   // ────────── Comment list ──────────
   const list =
@@ -121,26 +122,27 @@ export function CommentsSection({ slug, variant = "page" }: Props) {
     ) : (
       <div className={isModal ? "space-y-2" : "space-y-3"}>
         {comments.map((comment) => (
-          <CommentRow
+          <ThreadedComment
             key={comment.id}
             comment={comment}
             timeAgo={timeAgo}
             onVote={vote}
-            canVote={!!session?.user}
+            onReply={postComment}
+            canPost={!!session?.user}
             isModal={isModal}
           />
         ))}
       </div>
     );
 
-  // ────────── Composer ──────────
+  // ────────── Top-level composer ──────────
   const composer = session?.user ? (
     <form onSubmit={handleSubmit} className={isModal ? "" : "mb-4"}>
       <textarea
         value={text}
         onChange={(e) => setText(e.target.value)}
         maxLength={500}
-        rows={isModal ? 2 : 2}
+        rows={2}
         placeholder="Share feedback or suggestions…"
         className="w-full resize-none rounded-lg border border-border bg-surface px-3 py-2 text-[13px] text-foreground placeholder:text-muted focus:border-border-light focus:outline-none"
       />
@@ -162,14 +164,13 @@ export function CommentsSection({ slug, variant = "page" }: Props) {
     </p>
   );
 
-  // ────────── Page variant ──────────
   if (!isModal) {
     return (
       <div>
         <h3 className="mb-3 text-[14px] font-semibold">
           Comments{" "}
-          {comments.length > 0 && (
-            <span className="font-normal text-muted">({comments.length})</span>
+          {totalCount > 0 && (
+            <span className="font-normal text-muted">({totalCount})</span>
           )}
         </h3>
         {composer}
@@ -178,13 +179,129 @@ export function CommentsSection({ slug, variant = "page" }: Props) {
     );
   }
 
-  // ────────── Modal variant ──────────
-  // The list scrolls inside its own column; the composer pins to the
-  // bottom via flex-direction:column on the parent.
+  // Modal variant: scroll inside the column, composer pinned to the bottom.
   return (
     <div className="flex h-full min-h-0 flex-col">
       <div className="min-h-0 flex-1 overflow-y-auto pr-1">{list}</div>
       <div className="mt-3 border-t border-border/50 pt-3">{composer}</div>
+    </div>
+  );
+}
+
+// Walks the tree and replaces a comment by id, preserving immutability
+// so React picks up the change. Top-level → updated. Reply → updated
+// inside its parent's replies array.
+function updateInTree(
+  list: Comment[],
+  id: number,
+  fn: (c: Comment) => Comment
+): Comment[] {
+  return list.map((c) => {
+    if (c.id === id) return fn(c);
+    if (c.replies?.length) {
+      const next = c.replies.map((r) => (r.id === id ? fn(r) : r));
+      if (next !== c.replies) return { ...c, replies: next };
+    }
+    return c;
+  });
+}
+
+function ThreadedComment({
+  comment,
+  timeAgo,
+  onVote,
+  onReply,
+  canPost,
+  isModal,
+}: {
+  comment: Comment;
+  timeAgo: (s: string) => string;
+  onVote: (c: Comment, dir: -1 | 1) => void;
+  onReply: (text: string, parentId: number) => Promise<void>;
+  canPost: boolean;
+  isModal: boolean;
+}) {
+  const [replyOpen, setReplyOpen] = useState(false);
+  const [replyText, setReplyText] = useState("");
+  const [replyLoading, setReplyLoading] = useState(false);
+  const [replyError, setReplyError] = useState("");
+
+  async function submitReply(e: React.FormEvent) {
+    e.preventDefault();
+    if (!replyText.trim() || replyLoading) return;
+    setReplyLoading(true);
+    setReplyError("");
+    try {
+      await onReply(replyText.trim(), comment.id);
+      setReplyText("");
+      setReplyOpen(false);
+    } catch (err) {
+      setReplyError(err instanceof Error ? err.message : "Failed to post");
+    }
+    setReplyLoading(false);
+  }
+
+  return (
+    <div>
+      <CommentRow
+        comment={comment}
+        timeAgo={timeAgo}
+        onVote={onVote}
+        canVote={canPost}
+        isModal={isModal}
+        rightControls={
+          canPost ? (
+            <button
+              type="button"
+              onClick={() => setReplyOpen((v) => !v)}
+              className="text-[11px] font-medium text-muted hover:text-foreground"
+            >
+              {replyOpen ? "Cancel" : "Reply"}
+            </button>
+          ) : null
+        }
+      />
+
+      {replyOpen && canPost && (
+        <form onSubmit={submitReply} className="ml-6 mt-1.5 sm:ml-8">
+          <textarea
+            value={replyText}
+            onChange={(e) => setReplyText(e.target.value)}
+            maxLength={500}
+            rows={2}
+            autoFocus
+            placeholder={`Reply to ${comment.userName}…`}
+            className="w-full resize-none rounded-lg border border-border bg-surface px-3 py-2 text-[12px] text-foreground placeholder:text-muted focus:border-border-light focus:outline-none"
+          />
+          <div className="mt-1 flex items-center justify-between">
+            <span className="text-[10px] text-muted">{replyText.length}/500</span>
+            <button
+              type="submit"
+              disabled={!replyText.trim() || replyLoading}
+              className="h-6 rounded-md bg-primary px-2.5 text-[11px] font-medium text-white transition-colors hover:bg-primary-hover disabled:opacity-30"
+            >
+              {replyLoading ? "Posting…" : "Post"}
+            </button>
+          </div>
+          {replyError && <p className="mt-1 text-[11px] text-red-400">{replyError}</p>}
+        </form>
+      )}
+
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="ml-6 mt-2 space-y-2 border-l border-border/40 pl-3 sm:ml-8">
+          {comment.replies.map((reply) => (
+            <CommentRow
+              key={reply.id}
+              comment={reply}
+              timeAgo={timeAgo}
+              onVote={onVote}
+              canVote={canPost}
+              isModal={isModal}
+              rightControls={null}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -195,12 +312,14 @@ function CommentRow({
   onVote,
   canVote,
   isModal,
+  rightControls,
 }: {
   comment: Comment;
   timeAgo: (s: string) => string;
   onVote: (c: Comment, dir: -1 | 1) => void;
   canVote: boolean;
   isModal: boolean;
+  rightControls: React.ReactNode;
 }) {
   const upActive = comment.userVote === 1;
   const downActive = comment.userVote === -1;
@@ -269,6 +388,7 @@ function CommentRow({
           )}
           <span className="text-[12px] font-medium">{comment.userName}</span>
           <span className="text-[10px] text-muted">{timeAgo(comment.createdAt)}</span>
+          {rightControls && <span className="ml-auto">{rightControls}</span>}
         </div>
         <p
           className={`leading-relaxed text-muted-light ${

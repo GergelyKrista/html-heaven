@@ -6,6 +6,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { SessionProvider } from "@/components/SessionProvider";
 import { OwnershipProvider } from "@/components/OwnershipProvider";
+import { ActivityRail } from "@/components/ActivityRail";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -82,6 +83,10 @@ export default function RootLayout({
               <Navbar />
             </Suspense>
             <main className="flex-1">{children}</main>
+            {/* Right-rail activity feed — only renders on screens
+                ≥ 1700 px wide (ultrawide). Client component that hits
+                /api/activity on mount; the API edge-caches for 60 s. */}
+            <ActivityRail />
             <Footer />
           </OwnershipProvider>
         </SessionProvider>
