@@ -47,6 +47,18 @@ CREATE TABLE IF NOT EXISTS comments (
   created_at TEXT DEFAULT (datetime('now'))
 );
 
+-- Up/down votes on individual comments. One vote per user per comment;
+-- value is +1 (upvote) or -1 (downvote). Deleting the row clears the
+-- user's vote (rather than storing a 0).
+CREATE TABLE IF NOT EXISTS comment_votes (
+  user_id TEXT NOT NULL,
+  comment_id INTEGER NOT NULL,
+  value INTEGER NOT NULL CHECK (value IN (-1, 1)),
+  created_at TEXT DEFAULT (datetime('now')),
+  PRIMARY KEY (user_id, comment_id)
+);
+CREATE INDEX IF NOT EXISTS idx_comment_votes_comment ON comment_votes(comment_id);
+
 -- Tracks who submitted which app — used for ownership checks on delete
 CREATE TABLE IF NOT EXISTS submissions (
   app_slug TEXT PRIMARY KEY,
