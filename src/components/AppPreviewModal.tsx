@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import type { AppMeta } from "@/types";
+import { isExternal } from "@/types";
 import type { UserProfile, ProfileStats } from "@/lib/users";
 import { FavoriteButton } from "./FavoriteButton";
 import { LikeButton } from "./LikeButton";
@@ -24,7 +25,19 @@ export function AppPreviewModal({ app, onClose }: Props) {
   const [meta, setMeta] = useState<MetaResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const appUrl = `/apps/${app.slug}/index.html`;
+  const external = isExternal(app);
+  // Where "Launch" goes — local HTML for bundled, submitter's URL for external.
+  const appUrl = external ? (app.externalUrl ?? "#") : `/apps/${app.slug}/index.html`;
+  // Short hostname displayed on the external launch button.
+  const externalHost = external && app.externalUrl
+    ? (() => {
+        try {
+          return new URL(app.externalUrl).hostname.replace(/^www\./, "");
+        } catch {
+          return "external site";
+        }
+      })()
+    : null;
   // Share the detail page URL so link previews in chats render a real
   // OG card (the /apps/.../index.html static file has no meta tags).
   const shareUrl = `https://htmlheaven.com/app/${app.slug}`;
@@ -149,11 +162,16 @@ export function AppPreviewModal({ app, onClose }: Props) {
             onClick={onClose}
             className="flex h-11 items-center justify-center gap-2 rounded-lg bg-primary text-[14px] font-semibold text-white transition-colors hover:bg-primary-hover"
           >
-            Launch app
+            {external ? `Open on ${externalHost}` : "Launch app"}
             <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
             </svg>
           </a>
+          {external && (
+            <p className="text-center text-[11px] text-muted">
+              External link — opens on the submitter&apos;s own domain.
+            </p>
+          )}
         </div>
       </div>
     </div>

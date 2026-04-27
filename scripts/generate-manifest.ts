@@ -1,6 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
 
+type HostingType = "bundled" | "external";
+
 interface AppMeta {
   title: string;
   slug: string;
@@ -8,8 +10,10 @@ interface AppMeta {
   author: string;
   tags: string[];
   dateAdded: string;
-  thumbnail: string;
   featured: boolean;
+  hostingType?: HostingType;
+  thumbnail?: string;
+  externalUrl?: string;
 }
 
 const appsDir = path.join(__dirname, "..", "apps");
@@ -17,9 +21,8 @@ const publicAppsDir = path.join(__dirname, "..", "public", "apps");
 const generatedDir = path.join(__dirname, "..", "src", "generated");
 const manifestPath = path.join(generatedDir, "manifest.json");
 
-// The "Back to HTML Heaven" badge injected into every app.
-// Uses a container with very high z-index and scoped selectors so it can't
-// conflict with the app's own styles.
+// The "Back to HTML Heaven" badge injected into every bundled app.
+// External apps aren't touched — they live on the submitter's own domain.
 const BACK_BADGE = `
 <!-- Injected by HTML Heaven -->
 <div id="__hh-back-badge" style="all:initial;position:fixed;top:12px;left:12px;z-index:2147483647;font-family:system-ui,-apple-system,'Segoe UI',sans-serif">
@@ -36,15 +39,48 @@ const BACK_BADGE = `
 `.trim();
 
 function injectBackBadge(html: string): string {
-  // Skip if already injected (defensive)
   if (html.includes("__hh-back-badge")) return html;
-
-  // Try to insert right before </body>. Fallback: append to end.
   const bodyCloseRegex = /<\/body\s*>/i;
   if (bodyCloseRegex.test(html)) {
     return html.replace(bodyCloseRegex, `${BACK_BADGE}\n</body>`);
   }
   return html + "\n" + BACK_BADGE;
+}
+
+// Validate one app.json entry. Throws with a helpful message on invalid
+// combinations so the prebuild step fails fast instead of shipping a
+// broken manifest.
+function validate(meta: AppMeta, dir: string): void {
+  if (!meta.slug || !meta.title || !meta.description) {
+    throw new Error(`${dir}: app.json missing required fields (slug/title/description)`);
+  }
+
+  const type = meta.hostingType ?? "bundled";
+
+  if (type === "external") {
+    if (!meta.externalUrl) {
+      throw new Error(`${dir}: hostingType="external" requires externalUrl`);
+    }
+    if (!/^https:\/\//i.test(meta.externalUrl)) {
+      throw new Error(`${dir}: externalUrl must start with https://`);
+    }
+    try {
+      new URL(meta.externalUrl);
+    } catch {
+      throw new Error(`${dir}: externalUrl is not a valid URL`);
+    }
+    return;
+  }
+
+  if (type !== "bundled") {
+    throw new Error(`${dir}: unknown hostingType "${type}" (expected "bundled" or "external")`);
+  }
+
+  // Bundled — the folder must contain index.html
+  const htmlPath = path.join(appsDir, dir, "index.html");
+  if (!fs.existsSync(htmlPath)) {
+    throw new Error(`${dir}: bundled app is missing index.html`);
+  }
 }
 
 // Ensure output directories exist
@@ -68,9 +104,19 @@ for (const entry of entries) {
   }
 
   const meta: AppMeta = JSON.parse(fs.readFileSync(appJsonPath, "utf-8"));
+  validate(meta, entry.name);
+
+  // Normalize the manifest entry so downstream consumers can rely on the
+  // field being present.
+  meta.hostingType = meta.hostingType ?? "bundled";
   apps.push(meta);
 
-  // Copy app files to public/apps/{slug}/
+  // External apps don't need anything copied to public/ — they live on
+  // the submitter's domain.
+  if (meta.hostingType === "external") continue;
+
+  // Bundled: copy every file under apps/<slug>/ (except app.json) into
+  // public/apps/<slug>/, injecting the back badge into HTML.
   const destDir = path.join(publicAppsDir, meta.slug);
   if (!fs.existsSync(destDir)) {
     fs.mkdirSync(destDir, { recursive: true });
@@ -83,7 +129,6 @@ for (const entry of entries) {
     const srcPath = path.join(appsDir, entry.name, file);
     const destPath = path.join(destDir, file);
 
-    // Inject back badge into HTML files; copy others as-is
     if (file.endsWith(".html") || file.endsWith(".htm")) {
       const content = fs.readFileSync(srcPath, "utf-8");
       fs.writeFileSync(destPath, injectBackBadge(content));
@@ -97,5 +142,9 @@ for (const entry of entries) {
 apps.sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime());
 
 fs.writeFileSync(manifestPath, JSON.stringify(apps, null, 2));
-console.log(`Generated manifest.json with ${apps.length} apps`);
-console.log(`Copied app files to public/apps/ (with back badge injected)`);
+const externalCount = apps.filter((a) => a.hostingType === "external").length;
+const bundledCount = apps.length - externalCount;
+console.log(
+  `Generated manifest.json with ${apps.length} apps (${bundledCount} bundled, ${externalCount} external)`
+);
+console.log(`Copied bundled app files to public/apps/ (with back badge injected)`);

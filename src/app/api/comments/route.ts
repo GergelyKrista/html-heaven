@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth, resolveUserId } from "@/lib/auth";
 import { getDB, ensureUser, getComments, addComment } from "@/lib/db";
 import { postCommentToPR } from "@/lib/github";
 import { assertSameOrigin } from "@/lib/security";
@@ -29,7 +29,8 @@ export async function POST(request: NextRequest) {
   if (originGate) return originGate;
 
   const session = await auth();
-  if (!session?.user?.email) {
+  const userId = resolveUserId(session?.user);
+  if (!session?.user || !userId) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
@@ -48,7 +49,6 @@ export async function POST(request: NextRequest) {
     }
 
     const db = await getDB();
-    const userId = session.user.email;
     const userName = session.user.name || "Anonymous";
     const userAvatar = session.user.image || null;
 

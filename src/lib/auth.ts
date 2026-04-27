@@ -10,25 +10,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // actually land on a profile page — without this, user rows are
     // only created on actions like submit/edit/follow, so a fresh
     // sign-in user has no handle and no /u/<handle> page.
+    //
+    // GitHub lets users hide their email; when they do, `user.email`
+    // is null and we fall back to their github login as the identity.
     async signIn({ user, profile }) {
-      if (!user?.email) return true;
+      const p = (profile || {}) as {
+        login?: string;
+        bio?: string | null;
+        blog?: string | null;
+        location?: string | null;
+        twitter_username?: string | null;
+      };
+      // Canonical id: email if GitHub shared it, else the login.
+      // Without either we can't key a user row at all — bail, but
+      // still allow sign-in so the session exists client-side.
+      const id = user?.email || p.login || null;
+      if (!id) return true;
+
       try {
-        // Lazy-import to avoid pulling D1/Workers-only code into
-        // environments where auth runs without a request (edge prerender).
         const { getDB } = await import("./db");
         const { ensureUserWithHandle } = await import("./users");
         const db = await getDB();
-        const p = (profile || {}) as {
-          login?: string;
-          bio?: string | null;
-          blog?: string | null;
-          location?: string | null;
-          twitter_username?: string | null;
-        };
         await ensureUserWithHandle(
           db,
-          user.email,
-          user.name || user.email,
+          id,
+          user.name || p.login || id,
           user.image || null,
           p.login || null,
           {
@@ -39,8 +45,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
         );
       } catch (err) {
-        // Never block sign-in on a DB hiccup — the user can still
-        // land on the site and the next authed action will retry.
+        // Never block sign-in on a DB hiccup — the next authed action
+        // will retry.
         console.error("signIn ensureUserWithHandle failed:", err);
       }
       return true;
@@ -90,7 +96,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 });
 
-type SessionUser = {
+export type SessionUser = {
   name?: string | null;
   email?: string | null;
   image?: string | null;
@@ -100,6 +106,23 @@ type SessionUser = {
   ghLocation?: string;
   ghTwitter?: string;
 };
+
+/**
+ * Canonical user id derived from the session — never falls through to
+ * `"unknown"` or the user-editable display name (both of which the old
+ * code allowed, and both of which caused cross-user ownership collisions
+ * when two users lacked a visible GitHub email).
+ *
+ * Returns email when GitHub shares it (keeps existing DB rows keyed by
+ * email matching), otherwise the immutable GitHub login, otherwise
+ * null — callers should treat null as "not authenticated".
+ */
+export function resolveUserId(user: SessionUser | null | undefined): string | null {
+  if (!user) return null;
+  if (user.email) return user.email;
+  if (user.githubLogin) return user.githubLogin;
+  return null;
+}
 
 /** Pull the GitHub-derived fields off the session user for ensureUserWithHandle. */
 export function githubFieldsFromSession(user: SessionUser) {
@@ -115,8 +138,28 @@ export function githubFieldsFromSession(user: SessionUser) {
 }
 
 /**
+ * Admin check. Matches against either ADMIN_EMAIL (legacy — email-keyed
+ * admin account) or ADMIN_GITHUB_LOGIN (for admins whose email is
+ * hidden on GitHub). Either match counts.
+ */
+export function isAdmin(user: SessionUser | null | undefined): boolean {
+  if (!user) return false;
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminLogin = process.env.ADMIN_GITHUB_LOGIN;
+  if (adminEmail && user.email && user.email.toLowerCase() === adminEmail.toLowerCase()) {
+    return true;
+  }
+  if (adminLogin && user.githubLogin && user.githubLogin.toLowerCase() === adminLogin.toLowerCase()) {
+    return true;
+  }
+  return false;
+}
+
+/**
  * Returns true if the given email is the site admin.
- * Admin is set via the ADMIN_EMAIL env var.
+ * Kept for call sites that only have an email value in scope.
+ * Prefer `isAdmin(sessionUser)` where possible — it also covers
+ * admins whose GitHub email is hidden.
  */
 export function isAdminEmail(email: string | null | undefined): boolean {
   if (!email) return false;

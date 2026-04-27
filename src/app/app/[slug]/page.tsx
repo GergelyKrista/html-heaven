@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getAllAppsSync, getAppBySlug } from "@/lib/apps";
-import { auth, isAdminEmail } from "@/lib/auth";
+import { auth, isAdmin, resolveUserId } from "@/lib/auth";
 import { getDB, getSubmitter } from "@/lib/db";
 import { getProfileById } from "@/lib/users";
 import { DeleteAppMenu } from "@/components/DeleteAppMenu";
@@ -66,16 +66,21 @@ export default async function AppPage({
   // Determine if the current viewer can delete this app, and look up
   // the submitter's profile so we can link the author name to /u/<handle>.
   const session = await auth();
-  const viewerEmail = session?.user?.email || null;
-  const isAdmin = isAdminEmail(viewerEmail);
-  let canDelete = isAdmin;
+  const viewerId = resolveUserId(session?.user);
+  const admin = isAdmin(session?.user);
+  const viewerLogin = (session?.user as { githubLogin?: string } | undefined)?.githubLogin;
+  let canDelete = admin;
   let authorHandle: string | null = null;
   try {
     const db = await getDB();
     const submitter = await getSubmitter(db, slug);
     if (submitter) {
-      if (!canDelete && viewerEmail) {
-        canDelete = submitter.toLowerCase() === viewerEmail.toLowerCase();
+      if (!canDelete) {
+        // Submissions may be keyed by email (legacy) or github login;
+        // match the viewer against either form they present in session.
+        const s = submitter.toLowerCase();
+        if (viewerId && s === viewerId.toLowerCase()) canDelete = true;
+        else if (viewerLogin && s === viewerLogin.toLowerCase()) canDelete = true;
       }
       const submitterProfile = await getProfileById(db, submitter);
       authorHandle = submitterProfile?.handle ?? null;
@@ -102,7 +107,7 @@ export default async function AppPage({
 
         <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
           <div className="space-y-6">
-            <AppPlayer slug={app.slug} title={app.title} />
+            <AppPlayer app={app} />
             <CommentsSection slug={app.slug} />
           </div>
 

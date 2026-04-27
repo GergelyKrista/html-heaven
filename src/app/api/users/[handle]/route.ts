@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth, resolveUserId } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { getProfileByHandle, getProfileStats, isFollowing, getUserAppSlugs } from "@/lib/users";
 
@@ -20,9 +20,10 @@ export async function GET(_request: Request, { params }: { params: Promise<{ han
 
     // Whether the current viewer follows this user
     const session = await auth();
+    const viewerId = resolveUserId(session?.user);
     let followedByMe = false;
-    if (session?.user?.email && session.user.email !== profile.id) {
-      followedByMe = await isFollowing(db, session.user.email, profile.id);
+    if (viewerId && viewerId !== profile.id) {
+      followedByMe = await isFollowing(db, viewerId, profile.id);
     }
 
     return NextResponse.json({
@@ -30,7 +31,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ han
       stats,
       appSlugs,
       followedByMe,
-      isSelf: session?.user?.email === profile.id,
+      isSelf: viewerId === profile.id,
     });
   } catch (error) {
     console.error("Profile fetch error:", error);

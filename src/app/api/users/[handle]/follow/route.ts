@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, githubFieldsFromSession } from "@/lib/auth";
+import { auth, githubFieldsFromSession, resolveUserId } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { getProfileByHandle, follow, unfollow, isFollowing, ensureUserWithHandle } from "@/lib/users";
 import { assertSameOrigin } from "@/lib/security";
@@ -9,7 +9,8 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
   if (originGate) return originGate;
 
   const session = await auth();
-  if (!session?.user?.email) {
+  const userId = resolveUserId(session?.user);
+  if (!session?.user || !userId) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
@@ -21,7 +22,7 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     const { githubLogin, gh } = githubFieldsFromSession(session.user);
     await ensureUserWithHandle(
       db,
-      session.user.email,
+      userId,
       session.user.name || "Anonymous",
       session.user.image || null,
       githubLogin,
@@ -32,16 +33,16 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     if (!target) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
-    if (target.id === session.user.email) {
+    if (target.id === userId) {
       return NextResponse.json({ error: "Cannot follow yourself" }, { status: 400 });
     }
 
-    const currentlyFollowing = await isFollowing(db, session.user.email, target.id);
+    const currentlyFollowing = await isFollowing(db, userId, target.id);
     if (currentlyFollowing) {
-      await unfollow(db, session.user.email, target.id);
+      await unfollow(db, userId, target.id);
       return NextResponse.json({ following: false });
     }
-    await follow(db, session.user.email, target.id);
+    await follow(db, userId, target.id);
     return NextResponse.json({ following: true });
   } catch (error) {
     console.error("Follow toggle error:", error);

@@ -1,3 +1,5 @@
+export type HostingType = "bundled" | "external";
+
 export interface AppMeta {
   title: string;
   slug: string;
@@ -5,8 +7,24 @@ export interface AppMeta {
   author: string;
   tags: string[];
   dateAdded: string;
-  thumbnail: string;
   featured: boolean;
+
+  /**
+   * Where the app lives. Missing values are treated as "bundled" by
+   * callers so legacy entries (predate this field) keep working.
+   */
+  hostingType?: HostingType;
+
+  /** Bundled apps: filename inside apps/<slug>/ used as the card image. */
+  thumbnail?: string;
+
+  /** External apps: full https URL the launcher opens in a new tab. */
+  externalUrl?: string;
+}
+
+/** Type-narrowing helper — defaults missing hostingType to "bundled". */
+export function isExternal(app: AppMeta): boolean {
+  return app.hostingType === "external";
 }
 
 export interface Comment {

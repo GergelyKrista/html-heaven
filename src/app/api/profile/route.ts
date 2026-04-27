@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { auth, resolveUserId } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 
 export async function GET() {
   const session = await auth();
-  if (!session?.user?.email) {
+  const userId = resolveUserId(session?.user);
+  if (!session?.user || !userId) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
   try {
     const db = await getDB();
-    const userId = session.user.email;
 
     const [favorites, likes, comments] = await Promise.all([
       db.prepare("SELECT app_slug, created_at FROM favorites WHERE user_id = ? ORDER BY created_at DESC")

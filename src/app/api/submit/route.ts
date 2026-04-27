@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, githubFieldsFromSession } from "@/lib/auth";
-import { createSubmissionPR } from "@/lib/github";
+import { auth, githubFieldsFromSession, resolveUserId } from "@/lib/auth";
+import { createSubmissionPR, checkSlugAvailability } from "@/lib/github";
 import { normalizeTag, isValidCategory, TAG_RULES } from "@/lib/categories";
 import { getDB, recordSubmission } from "@/lib/db";
 import { ensureUserWithHandle } from "@/lib/users";
@@ -15,14 +15,13 @@ export async function POST(request: NextRequest) {
 
   const session = await auth();
 
-  if (!session?.user) {
+  const userId = resolveUserId(session?.user);
+  if (!session?.user || !userId) {
     return NextResponse.json(
       { error: "Authentication required" },
       { status: 401 }
     );
   }
-
-  const userId = session.user.email || session.user.name || "unknown";
 
   // D1-backed rate limit. A Worker-level in-memory Map wouldn't survive
   // cold starts or cross-instance traffic.
@@ -49,10 +48,17 @@ export async function POST(request: NextRequest) {
 
   try {
     const formData = await request.formData();
-    const htmlFile = formData.get("html") as File | null;
+    const hostingType = ((formData.get("hostingType") as string) || "bundled").trim();
     const title = ((formData.get("title") as string) || "").trim();
     const description = ((formData.get("description") as string) || "").trim();
     const category = ((formData.get("category") as string) || "").trim();
+
+    if (hostingType !== "bundled" && hostingType !== "external") {
+      return NextResponse.json(
+        { error: "Invalid hostingType. Expected 'bundled' or 'external'." },
+        { status: 400 }
+      );
+    }
 
     // Category is required and must be from the known list
     if (!category || !isValidCategory(category)) {
@@ -87,7 +93,7 @@ export async function POST(request: NextRequest) {
       TAG_RULES.maxCount + 1 // +1 for category itself
     );
 
-    if (!htmlFile || !title || !description) {
+    if (!title || !description) {
       return NextResponse.json(
         { error: "Missing required fields." },
         { status: 400 }
@@ -97,13 +103,6 @@ export async function POST(request: NextRequest) {
     if (title.length > 100 || description.length > 1000) {
       return NextResponse.json(
         { error: "Title or description too long." },
-        { status: 400 }
-      );
-    }
-
-    if (htmlFile.size > 2 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: "File too large. Maximum size is 2MB." },
         { status: 400 }
       );
     }
@@ -121,11 +120,79 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const htmlContent = await htmlFile.text();
+    // Refuse to overwrite an existing app. Without this, two users
+    // submitting apps with the same title produce the same slug, and
+    // the second merge silently overwrites the first's index.html +
+    // app.json — meanwhile the D1 submissions row still points at the
+    // original submitter because we use ON CONFLICT DO NOTHING there.
+    const availability = await checkSlugAvailability(slug);
+    if (!availability.available) {
+      return NextResponse.json(
+        { error: availability.message ?? "That slug is already taken." },
+        { status: 409 }
+      );
+    }
+
+    // Branch on submission type. Bundled submissions carry an HTML file
+    // that we commit to apps/<slug>/index.html; external submissions
+    // carry a URL that we drop into app.json only.
+    let htmlContent: string | undefined;
+    let externalUrl: string | undefined;
+
+    if (hostingType === "bundled") {
+      const htmlFile = formData.get("html") as File | null;
+      if (!htmlFile) {
+        return NextResponse.json(
+          { error: "Bundled submissions must include an HTML file." },
+          { status: 400 }
+        );
+      }
+      if (htmlFile.size > 2 * 1024 * 1024) {
+        return NextResponse.json(
+          { error: "File too large. Maximum size is 2MB." },
+          { status: 400 }
+        );
+      }
+      htmlContent = await htmlFile.text();
+    } else {
+      // external
+      const rawUrl = ((formData.get("externalUrl") as string) || "").trim();
+      if (!rawUrl) {
+        return NextResponse.json(
+          { error: "External submissions must include a URL." },
+          { status: 400 }
+        );
+      }
+      if (!/^https:\/\//i.test(rawUrl)) {
+        return NextResponse.json(
+          { error: "External URL must start with https://" },
+          { status: 400 }
+        );
+      }
+      try {
+        const parsed = new URL(rawUrl);
+        // Reject anything that resolves to our own domain — if they want
+        // that, it should go through the bundled path.
+        if (/(^|\.)htmlheaven\.com$/i.test(parsed.hostname)) {
+          return NextResponse.json(
+            { error: "Use the bundled path for apps you want hosted on htmlheaven.com." },
+            { status: 400 }
+          );
+        }
+        externalUrl = parsed.toString();
+      } catch {
+        return NextResponse.json(
+          { error: "External URL is not a valid URL." },
+          { status: 400 }
+        );
+      }
+    }
 
     const prUrl = await createSubmissionPR({
       slug,
+      hostingType,
       htmlContent,
+      externalUrl,
       metadata: {
         title,
         description,
@@ -133,7 +200,6 @@ export async function POST(request: NextRequest) {
         tags,
       },
       submitterName: session.user.name || "Anonymous",
-      submitterEmail: session.user.email || "",
     });
 
     // Record the submission for ownership on delete + ensure the
@@ -144,7 +210,7 @@ export async function POST(request: NextRequest) {
       const { githubLogin, gh } = githubFieldsFromSession(session.user);
       await ensureUserWithHandle(
         db,
-        session.user.email || "unknown",
+        userId,
         session.user.name || "Anonymous",
         session.user.image || null,
         githubLogin,
@@ -153,7 +219,7 @@ export async function POST(request: NextRequest) {
       await recordSubmission(
         db,
         slug,
-        session.user.email || "unknown",
+        userId,
         session.user.name || "Anonymous"
       );
     } catch (err) {

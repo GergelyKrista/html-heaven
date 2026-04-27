@@ -1,5 +1,24 @@
 [
   {
+    "title": "Farming Simulator 25 Companion",
+    "slug": "farming-simulator-25-companion",
+    "description": "A simple workflow guide and calendar for Farming Simulator 25.\r\nSwitch between English and Hungarian version.\r\nLight and dark mode included button.",
+    "author": "ambrusorban",
+    "tags": [
+      "games",
+      "multiplayer",
+      "single-player",
+      "simulator",
+      "videogame",
+      "gaming",
+      "farming"
+    ],
+    "dateAdded": "2026-04-23",
+    "featured": false,
+    "hostingType": "bundled",
+    "thumbnail": "thumbnail.png"
+  },
+  {
     "title": "Space Marine 2 - Team Compositions",
     "slug": "space-marine-2-team-compositions",
     "description": "The app suggests team compositions and loadouts based on mission type and difficulty.",
@@ -12,7 +31,8 @@
     ],
     "dateAdded": "2026-04-23",
     "thumbnail": "thumbnail.png",
-    "featured": false
+    "featured": false,
+    "hostingType": "bundled"
   },
   {
     "title": "Creator's Compass",
@@ -29,7 +49,8 @@
     ],
     "dateAdded": "2026-04-21",
     "thumbnail": "thumbnail.png",
-    "featured": false
+    "featured": false,
+    "hostingType": "bundled"
   },
   {
     "title": "Deficit - Calorie deficit calculator",
@@ -41,7 +62,8 @@
     ],
     "dateAdded": "2026-04-21",
     "thumbnail": "thumbnail.png",
-    "featured": false
+    "featured": false,
+    "hostingType": "bundled"
   },
   {
     "title": "Front end development guide",
@@ -56,7 +78,8 @@
     ],
     "dateAdded": "2026-04-19",
     "thumbnail": "thumbnail.png",
-    "featured": false
+    "featured": false,
+    "hostingType": "bundled"
   },
   {
     "title": "Age of Empires 2 - Team Compositions Guide",
@@ -68,7 +91,8 @@
     ],
     "dateAdded": "2026-04-17",
     "thumbnail": "thumbnail.png",
-    "featured": false
+    "featured": false,
+    "hostingType": "bundled"
   },
   {
     "title": "Hungarian Flashcard",
@@ -80,7 +104,8 @@
     ],
     "dateAdded": "2026-04-17",
     "thumbnail": "thumbnail.png",
-    "featured": false
+    "featured": false,
+    "hostingType": "bundled"
   },
   {
     "title": "The Marble Dust Playbook",
@@ -92,7 +117,8 @@
     ],
     "dateAdded": "2026-04-15",
     "thumbnail": "thumbnail.png",
-    "featured": true
+    "featured": true,
+    "hostingType": "bundled"
   },
   {
     "title": "Orbán kifogás generátor",
@@ -104,7 +130,8 @@
     ],
     "dateAdded": "2026-04-15",
     "thumbnail": "thumbnail.png",
-    "featured": false
+    "featured": false,
+    "hostingType": "bundled"
   },
   {
     "title": "OW2",
@@ -117,7 +144,8 @@
     ],
     "dateAdded": "2026-04-15",
     "thumbnail": "thumbnail.png",
-    "featured": false
+    "featured": false,
+    "hostingType": "bundled"
   },
   {
     "title": "Random Quote Generator",
@@ -130,7 +158,8 @@
     ],
     "dateAdded": "2026-04-14",
     "thumbnail": "thumbnail.png",
-    "featured": true
+    "featured": true,
+    "hostingType": "bundled"
   },
   {
     "title": "Unreal Engine 5 Cheatsheet",
@@ -143,7 +172,8 @@
     ],
     "dateAdded": "2026-04-13",
     "thumbnail": "thumbnail.png",
-    "featured": true
+    "featured": true,
+    "hostingType": "bundled"
   },
   {
     "title": "Unit Converter",
@@ -156,7 +186,8 @@
     ],
     "dateAdded": "2026-04-13",
     "thumbnail": "thumbnail.png",
-    "featured": false
+    "featured": false,
+    "hostingType": "bundled"
   },
   {
     "title": "Pomodoro Timer",
@@ -169,7 +200,8 @@
     ],
     "dateAdded": "2026-04-12",
     "thumbnail": "thumbnail.png",
-    "featured": true
+    "featured": true,
+    "hostingType": "bundled"
   },
   {
     "title": "Drawing Canvas",
@@ -183,7 +215,8 @@
     ],
     "dateAdded": "2026-04-11",
     "thumbnail": "thumbnail.png",
-    "featured": true
+    "featured": true,
+    "hostingType": "bundled"
   },
   {
     "title": "Color Palette Generator",
@@ -197,7 +230,8 @@
     ],
     "dateAdded": "2026-04-10",
     "thumbnail": "thumbnail.png",
-    "featured": true
+    "featured": true,
+    "hostingType": "bundled"
   },
   {
     "title": "Coding Cheat Sheet",
@@ -210,7 +244,8 @@
     ],
     "dateAdded": "2026-02-08",
     "thumbnail": "thumbnail.png",
-    "featured": false
+    "featured": false,
+    "hostingType": "bundled"
   },
   {
     "title": "Iroh's Care Guide",
@@ -223,6 +258,7 @@
     ],
     "dateAdded": "2026-01-29",
     "thumbnail": "thumbnail.png",
-    "featured": true
+    "featured": true,
+    "hostingType": "bundled"
   }
 ]

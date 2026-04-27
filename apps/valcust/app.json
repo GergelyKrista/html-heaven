@@ -1,0 +1,15 @@
+{
+  "title": "ValCust",
+  "slug": "valcust",
+  "description": "Play customs with friends",
+  "author": "GergelyKrista",
+  "tags": [
+    "games",
+    "multiplayer",
+    "fps"
+  ],
+  "dateAdded": "2026-04-24",
+  "featured": false,
+  "hostingType": "bundled",
+  "thumbnail": "thumbnail.png"
+}

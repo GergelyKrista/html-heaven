@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth, githubFieldsFromSession } from "@/lib/auth";
+import { auth, githubFieldsFromSession, resolveUserId } from "@/lib/auth";
 import { getDB } from "@/lib/db";
 import { updateProfile, normalizeHandle, ensureUserWithHandle } from "@/lib/users";
 import { assertSameOrigin } from "@/lib/security";
@@ -26,7 +26,8 @@ export async function POST(request: NextRequest) {
   if (originGate) return originGate;
 
   const session = await auth();
-  if (!session?.user?.email) {
+  const userId = resolveUserId(session?.user);
+  if (!session?.user || !userId) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
@@ -71,14 +72,14 @@ export async function POST(request: NextRequest) {
     const { githubLogin, gh } = githubFieldsFromSession(session.user);
     await ensureUserWithHandle(
       db,
-      session.user.email,
+      userId,
       session.user.name || "Anonymous",
       session.user.image || null,
       githubLogin,
       gh
     );
 
-    await updateProfile(db, session.user.email, updates);
+    await updateProfile(db, userId, updates);
     return NextResponse.json({ success: true });
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Update failed";
