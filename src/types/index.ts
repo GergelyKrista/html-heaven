@@ -34,6 +34,10 @@ export interface Comment {
   appSlug: string;
   text: string;
   createdAt: string;
+  /** Sum of votes on this comment (upvotes − downvotes). */
+  score: number;
+  /** Current viewer's vote: 1 (up), -1 (down), or 0 (no vote / signed out). */
+  userVote: -1 | 0 | 1;
 }
 
 export interface AppStats {

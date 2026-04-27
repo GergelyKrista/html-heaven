@@ -93,13 +93,28 @@ export async function hasUserFavorited(db: D1Database, userId: string, slug: str
   return !!result;
 }
 
-// Comments
-export async function getComments(db: D1Database, slug: string) {
+// Comments — joined against comment_votes to return aggregate score
+// and the requesting viewer's own vote (for highlighting the up/down
+// button in the UI). Pass viewerId=null for unauthenticated callers.
+export async function getComments(
+  db: D1Database,
+  slug: string,
+  viewerId: string | null = null
+) {
   const result = await db
     .prepare(
-      "SELECT id, user_name, user_avatar, app_slug, text, created_at FROM comments WHERE app_slug = ? ORDER BY created_at DESC LIMIT 50"
+      `SELECT
+         c.id, c.user_name, c.user_avatar, c.app_slug, c.text, c.created_at,
+         COALESCE(SUM(v.value), 0)         AS score,
+         COALESCE(SUM(CASE WHEN v.user_id = ? THEN v.value ELSE 0 END), 0) AS user_vote
+       FROM comments c
+       LEFT JOIN comment_votes v ON v.comment_id = c.id
+       WHERE c.app_slug = ?
+       GROUP BY c.id
+       ORDER BY c.created_at DESC
+       LIMIT 50`
     )
-    .bind(slug)
+    .bind(viewerId ?? "", slug)
     .all<{
       id: number;
       user_name: string;
@@ -107,7 +122,10 @@ export async function getComments(db: D1Database, slug: string) {
       app_slug: string;
       text: string;
       created_at: string;
+      score: number;
+      user_vote: number;
     }>();
+
   return result.results.map((r) => ({
     id: r.id,
     userName: r.user_name,
@@ -115,7 +133,56 @@ export async function getComments(db: D1Database, slug: string) {
     appSlug: r.app_slug,
     text: r.text,
     createdAt: r.created_at,
+    score: r.score ?? 0,
+    userVote: ((r.user_vote === 1 ? 1 : r.user_vote === -1 ? -1 : 0)) as -1 | 0 | 1,
   }));
+}
+
+/**
+ * Set the viewer's vote on a comment. value=1 upvotes, value=-1
+ * downvotes, value=0 clears the vote. Returns the new aggregate score
+ * after the change.
+ */
+export async function setCommentVote(
+  db: D1Database,
+  userId: string,
+  commentId: number,
+  value: -1 | 0 | 1
+): Promise<{ score: number; userVote: -1 | 0 | 1 }> {
+  if (value === 0) {
+    await db
+      .prepare("DELETE FROM comment_votes WHERE user_id = ? AND comment_id = ?")
+      .bind(userId, commentId)
+      .run();
+  } else {
+    await db
+      .prepare(
+        `INSERT INTO comment_votes (user_id, comment_id, value) VALUES (?, ?, ?)
+         ON CONFLICT(user_id, comment_id) DO UPDATE SET value = excluded.value`
+      )
+      .bind(userId, commentId, value)
+      .run();
+  }
+
+  const row = await db
+    .prepare(
+      "SELECT COALESCE(SUM(value), 0) AS score FROM comment_votes WHERE comment_id = ?"
+    )
+    .bind(commentId)
+    .first<{ score: number }>();
+  return { score: row?.score ?? 0, userVote: value };
+}
+
+/** Look up the app_slug for a comment so we can scope rate limits and ownership. */
+export async function getCommentSlug(
+  db: D1Database,
+  commentId: number
+): Promise<string | null> {
+  const row = await db
+    .prepare("SELECT app_slug FROM comments WHERE id = ?")
+    .bind(commentId)
+    .first<{ app_slug: string }>();
+  return row?.app_slug ?? null;
 }
 
 export async function addComment(
