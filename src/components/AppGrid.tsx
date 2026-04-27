@@ -234,7 +234,7 @@ export function AppGrid({
           <p className="text-[14px] text-muted">No apps match your search</p>
         </div>
       ) : view === "grid" ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((app) => (
             <AppCard key={app.slug} app={app} likeCount={likeCounts[app.slug]} />
           ))}
@@ -251,7 +251,7 @@ export function AppGrid({
                 </h2>
                 <p className="hidden text-[12px] text-muted sm:block">{category.description}</p>
               </div>
-              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {groupApps.map((app) => (
                   <AppCard key={app.slug} app={app} likeCount={likeCounts[app.slug]} />
                 ))}
