@@ -1,0 +1,1239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exiles of Khorne — New Player's Guide</title>
+<meta name="description" content="A new player's guide to Skarbrand the Exiled and the Exiles of Khorne in Total War: Warhammer III. Lore, Khorne mechanics, full unit roster, campaign and battle strategy, settlement decisions, diplomacy, economy, and tech priorities.">
+
+<!-- Open Graph (Facebook, Discord, Slack, LinkedIn, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Exiles of Khorne — New Player's Guide">
+<meta property="og:description" content="A beginner-friendly guide to Skarbrand the Exiled and the Exiles of Khorne in Total War: Warhammer III. Lore, mechanics, units, strategy, and settlement decisions.">
+<meta property="og:image" content="titlecard.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Exiles of Khorne titlecard with a Khorne rune over blood-red mist.">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Exiles of Khorne — New Player's Guide">
+<meta name="twitter:description" content="A beginner-friendly guide to Skarbrand the Exiled and the Exiles of Khorne in Total War: Warhammer III.">
+<meta name="twitter:image" content="titlecard.png">
+<meta name="twitter:image:alt" content="Exiles of Khorne titlecard with a Khorne rune over blood-red mist.">
+<style>
+:root {
+    --bg:     #0e0807;
+    --sf:     #1a1110;
+    --sf2:    #261714;
+    --sf3:    #2f1c18;
+    --blood:  #b3231a;
+    --blood2: #e0392c;
+    --brass:  #c89b3c;
+    --brass2: #f0c459;
+    --bone:   #d8cdb6;
+    --tx:     #f5ede2;
+    --mu:     #b3a596;
+    --bdr:    rgba(232,196,89,.14);
+    --rune:   #8a1d14;
+    --hdr-1:  #3a0f0a;
+    --hdr-2:  #1f0807;
+    --hdr-tx: #f5ede2;
+    --hdr-mu: #b3a596;
+    --hdr-btn-bg:    rgba(232,196,89,.08);
+    --hdr-btn-bdr:   rgba(232,196,89,.3);
+    --hdr-btn-bg-h:  rgba(232,196,89,.18);
+}
+body.light {
+    --bg:     #faf5ec;
+    --sf:     #ffffff;
+    --sf2:    #f1e9d8;
+    --sf3:    #e3d6bc;
+    --blood:  #a51a14;
+    --blood2: #c1271d;
+    --brass:  #8a6a1f;
+    --brass2: #a88029;
+    --bone:   #3d3326;
+    --tx:     #2a2018;
+    --mu:     #6e5f53;
+    --bdr:    rgba(165,26,20,.16);
+    --rune:   #6b160f;
+    --hdr-1:  #fdf3df;
+    --hdr-2:  #f0dfb8;
+    --hdr-tx: #2a1410;
+    --hdr-mu: #6e5446;
+    --hdr-btn-bg:    rgba(165,26,20,.06);
+    --hdr-btn-bdr:   rgba(165,26,20,.28);
+    --hdr-btn-bg-h:  rgba(165,26,20,.14);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body {
+    background:var(--bg); color:var(--tx);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.72;
+    transition:background .2s,color .2s;
+}
+
+/* Header */
+header {
+    background:linear-gradient(180deg,var(--hdr-1) 0%,var(--hdr-2) 100%);
+    padding:1.4rem 1.8rem;
+    display:flex; align-items:center; gap:1rem;
+    border-bottom:2px solid var(--blood);
+    position:relative;
+}
+header::after{
+    content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px;
+    background:linear-gradient(90deg,transparent 0%,var(--brass) 50%,transparent 100%);
+    opacity:.55;
+}
+.skull{font-size:1.75rem;line-height:1;color:var(--brass2);text-shadow:0 0 12px rgba(179,35,26,.45)}
+body.light .skull{color:var(--blood);text-shadow:0 0 8px rgba(165,26,20,.2)}
+header h1{font-size:1.4rem;font-weight:700;letter-spacing:.3px;color:var(--hdr-tx)}
+header h1 .accent{color:var(--blood2)}
+header p {color:var(--hdr-mu);font-size:.85rem;margin-top:.2rem}
+.hdr-right{margin-left:auto;display:flex;gap:.5rem;flex-shrink:0}
+.hdr-btn {
+    background:var(--hdr-btn-bg);
+    border:1px solid var(--hdr-btn-bdr);
+    color:var(--hdr-tx); border-radius:5px;
+    padding:.4rem .9rem;
+    font-size:.8rem; font-weight:600;
+    cursor:pointer; transition:all .15s;
+    text-decoration:none; display:inline-flex; align-items:center;
+    font-family:inherit; line-height:1.2;
+}
+.hdr-btn:hover{background:var(--hdr-btn-bg-h);border-color:var(--brass)}
+
+/* Nav */
+nav {
+    background:var(--sf); display:flex;
+    overflow-x:auto; border-bottom:1px solid var(--sf2);
+    scrollbar-width:none;
+    position:sticky; top:0; z-index:10;
+}
+nav::-webkit-scrollbar{display:none}
+nav button {
+    background:none; border:none;
+    border-bottom:2px solid transparent;
+    color:var(--mu); padding:1rem 1.4rem;
+    cursor:pointer; font-size:.92rem; font-weight:500;
+    white-space:nowrap; transition:color .15s, border-color .15s;
+    font-family:inherit;
+}
+nav button:hover{color:var(--tx)}
+nav button.active{color:var(--blood2);border-bottom-color:var(--blood)}
+
+/* Layout */
+main{max-width:1100px;margin:0 auto;padding:2.4rem 1.8rem 5rem}
+.tab{display:none}
+.tab.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+h2{
+    font-size:1.45rem;color:var(--brass2);
+    margin-bottom:1.6rem;padding-bottom:.7rem;
+    border-bottom:1px solid var(--sf2);
+    letter-spacing:.2px;font-weight:700;
+}
+h2 .rune{color:var(--blood);margin-right:.55rem}
+h3{font-size:1.12rem;font-weight:600;color:var(--blood2);margin:2rem 0 .9rem;letter-spacing:.1px}
+h4{font-size:.82rem;font-weight:700;color:var(--brass);margin:1.3rem 0 .55rem;text-transform:uppercase;letter-spacing:.7px}
+
+p{margin-bottom:1.05rem}
+strong{color:var(--bone);font-weight:600}
+em{color:var(--brass2);font-style:normal;font-weight:600}
+
+ul,ol{padding-left:1.45rem;margin-bottom:1.1rem}
+li{margin-bottom:.55rem;line-height:1.65}
+li::marker{color:var(--blood)}
+
+.lead{
+    font-size:1.04rem;color:var(--mu);margin-bottom:2rem;
+    padding:1.15rem 1.35rem;background:var(--sf);border-left:3px solid var(--blood);
+    border-radius:0 6px 6px 0;line-height:1.7;
+}
+
+/* Grid layouts */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+@media(max-width:780px){.two-col,.three-col{grid-template-columns:1fr}}
+
+/* Cards */
+.card{
+    background:var(--sf);border-radius:7px;
+    padding:1.25rem 1.45rem;margin-bottom:1rem;
+    border:1px solid var(--bdr);
+}
+.card-blood{border-left:3px solid var(--blood)}
+.card-brass{border-left:3px solid var(--brass)}
+.card-bone{border-left:3px solid var(--bone)}
+.card p:last-child,.card ul:last-child,.card ol:last-child{margin-bottom:0}
+
+/* Callouts */
+.tip,.warn,.note,.tactic{
+    border-radius:6px;padding:.95rem 1.2rem;font-size:.92rem;
+    margin:1.1rem 0;color:var(--mu);line-height:1.65;
+}
+.tip {background:rgba(200,155,60,.07);border:1px solid rgba(200,155,60,.22)}
+.tip  strong{color:var(--brass2)}
+.warn{background:rgba(179,35,26,.08);border:1px solid rgba(179,35,26,.28)}
+.warn strong{color:var(--blood2)}
+.note{background:rgba(216,205,182,.05);border:1px solid rgba(216,205,182,.15)}
+.note strong{color:var(--bone)}
+.tactic{background:rgba(138,29,20,.1);border:1px solid rgba(138,29,20,.35)}
+.tactic strong{color:var(--blood2)}
+
+/* Stat lines */
+.stat-row{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--bdr);gap:1rem}
+.stat-row:last-child{border-bottom:none}
+.stat-row .label{color:var(--mu)}
+.stat-row .val{color:var(--bone);font-weight:600;text-align:right}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+th,td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--sf2);vertical-align:top}
+th{color:var(--brass2);font-weight:600;background:var(--sf2);font-size:.78rem;text-transform:uppercase;letter-spacing:.6px}
+tr:hover td{background:rgba(232,196,89,.04)}
+td .role{display:inline-block;font-size:.7rem;padding:.18rem .55rem;border-radius:3px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.role-tank{background:rgba(216,205,182,.15);color:var(--bone)}
+.role-melee{background:rgba(179,35,26,.18);color:var(--blood2)}
+.role-cav{background:rgba(200,155,60,.18);color:var(--brass2)}
+.role-mons{background:rgba(138,29,20,.25);color:#ffb4a8}
+.role-fast{background:rgba(120,160,200,.15);color:#9bc4ec}
+.role-art{background:rgba(140,90,200,.18);color:#c5a4f0}
+.role-hero{background:rgba(232,196,89,.15);color:var(--brass2)}
+
+/* Decision flow (raze / sack / occupy) */
+.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin:1.4rem 0}
+@media(max-width:780px){.decision{grid-template-columns:1fr}}
+.choice{
+    background:var(--sf);padding:1.3rem 1.45rem;border-radius:7px;
+    border:1px solid var(--bdr);border-top:3px solid var(--brass);
+}
+.choice.raze{border-top-color:var(--blood)}
+.choice.sack{border-top-color:var(--brass)}
+.choice.occupy{border-top-color:var(--bone)}
+.choice h4{margin-top:0;font-size:1.05rem;color:var(--bone);text-transform:none;letter-spacing:.2px}
+.choice .verdict{
+    margin-top:.85rem;padding:.6rem .8rem;font-size:.86rem;
+    background:var(--sf2);border-radius:5px;color:var(--brass2);
+    border:1px solid var(--bdr);
+}
+
+/* Mechanic blocks */
+.mech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem;margin:1.2rem 0}
+@media(max-width:780px){.mech-grid{grid-template-columns:1fr}}
+.mech{
+    background:var(--sf);padding:1.25rem 1.4rem;border-radius:7px;
+    border:1px solid var(--bdr);position:relative;
+}
+.mech-icon{
+    position:absolute;top:1.05rem;right:1.05rem;
+    font-size:1.5rem;opacity:.35;color:var(--brass);
+}
+.mech h4{margin-top:0;color:var(--blood2);text-transform:none;letter-spacing:0;font-size:1.04rem}
+.mech p:last-child{margin-bottom:0}
+
+/* Pros/cons */
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1rem 0}
+@media(max-width:680px){.pc{grid-template-columns:1fr}}
+.pc-block{padding:1.15rem 1.35rem;border-radius:6px;background:var(--sf);border:1px solid var(--bdr)}
+.pc-pros{border-left:3px solid var(--brass)}
+.pc-cons{border-left:3px solid var(--blood)}
+.pc-block h4{margin-top:0;font-size:.85rem}
+.pc-pros h4{color:var(--brass2)}
+.pc-cons h4{color:var(--blood2)}
+.pc-block ul{margin-bottom:0;padding-left:1.25rem}
+.pc-block li{font-size:.94rem;color:var(--mu);margin-bottom:.5rem;line-height:1.6}
+
+/* Hero block (Skarbrand) */
+.hero-block{
+    background:linear-gradient(135deg,var(--sf) 0%,var(--sf2) 100%);
+    padding:1.6rem 1.75rem;border-radius:8px;
+    border:1px solid var(--blood);position:relative;overflow:hidden;
+    margin-bottom:1.5rem;
+}
+.hero-block::before{
+    content:"";position:absolute;top:-30px;right:-30px;
+    width:140px;height:140px;border-radius:50%;
+    background:radial-gradient(circle,rgba(179,35,26,.22),transparent 70%);
+}
+.hero-name{font-size:1.55rem;color:var(--blood2);font-weight:700;letter-spacing:.5px}
+.hero-title{font-size:.9rem;color:var(--brass2);margin-bottom:.95rem;font-style:italic}
+
+/* Tag chips */
+.tags{display:flex;flex-wrap:wrap;gap:.45rem;margin:.85rem 0}
+.tag{
+    font-size:.72rem;padding:.25rem .65rem;border-radius:3px;
+    background:var(--sf2);color:var(--mu);border:1px solid var(--bdr);
+    text-transform:uppercase;letter-spacing:.5px;font-weight:600;
+}
+.tag.good{color:var(--brass2);border-color:rgba(200,155,60,.4)}
+.tag.bad{color:var(--blood2);border-color:rgba(179,35,26,.4)}
+
+/* Numbered steps */
+.steps{counter-reset:step;list-style:none;padding:0;margin:1rem 0}
+.steps li{
+    counter-increment:step;
+    position:relative;padding:.95rem 1.15rem .95rem 3rem;
+    background:var(--sf);border-radius:6px;margin-bottom:.7rem;
+    border:1px solid var(--bdr);border-left:2px solid var(--brass);
+    line-height:1.6;
+}
+.steps li::before{
+    content:counter(step);
+    position:absolute;left:.85rem;top:1rem;
+    width:1.65rem;height:1.65rem;border-radius:50%;
+    background:var(--blood);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.82rem;
+}
+
+/* Section intro */
+.intro-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1.6rem;margin-bottom:1.5rem}
+@media(max-width:780px){.intro-grid{grid-template-columns:1fr}}
+
+/* Quick reference panel */
+.qref{
+    background:var(--sf2);padding:1.3rem 1.45rem;border-radius:7px;
+    border:1px solid var(--bdr);
+}
+.qref h4{margin-top:0}
+.qref .stat-row{font-size:.92rem}
+
+footer{
+    text-align:center;padding:2rem 1.5rem;color:var(--mu);font-size:.84rem;
+    border-top:1px solid var(--sf2);margin-top:3rem;line-height:1.7;
+}
+footer a{color:var(--brass);text-decoration:none}
+footer a:hover{color:var(--brass2);text-decoration:underline}
+</style>
+</head>
+<body>
+
+<header>
+    <span class="skull" aria-hidden="true">&#9763;</span>
+    <div>
+        <h1>Exiles of <span class="accent">Khorne</span> &mdash; New Player's Guide</h1>
+        <p>Total War: Warhammer III &middot; Skarbrand the Exiled &middot; Beginner-friendly</p>
+    </div>
+    <div class="hdr-right">
+        <a class="hdr-btn" href="titlecard.html">Titlecard</a>
+        <button class="hdr-btn" id="themeBtn" type="button">Theme</button>
+    </div>
+</header>
+
+<nav id="navBar">
+    <button data-tab="overview" class="active">Overview</button>
+    <button data-tab="lore">Lore</button>
+    <button data-tab="mechanics">Khorne Mechanics</button>
+    <button data-tab="exiles">Exiles Mechanics</button>
+    <button data-tab="skarbrand">Skarbrand</button>
+    <button data-tab="strengths">Strengths &amp; Weaknesses</button>
+    <button data-tab="campaign">Campaign Strategy</button>
+    <button data-tab="battle">Battle Strategy</button>
+    <button data-tab="roster">Unit Roster</button>
+    <button data-tab="settlements">Raze / Sack / Occupy</button>
+    <button data-tab="economy">Diplomacy &amp; Economy</button>
+    <button data-tab="tech">Technologies</button>
+</nav>
+
+<main>
+
+<!-- ============================================================ OVERVIEW -->
+<section class="tab active" id="overview">
+    <h2><span class="rune">&#9763;</span>Overview</h2>
+    <p class="lead">
+        The Exiles of Khorne are a roaming melee horde led by <strong>Skarbrand the Exiled</strong>, a fallen Bloodthirster doomed
+        to drown his shame in blood. They have one job: <em>kill, raze, repeat</em>. No magic, no diplomacy, almost no ranged
+        &mdash; just the strongest melee infantry in the game and a lord who alone can break a battle line.
+    </p>
+
+    <div class="intro-grid">
+        <div>
+            <h3>Why this is a great beginner faction</h3>
+            <ul>
+                <li>One clear win condition: <strong>fight, win, raze, repeat</strong>. No book-keeping, no diplomacy puzzles, no spell schools.</li>
+                <li>Skarbrand is one of the strongest Legendary Lords in the game. He can solo most early-game armies.</li>
+                <li>Razed regions <strong>auto-resettle for free</strong> as long as you hold one settlement in the province &mdash; logistics handled.</li>
+                <li>Bloodletting + Skull Throne reward what you already want to do: keep moving, keep killing.</li>
+            </ul>
+        </div>
+        <div class="qref">
+            <h4>At a glance</h4>
+            <div class="stat-row"><span class="label">Legendary Lord</span><span class="val">Skarbrand the Exiled</span></div>
+            <div class="stat-row"><span class="label">Race</span><span class="val">Daemons of Chaos (Khorne)</span></div>
+            <div class="stat-row"><span class="label">Start (Immortal Empires)</span><span class="val">Deff Gorge, Badlands</span></div>
+            <div class="stat-row"><span class="label">Start (Realms of Chaos)</span><span class="val">Infernius, Chaos Wastes</span></div>
+            <div class="stat-row"><span class="label">Faction style</span><span class="val">Roaming horde / aggressor</span></div>
+            <div class="stat-row"><span class="label">Difficulty</span><span class="val">Easy &mdash; great first faction</span></div>
+            <div class="stat-row"><span class="label">Magic</span><span class="val">None</span></div>
+            <div class="stat-row"><span class="label">Ranged units</span><span class="val">Skullcannon, Soul Grinder, Marauder Horsemen</span></div>
+        </div>
+    </div>
+
+    <h3>The Khorne loop, in one sentence</h3>
+    <div class="tactic">
+        <strong>Win battle &rarr; sack settlement (movement preserved) &rarr; raze it for skulls or a Blood Host &rarr; +15% march range &rarr; reach the next target before they can react.</strong>
+        Everything in the faction &mdash; resources, tech, lord skills, even the auto-resettle rule &mdash; is tuned around keeping that wheel spinning.
+    </div>
+
+    <h3>What this guide covers</h3>
+    <div class="three-col">
+        <div class="card card-blood">
+            <h4>The faction</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Lore, the Blood God's nature, why Skarbrand is exiled, and what makes the Exiles different from other Khorne factions.
+            </p>
+        </div>
+        <div class="card card-brass">
+            <h4>The systems</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Skulls, Bloodletting, Blood Hosts, the Skull Throne, and the unique Exiles bonuses for razing and foreign-territory replenishment.
+            </p>
+        </div>
+        <div class="card card-bone">
+            <h4>The play</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Campaign opening, battle tactics, the full unit roster with use cases, and decision rules for raze vs. sack vs. occupy.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ LORE -->
+<section class="tab" id="lore">
+    <h2><span class="rune">&#9763;</span>Lore &mdash; Why Skarbrand is the Way He Is</h2>
+    <p class="lead">
+        To understand the Exiles you have to understand two things: the Blood God's appetite, and the worst possible mistake a daemon can make in front of him.
+    </p>
+
+    <h3>Khorne, the Blood God</h3>
+    <p>
+        Khorne is one of the four Chaos Gods. He is the god of <strong>war, murder, honor in battle, and rage</strong> &mdash; pure martial fury made cosmic.
+        His followers do not pray; they kill. He is fed by violence regardless of who commits it &mdash; his favorite quote sums up his theology in eight words:
+        <em>"Blood for the Blood God. Skulls for the Skull Throne."</em>
+    </p>
+    <p>
+        Khorne <strong>despises sorcery</strong>. He sees magic as the cowardly tool of weaklings who cannot win with steel and courage.
+        That is why a Khorne army has <em>zero spellcasters</em> &mdash; this is canon, not an oversight. It is also why Khorne's hordes are usually at war with Tzeentch's followers above all others.
+    </p>
+
+    <h3>Skarbrand &mdash; the Greatest Bloodthirster, Fallen</h3>
+    <p>
+        Skarbrand was once the <strong>greatest of all Bloodthirsters</strong>, Khorne's most exalted Greater Daemon and the leader of his celestial host. He was Khorne's favorite,
+        his hand on the battlefield, his judgement in war.
+    </p>
+    <p>
+        Then the Changer of Ways, Tzeentch, whispered into Skarbrand's pride. Convinced he was greater than his god, Skarbrand <strong>raised his axes and struck Khorne himself</strong>.
+        Khorne's wrath was instant and total. He hurled Skarbrand from his throne, <strong>destroyed his wings</strong>, and stripped away every part of his personality
+        &mdash; cunning, memory, joy, even hate &mdash; leaving only one thing: <em>boundless, bottomless rage</em>.
+    </p>
+
+    <div class="warn">
+        <strong>The detail that defines him in battle:</strong> Skarbrand is the only Bloodthirster who <em>cannot fly</em>.
+        Khorne tore the wings from him. Every other Bloodthirster lord in the game has flight; Skarbrand walks. This is why his vulnerability to ranged fire matters so much.
+    </div>
+
+    <h3>The Exile</h3>
+    <p>
+        Cast out of the Blood God's favor, Skarbrand now wanders the mortal and immortal realms with the singular obsession of <strong>drowning his shame in such a tide of blood that Khorne cannot help but forgive him</strong>.
+        He never can &mdash; the more he kills, the more he reminds Khorne of the betrayal &mdash; but the rage will not let him stop.
+    </p>
+    <p>
+        That endless self-flagellating slaughter is what you, the player, are pointing in a direction. The "Exiles of Khorne" are the warband that follows him through it: mortal Khorne worshippers,
+        bound daemons of the lesser host, and the trail of skulls he leaves on every continent he crosses.
+    </p>
+
+    <h3>The three Khorne factions &mdash; where the Exiles fit</h3>
+    <p>
+        Total War: Warhammer III ships <strong>three playable Khorne factions</strong>. Knowing they exist helps you read the campaign:
+    </p>
+    <ul>
+        <li><strong>Exiles of Khorne</strong> &mdash; Skarbrand the Exiled. The disgraced Bloodthirster's roaming horde. The faction this guide covers.</li>
+        <li><strong>Blooded Wanderers</strong> &mdash; Skulltaker. A daemonic champion seeking the eight greatest skulls.</li>
+        <li><strong>Challengers of Khorne</strong> &mdash; Arbaal the Undefeated. A mortal champion. Different mechanics (Khorne's Favour, Challenges of Khorne, no Unholy Manifestations).</li>
+    </ul>
+    <p>
+        These three factions <em>do not get along well</em> &mdash; the in-game text spells out that the &minus;10 modifier with other Khorne factions is "mostly Skarbrand only." The Blood God's exile is treated as a threat to the legitimate champions still in his favour.
+    </p>
+
+    <div class="note">
+        <strong>Why this matters mechanically:</strong> the lore explains every faction quirk. No magic (Khorne forbids it). No diplomacy (Khorne wants war, not allies; even other Khorne factions resent the exile).
+        Replenish in foreign territory (he is supposed to keep moving). +15% march after razing (the rage drives him forward). Skulls as currency (literally what he offers Khorne as proof).
+    </div>
+</section>
+
+<!-- ============================================================ KHORNE MECHANICS -->
+<section class="tab" id="mechanics">
+    <h2><span class="rune">&#9763;</span>General Khorne Mechanics</h2>
+    <p class="lead">
+        These four systems apply to every Khorne faction in the game. Master them and you understand the race.
+    </p>
+
+    <div class="mech-grid">
+        <div class="mech">
+            <span class="mech-icon">&#9763;</span>
+            <h4>Skulls</h4>
+            <p>Khorne's <strong>secondary currency</strong>. Earned from every battle you fight (win <em>or</em> lose), from razing settlements, from Skull Pile points-of-interest on the map, and as passive trickle from certain buildings and cults.</p>
+            <p style="margin:0"><strong>Spent on:</strong> occupying settlements, researching technologies, and activating Skull Throne offerings.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#9876;</span>
+            <h4>Bloodletting</h4>
+            <p>A per-army gauge that <strong>fills with consecutive battle victories</strong> and drains while the army is idle. Higher tiers grant escalating bonuses: <em>upkeep reduction, replenishment, faction-wide growth, local Khorne corruption, cheaper global recruitment</em>.</p>
+            <p style="margin:0">It punishes you for sitting still. Move every turn, fight every turn.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#9876;</span>
+            <h4>Blood Hosts</h4>
+            <p>When you raze a settlement and pick the <strong>"Blood for the Blood God"</strong> option, a free temporary army spawns in the region. It <strong>can't recruit, can't replenish</strong> (except by devouring captives), <strong>has no upkeep</strong>, and does <em>not</em> count toward your supply-lines penalty.</p>
+            <p style="margin:0">After several turns it begins suffering attrition and eventually dies &mdash; winning battles delays this. Use it as a second wave: raze nearby villages, soak hits, reinforce a real army, or trade it for an enemy stack.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#9763;</span>
+            <h4>The Skull Throne</h4>
+            <p>A faction-level offering window. Spend a pile of skulls to unlock 10-turn buffs &mdash; e.g. <em>+post-battle loot, +campaign movement, summon Khorne armies, army ability tokens</em>.</p>
+            <p style="margin:0">Save a big offering for the turn you launch a major offensive, not for a quiet turn.</p>
+        </div>
+    </div>
+
+    <h3>Three more rules that shape every Khorne campaign</h3>
+
+    <div class="card card-blood">
+        <h4>Auto-resettlement of ruined regions</h4>
+        <p style="margin:0">If you hold <strong>at least one settlement in a province</strong>, every other ruined region in that province will eventually <strong>colonize itself for free</strong> with a Khorne settler &mdash; the chance grows each turn. This is the rule that makes razing the default. You don't have to "choose between scorched earth and growth" &mdash; you get both, on a delay.</p>
+    </div>
+
+    <div class="card card-blood">
+        <h4>Limited diplomacy</h4>
+        <p style="margin:0">Every non-Chaos faction has a hard-wired diplomatic penalty against you. Trade is impossible (Khorne has no tradeable resources). However, the Blood God isn't <em>completely</em> isolated &mdash; the wiki notes that <strong>pacts and even alliances with some other Chaos and Destruction factions are still possible</strong>. The default is war; treat any peace agreement as a tool to focus on a different front.</p>
+    </div>
+
+    <div class="card card-blood">
+        <h4>Innate magic resistance &amp; faction abilities</h4>
+        <p style="margin:0">Most Khorne units have <strong>Spell Resistance</strong> baked in (exceptions: Bloodbrute Behemoth and Chaos Warhounds). You also get three faction-level army abilities: <em>Horn of Khorne</em>, <em>Relentless Rage</em>, and <em>Blade of Khorne</em>, fueled by killing. Khorne also has <strong>Unholy Manifestations</strong> and <strong>Cults</strong> like other daemonic factions.</p>
+    </div>
+</section>
+
+<!-- ============================================================ EXILES MECHANICS -->
+<section class="tab" id="exiles">
+    <h2><span class="rune">&#9763;</span>Exiles-Specific Mechanics</h2>
+    <p class="lead">
+        On top of the four general Khorne systems, the Exiles get a small set of unique faction effects that all pull in the same direction:
+        <em>be a roaming horde, not a stationary empire</em>.
+    </p>
+
+    <div class="three-col">
+        <div class="card card-brass">
+            <h4>+15% Campaign Movement after razing</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Razing a settlement isn't just a money/skull event &mdash; it <strong>extends your turn</strong>. You can often raze, then march out of the now-ruined province and engage another army or city in the same turn.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>Replenishment in foreign territory</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Most factions only replenish meaningfully in friendly land or under Khorne corruption. The Exiles heal almost everywhere, so a stack that loses a third of its strength can be combat-ready again in 2&ndash;3 turns deep in enemy land.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>&minus;10 with other Khorne factions</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">A flavor mechanic with bite: even Khornate kin treat the Exiles as outcasts. You will probably end up at war with Arbaal, Valkia, and the Bloodthirster of Skulls' faction at some point. <strong>Don't expect a Khorne alliance bloc.</strong></p>
+        </div>
+    </div>
+
+    <h3>How these stack in practice</h3>
+    <div class="tactic">
+        <strong>Compounding effect:</strong> Skarbrand can plunge into foreign land, raze a city, gain skulls + a Blood Host + 15% extra movement, then march again to a second target while replenishing in &quot;enemy&quot; territory. By the time the target's reinforcements arrive, Skarbrand's army is healed and ready to fight again. This is the core engine of the campaign.
+    </div>
+
+    <h3>Skarbrand's lord-line bonuses</h3>
+    <ul>
+        <li><strong>Slaughter &amp; Carnage:</strong> Skarbrand's weapon strength climbs with every kill he makes in a battle. By mid-fight he is hitting harder than anything in his price bracket.</li>
+        <li><strong>Wrathful Reaper:</strong> active ability, locks him on a target unit and ignores distractions until that unit is destroyed.</li>
+        <li><strong>Rage Embodied:</strong> AoE active ability, sends nearby friendly units into a damage-buffed frenzy.</li>
+        <li><strong>Charge bonus &amp; speed:</strong> for a melee monster, Skarbrand is <em>fast</em>. He picks his fights.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ SKARBRAND -->
+<section class="tab" id="skarbrand">
+    <h2><span class="rune">&#9763;</span>Skarbrand the Exiled</h2>
+
+    <div class="hero-block">
+        <div class="hero-name">Skarbrand the Exiled</div>
+        <div class="hero-title">Greater Daemon of Khorne &middot; Fallen Bloodthirster &middot; Legendary Lord</div>
+        <p style="margin:0;color:var(--bone);font-size:.92rem">
+            Arguably the strongest pure-melee Legendary Lord in the game. Single-handedly wins early battles, scales into late game,
+            and is the reason this faction is rated beginner-friendly.
+        </p>
+    </div>
+
+    <div class="two-col">
+        <div>
+            <h3>Combat profile</h3>
+            <div class="tags">
+                <span class="tag good">Monster</span>
+                <span class="tag good">Anti-Large</span>
+                <span class="tag good">Armor-Piercing</span>
+                <span class="tag good">Flaming</span>
+                <span class="tag good">Causes Terror</span>
+                <span class="tag good">Causes Fear</span>
+                <span class="tag good">Encourage</span>
+                <span class="tag good">Siege Attacker</span>
+                <span class="tag bad">No flight</span>
+                <span class="tag bad">Single Entity</span>
+            </div>
+            <ul>
+                <li>Towering stats: <em>9448 HP, 90 armor (67.5% reduction), Leadership 85, Speed 80, Charge Bonus 65, Weapon Strength 620 (185 base + 435 AP)</em>.</li>
+                <li><strong>Physical Resistance +20%, Spell Resistance +35%</strong> &mdash; he shrugs off both magic and ordinary attacks.</li>
+                <li><strong>Resilience:</strong> immune to Chaos Wastes, Chaos corruption, and Snow attrition &mdash; great for late-game raiding into hostile climates.</li>
+                <li><strong>Siege Attacker:</strong> can hit gates and walls without towers or rams &mdash; instant siege launches.</li>
+                <li><em>Slaughter &amp; Carnage</em> (item): his weapon damage scales with every kill in the current battle. He snowballs.</li>
+                <li>Active abilities: <em>Bellow of Endless Fury</em>, <em>Wrathful Reaper</em> (single-target obsession), <em>Rage Embodied</em> (AoE frenzy on allies); plus <em>Rage Incarnate</em> on the campaign map.</li>
+            </ul>
+        </div>
+        <div>
+            <h3>Weaknesses to respect</h3>
+            <div class="pc">
+                <div class="pc-block pc-cons" style="grid-column:1 / -1">
+                    <h4>The two ways to lose Skarbrand</h4>
+                    <ul>
+                        <li><strong>Massed missiles &amp; artillery.</strong> He's a huge single entity with no flight and no shield. Empire Great Cannons, Dwarf Organ Guns, Skaven Ratling Guns, anything that focuses him will eat his health bar.</li>
+                        <li><strong>Melee Defence is only 50.</strong> His armor and resists keep him alive, but he <em>does</em> take return hits &mdash; lots of cheap chaff swarming him still chips him down.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn">
+                <strong>Don't pull him out at 50% HP &mdash; that's when he gets stronger.</strong> His passive <em>Fuelled by Rage</em> triggers below 50% health for a <em>+25% damage</em> boost on top of his already monstrous output. Pulling him is correct only if focused artillery / ranged stacks are killing him, <em>not</em> just because the bar is red.
+            </div>
+        </div>
+    </div>
+
+    <h3>Lord Effects (army-wide)</h3>
+    <div class="card card-brass">
+        <ul style="margin:0">
+            <li>Bloodthirster and Soul Grinder units in his army get the <strong>"Gorefeast"</strong> passive ability.</li>
+            <li><strong>&minus;20% upkeep</strong> for Bloodthirsters and Soul Grinders in his army.</li>
+            <li><strong>+30% Skulls gained from kills</strong> (Skarbrand's army).</li>
+            <li>Grants the <strong>"Rage Embodied"</strong> ability army-wide.</li>
+        </ul>
+    </div>
+    <div class="tip">
+        <strong>Build implication:</strong> Bloodthirsters and Soul Grinders are objectively cheaper and stronger in <em>Skarbrand's</em> army than in any second lord's. Run them in his stack; recruit cheaper anchor units (Chaos Warriors, Bloodletters) for your secondary lords.
+    </div>
+
+    <h3>Skill tree priorities (in order)</h3>
+    <ol class="steps">
+        <li><strong>Yellow / red line damage and survivability first.</strong> Anything that adds armor, weapon strength, or charge bonus to Skarbrand directly is points well spent.</li>
+        <li><strong>Blood Feast / Drinker of Blood</strong> &mdash; sustain in long battles and quest fights.</li>
+        <li><strong>Unholy Resilience</strong> &mdash; physical damage resistance is the single biggest mitigator of his ranged weakness.</li>
+        <li><strong>Lightning Strike</strong> as soon as available &mdash; lets him pick off armies before reinforcements arrive. Critical for an aggressor.</li>
+        <li><strong>Blue line campaign skills</strong> &mdash; campaign movement, replenishment, post-battle loot. Take these once Skarbrand is already a one-man army.</li>
+        <li><strong>Army leadership and unit-bonus buffs (red side)</strong> &mdash; helps your Bloodletters and Chaos Warriors avoid breaking when Skarbrand is busy elsewhere.</li>
+    </ol>
+
+    <div class="tip">
+        <strong>Mounts:</strong> Skarbrand has no mount choice &mdash; he is the mount. Don't hunt for one in the skill tree.
+    </div>
+
+    <h3>How to use him in battle</h3>
+    <ol>
+        <li>Deploy him near the <strong>front line</strong>, on the side with the most enemy melee lords, heroes, monsters, or threatening frontline units.</li>
+        <li>Open by charging the most threatening <em>frontline</em> single-entity target &mdash; trigger <em>Wrathful Reaper</em>. Use the charge bonus: <em>cycle in, around, in</em> early game; he hits hardest on the charge.</li>
+        <li><strong>Stay in the thick of the action.</strong> Tempting as it is to two-shot an enemy backline wizard, the wiki is explicit: <em>don't send Skarbrand racing off to hunt backline lords</em>. He needs continuous kills to scale Slaughter &amp; Carnage and the campaign-only kill passives. Send Furies / Flesh Hounds / a flying Bloodthirster after backline targets instead.</li>
+        <li>Drop <em>Rage Embodied</em> at the moment of breakthrough, next to your Bloodletters &mdash; it amplifies a rout, it doesn't open one.</li>
+        <li><strong>Don't pull him out the moment his health is yellow.</strong> Below 50% HP, <em>Fuelled by Rage</em> activates and he hits 25% harder. Pull only if specific ranged units are visibly chunking him.</li>
+    </ol>
+</section>
+
+<!-- ============================================================ STRENGTHS / WEAKNESSES -->
+<section class="tab" id="strengths">
+    <h2><span class="rune">&#9763;</span>Faction Strengths &amp; Weaknesses</h2>
+
+    <div class="pc">
+        <div class="pc-block pc-pros">
+            <h4>Strengths</h4>
+            <ul>
+                <li><strong>Best melee infantry in the game.</strong> Chaos Warriors of Khorne are arguably the best Tier-2 frontline anywhere; Bloodletters cut elite infantry apart.</li>
+                <li><strong>Skarbrand</strong> wins early-game battles single-handed.</li>
+                <li><strong>Outstanding monster roster:</strong> Minotaurs (anti-large), Bloodthirsters (best monster hunter), Soul Grinder (only monster with ranged), Chaos Spawn (cheap unbreakable disruption).</li>
+                <li><strong>Anti-large saturation.</strong> Almost every unit in the roster has decent answers to enemy lords and monsters.</li>
+                <li><strong>Free expansion.</strong> Auto-resettlement + Blood Hosts + razing-derived skulls = no logistics tax.</li>
+                <li><strong>High mobility.</strong> +15% march after razing, foreign-territory replenishment, Lightning Strike on Skarbrand. You can blitz an entire province in 3&ndash;4 turns.</li>
+                <li><strong>Skull Throne</strong> gives faction-wide power-spike windows when you need them.</li>
+            </ul>
+        </div>
+        <div class="pc-block pc-cons">
+            <h4>Weaknesses</h4>
+            <ul>
+                <li><strong>No spellcasters at all.</strong> No magic, ever. You have no answer to enemy magic except killing the caster &mdash; though most Khorne units do have <em>innate Spell Resistance</em> to mitigate damage.</li>
+                <li><strong>Almost no ranged.</strong> Only the <em>Skullcannon</em>, the <em>Soul Grinder</em>, and the <em>Marauder Horsemen</em>. None of them are a true sustained gun line.</li>
+                <li><strong>Poor against gunpowder &amp; massed missiles.</strong> Empire, Dwarfs, Skaven, Cathay all force you to absorb a punishing approach phase.</li>
+                <li><strong>Weak economy by building income.</strong> Buildings cap at low gold; income comes from sacking, not provinces.</li>
+                <li><strong>No diplomacy.</strong> Negative relations with everyone, including other Khorne factions. No trade deals, near-impossible alliances.</li>
+                <li><strong>Cavalry has low melee defense.</strong> Skullcrushers, Bloodcrushers, Gorebeast Chariots all need to <em>cycle-charge</em>; they melt if you leave them stuck in.</li>
+                <li><strong>Bloodletting decays.</strong> If you stop fighting, your bonuses dry up &mdash; the faction is punishing if you try to play turtle.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>Who you should fear and why</h3>
+    <table>
+        <tr><th>Threat</th><th>Why they're dangerous</th><th>Counter</th></tr>
+        <tr><td><strong>Dwarfs</strong></td><td>Stable lines, gunpowder, artillery focus on Skarbrand</td><td>Flying Bloodthirster lord, Chaos Furies, Skullcannon barrage</td></tr>
+        <tr><td><strong>Empire / Kislev</strong></td><td>Massed handgunners + Great Cannons</td><td>Chaos Warhounds + Furies to flank shooters; Skarbrand engages cavalry, not handgunners</td></tr>
+        <tr><td><strong>High Elves</strong></td><td>Sisters of Avelorn shred large monsters</td><td>Don't send Skarbrand at the line until shooters are dealt with; use Bloodthirster instead</td></tr>
+        <tr><td><strong>Tzeentch / Lizardmen</strong></td><td>Magic damage you can't dispel</td><td>Speed-rush the casters with Skarbrand or flying Bloodthirster &mdash; you have no other answer</td></tr>
+        <tr><td><strong>Other Khorne factions</strong></td><td>Mirror match, your toys cancel theirs</td><td>Win on Skarbrand and on the lord-skill tree edge</td></tr>
+    </table>
+</section>
+
+<!-- ============================================================ CAMPAIGN STRATEGY -->
+<section class="tab" id="campaign">
+    <h2><span class="rune">&#9763;</span>Campaign Strategy</h2>
+    <p class="lead">
+        The Exiles play like a roaming horde even though they technically settle. Treat your home province as a refit base and your other armies as expendable wrecking balls.
+    </p>
+
+    <h3>Opening (Immortal Empires &mdash; Deff Gorge start)</h3>
+    <div class="note">
+        <strong>Realms of Chaos players:</strong> your start is different &mdash; Skarbrand begins at <em>Infernius</em> in the Chaos Wastes, surrounded by jagged mountains and lava rivers, working through the Champions of Chaos / Realms of Chaos rifts campaign. The opening sequence below is for the more popular <strong>Immortal Empires</strong> campaign at Deff Gorge.
+    </div>
+    <ol class="steps">
+        <li><strong>Turn 1</strong>: confirm Skarbrand's army composition, head straight for the nearest Savage Orc settlement. Don't dawdle; the start is forgiving but Bloodletting starts ticking up only when you fight.</li>
+        <li><strong>First battles</strong>: lead with Skarbrand into orc Big 'Uns / Boyz. Cycle Chaos Warhounds onto enemy archers/shamans. Keep your infantry blob tight.</li>
+        <li><strong>First settlement</strong>: <em>sack</em>, then <em>raze (Blood for the Blood God)</em>. You get gold, skulls, a Blood Host, and your full movement back. See the Settlements tab for the full rule.</li>
+        <li><strong>Found your first owned settlement</strong> only on a <strong>province capital</strong> in a region you intend to keep. Spend the skulls. Build basic recruitment up to Tier 2 fast.</li>
+        <li><strong>Recruit a second lord</strong> (Herald of Khorne or Exalted Bloodthirster) once your treasury can afford the army. Send the Blood Hosts as a screen ahead of him.</li>
+        <li><strong>By turn ~12</strong> you should be running 2 main armies + 1&ndash;2 Blood Hosts. Pick a direction (typically north into Greenskin lands or Borderlands) and roll.</li>
+    </ol>
+
+    <h3>The mid-game pattern</h3>
+    <div class="tactic">
+        <strong>1 home province + 2 armies + a roaming wedge.</strong> Hold one province properly (capital + 2 minor settlements) for recruitment income and Bloodletting bonuses. Keep your two main stacks moving in different directions, razing as they go. Let auto-resettlement fill the empty regions behind you.
+    </div>
+
+    <h3>Empire expansion principles</h3>
+    <ul>
+        <li><strong>Hold province capitals, raze the rest.</strong> Capitals can build Tier-3+ chains; minor settlements in your home province auto-resettle for free anyway.</li>
+        <li><strong>Don't try to hold a 5-province empire.</strong> You don't need the income (your income is sacking) and you can't garrison everything.</li>
+        <li><strong>Keep moving.</strong> Idle armies drain Bloodletting and waste your economy &mdash; an army standing still is an army losing money.</li>
+        <li><strong>Don't fight wars on two fronts unless one front is razed-and-fleeing.</strong> Always blitz one neighbor flat before turning to the next.</li>
+        <li><strong>Use Blood Hosts as expendable scouts/raiders.</strong> They can't replenish; spend them.</li>
+    </ul>
+
+    <h3>When to hold the Skull Throne offering</h3>
+    <p>The big Skull Throne offerings (post-battle loot, campaign movement, summon a Khorne army) are 10-turn buffs. <strong>Save them for the turn you start a major offensive</strong> &mdash; declaring war on a new region, pushing for a Realms of Chaos rift, or grinding a Chaos Wastes faction. Don't burn them in a quiet turn.</p>
+
+    <h3>Endgame &amp; victory</h3>
+    <p>Both short and long victories want you sweeping the map; the engine is the same as the early game. The only adjustment is that mid-game you'll start running into ranged-heavy factions (Empire, Dwarfs, Cathay) where you'll want to recruit a second wave that includes <strong>Skullcannons</strong> and <strong>Soul Grinders</strong> for the approach phase.</p>
+</section>
+
+<!-- ============================================================ BATTLE STRATEGY -->
+<section class="tab" id="battle">
+    <h2><span class="rune">&#9763;</span>Battle Strategy</h2>
+    <p class="lead">
+        Khorne battles look brainless. They are not. Without ranged or magic, your only tools are positioning and timing &mdash; <em>where</em> you fight, <em>when</em> you charge, and <em>which</em> enemy unit dies first.
+    </p>
+
+    <h3>The standard Exiles army template (~16 units)</h3>
+    <table>
+        <tr><th>Slot</th><th>Composition</th><th>Role</th></tr>
+        <tr><td>1</td><td>Skarbrand (or Exalted Bloodthirster)</td><td>Lord &mdash; wins duels, breaks single-entity threats</td></tr>
+        <tr><td>1</td><td>Bloodreaper or Cultist of Khorne hero</td><td>Anti-large duelist or summoner</td></tr>
+        <tr><td>4&ndash;6</td><td>Chaos Warriors of Khorne (mix shield + halberd)</td><td>Frontline anchor; halberds for anti-large</td></tr>
+        <tr><td>2&ndash;4</td><td>Bloodletters / Exalted Bloodletters</td><td>Damage-dealing infantry, armor-piercing</td></tr>
+        <tr><td>2&ndash;3</td><td>Flesh Hounds / Chaos Furies</td><td>Flank protection &amp; missile-killing</td></tr>
+        <tr><td>2</td><td>Skullcrushers or Bloodcrushers</td><td>Cycle-charge cavalry</td></tr>
+        <tr><td>1&ndash;2</td><td>Minotaurs (Great Weapons) or Bloodthirster</td><td>Anti-large monsters</td></tr>
+        <tr><td>0&ndash;2</td><td>Skullcannon</td><td>Optional ranged for missile-heavy enemies</td></tr>
+    </table>
+
+    <h3>Standard battle plan</h3>
+    <ol class="steps">
+        <li><strong>Deploy in a line, slightly oblique.</strong> Chaos Warriors with shields take the front, Bloodletters in the second rank or staggered to flank.</li>
+        <li><strong>Send Furies / Warhounds wide</strong> to swing around the enemy flank towards their archers and artillery. <em>Kill the ranged units first &mdash; this is the single most important rule for a Khorne player.</em></li>
+        <li><strong>Charge with the line</strong> when the enemy is committed. Khorne infantry wants to be moving when it hits, not standing still.</li>
+        <li><strong>Skarbrand drives at the enemy frontline lord, monsters, or biggest threat</strong> &mdash; staying in the thick of the action. Don't peel him off to chase backline wizards; that breaks his kill-scaling.</li>
+        <li><strong>Cycle-charge cavalry.</strong> Ride in, hit a flank, ride out, reform, hit again. Skullcrushers parked in melee will die.</li>
+        <li><strong>Drop Rage Embodied</strong> at the moment of breakthrough &mdash; not at the start. You're amplifying a rout, not opening one.</li>
+    </ol>
+
+    <h3>Specific matchups</h3>
+
+    <div class="three-col">
+        <div class="card card-blood">
+            <h4>vs. Gunpowder line (Empire / Dwarfs)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Don't walk Skarbrand at handgunners. Send Chaos Furies, Warhounds, and ideally a flying Bloodthirster lord to dive the back line. Your front line absorbs one volley and then closes.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Cavalry-heavy (Bretonnia / Vampire Counts)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Halberd Chaos Warriors and great-weapon Minotaurs anchor. Use Skullcrushers to counter-charge their charge. Skarbrand hunts their lord.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Magic-heavy (Tzeentch / High Elves / Lizardmen)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                You have no dispel, but most Khorne units have innate Spell Resistance. <strong>Send a flying Bloodthirster lord, Chaos Furies, or Flesh Hounds after the wizard &mdash; not Skarbrand.</strong> Skarbrand should stay engaged in the kill-stacking front line.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Monster spam (Lizardmen / Beastmen / Khorne mirror)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                You have the best anti-large roster in the game. Halberd Warriors, Bloodletters with great weapons, Minotaurs GW, Bloodthirster. You should win the trade.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Ranged-heavy (Wood Elves / Skaven slings)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Your ugliest matchup. Bring 2&ndash;4 Skullcannons; advance behind your line; do not let battles last long. Forests are death &mdash; force open ground.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Anti-armor swarms (Skaven Stormvermin / Goblins with spears)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Don't bother Skarbrand-tanking. Cycle-charge cavalry through them, finish with Bloodletters, and watch enemy leadership collapse from Terror.
+            </p>
+        </div>
+    </div>
+
+    <h3>Auto-resolve advice</h3>
+    <div class="tip">
+        Skarbrand's army <strong>auto-resolves better than it should</strong> against most early-game enemies because the AI weights his stats heavily. Use this to clear weak-but-numerous foes (Greenskins, Beastmen). <strong>Never auto-resolve against gunpowder or ranged-heavy armies</strong> &mdash; the auto-resolver gives the AI free hits on Skarbrand and you'll watch your health bar drop for no reason.
+    </div>
+</section>
+
+<!-- ============================================================ ROSTER -->
+<section class="tab" id="roster">
+    <h2><span class="rune">&#9763;</span>Unit Roster</h2>
+    <p class="lead">
+        The Exiles have one of the deepest melee rosters in the game. The headline gap is ranged &mdash; only two units have any ranged attack at all.
+    </p>
+
+    <h3>Lords &amp; Heroes</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Skarbrand the Exiled</strong></td>
+            <td><span class="role role-mons">Monster Lord</span></td>
+            <td>Top duelist, AP, terror, scaling damage, fast</td>
+            <td>No flight, vulnerable to massed missiles</td>
+            <td>Always &mdash; main army anchor</td>
+        </tr>
+        <tr>
+            <td><strong>Exalted Bloodthirster</strong></td>
+            <td><span class="role role-mons">Monster Lord</span></td>
+            <td>Flying, AP, anti-large, very mobile</td>
+            <td>Same single-entity vulnerabilities</td>
+            <td>Lead a 2nd army; great vs missile-heavy enemies</td>
+        </tr>
+        <tr>
+            <td><strong>Daemon Prince of Khorne</strong></td>
+            <td><span class="role role-mons">Monster Lord</span></td>
+            <td>Customizable load-out, scales with gifts</td>
+            <td>Less specialized than Skarbrand or Bloodthirster</td>
+            <td>Late-game flexibility lord; not your first pick</td>
+        </tr>
+        <tr>
+            <td><strong>Herald of Khorne</strong></td>
+            <td><span class="role role-hero">Infantry Hero</span></td>
+            <td>Solid duelist, no large model = ranged-safe</td>
+            <td>Lower stats than monster heroes</td>
+            <td>Cheap army-leader once you spam stacks</td>
+        </tr>
+        <tr>
+            <td><strong>Bloodreaper</strong></td>
+            <td><span class="role role-hero">Infantry Hero</span></td>
+            <td>Anti-large; strong leadership aura</td>
+            <td>Lower power tier than a Bloodthirster</td>
+            <td>Anti-large duelist for the 2nd-line lord</td>
+        </tr>
+        <tr>
+            <td><strong>Cultist of Khorne</strong></td>
+            <td><span class="role role-hero">Mortal Hero</span></td>
+            <td>Has shield; can summon Bloodletters mid-battle</td>
+            <td>No armor-piercing; lower personal damage</td>
+            <td>Combat agent; reinforce stuck infantry</td>
+        </tr>
+    </table>
+
+    <h3>Infantry</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Chaos Warriors of Khorne (Shields)</strong></td>
+            <td><span class="role role-tank">Anchor</span></td>
+            <td>Best Tier-2 frontline in the game; high armor + shields</td>
+            <td>Slow; not great damage</td>
+            <td>Hold the line. Always 4&ndash;6 in your stack.</td>
+        </tr>
+        <tr>
+            <td><strong>Chaos Warriors of Khorne (Halberds)</strong></td>
+            <td><span class="role role-melee">Anti-Large</span></td>
+            <td>Same durability + anti-large</td>
+            <td>No shield, weaker vs missiles</td>
+            <td>Anti-cavalry, anti-monster anchor.</td>
+        </tr>
+        <tr>
+            <td><strong>Bloodletters of Khorne</strong></td>
+            <td><span class="role role-melee">Damage</span></td>
+            <td>AP, magical attacks, terror; cheap</td>
+            <td>Frail; melt under fire</td>
+            <td>Damage dealer behind/beside Chaos Warriors.</td>
+        </tr>
+        <tr>
+            <td><strong>Exalted Bloodletters</strong></td>
+            <td><span class="role role-melee">Elite Damage</span></td>
+            <td>Better stats; great vs elite infantry</td>
+            <td>Still missile-vulnerable</td>
+            <td>Late-game core damage. 2&ndash;4 per stack.</td>
+        </tr>
+        <tr>
+            <td><strong>Bloodletters w/ Great Weapons</strong></td>
+            <td><span class="role role-melee">Anti-Large</span></td>
+            <td>AP + anti-large with magical attacks</td>
+            <td>Glass cannons</td>
+            <td>Mid-game anti-monster spike vs Lizardmen, etc.</td>
+        </tr>
+    </table>
+
+    <h3>Fast units (your missile counter &amp; only mortal ranged)</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Chaos Warhounds</strong></td>
+            <td><span class="role role-fast">Skirmisher</span></td>
+            <td>Cheap, fast, vanguard deploy</td>
+            <td>Tissue paper; one of the few Khorne units <em>without</em> Spell Resistance</td>
+            <td>Tie up archers turn 1; tarpit fodder.</td>
+        </tr>
+        <tr>
+            <td><strong>Flesh Hounds of Khorne</strong></td>
+            <td><span class="role role-fast">Hunter</span></td>
+            <td>Magical attacks, faster + tougher than warhounds</td>
+            <td>Still light</td>
+            <td>Missile-killer. 2&ndash;3 per army from mid-game.</td>
+        </tr>
+        <tr>
+            <td><strong>Chaos Furies</strong></td>
+            <td><span class="role role-fast">Flying Skirmisher</span></td>
+            <td>Flying, fastest unit you have; Frenzy</td>
+            <td>Weakest unit; routs easily</td>
+            <td>Fly over the line, tie up artillery, run.</td>
+        </tr>
+        <tr>
+            <td><strong>Marauder Horsemen</strong></td>
+            <td><span class="role role-art">Mortal Ranged Cav</span></td>
+            <td><strong>One of only three ranged units in the roster</strong>; mobile harassment</td>
+            <td>Mortal (no Spell Resistance baseline); fragile; small ammo pool</td>
+            <td>Skirmish missile cav &mdash; pelt isolated infantry, then disengage.</td>
+        </tr>
+    </table>
+
+    <h3>Cavalry &amp; Chariots (cycle-charge or die)</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Gorebeast Chariots</strong></td>
+            <td><span class="role role-cav">Heavy Charger</span></td>
+            <td>Massive charge bonus; AP</td>
+            <td>Low melee defense; bad if pinned</td>
+            <td>Single-charge openers vs infantry.</td>
+        </tr>
+        <tr>
+            <td><strong>Bloodcrushers</strong></td>
+            <td><span class="role role-cav">Shock Cav</span></td>
+            <td>AP + magical + anti-large + monstrous</td>
+            <td>Low melee def; small unit count</td>
+            <td>Cycle-charge anti-large from the flank.</td>
+        </tr>
+        <tr>
+            <td><strong>Skullcrushers of Khorne</strong></td>
+            <td><span class="role role-cav">Elite Shock</span></td>
+            <td>Highest charge in your roster (~+70); high armor</td>
+            <td>Low melee def in sustained combat</td>
+            <td>Late-game flank-breaker. 2 per army.</td>
+        </tr>
+    </table>
+
+    <h3>Monsters</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Chaos Spawn of Khorne</strong></td>
+            <td><span class="role role-mons">Disrupter</span></td>
+            <td>Unbreakable, cheap, big weapon strength</td>
+            <td>Low defense, low health</td>
+            <td>Cheap morale-immune blob to plug holes.</td>
+        </tr>
+        <tr>
+            <td><strong>Minotaurs of Khorne</strong></td>
+            <td><span class="role role-mons">Heavy Inf</span></td>
+            <td>AP + high weapon strength; chew infantry</td>
+            <td>Frenzy can pull them out of position</td>
+            <td>Anti-elite-infantry sledgehammer.</td>
+        </tr>
+        <tr>
+            <td><strong>Minotaurs (Great Weapons)</strong></td>
+            <td><span class="role role-mons">Anti-Large</span></td>
+            <td>Anti-large + AP + monstrous</td>
+            <td>Less anti-infantry power</td>
+            <td>Best general anti-large monster in your roster.</td>
+        </tr>
+        <tr>
+            <td><strong>Soul Grinder</strong></td>
+            <td><span class="role role-mons">Hybrid Monster</span></td>
+            <td>Has a ranged attack, fights almost anything</td>
+            <td>Slow, expensive</td>
+            <td>One of your only ranged answers; jack-of-all-trades.</td>
+        </tr>
+        <tr>
+            <td><strong>Bloodthirster</strong></td>
+            <td><span class="role role-mons">Monster Hunter</span></td>
+            <td>Flight, AP, anti-large, huge damage</td>
+            <td>Single-entity; prioritized by missiles</td>
+            <td>Best monster killer Khorne has. 1 per stack mid-late.</td>
+        </tr>
+    </table>
+
+    <h3>War machines</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Blood Shrine</strong></td>
+            <td><span class="role role-mons">Support Monster</span></td>
+            <td>Buffs nearby Khorne units; regenerates in melee</td>
+            <td>No raw damage upside</td>
+            <td>One per doomstack to amplify Bloodletters.</td>
+        </tr>
+        <tr>
+            <td><strong>Skullcannon of Khorne</strong></td>
+            <td><span class="role role-art">Artillery</span></td>
+            <td>Only artillery; AP shots; <em>regains ammo by killing in melee</em></td>
+            <td>Limited ammo; needs setup time</td>
+            <td>Bring 1&ndash;3 vs Dwarfs/Empire; otherwise leave at home.</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>Doomstack note:</strong> a "Skarbrand stack" is normally 4&ndash;6 Chaos Warriors (mix), 4 Exalted Bloodletters, 2 Bloodthirsters, 2 Skullcrushers, 2 Flesh Hounds, 1 Blood Shrine, plus Skarbrand. Add Skullcannons against gunpowder enemies.
+    </div>
+    <div class="tactic">
+        <strong>Skarbrand-army synergy:</strong> Skarbrand's Lord Effects make <em>Bloodthirsters and Soul Grinders</em> 20% cheaper to upkeep <em>and</em> give them a passive ability ("Gorefeast") in his stack. They are objectively a better build in his army than in any other lord's &mdash; lean into it.
+    </div>
+</section>
+
+<!-- ============================================================ SETTLEMENTS -->
+<section class="tab" id="settlements">
+    <h2><span class="rune">&#9763;</span>Raze, Sack, or Occupy?</h2>
+    <p class="lead">
+        This is the single most-asked Exiles question. The answer changes only by one variable: <strong>are you in your home province or somewhere else?</strong>
+    </p>
+
+    <h3>The three actions and what they do</h3>
+    <div class="decision">
+        <div class="choice sack">
+            <h4>Sack</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Beat the garrison, take a one-time gold payout (3k&ndash;40k depending on tier and wealth), <strong>do not occupy</strong>, the city stays where it was.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>Does <strong>not</strong> end your army's movement &mdash; can chain</li>
+                <li>Generates skulls</li>
+                <li>City survives, can be sacked again later</li>
+            </ul>
+            <div class="verdict">First action against any non-keeper city.</div>
+        </div>
+        <div class="choice raze">
+            <h4>Raze</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Burn the settlement to ruins. Two flavor options:</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li><strong>Skulls for the Skull Throne:</strong> bigger skull payout</li>
+                <li><strong>Blood for the Blood God:</strong> replenish army + spawn a free Blood Host</li>
+                <li>Restores your full army movement (campaign loop!)</li>
+                <li>Auto-resettles for free if it's in your province</li>
+            </ul>
+            <div class="verdict">Default action after sacking, or any time you don't need the city.</div>
+        </div>
+        <div class="choice occupy">
+            <h4>Occupy</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Costs <strong>skulls</strong>. You now own the city, garrison, build it up, defend it.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>Ends your movement</li>
+                <li>Adds a war front you have to defend</li>
+                <li>Gives you a recruitment / building site</li>
+            </ul>
+            <div class="verdict">Only province capitals in your home cluster. Be picky.</div>
+        </div>
+    </div>
+
+    <h3>The decision rule (memorize this)</h3>
+    <div class="tactic">
+        <strong>Sack first &mdash; always.</strong> It costs no movement and gets you the gold. Then:
+        <ul style="margin-top:.5rem">
+            <li>If it's a <strong>province capital in your home cluster</strong> &rarr; <em>occupy</em>.</li>
+            <li>If you need <strong>army healing or a Blood Host right now</strong> &rarr; <em>raze: Blood for the Blood God</em>.</li>
+            <li>If you're <strong>flush on health and want skulls</strong> &rarr; <em>raze: Skulls for the Skull Throne</em>.</li>
+            <li>If it's a minor settlement in your home province &rarr; raze it; it'll re-colonize for free.</li>
+        </ul>
+    </div>
+
+    <h3>Why "sack then raze" is not a bug</h3>
+    <p>
+        Sacking and razing are <strong>independent actions</strong>. The gold from sacking is unaffected by razing afterwards, and razing still gives you the full skulls + Blood Host bonus.
+        Anyone who tells you to skip the sack is leaving 5k&ndash;40k gold on the table. The only exception is when sacking would cost movement you need elsewhere &mdash; but that almost never happens because sacking does not in fact end movement.
+    </p>
+
+    <h3>Which provinces should you actually keep?</h3>
+    <ul>
+        <li><strong>Your starting capital region</strong> (Deff Gorge in IE) &mdash; always.</li>
+        <li><strong>One adjacent province</strong> for redundancy and a recruitment buffer.</li>
+        <li><strong>Province capitals only</strong> beyond that. Don't try to hold every minor settlement; auto-resettlement covers your home cluster automatically.</li>
+        <li>Avoid keeping cities surrounded by climates marked &quot;Uninhabitable&quot; for Daemons of Chaos &mdash; the public-order penalty is brutal.</li>
+    </ul>
+
+    <div class="warn">
+        <strong>Climate trap:</strong> Daemons of Chaos suffer in many climates. Before you commit to occupying a juicy distant capital, check the climate icon. If it's red (Uninhabitable), <em>raze instead</em> and let some other faction live there &mdash; you'll just bleed money fighting public order.
+    </div>
+</section>
+
+<!-- ============================================================ DIPLOMACY / ECONOMY -->
+<section class="tab" id="economy">
+    <h2><span class="rune">&#9763;</span>Diplomacy &amp; Economy</h2>
+    <p class="lead">
+        Khorne plays both like an alien race. Your diplomacy screen is mostly cosmetic, and your economy is fed by your sword arm.
+    </p>
+
+    <h3>Diplomacy: limited, not useless</h3>
+    <ul>
+        <li>You have hard-coded relations penalties with every non-Chaos faction. Trade is impossible (no tradeable resources).</li>
+        <li>Other Khorne factions specifically dislike <em>you</em> &mdash; the &minus;10 modifier is largely a Skarbrand thing, since you are an exiled traitor in Khorne's eyes.</li>
+        <li>However, the wiki is clear that <strong>pacts and even alliances with some other Chaos and Destruction factions are still possible</strong>. Don't dismiss the diplomacy screen entirely &mdash; check it for opportunistic NAPs.</li>
+        <li>Useful actions: <strong>Non-Aggression Pacts</strong> with backline Chaos/Destruction neighbors so you can focus a single front, and <strong>Joint War declarations</strong> when another Chaos power is already hammering a shared enemy.</li>
+        <li><strong>Confederating other Khorne factions</strong> is occasionally possible deep in the campaign &mdash; great for absorbing units &mdash; but hard to set up because of the hated-exile modifier. Don't plan for it early.</li>
+        <li>Note: <em>some Khorne tech actively debuffs your diplomatic relations</em> &mdash; Khorne demands war, not peace.</li>
+    </ul>
+
+    <div class="tip">
+        <strong>Practical rule:</strong> open the diplomacy screen mostly for NAPs with backline Chaos/Destruction neighbors. Don't expect trade and don't waste turns courting Order factions.
+    </div>
+
+    <h3>Economy: how you actually make money</h3>
+    <p>
+        Khorne building income is intentionally crippled &mdash; expect &le; 60 gold per income building, well below other races. Your treasury is fed from <strong>three sources</strong>, in order of importance:
+    </p>
+
+    <ol class="steps">
+        <li><strong>Sacking settlements.</strong> By far the biggest. A single sack is 3k&ndash;40k gold depending on the city's tier and wealth. Plan your route around sackable cities.</li>
+        <li><strong>Battle income.</strong> 5k&ndash;10k per significant battle (post-battle loot, plus <em>"Skulls for Khorne!"</em> sacrificing of captured enemies).</li>
+        <li><strong>Raze gold.</strong> Smaller payout than sacking, but compounds with skulls and Blood Host generation.</li>
+    </ol>
+
+    <h3>Building priorities for the cities you do keep</h3>
+    <ul>
+        <li><strong>Tier-up the capital recruitment chain first</strong> &mdash; you need access to Tier-3 Bloodletters and Skullcrushers, fast.</li>
+        <li><strong>Skull-generating buildings</strong> next &mdash; passive skull income lets you afford tech and Skull Throne offerings during quiet turns.</li>
+        <li><strong>Then</strong> public order / growth buildings only as needed.</li>
+        <li><strong>Income-only buildings are nearly worthless</strong> &mdash; don't waste slots on them unless you have nothing else to build.</li>
+    </ul>
+
+    <h3>Cash-flow troubleshooting</h3>
+    <div class="warn">
+        <strong>If your treasury is bleeding red:</strong>
+        <ul style="margin-top:.4rem">
+            <li>You probably have an idle main army &mdash; <em>get it moving and into a battle this turn</em>.</li>
+            <li>Disband or merge a recruited army you can't keep paying. <em>Don't</em> bother disbanding Blood Hosts &mdash; they have <strong>zero upkeep</strong> and don't count toward supply lines, so they're free; just spend them in a fight before attrition kills them.</li>
+            <li>Raid-stance any army that has nothing to attack this turn &mdash; small income, useful when bridging.</li>
+            <li>Find the nearest sackable city and march for it; one sack solves most cash crises.</li>
+        </ul>
+    </div>
+
+    <h3>Public order &amp; corruption</h3>
+    <ul>
+        <li>Khorne corruption automatically rises in your home province &mdash; spreads passively to neighbors.</li>
+        <li>Public order in occupied cities is helped by <strong>maintaining high Khorne corruption</strong> and by garrisoning a hero.</li>
+        <li>If a settlement is in revolt, <strong>let it</strong> &mdash; you get a free fight, more skulls, more Bloodletting. Free practice.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ TECHNOLOGIES -->
+<section class="tab" id="tech">
+    <h2><span class="rune">&#9763;</span>Technologies</h2>
+    <p class="lead">
+        Tech is paid in <strong>skulls</strong>, not gold. Early game you'll feel the cost; mid-game you'll have skulls to spare. Pick technologies that compound your existing strategy &mdash; razing, Blood Hosts, and your core melee units.
+    </p>
+
+    <h3>Priority order</h3>
+    <ol class="steps">
+        <li><strong>Skull-generation tech first.</strong> "Serial Killing" / "Skull Harvesting" / equivalents &mdash; more skulls per kill and per raze means everything else gets cheaper.</li>
+        <li><strong>Blood Host buffs.</strong> Anything that increases Blood Host strength, lifespan, or numbers compounds your razing income.</li>
+        <li><strong>Army-wide unit buffs</strong> &mdash; especially Bloodletter and Chaos Warrior bonuses (your two staple units). "Spread Rage" or any Khorne-corruption-on-attack tech is excellent.</li>
+        <li><strong>Recruitment cost &amp; speed reductions.</strong> Khorne armies are <em>expensive</em>; any % off makes second and third stacks viable.</li>
+        <li><strong>Replenishment / movement</strong> &mdash; campaign-layer mobility is force multiplier #1 for the Exiles.</li>
+        <li><strong>Late-game elite buffs</strong> &mdash; Bloodthirster, Skullcrusher, Skullcannon-targeted techs come last.</li>
+    </ol>
+
+    <h3>What to skip (or de-prioritize)</h3>
+    <ul>
+        <li>Building-income tech &mdash; you don't have an income economy; the percentage of nothing is nothing.</li>
+        <li>Defensive / siege-defender tech &mdash; you're not a defender. You're the one besieging.</li>
+    </ul>
+    <div class="warn">
+        <strong>Some Khorne technologies actively debuff your diplomatic relations.</strong> The Blood God isn't interested in peace treaties. If you <em>are</em> trying to maintain a NAP with a Chaos neighbor, watch which techs you unlock &mdash; some will sour the relationship.
+    </div>
+
+    <h3>Tech &amp; Skull Throne &mdash; the same wallet</h3>
+    <div class="tactic">
+        Skulls are spent on three things: <strong>occupying settlements, researching tech, and Skull Throne offerings</strong>. Don't drain your skull pile dry on tech in a turn you might want to occupy a juicy capital next turn. Plan ~1&ndash;2 turns ahead.
+    </div>
+
+    <h3>What "good tech" looks like in practice</h3>
+    <ul>
+        <li>By turn 25 you should have <em>+1 to +2 Blood Hosts per raze</em>, <em>cheaper recruitment</em>, and <em>at least one major skull-generation buff</em>.</li>
+        <li>By turn 50 your stacks should be running with <em>missile resistance / replenishment</em> tech and your Bloodthirsters / Skullcannons should have a buff applied.</li>
+        <li>By turn 75+ you're closing out the tree on quality-of-life: leadership, public order, and chasing-down-runaways.</li>
+    </ul>
+
+    <div class="tip">
+        <strong>The compounding insight:</strong> the Khorne tech tree is designed so the things you do anyway (kill, raze, spawn Blood Hosts) get permanent buffs. There are no &quot;optimal off-meta&quot; lines &mdash; the obvious-looking choices <em>are</em> the right ones. If a tech buffs killing, take it.
+    </div>
+</section>
+
+<footer>
+    Exiles of Khorne &mdash; New Player's Guide &middot; Total War: Warhammer III
+    <br>Compiled from the official Total War: WARHAMMER Wiki (Khorne, Skarbrand the Exiled, Challengers of Khorne pages), Royal Military Academy unit data, and community guides (Steam, GameRant, ScreenRant, TheGamer).
+</footer>
+
+</main>
+
+<script>
+(function(){
+    const nav = document.getElementById('navBar');
+    const tabs = document.querySelectorAll('.tab');
+    const buttons = nav.querySelectorAll('button');
+
+    nav.addEventListener('click', function(e){
+        const btn = e.target.closest('button[data-tab]');
+        if(!btn) return;
+        const target = btn.dataset.tab;
+        buttons.forEach(b => b.classList.toggle('active', b === btn));
+        tabs.forEach(t => t.classList.toggle('active', t.id === target));
+        window.scrollTo({top:0, behavior:'instant'});
+    });
+
+    const themeBtn = document.getElementById('themeBtn');
+    const stored = localStorage.getItem('exiles-theme');
+    if(stored === 'light') document.body.classList.add('light');
+    themeBtn.addEventListener('click', function(){
+        document.body.classList.toggle('light');
+        localStorage.setItem('exiles-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+})();
+</script>
+</body>
+</html>
