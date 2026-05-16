@@ -1,0 +1,1429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NULL → NEON // A Field Manual for Backend Engineers Building AAA Game Promo Sites</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500;700;900&family=JetBrains+Mono:wght@300;400;600;800&family=Instrument+Serif:ital@0;1&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#050507;
+  --carbon:#0b0b0f;
+  --graphite:#14141a;
+  --iron:#1e1e26;
+  --steel:#2a2a34;
+  --ink:#f3ede0;
+  --bone:#d8d3c6;
+  --mute:#6a6a76;
+  --ash:#434352;
+  --acid:#c8ff00;
+  --plasma:#ff2d6f;
+  --freon:#27e2ff;
+  --blood:#ff4a1f;
+  --gold:#ffc933;
+  --f-display:'Unbounded',system-ui,sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,monospace;
+  --f-term:'VT323',monospace;
+  --f-serif:'Instrument Serif',Georgia,serif;
+  --grid:1px solid rgba(243,237,224,.08);
+  --grid-strong:1px solid rgba(243,237,224,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--void);
+  color:var(--ink);
+  font-family:var(--f-mono);
+  font-size:14px;
+  line-height:1.55;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  cursor:crosshair;
+}
+body::before{
+  /* grain */
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9999;opacity:.04;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode:overlay;
+}
+body::after{
+  /* scanlines */
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:.35;
+  background:repeating-linear-gradient(to bottom,transparent 0 2px,rgba(0,0,0,.28) 2px 3px);
+}
+a{color:var(--freon);text-decoration:none;border-bottom:1px dashed rgba(39,226,255,.4)}
+a:hover{color:var(--acid);border-color:var(--acid)}
+::selection{background:var(--acid);color:var(--void)}
+
+/* ========== TOP BAR ========== */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 24px;
+  background:rgba(5,5,7,.78);
+  backdrop-filter:blur(10px);
+  border-bottom:var(--grid-strong);
+  font-family:var(--f-mono);
+  font-size:11px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.topbar .brand{display:flex;gap:14px;align-items:center}
+.topbar .brand b{font-family:var(--f-display);font-weight:900;letter-spacing:.02em;font-size:13px}
+.topbar .dot{width:8px;height:8px;background:var(--acid);border-radius:50%;box-shadow:0 0 12px var(--acid);animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.3;transform:scale(.7)}}
+.topbar nav{display:flex;gap:22px}
+.topbar nav a{color:var(--mute);border:none;padding:4px 0;position:relative}
+.topbar nav a.active,.topbar nav a:hover{color:var(--ink)}
+.topbar nav a.active::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:1px;background:var(--acid)}
+.topbar .status{color:var(--mute)}
+.topbar .status span{color:var(--acid)}
+
+/* ========== SHELL ========== */
+main{padding-top:44px}
+section{
+  position:relative;
+  border-bottom:var(--grid);
+  padding:90px 24px;
+}
+.section-label{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--f-mono);font-size:11px;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--acid);
+  padding:4px 10px;
+  border:1px solid var(--acid);
+  border-radius:2px;
+  margin-bottom:24px;
+}
+.section-label::before{content:"◆";font-size:8px}
+h2.section-title{
+  font-family:var(--f-display);
+  font-weight:900;
+  font-size:clamp(42px,7vw,96px);
+  line-height:.92;
+  letter-spacing:-.02em;
+  margin-bottom:20px;
+}
+h2.section-title em{font-family:var(--f-serif);font-style:italic;font-weight:400;color:var(--plasma)}
+p.lede{font-size:16px;max-width:62ch;color:var(--bone);margin-bottom:40px}
+.container{max-width:1400px;margin:0 auto}
+
+/* ========== HERO ========== */
+.hero{
+  min-height:100vh;
+  padding:120px 24px 60px;
+  position:relative;
+  overflow:hidden;
+  display:flex;flex-direction:column;justify-content:center;
+  background:
+    radial-gradient(ellipse 80% 60% at 80% 20%,rgba(255,45,111,.12),transparent 60%),
+    radial-gradient(ellipse 70% 80% at 10% 80%,rgba(200,255,0,.08),transparent 60%),
+    var(--void);
+}
+.hero::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(243,237,224,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(243,237,224,.04) 1px,transparent 1px);
+  background-size:80px 80px;
+  mask-image:radial-gradient(ellipse at center,black 30%,transparent 75%);
+}
+.hero .container{position:relative;z-index:2}
+.hero-meta{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:60px;
+  font-size:11px;color:var(--mute);letter-spacing:.15em;text-transform:uppercase;
+}
+.hero-meta .left::before{content:"// ";color:var(--acid)}
+.hero-title{
+  font-family:var(--f-display);font-weight:900;
+  font-size:clamp(68px,14vw,240px);
+  line-height:.85;letter-spacing:-.03em;
+  margin-bottom:40px;
+  position:relative;
+}
+.hero-title .arrow{
+  display:inline-block;color:var(--plasma);
+  transform:translateY(-.08em);
+  padding:0 .08em;
+  text-shadow:0 0 40px rgba(255,45,111,.6);
+}
+.hero-title .neon{
+  color:var(--acid);
+  text-shadow:0 0 30px rgba(200,255,0,.4),0 0 80px rgba(200,255,0,.2);
+  animation:flicker 6s infinite;
+}
+@keyframes flicker{
+  0%,97%,100%{opacity:1}
+  98%{opacity:.4}
+  98.5%{opacity:1}
+  99%{opacity:.7}
+}
+.hero-sub{
+  display:grid;grid-template-columns:1fr auto;gap:60px;
+  align-items:end;
+  padding-top:30px;border-top:var(--grid-strong);
+}
+.hero-tag{
+  font-family:var(--f-serif);font-style:italic;
+  font-size:clamp(22px,2.4vw,34px);
+  line-height:1.25;max-width:22ch;color:var(--bone);
+}
+.hero-tag b{font-style:normal;font-family:var(--f-display);font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.hero-stats{display:flex;gap:40px;flex-wrap:wrap}
+.hero-stat{border-left:1px solid var(--ash);padding-left:14px}
+.hero-stat .n{font-family:var(--f-display);font-weight:900;font-size:28px;color:var(--ink)}
+.hero-stat .l{font-size:10px;color:var(--mute);letter-spacing:.18em;text-transform:uppercase}
+
+.terminal{
+  background:rgba(14,14,18,.72);
+  border:var(--grid-strong);
+  padding:0;
+  margin:50px 0 0;
+  font-family:var(--f-term);
+  font-size:18px;
+  max-width:720px;
+  position:relative;
+  box-shadow:0 0 0 1px rgba(200,255,0,.08),0 40px 80px rgba(0,0,0,.6);
+}
+.terminal-head{
+  display:flex;gap:8px;padding:8px 12px;border-bottom:1px solid var(--iron);
+  font-family:var(--f-mono);font-size:10px;color:var(--mute);
+  letter-spacing:.15em;text-transform:uppercase;
+}
+.terminal-head .dots{display:flex;gap:4px;margin-right:14px}
+.terminal-head .dots span{width:10px;height:10px;border-radius:50%;background:var(--iron)}
+.terminal-head .dots span:nth-child(1){background:var(--blood)}
+.terminal-head .dots span:nth-child(2){background:var(--gold)}
+.terminal-head .dots span:nth-child(3){background:var(--acid)}
+.terminal-body{padding:18px 18px 22px;color:var(--bone);min-height:220px}
+.terminal-body .line{display:block;white-space:nowrap;overflow:hidden}
+.terminal-body .ok{color:var(--acid)}
+.terminal-body .warn{color:var(--gold)}
+.terminal-body .err{color:var(--plasma)}
+.terminal-body .dim{color:var(--mute)}
+.caret{display:inline-block;width:.55em;height:1em;background:var(--acid);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ========== MANIFESTO ========== */
+.manifesto{
+  display:grid;grid-template-columns:1.1fr .9fr;gap:80px;
+}
+.manifesto .num{font-family:var(--f-display);font-weight:900;font-size:14vw;line-height:1;color:var(--iron);position:absolute;right:-3vw;top:-4vw;pointer-events:none;z-index:0}
+.manifesto > *{position:relative;z-index:1}
+.manifesto h3{font-family:var(--f-display);font-weight:700;font-size:22px;margin-bottom:14px}
+.manifesto .card{
+  border:var(--grid);padding:28px;
+  background:linear-gradient(180deg,rgba(30,30,38,.4),rgba(14,14,18,.2));
+}
+.manifesto-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.contrast{
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:30px;
+}
+.contrast .col{padding:22px;border:var(--grid)}
+.contrast .col.bad{background:#151518;color:var(--mute)}
+.contrast .col.bad h4{color:var(--blood)}
+.contrast .col.good{background:linear-gradient(180deg,#0b1500,#050507);border-color:rgba(200,255,0,.3)}
+.contrast .col.good h4{color:var(--acid)}
+.contrast h4{font-family:var(--f-display);font-size:13px;letter-spacing:.15em;margin-bottom:14px;text-transform:uppercase}
+.contrast ul{list-style:none;font-size:13px;line-height:1.8}
+.contrast li::before{content:"→ ";color:inherit;opacity:.6}
+.contrast .bad li::before{content:"× "}
+
+/* ========== STACK ========== */
+.stack-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+  border:var(--grid);
+}
+.stack-cell{
+  padding:30px;
+  border-right:var(--grid);border-bottom:var(--grid);
+  position:relative;
+  transition:background .3s;
+}
+.stack-cell:hover{background:rgba(200,255,0,.03)}
+.stack-cell:nth-child(4n){border-right:none}
+.stack-cell:nth-last-child(-n+4){border-bottom:none}
+.stack-cell .tag{font-size:10px;color:var(--mute);letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px}
+.stack-cell h4{font-family:var(--f-display);font-weight:700;font-size:17px;margin-bottom:6px;color:var(--ink)}
+.stack-cell .desc{font-size:12px;color:var(--bone);line-height:1.55}
+.stack-cell .hl{color:var(--acid)}
+.stack-cell::before{
+  content:attr(data-idx);
+  position:absolute;top:16px;right:18px;
+  font-size:10px;color:var(--ash);font-family:var(--f-mono);
+}
+
+/* ========== TYPOGRAPHY SANDBOX ========== */
+.typo-sandbox{
+  display:grid;grid-template-columns:1fr 1fr;gap:40px;
+  align-items:start;
+}
+.typo-input{
+  width:100%;padding:16px;
+  background:var(--carbon);
+  border:var(--grid-strong);
+  color:var(--ink);
+  font-family:var(--f-mono);
+  font-size:14px;
+  margin-bottom:30px;
+}
+.typo-input:focus{outline:none;border-color:var(--acid)}
+.typo-samples{display:flex;flex-direction:column;gap:28px}
+.typo-card{border-left:2px solid var(--iron);padding-left:22px;position:relative}
+.typo-card:hover{border-left-color:var(--acid)}
+.typo-card .meta{font-size:10px;color:var(--mute);letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px;display:flex;gap:14px}
+.typo-card .meta b{color:var(--acid);font-weight:400}
+.typo-card .sample{line-height:.95;color:var(--ink);word-break:break-word}
+.typo-card[data-kind=hero] .sample{font-family:var(--f-display);font-weight:900;font-size:64px;letter-spacing:-.02em}
+.typo-card[data-kind=editorial] .sample{font-family:var(--f-serif);font-style:italic;font-size:46px;color:var(--plasma);line-height:1.05}
+.typo-card[data-kind=brutal] .sample{font-family:var(--f-display);font-weight:900;font-size:38px;letter-spacing:.02em;color:var(--acid);text-transform:uppercase}
+.typo-card[data-kind=term] .sample{font-family:var(--f-term);font-size:42px;color:var(--freon);line-height:1}
+.typo-card[data-kind=utility] .sample{font-family:var(--f-mono);font-weight:600;font-size:22px;letter-spacing:.15em;text-transform:uppercase}
+
+.typo-rules{
+  border:var(--grid);padding:26px;background:var(--carbon);
+}
+.typo-rules h4{font-family:var(--f-display);font-size:13px;letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px;color:var(--acid)}
+.typo-rules ol{list-style:none;counter-reset:step;font-size:13px;line-height:1.7;color:var(--bone)}
+.typo-rules ol li{counter-increment:step;padding:10px 0;border-bottom:1px dashed var(--iron);display:grid;grid-template-columns:28px 1fr;gap:14px}
+.typo-rules ol li::before{content:"0" counter(step);color:var(--plasma);font-family:var(--f-display);font-weight:900;font-size:11px}
+
+/* ========== COLOR ========== */
+.palette-switcher{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:30px}
+.palette-switcher button{
+  background:transparent;border:1px solid var(--iron);color:var(--bone);
+  padding:10px 16px;
+  font-family:var(--f-mono);font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  cursor:crosshair;transition:.2s;
+}
+.palette-switcher button:hover{border-color:var(--bone)}
+.palette-switcher button.on{border-color:var(--acid);color:var(--acid);background:rgba(200,255,0,.06)}
+.palette-display{
+  display:grid;grid-template-columns:repeat(6,1fr);gap:0;
+  border:var(--grid-strong);
+  min-height:220px;
+}
+.swatch{
+  padding:20px;display:flex;flex-direction:column;justify-content:space-between;
+  position:relative;min-height:220px;
+  transition:transform .4s cubic-bezier(.2,.9,.2,1);
+}
+.swatch:hover{z-index:2;transform:scale(1.04)}
+.swatch .role{font-size:10px;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
+.swatch .hex{font-family:var(--f-mono);font-size:14px;font-weight:600}
+.palette-caption{margin-top:18px;font-size:12px;color:var(--mute);max-width:70ch;font-style:italic;font-family:var(--f-serif);font-size:16px}
+
+/* ========== COMPONENTS ========== */
+.comp-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:20px}
+.comp{
+  border:var(--grid);background:var(--carbon);
+  padding:30px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;gap:20px;
+}
+.comp .title{font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase}
+.comp .caption{font-size:11px;color:var(--mute);margin-top:auto}
+.comp.sz-4{grid-column:span 4}
+.comp.sz-6{grid-column:span 6}
+.comp.sz-8{grid-column:span 8}
+.comp.sz-12{grid-column:span 12}
+
+/* Button styles */
+.btn-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 22px;border:none;cursor:crosshair;
+  font-family:var(--f-display);font-weight:700;
+  font-size:12px;letter-spacing:.18em;text-transform:uppercase;
+  transition:transform .15s,background .2s,color .2s;
+  position:relative;
+}
+.btn-primary{background:var(--acid);color:var(--void);clip-path:polygon(8% 0,100% 0,92% 100%,0 100%)}
+.btn-primary:hover{background:var(--ink)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--ink)}
+.btn-ghost:hover{background:var(--ink);color:var(--void)}
+.btn-danger{background:var(--plasma);color:var(--ink)}
+.btn-danger:hover{background:var(--blood)}
+.btn-iso{
+  background:var(--carbon);color:var(--freon);border:1px solid var(--freon);
+  box-shadow:4px 4px 0 var(--freon);
+  transition:transform .15s,box-shadow .15s;
+}
+.btn-iso:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--acid);color:var(--acid);border-color:var(--acid)}
+.btn-glow{background:var(--void);color:var(--acid);border:1px solid var(--acid);box-shadow:0 0 30px rgba(200,255,0,.3),inset 0 0 10px rgba(200,255,0,.1)}
+.btn-glow:hover{background:var(--acid);color:var(--void);box-shadow:0 0 60px rgba(200,255,0,.6)}
+
+/* Character card */
+.char-card{
+  background:
+    radial-gradient(ellipse at top,rgba(255,45,111,.22),transparent 70%),
+    linear-gradient(180deg,#1a0a12,#05050a);
+  padding:0;overflow:hidden;position:relative;
+  border:1px solid rgba(255,45,111,.3);
+}
+.char-face{
+  height:220px;position:relative;overflow:hidden;
+  background:
+    conic-gradient(from 130deg at 70% 40%,#ff2d6f,#190510,#ff4a1f,#190510,#ff2d6f);
+  filter:contrast(1.1);
+}
+.char-face::before{
+  content:"";position:absolute;inset:0;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 3px,rgba(0,0,0,.25) 3px 4px),
+    linear-gradient(180deg,transparent 60%,#05050a);
+}
+.char-face::after{
+  content:"∅";position:absolute;inset:0;display:grid;place-items:center;
+  font-family:var(--f-display);font-weight:900;font-size:160px;
+  color:rgba(255,255,255,.07);
+}
+.char-body{padding:22px}
+.char-name{font-family:var(--f-display);font-weight:900;font-size:26px;line-height:1;margin-bottom:6px}
+.char-role{font-size:10px;color:var(--plasma);letter-spacing:.25em;text-transform:uppercase;margin-bottom:16px}
+.char-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px 16px;font-size:11px}
+.char-stat{display:flex;justify-content:space-between;border-bottom:1px dashed var(--iron);padding:4px 0;color:var(--mute)}
+.char-stat b{color:var(--ink);font-weight:600}
+.char-bar{height:2px;background:var(--iron);margin-top:3px;position:relative;overflow:hidden}
+.char-bar::after{content:"";position:absolute;left:0;top:0;bottom:0;background:var(--plasma);width:var(--v,50%)}
+
+/* Countdown */
+.countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%}
+.cd-cell{
+  padding:16px 10px;background:var(--void);border:1px solid var(--iron);
+  text-align:center;position:relative;overflow:hidden;
+}
+.cd-cell::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(200,255,0,.06));pointer-events:none}
+.cd-n{font-family:var(--f-display);font-weight:900;font-size:42px;line-height:1;color:var(--acid);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.cd-l{font-size:9px;color:var(--mute);letter-spacing:.2em;text-transform:uppercase;margin-top:6px}
+
+/* News card */
+.news{display:grid;gap:14px}
+.news-item{display:grid;grid-template-columns:80px 1fr auto;gap:18px;align-items:start;padding:14px 0;border-top:1px solid var(--iron)}
+.news-item:first-child{border-top:none}
+.news-date{font-family:var(--f-term);font-size:22px;line-height:1;color:var(--freon)}
+.news-title{font-family:var(--f-display);font-weight:700;font-size:16px;line-height:1.2}
+.news-kicker{font-size:9px;color:var(--plasma);letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px}
+.news-more{font-size:10px;color:var(--mute);white-space:nowrap;padding-top:4px}
+
+/* Stats strip */
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:var(--grid)}
+.stat-cell{padding:24px;border-right:var(--grid);position:relative}
+.stat-cell:last-child{border-right:none}
+.stat-cell .big{font-family:var(--f-display);font-weight:900;font-size:54px;line-height:1;color:var(--acid);letter-spacing:-.03em}
+.stat-cell .big span{font-family:var(--f-serif);font-style:italic;color:var(--plasma);font-weight:400;font-size:28px}
+.stat-cell .lab{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--mute);margin-top:10px}
+
+/* ========== MOTION ========== */
+.motion-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.motion-card{
+  border:var(--grid);padding:26px;min-height:220px;
+  display:flex;flex-direction:column;gap:16px;position:relative;overflow:hidden;
+  background:var(--carbon);
+}
+.motion-card h4{font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.1em;text-transform:uppercase}
+.motion-card p{font-size:12px;color:var(--bone)}
+.motion-demo{margin-top:auto;display:flex;align-items:center;justify-content:center;height:80px;border:1px dashed var(--iron);position:relative;overflow:hidden}
+
+.demo-stagger span{display:inline-block;font-family:var(--f-display);font-weight:900;font-size:34px;letter-spacing:-.02em;color:var(--acid);opacity:0;animation:reveal 1.5s cubic-bezier(.2,.9,.2,1) forwards}
+.motion-card:hover .demo-stagger span{animation:reveal 1.5s cubic-bezier(.2,.9,.2,1) forwards}
+.demo-stagger span:nth-child(1){animation-delay:0s}
+.demo-stagger span:nth-child(2){animation-delay:.08s}
+.demo-stagger span:nth-child(3){animation-delay:.16s}
+.demo-stagger span:nth-child(4){animation-delay:.24s}
+.demo-stagger span:nth-child(5){animation-delay:.32s}
+.demo-stagger span:nth-child(6){animation-delay:.4s}
+@keyframes reveal{from{opacity:0;transform:translateY(24px) rotate(-3deg);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+
+.demo-scan{width:100%;height:100%;position:relative}
+.demo-scan::before{content:"SCAN";position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-weight:900;font-size:36px;letter-spacing:-.02em;color:var(--plasma)}
+.demo-scan::after{content:"";position:absolute;left:0;right:0;top:0;height:2px;background:var(--freon);box-shadow:0 0 20px var(--freon);animation:scan 2.4s infinite}
+@keyframes scan{0%{top:0}50%{top:100%}100%{top:0}}
+
+.demo-marquee{width:100%;overflow:hidden;white-space:nowrap}
+.demo-marquee .track{display:inline-block;animation:march 14s linear infinite;font-family:var(--f-display);font-weight:900;font-size:28px;letter-spacing:-.02em}
+.demo-marquee .track span{padding:0 18px;color:var(--ink)}
+.demo-marquee .track span:nth-child(odd){color:var(--acid)}
+@keyframes march{to{transform:translateX(-50%)}}
+
+/* ========== CASE STUDY ========== */
+.case{
+  background:
+    radial-gradient(ellipse 80% 60% at 80% 10%,rgba(255,74,31,.16),transparent 60%),
+    radial-gradient(ellipse 60% 60% at 20% 90%,rgba(39,226,255,.08),transparent 60%),
+    #060207;
+  padding:90px 0 0;
+}
+.case .container{padding:0 24px}
+.case-meta{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);letter-spacing:.2em;text-transform:uppercase;margin-bottom:30px}
+.case-meta span b{color:var(--blood)}
+.case-hero{position:relative;padding:40px 0 30px;border-top:1px solid var(--blood);border-bottom:1px solid var(--blood)}
+.case-hero h1{
+  font-family:var(--f-display);font-weight:900;
+  font-size:clamp(80px,18vw,280px);
+  line-height:.82;letter-spacing:-.04em;
+  color:var(--ink);
+  text-shadow:0 0 80px rgba(255,74,31,.3);
+}
+.case-hero h1 i{font-style:normal;color:var(--blood)}
+.case-hero .sub{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;
+  margin-top:30px;padding-top:28px;border-top:1px dashed rgba(255,74,31,.3);
+}
+.case-hero .sub div:nth-child(1){font-family:var(--f-serif);font-style:italic;font-size:22px;color:var(--bone);max-width:30ch;line-height:1.2}
+.case-hero .sub div:nth-child(2){font-size:12px;color:var(--mute);letter-spacing:.15em;text-transform:uppercase;line-height:1.8}
+.case-hero .sub div:nth-child(2) b{color:var(--acid);font-weight:400}
+.case-hero .sub div:nth-child(3){display:flex;gap:10px;flex-direction:column;align-items:flex-end;justify-content:flex-end}
+.case-hero .sub div:nth-child(3) .btn{width:100%;justify-content:center}
+
+.case-features{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:80px}
+.case-feat{
+  padding:40px;border:1px solid rgba(255,74,31,.2);margin:-1px;
+  transition:background .3s;position:relative;
+}
+.case-feat:hover{background:rgba(255,74,31,.06)}
+.case-feat .n{font-family:var(--f-display);font-weight:900;font-size:14px;color:var(--blood);margin-bottom:20px;letter-spacing:.1em}
+.case-feat h3{font-family:var(--f-display);font-weight:700;font-size:28px;line-height:1;margin-bottom:14px}
+.case-feat p{font-size:13px;color:var(--bone);line-height:1.6}
+
+.case-editions{margin-top:80px;padding-bottom:90px}
+.case-editions h3{font-family:var(--f-display);font-weight:900;font-size:42px;margin-bottom:30px;letter-spacing:-.02em}
+.edition-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.edition{
+  border:1px solid var(--iron);padding:30px;
+  display:flex;flex-direction:column;gap:14px;
+  position:relative;background:rgba(11,11,15,.6);
+  transition:.2s;
+}
+.edition:hover{border-color:var(--acid);transform:translateY(-4px)}
+.edition.flag::before{content:"MOST CHOSEN";position:absolute;top:-1px;right:-1px;background:var(--acid);color:var(--void);font-family:var(--f-display);font-weight:700;font-size:9px;letter-spacing:.2em;padding:6px 10px}
+.edition .name{font-family:var(--f-display);font-weight:900;font-size:22px;letter-spacing:-.01em}
+.edition .price{font-family:var(--f-display);font-weight:900;font-size:52px;letter-spacing:-.03em;color:var(--ink)}
+.edition .price span{font-family:var(--f-serif);font-style:italic;font-weight:400;color:var(--mute);font-size:18px;margin-left:6px}
+.edition ul{list-style:none;font-size:12px;line-height:1.9;color:var(--bone);border-top:1px dashed var(--iron);padding-top:14px;margin-top:8px}
+.edition ul li::before{content:"◇  ";color:var(--acid)}
+.edition .btn{margin-top:auto}
+
+/* ========== DEPLOY ========== */
+.deploy-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start}
+.step{padding:22px 0;border-top:1px dashed var(--iron);display:grid;grid-template-columns:60px 1fr;gap:20px}
+.step:first-of-type{border-top:1px solid var(--acid)}
+.step .idx{font-family:var(--f-display);font-weight:900;font-size:34px;color:var(--acid);line-height:.9}
+.step h4{font-family:var(--f-display);font-weight:700;font-size:18px;margin-bottom:6px}
+.step p{font-size:13px;color:var(--bone)}
+
+pre{
+  background:var(--carbon);
+  border:var(--grid);border-left:3px solid var(--acid);
+  padding:18px 20px;
+  overflow:auto;
+  font-family:var(--f-mono);font-size:12px;line-height:1.6;
+  color:var(--bone);
+  margin:14px 0;
+  position:relative;
+}
+pre .c{color:var(--mute)}
+pre .k{color:var(--plasma)}
+pre .s{color:var(--acid)}
+pre .v{color:var(--freon)}
+pre .copy{
+  position:absolute;top:8px;right:8px;
+  background:var(--iron);border:none;color:var(--bone);
+  font-family:var(--f-mono);font-size:10px;padding:4px 8px;letter-spacing:.12em;
+  cursor:crosshair;
+}
+pre .copy:hover{background:var(--acid);color:var(--void)}
+
+/* ========== CHECKLIST ========== */
+.checklist{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:var(--grid)}
+.check-col{padding:30px;border-right:var(--grid)}
+.check-col:last-child{border-right:none}
+.check-col h4{font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.15em;text-transform:uppercase;color:var(--plasma);margin-bottom:18px}
+.check-col label{
+  display:grid;grid-template-columns:24px 1fr;gap:10px;align-items:start;
+  padding:10px 0;cursor:crosshair;font-size:13px;color:var(--bone);
+  border-bottom:1px dashed var(--iron);
+  transition:.2s;
+}
+.check-col label:hover{color:var(--ink)}
+.check-col input{
+  appearance:none;width:16px;height:16px;border:1px solid var(--mute);
+  background:transparent;margin-top:3px;position:relative;cursor:crosshair;
+}
+.check-col input:checked{background:var(--acid);border-color:var(--acid)}
+.check-col input:checked::after{content:"×";position:absolute;inset:0;display:grid;place-items:center;color:var(--void);font-family:var(--f-display);font-weight:900;font-size:14px;line-height:1}
+.check-col label:has(input:checked){color:var(--mute);text-decoration:line-through}
+
+/* ========== FOOTER ========== */
+footer{
+  padding:60px 24px 30px;
+  background:var(--void);
+  border-top:1px solid var(--blood);
+  position:relative;
+}
+footer .big{
+  font-family:var(--f-display);font-weight:900;
+  font-size:clamp(40px,8vw,110px);line-height:.9;
+  letter-spacing:-.03em;margin-bottom:40px;
+}
+footer .big em{font-family:var(--f-serif);font-style:italic;font-weight:400;color:var(--plasma)}
+footer .meta{display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;padding-top:30px;border-top:var(--grid)}
+footer .meta b{font-family:var(--f-display);font-weight:700;font-size:11px;letter-spacing:.2em;color:var(--acid);text-transform:uppercase;display:block;margin-bottom:10px}
+footer .meta div{font-size:12px;color:var(--bone);line-height:1.8}
+footer .sig{margin-top:40px;font-size:10px;color:var(--mute);letter-spacing:.2em;text-transform:uppercase;display:flex;justify-content:space-between}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width:1100px){
+  .comp.sz-4,.comp.sz-6,.comp.sz-8{grid-column:span 6}
+  .comp.sz-12{grid-column:span 12}
+  .stack-grid,.checklist,.palette-display{grid-template-columns:repeat(2,1fr)}
+  .stack-cell:nth-child(4n){border-right:var(--grid)}
+  .stack-cell:nth-child(2n){border-right:none}
+  .manifesto,.typo-sandbox,.deploy-grid,.hero-sub{grid-template-columns:1fr;gap:40px}
+  .motion-grid,.case-features,.edition-row,.case-hero .sub{grid-template-columns:1fr}
+  .stats-strip{grid-template-columns:repeat(2,1fr)}
+  footer .meta{grid-template-columns:1fr}
+  .topbar nav{display:none}
+  .check-col{border-right:none;border-bottom:var(--grid)}
+}
+@media (max-width:600px){
+  .palette-display{grid-template-columns:repeat(3,1fr)}
+  .comp.sz-4,.comp.sz-6,.comp.sz-8{grid-column:span 12}
+  .stack-grid{grid-template-columns:1fr}
+  .stack-cell{border-right:none!important}
+  .countdown{grid-template-columns:repeat(2,1fr)}
+  .stats-strip{grid-template-columns:1fr}
+  .contrast{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <span class="dot"></span>
+    <b>NULL → NEON</b>
+    <span>v1.0 // field manual</span>
+  </div>
+  <nav>
+    <a href="#why">why</a>
+    <a href="#stack">stack</a>
+    <a href="#typography">type</a>
+    <a href="#color">color</a>
+    <a href="#components">components</a>
+    <a href="#motion">motion</a>
+    <a href="#case">case study</a>
+    <a href="#deploy">deploy</a>
+    <a href="#ship">ship</a>
+  </nav>
+  <div class="status">sig <span id="sig">OK</span></div>
+</div>
+
+<main>
+
+<!-- ================================ HERO ================================ -->
+<section class="hero" id="top">
+  <div class="container">
+    <div class="hero-meta">
+      <div class="left">manual / 001 / for the server-shaped engineer</div>
+      <div class="right">build · ship · glow · <span id="clock">--:--:--</span></div>
+    </div>
+
+    <h1 class="hero-title">
+      <span>NULL</span>
+      <span class="arrow"> → </span>
+      <span class="neon">NEON</span>
+    </h1>
+
+    <div class="hero-sub">
+      <div class="hero-tag">
+        <b>A field manual</b> for the backend engineer who has shipped a thousand <span style="color:var(--acid)">/api</span> routes and exactly <span style="color:var(--plasma)">zero</span> hero sections — teaching you to ship a high-fidelity video game promo site on the Cloudflare edge without embarrassing the art team.
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="n">8</div><div class="l">sections</div></div>
+        <div class="hero-stat"><div class="n">40+</div><div class="l">live demos</div></div>
+        <div class="hero-stat"><div class="n">0</div><div class="l">bootstrap</div></div>
+        <div class="hero-stat"><div class="n">&lt;100kb</div><div class="l">budget</div></div>
+      </div>
+    </div>
+
+    <div class="terminal">
+      <div class="terminal-head">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <span>/dev/null ~ boot.log</span>
+      </div>
+      <div class="terminal-body" id="termbody">
+        <span class="line dim">$ ./bootstrap --target=frontend --audience=gamers</span>
+        <span class="line ok">[ OK ] terminal detected</span>
+        <span class="line ok">[ OK ] curiosity &gt; 0</span>
+        <span class="line warn">[WARN] last :root{} commit dated 2013</span>
+        <span class="line warn">[WARN] pantone knowledge: insufficient</span>
+        <span class="line err">[ERR ] you have used &lt;marquee&gt; on production</span>
+        <span class="line dim">  initiating rehabilitation ...</span>
+        <span class="line ok">[ OK ] colors loaded  (16.7M)</span>
+        <span class="line ok">[ OK ] kerning acquired</span>
+        <span class="line ok">[ OK ] motion tokens mounted</span>
+        <span class="line"><span class="ok">ready.</span> type <b style="color:var(--acid)">scroll</b> to continue <span class="caret"></span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ WHY ================================ -->
+<section id="why">
+  <div class="container manifesto">
+    <div>
+      <span class="section-label">01 / why this exists</span>
+      <h2 class="section-title">You already<br>ship reliable <em>/APIs</em>.<br>Now make people <em>want</em> them.</h2>
+      <p class="lede">A game promo page has one job: convince a human with three other tabs open to pre-order, wishlist, or remember your name. It's not a CRUD form. It's a <b style="color:var(--acid)">trailer in HTML</b>. Every pixel is performing.</p>
+
+      <div class="contrast">
+        <div class="col bad">
+          <h4>// backend-brain defaults</h4>
+          <ul>
+            <li>Bootstrap, Tailwind defaults, untouched</li>
+            <li>Roboto / Arial everywhere</li>
+            <li>Centered hero with stock space photo</li>
+            <li>"Learn more" gray button</li>
+            <li>Evenly-gray palette, zero hierarchy</li>
+            <li>Static. No motion. No atmosphere.</li>
+          </ul>
+        </div>
+        <div class="col good">
+          <h4>// AAA promo defaults</h4>
+          <ul>
+            <li>Custom display type paired with mono</li>
+            <li>Dominant ink + 1 signature accent</li>
+            <li>Oversized type, grid-breaking layout</li>
+            <li>A CTA that looks like a <i>threat</i></li>
+            <li>Film-grade depth: grain, scan, vignette</li>
+            <li>Choreographed load, ambient idle motion</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <h3>The three laws</h3>
+        <p style="font-size:13px;color:var(--bone);line-height:1.7">
+          Internalize these before you touch a single <span style="color:var(--freon)">&lt;div&gt;</span>. They override every framework, every template, every "best practice" blog post published after 2019.
+        </p>
+        <div class="manifesto-grid" style="margin-top:20px">
+          <div style="border-top:2px solid var(--acid);padding-top:14px">
+            <b style="font-family:var(--f-display);font-weight:900;color:var(--acid);font-size:28px">01</b>
+            <div style="font-family:var(--f-display);font-weight:700;font-size:13px;margin:6px 0;text-transform:uppercase;letter-spacing:.1em">Tone &gt; taste</div>
+            <div style="font-size:12px;color:var(--mute);line-height:1.6">Pick one extreme aesthetic. Execute it without compromise. A "balanced" game site has no audience.</div>
+          </div>
+          <div style="border-top:2px solid var(--plasma);padding-top:14px">
+            <b style="font-family:var(--f-display);font-weight:900;color:var(--plasma);font-size:28px">02</b>
+            <div style="font-family:var(--f-display);font-weight:700;font-size:13px;margin:6px 0;text-transform:uppercase;letter-spacing:.1em">Hierarchy kills</div>
+            <div style="font-size:12px;color:var(--mute);line-height:1.6">One thing is 10× bigger than the next. A trailer frame. A gigantic title. A single button. The eye needs a destination.</div>
+          </div>
+          <div style="border-top:2px solid var(--freon);padding-top:14px">
+            <b style="font-family:var(--f-display);font-weight:900;color:var(--freon);font-size:28px">03</b>
+            <div style="font-family:var(--f-display);font-weight:700;font-size:13px;margin:6px 0;text-transform:uppercase;letter-spacing:.1em">Motion = alive</div>
+            <div style="font-size:12px;color:var(--mute);line-height:1.6">Even when the user doesn't move, something on the page must. Scan lines. Grain. Drift. Absence of motion reads as "broken".</div>
+          </div>
+          <div style="border-top:2px solid var(--gold);padding-top:14px">
+            <b style="font-family:var(--f-display);font-weight:900;color:var(--gold);font-size:28px">04</b>
+            <div style="font-family:var(--f-display);font-weight:700;font-size:13px;margin:6px 0;text-transform:uppercase;letter-spacing:.1em">Ship &lt; 100kb</div>
+            <div style="font-size:12px;color:var(--mute);line-height:1.6">Gamers have spotty connections and are allergic to loading screens outside the game. Cloudflare Pages makes this trivial.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ STACK ================================ -->
+<section id="stack">
+  <div class="container">
+    <span class="section-label">02 / stack.config</span>
+    <h2 class="section-title">The Cloudflare<br>edge <em>rig</em>.</h2>
+    <p class="lede">You are not spinning up a k8s cluster. You are shipping static HTML with three worker functions and calling it a day. Here is the entire stack, mapped to your server-brain.</p>
+
+    <div class="stack-grid">
+      <div class="stack-cell" data-idx="01"><div class="tag">framework</div><h4>Astro <span class="hl">4.x</span></h4><div class="desc">Ships zero JS by default. Islands only where needed. MDX for the story page. Feels like SSR Rails, renders like static HTML.</div></div>
+      <div class="stack-cell" data-idx="02"><div class="tag">hosting</div><h4>Cloudflare Pages</h4><div class="desc"><span class="hl">git push → live in 40s</span>. Free plan covers your launch day. Automatic branch previews for the art director to reject.</div></div>
+      <div class="stack-cell" data-idx="03"><div class="tag">edge logic</div><h4>Workers</h4><div class="desc">Newsletter signup, keycode redemption, press-kit gating. Deno-ish runtime, milliseconds cold. Your old job, but smaller.</div></div>
+      <div class="stack-cell" data-idx="04"><div class="tag">storage</div><h4>R2 + KV</h4><div class="desc"><span class="hl">R2</span> for trailers, screenshots, press kits (S3-compatible, no egress fees). <span class="hl">KV</span> for signup lists, feature flags, localized strings.</div></div>
+      <div class="stack-cell" data-idx="05"><div class="tag">media</div><h4>Cloudflare Stream</h4><div class="desc">Auto-encode your 4K trailer once, adaptive-bitrate delivery everywhere. Works on a potato phone in rural Patagonia.</div></div>
+      <div class="stack-cell" data-idx="06"><div class="tag">images</div><h4>Images / Polish</h4><div class="desc">Variants on the fly. WebP + AVIF without you lifting a finger. Your key art weighs 380kb instead of 4mb.</div></div>
+      <div class="stack-cell" data-idx="07"><div class="tag">data</div><h4>D1 (SQLite)</h4><div class="desc">Only if you need a leaderboard, wishlist counter, or a lore-wiki search. Otherwise skip it — you do not need a DB for a landing page.</div></div>
+      <div class="stack-cell" data-idx="08"><div class="tag">observability</div><h4>Web Analytics</h4><div class="desc">Privacy-friendly. No cookie banner. Shows you which trailer people actually watched vs. closed at :06.</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:40px">
+      <div>
+        <div style="font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.15em;text-transform:uppercase;color:var(--acid);margin-bottom:14px">// the golden path</div>
+        <pre><button class="copy" data-copy>COPY</button><span class="c"># bootstrap</span>
+<span class="k">npm</span> create astro@latest veinrunner-promo
+<span class="k">cd</span> veinrunner-promo
+<span class="k">npx</span> astro add tailwind
+<span class="k">npm</span> i -D wrangler
+
+<span class="c"># deploy</span>
+<span class="k">npx</span> wrangler pages deploy ./dist \
+  --project-name=<span class="s">"veinrunner"</span> \
+  --branch=<span class="s">"main"</span></pre>
+      </div>
+      <div>
+        <div style="font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.15em;text-transform:uppercase;color:var(--acid);margin-bottom:14px">// wrangler.toml</div>
+        <pre><button class="copy" data-copy>COPY</button><span class="k">name</span> = <span class="s">"veinrunner"</span>
+<span class="k">compatibility_date</span> = <span class="s">"2026-04-15"</span>
+<span class="k">pages_build_output_dir</span> = <span class="s">"./dist"</span>
+
+[[<span class="v">r2_buckets</span>]]
+<span class="k">binding</span> = <span class="s">"MEDIA"</span>
+<span class="k">bucket_name</span> = <span class="s">"veinrunner-media"</span>
+
+[[<span class="v">kv_namespaces</span>]]
+<span class="k">binding</span> = <span class="s">"SIGNUPS"</span>
+<span class="k">id</span> = <span class="s">"xxxxxxxxxxxx"</span></pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ TYPOGRAPHY ================================ -->
+<section id="typography">
+  <div class="container">
+    <span class="section-label">03 / visual.grammar ~ type</span>
+    <h2 class="section-title">Type is the<br><em>face</em> of your game.</h2>
+    <p class="lede">Your game's name appearing in Roboto is the same cultural crime as its box art being Comic Sans. Pair a characterful display with a disciplined mono or serif. That's the whole game. Type your game's name below and feel the difference.</p>
+
+    <div class="typo-sandbox">
+      <div>
+        <input id="typo-input" class="typo-input" value="VEINRUNNER" maxlength="24" autocomplete="off">
+        <div class="typo-samples" id="typo-samples">
+          <div class="typo-card" data-kind="hero"><div class="meta"><span><b>display</b> · Unbounded 900</span><span>hero / title lockup</span></div><div class="sample">VEINRUNNER</div></div>
+          <div class="typo-card" data-kind="brutal"><div class="meta"><span><b>display</b> · Unbounded 900 UPPER</span><span>section shouts / kickers</span></div><div class="sample">VEINRUNNER</div></div>
+          <div class="typo-card" data-kind="editorial"><div class="meta"><span><b>serif italic</b> · Instrument Serif</span><span>pullquotes / counterpoint</span></div><div class="sample">VEINRUNNER</div></div>
+          <div class="typo-card" data-kind="term"><div class="meta"><span><b>terminal</b> · VT323</span><span>hud / diegetic UI flavor</span></div><div class="sample">VEINRUNNER</div></div>
+          <div class="typo-card" data-kind="utility"><div class="meta"><span><b>mono</b> · JetBrains 600</span><span>labels / meta / technical</span></div><div class="sample">VEINRUNNER</div></div>
+        </div>
+      </div>
+
+      <div class="typo-rules">
+        <h4>// type doctrine</h4>
+        <ol>
+          <li><span></span><span><b style="color:var(--ink)">Ship two fonts. Three max.</b> A display for shouting, a body for everything else, optional serif for counterpoint. Every extra font is a tax.</span></li>
+          <li><span></span><span><b style="color:var(--ink)">Scale is emotion.</b> Your hero title should be at least 12vw. A "big" heading at 32px is not a heading, it's a paragraph that's having a bad day.</span></li>
+          <li><span></span><span><b style="color:var(--ink)">Tighten the tracking on large type.</b> letter-spacing: -0.02em on anything above 60px. Always.</span></li>
+          <li><span></span><span><b style="color:var(--ink)">Mono for meta.</b> Timestamps, stats, counters, labels. Mono signals "this is information, not marketing copy."</span></li>
+          <li><span></span><span><b style="color:var(--ink)">Italic serif is a spice.</b> One pullquote. One tagline. Overuse and it reads like a wedding invitation, not a game.</span></li>
+          <li><span></span><span><b style="color:var(--ink)">Load with &lt;link rel="preconnect"&gt;.</b> Swap strategy: <code>font-display: swap</code>. Invisible text is a worse crime than a font flash.</span></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ COLOR ================================ -->
+<section id="color">
+  <div class="container">
+    <span class="section-label">03 / visual.grammar ~ color</span>
+    <h2 class="section-title">Pick a genre.<br>Steal the <em>palette</em>.</h2>
+    <p class="lede">Game promo palettes are not neutral. They telegraph genre in 2 seconds. Chrome-and-blood reads as cyberpunk. Moss-and-gold reads as fantasy. Don't invent from scratch — borrow the rules your genre already trained players to expect, then push the accent one shade further than feels safe.</p>
+
+    <div class="palette-switcher" id="pal-switch">
+      <button class="on" data-p="cyber">cyberpunk</button>
+      <button data-p="soulslike">soulslike</button>
+      <button data-p="horror">cosmic horror</button>
+      <button data-p="indie">indie / cozy</button>
+      <button data-p="arena">arena shooter</button>
+      <button data-p="scifi">hard sci-fi</button>
+    </div>
+    <div class="palette-display" id="pal-display"></div>
+    <div class="palette-caption" id="pal-caption"></div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:50px">
+      <div style="border:var(--grid);padding:24px"><div style="font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--acid);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">60 / 30 / 10</div><div style="font-size:13px;color:var(--bone);line-height:1.7">60% void / base, 30% ink / mid, 10% your <b style="color:var(--acid)">one signature accent</b>. Never split your 10 across three accents — a palette with three shouts has no shouts.</div></div>
+      <div style="border:var(--grid);padding:24px"><div style="font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--plasma);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">earn your neon</div><div style="font-size:13px;color:var(--bone);line-height:1.7">Neon is a reward, not a background. Reserve it for the CTA, the key stat, the one word that matters. A site that glows everywhere glows nowhere.</div></div>
+      <div style="border:var(--grid);padding:24px"><div style="font-family:var(--f-display);font-weight:700;font-size:13px;color:var(--freon);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">check contrast</div><div style="font-size:13px;color:var(--bone);line-height:1.7">Body text needs <b style="color:var(--freon)">4.5:1</b> against its background. Neon yellow on white is a hate crime against your players. Test in the actual dark-room / sunlit-phone conditions.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ COMPONENTS ================================ -->
+<section id="components">
+  <div class="container">
+    <span class="section-label">04 / component.lib</span>
+    <h2 class="section-title">Components that<br>don't <em>apologize</em>.</h2>
+    <p class="lede">Live demos. Hover them. Read them. Then steal the CSS below.</p>
+
+    <div class="comp-grid">
+
+      <div class="comp sz-6">
+        <div class="title">// primary CTA variants</div>
+        <div class="btn-row">
+          <button class="btn btn-primary">Pre-order →</button>
+          <button class="btn btn-ghost">Watch Trailer</button>
+          <button class="btn btn-danger">Join Playtest</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-iso">Wishlist +</button>
+          <button class="btn btn-glow">⌕ Redeem Key</button>
+        </div>
+        <div class="caption">rule: one primary per screen. the rest are ghosts.</div>
+      </div>
+
+      <div class="comp sz-6">
+        <div class="title">// countdown to launch</div>
+        <div class="countdown">
+          <div class="cd-cell"><div class="cd-n" id="cd-d">--</div><div class="cd-l">days</div></div>
+          <div class="cd-cell"><div class="cd-n" id="cd-h">--</div><div class="cd-l">hrs</div></div>
+          <div class="cd-cell"><div class="cd-n" id="cd-m">--</div><div class="cd-l">min</div></div>
+          <div class="cd-cell"><div class="cd-n" id="cd-s">--</div><div class="cd-l">sec</div></div>
+        </div>
+        <div class="caption">ticking seconds create urgency. never frozen dates.</div>
+      </div>
+
+      <div class="comp sz-4" style="padding:0;border:none;background:transparent">
+        <div class="char-card">
+          <div class="char-face"></div>
+          <div class="char-body">
+            <div class="char-name">VEX / 07</div>
+            <div class="char-role">netrunner · glass caste</div>
+            <div class="char-stats">
+              <div class="char-stat"><span>Speed</span><b>94</b><div class="char-bar" style="grid-column:span 2;--v:94%"></div></div>
+              <div class="char-stat"><span>Armor</span><b>42</b><div class="char-bar" style="grid-column:span 2;--v:42%"></div></div>
+              <div class="char-stat"><span>Arcana</span><b>88</b><div class="char-bar" style="grid-column:span 2;--v:88%"></div></div>
+              <div class="char-stat"><span>Range</span><b>61</b><div class="char-bar" style="grid-column:span 2;--v:61%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp sz-8">
+        <div class="title">// press / patch news</div>
+        <div class="news">
+          <div class="news-item">
+            <div class="news-date">04.19</div>
+            <div><div class="news-kicker">dev log / 07</div><div class="news-title">Every bullet is now a letter. Here's the localization pipeline.</div></div>
+            <div class="news-more">12 min read</div>
+          </div>
+          <div class="news-item">
+            <div class="news-date">04.11</div>
+            <div><div class="news-kicker">patch · 0.7.3-BLOOM</div><div class="news-title">Glass caste rebalance, new route through District 09, 142 bugs shot on sight.</div></div>
+            <div class="news-more">patch notes</div>
+          </div>
+          <div class="news-item">
+            <div class="news-date">03.28</div>
+            <div><div class="news-kicker">press</div><div class="news-title">IGN: "VEINRUNNER is the most tactile thing I've held on a controller this year."</div></div>
+            <div class="news-more">external ↗</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="comp sz-12" style="padding:0;border:none;background:transparent">
+        <div class="stats-strip">
+          <div class="stat-cell"><div class="big">137<span>k</span></div><div class="lab">wishlists / 72h</div></div>
+          <div class="stat-cell"><div class="big">24<span>districts</span></div><div class="lab">hand-crafted zones</div></div>
+          <div class="stat-cell"><div class="big">9.2<span>/10</span></div><div class="lab">alpha sentiment</div></div>
+          <div class="stat-cell"><div class="big">0<span>loot boxes</span></div><div class="lab">ever. we promise.</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================================ MOTION ================================ -->
+<section id="motion">
+  <div class="container">
+    <span class="section-label">05 / motion.core</span>
+    <h2 class="section-title">Motion is the<br>difference between<br><em>dead</em> and <em>divine</em>.</h2>
+    <p class="lede">Every page should breathe. Three kinds of motion earn their keep: <b style="color:var(--acid)">load choreography</b> (staggered reveal on first paint), <b style="color:var(--plasma)">ambient idle</b> (the page feels alive even when nothing happens), and <b style="color:var(--freon)">hover response</b> (instant feedback that respects the user's input).</p>
+
+    <div class="motion-grid">
+      <div class="motion-card">
+        <h4>load choreography</h4>
+        <p>Stagger reveal on first paint. 80ms between children. Elements translateY(24px) + blur → rest. The eye follows the sequence and reads in intended order.</p>
+        <div class="motion-demo demo-stagger"><span>V</span><span>E</span><span>I</span><span>N</span><span>·</span><span>2026</span></div>
+      </div>
+      <div class="motion-card">
+        <h4>ambient idle</h4>
+        <p>A scan line drifts. A glyph flickers. Grain jitters. Motion that requires nothing from the user but signals the page is a live broadcast, not a printed poster.</p>
+        <div class="motion-demo demo-scan"></div>
+      </div>
+      <div class="motion-card">
+        <h4>hover response</h4>
+        <p>Movement starts in &lt;100ms of the mouse entering. Slow responses feel broken. Use transform + filter, never top/left. GPU wins the race.</p>
+        <div class="motion-demo">
+          <button class="btn btn-iso">hover me →</button>
+        </div>
+      </div>
+      <div class="motion-card">
+        <h4>scroll parallax</h4>
+        <p>Background layers travel slower than foreground. Creates cinematic depth. Use <code>transform: translate3d(0, calc(var(--scroll)*-0.3px), 0)</code> and a rAF-throttled scroll handler.</p>
+        <div class="motion-demo" style="display:block;padding:0">
+          <div id="parax" style="position:relative;width:100%;height:100%;overflow:hidden">
+            <div style="position:absolute;inset:0;font-family:var(--f-display);font-weight:900;font-size:80px;color:rgba(255,45,111,.15);display:grid;place-items:center;letter-spacing:-.04em" class="px-bg">VEIN</div>
+            <div style="position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-weight:900;font-size:34px;color:var(--acid);letter-spacing:-.02em" class="px-fg">RUNNER</div>
+          </div>
+        </div>
+      </div>
+      <div class="motion-card">
+        <h4>marquee ritual</h4>
+        <p>One horizontal band, one direction, slow crawl. Read as news ticker or secret broadcast. Pause on hover if it carries actual content.</p>
+        <div class="motion-demo demo-marquee">
+          <div class="track"><span>PRE-ORDER LIVE</span>·<span>PS5 / XSX / PC</span>·<span>2026.11.13</span>·<span>PRE-ORDER LIVE</span>·<span>PS5 / XSX / PC</span>·<span>2026.11.13</span>·</div>
+        </div>
+      </div>
+      <div class="motion-card">
+        <h4>honor prefers-reduced-motion</h4>
+        <p>Some players get nauseous. Some just hate it. Wrap every keyframe rule in <code>@media (prefers-reduced-motion: no-preference)</code>. Ship a calm version by default; turn the machine on only when it's welcome.</p>
+        <div class="motion-demo"><span style="font-family:var(--f-term);font-size:28px;color:var(--gold)">@media care;</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ CASE STUDY ================================ -->
+<section id="case" class="case" style="padding-left:0;padding-right:0">
+  <div class="container">
+    <span class="section-label" style="color:var(--blood);border-color:var(--blood)">06 / case.study</span>
+    <div class="case-meta">
+      <span>FICTIONAL PROMO PAGE · FOR DEMONSTRATION ONLY</span>
+      <span>GENRE: <b>CYBERPUNK / ACTION RPG</b></span>
+      <span>RELEASE: 2026.11.13</span>
+    </div>
+  </div>
+
+  <div class="container case-hero">
+    <h1>VEIN<i>·</i>RUNNER</h1>
+    <div class="sub">
+      <div>A chrome-blood action RPG set in a city that remembers everyone it has ever killed.</div>
+      <div>
+        PS5 · XSX · PC / STEAM<br>
+        LANG · <b>16 dubs</b> · <b>28 subs</b><br>
+        ESRB · <b>M 17+</b>
+      </div>
+      <div>
+        <button class="btn btn-danger">Pre-order · $69</button>
+        <button class="btn btn-ghost">Watch Trailer</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="case-features">
+      <div class="case-feat">
+        <div class="n">/01 · combat</div>
+        <h3>Every trigger is a<br>moral question.</h3>
+        <p>A reactive targeting system that remembers who you've spared. NPCs network. Word travels. The city learns your face before you learn its streets.</p>
+      </div>
+      <div class="case-feat">
+        <div class="n">/02 · world</div>
+        <h3>24 districts.<br>All hand-lit.</h3>
+        <p>No procedural zones. Every alley painted by a human who cares. Dynamic weather tied to your infamy — the sky literally darkens as you get worse.</p>
+      </div>
+      <div class="case-feat">
+        <div class="n">/03 · netplay</div>
+        <h3>Co-op drop-in.<br>No lobbies, ever.</h3>
+        <p>Your friend joins mid-mission via a single link. Powered by Cloudflare Durable Objects under the hood. Latency you can't feel unless you're looking for it.</p>
+      </div>
+    </div>
+
+    <div class="case-editions">
+      <h3>choose your <em style="font-family:var(--f-serif);font-style:italic;color:var(--plasma);font-weight:400">edition</em></h3>
+      <div class="edition-row">
+        <div class="edition">
+          <div class="name">Standard</div>
+          <div class="price">$69<span>USD</span></div>
+          <ul>
+            <li>Base game</li>
+            <li>Pre-order: "Glasshound" skin</li>
+            <li>Digital soundtrack (12 tracks)</li>
+          </ul>
+          <button class="btn btn-ghost">Select</button>
+        </div>
+        <div class="edition flag">
+          <div class="name">Deluxe</div>
+          <div class="price">$99<span>USD</span></div>
+          <ul>
+            <li>All Standard contents</li>
+            <li>Season pass (3 story chapters)</li>
+            <li>72-hour early access</li>
+            <li>Chrome/Blood weapon pack</li>
+            <li>Digital artbook (220 pg)</li>
+          </ul>
+          <button class="btn btn-primary">Select →</button>
+        </div>
+        <div class="edition">
+          <div class="name">Archivist</div>
+          <div class="price">$249<span>USD</span></div>
+          <ul>
+            <li>All Deluxe contents</li>
+            <li>Physical: cloth map + lore bible</li>
+            <li>Cast-resin district token</li>
+            <li>Vinyl OST (2xLP, marble wax)</li>
+            <li>Your name in the credits' "Ghosts of 09" list</li>
+          </ul>
+          <button class="btn btn-iso">Select</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ DEPLOY ================================ -->
+<section id="deploy">
+  <div class="container">
+    <span class="section-label">07 / deploy.protocol</span>
+    <h2 class="section-title">Ship it to<br>the <em>edge</em>.</h2>
+    <p class="lede">Eight steps from empty directory to a promo site live on 300 Cloudflare data centers. Assumes you have a Cloudflare account and a git repo. Total time: about 18 minutes, most of which is waiting for <code>npm install</code>.</p>
+
+    <div class="deploy-grid">
+      <div>
+        <div class="step">
+          <div class="idx">01</div>
+          <div><h4>Scaffold Astro</h4><p><code>npm create astro@latest veinrunner-promo</code> — choose "Empty", TypeScript strict, skip sample. Astro because it ships zero JS by default, and you will like that.</p></div>
+        </div>
+        <div class="step">
+          <div class="idx">02</div>
+          <div><h4>Install the edge toolchain</h4><p><code>npm i -D wrangler @astrojs/cloudflare</code>, then add the adapter to <code>astro.config.mjs</code>. This is what lets you call Workers bindings from Astro pages.</p></div>
+        </div>
+        <div class="step">
+          <div class="idx">03</div>
+          <div><h4>Wire assets to R2</h4><p>Upload your trailer, screenshots, and press kit: <code>npx wrangler r2 object put veinrunner-media/trailer.mp4 --file ./trailer.mp4</code>. Public-read via a Worker route or a custom domain.</p></div>
+        </div>
+        <div class="step">
+          <div class="idx">04</div>
+          <div><h4>Newsletter signup = one Worker</h4><p>POST /api/signup → writes email to KV. 22 lines of code. No "service". No queue. See snippet on the right.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="step">
+          <div class="idx">05</div>
+          <div><h4>Connect repo to Pages</h4><p>Cloudflare dashboard → Pages → "Connect to Git" → pick your repo. Build command <code>npm run build</code>, output <code>./dist</code>. Every push is a preview URL.</p></div>
+        </div>
+        <div class="step">
+          <div class="idx">06</div>
+          <div><h4>Custom domain + redirects</h4><p>Add <code>veinrunner.game</code> in Pages → Custom domains. Cloudflare handles DNS, SSL, and HTTP/3. Add a <code>_redirects</code> file for legacy URLs: <code>/press/* https://press.veinrunner.game/:splat 301</code></p></div>
+        </div>
+        <div class="step">
+          <div class="idx">07</div>
+          <div><h4>Turn on Polish + Stream</h4><p>Polish auto-converts images to WebP/AVIF. Stream encodes your trailer once and serves adaptive bitrate. Together they cut your payload by 60–80%.</p></div>
+        </div>
+        <div class="step">
+          <div class="idx">08</div>
+          <div><h4>Prewarm and pray</h4><p><code>npx wrangler pages deploy</code> on launch morning. Watch Web Analytics. Drink coffee. If it falls over, it's not the edge — it's whatever you put behind the edge.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:50px">
+      <div>
+        <div style="font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.15em;text-transform:uppercase;color:var(--acid);margin-bottom:12px">// worker: newsletter signup</div>
+        <pre><button class="copy" data-copy>COPY</button><span class="c">// functions/api/signup.ts</span>
+<span class="k">export</span> <span class="k">async function</span> onRequestPost(ctx) {
+  <span class="k">const</span> { email } = <span class="k">await</span> ctx.request.json();
+  <span class="k">if</span> (!/^[^@\s]+@[^@\s]+$/.test(email))
+    <span class="k">return</span> <span class="k">new</span> <span class="v">Response</span>(<span class="s">"bad email"</span>, { status: <span class="v">400</span> });
+
+  <span class="k">await</span> ctx.env.SIGNUPS.put(
+    <span class="s">`e:${email}`</span>,
+    <span class="v">Date</span>.now().toString(),
+    { metadata: { ua: ctx.request.headers.get(<span class="s">"user-agent"</span>) }}
+  );
+
+  <span class="k">return</span> <span class="v">Response</span>.json({ ok: <span class="v">true</span> });
+}</pre>
+      </div>
+      <div>
+        <div style="font-family:var(--f-display);font-weight:700;font-size:14px;letter-spacing:.15em;text-transform:uppercase;color:var(--acid);margin-bottom:12px">// headers: lock it down</div>
+        <pre><button class="copy" data-copy>COPY</button><span class="c"># public/_headers</span>
+<span class="v">/*</span>
+  <span class="k">X-Frame-Options</span>: DENY
+  <span class="k">X-Content-Type-Options</span>: nosniff
+  <span class="k">Referrer-Policy</span>: strict-origin-when-cross-origin
+  <span class="k">Permissions-Policy</span>: geolocation=(), camera=()
+  <span class="k">Content-Security-Policy</span>: default-src <span class="s">'self'</span>; \
+    img-src <span class="s">'self'</span> https://imagedelivery.net; \
+    media-src https://customer-xyz.cloudflarestream.com
+
+<span class="v">/trailer.mp4</span>
+  <span class="k">Cache-Control</span>: public, max-age=31536000, immutable</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ SHIP CHECKLIST ================================ -->
+<section id="ship">
+  <div class="container">
+    <span class="section-label">08 / ritual.checklist</span>
+    <h2 class="section-title">Don't press deploy<br>until every box is <em>bleeding</em>.</h2>
+    <p class="lede">Click through. This is the pre-flight most studios skip and regret publicly, usually in the replies to their own announcement tweet.</p>
+
+    <div class="checklist">
+      <div class="check-col">
+        <h4>visual / brand</h4>
+        <label><input type="checkbox"><span>Logo has a transparent PNG and an SVG, both color + mono</span></label>
+        <label><input type="checkbox"><span>og:image is 1200×630, under 200kb, text readable at thumbnail size</span></label>
+        <label><input type="checkbox"><span>Favicon set: 16, 32, 180 apple-touch, SVG mask-icon</span></label>
+        <label><input type="checkbox"><span>Every hero image has been checked on an OLED phone in a dark room</span></label>
+        <label><input type="checkbox"><span>Typography has been printed out. You looked at it on paper. Seriously.</span></label>
+        <label><input type="checkbox"><span>There is exactly <b>one</b> primary CTA per viewport</span></label>
+      </div>
+      <div class="check-col">
+        <h4>performance / edge</h4>
+        <label><input type="checkbox"><span>LCP under 1.8s on Slow 3G throttled (Lighthouse CI)</span></label>
+        <label><input type="checkbox"><span>Total JS &lt; 100kb gzipped on the landing page</span></label>
+        <label><input type="checkbox"><span>Hero key art is WebP/AVIF, under 300kb, with width/height set</span></label>
+        <label><input type="checkbox"><span>Trailer uses Cloudflare Stream or a blurhash placeholder</span></label>
+        <label><input type="checkbox"><span>Fonts preconnected + preloaded + <code>font-display: swap</code></span></label>
+        <label><input type="checkbox"><span><code>_headers</code> file shipped with cache + security policies</span></label>
+      </div>
+      <div class="check-col">
+        <h4>launch / day-of</h4>
+        <label><input type="checkbox"><span>Press kit page lives at /press and is link-stable forever</span></label>
+        <label><input type="checkbox"><span>Steam / PSN / Xbox deep links tested on real devices, not just desktop</span></label>
+        <label><input type="checkbox"><span>Analytics dashboards open, muted, on a second monitor</span></label>
+        <label><input type="checkbox"><span>Signup worker has rate-limit + honeypot field (you will get bots)</span></label>
+        <label><input type="checkbox"><span>prefers-reduced-motion path verified; keyboard-nav clean</span></label>
+        <label><input type="checkbox"><span>Rollback plan written. Previous Pages deploy one click away.</span></label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ FOOTER ================================ -->
+<footer>
+  <div class="container">
+    <div class="big">YOU ARE NOT<br>A <em>backend</em> ENGINEER<br>ANYMORE.</div>
+    <div class="meta">
+      <div><b>// reading list</b>
+        Refactoring UI · Adam Wathan<br>
+        Grid Systems · Müller-Brockmann<br>
+        Practical Typography · Butterick<br>
+        any AAA studio's press kit, studied for 20 minutes
+      </div>
+      <div><b>// asset sources</b>
+        Google Fonts (Unbounded, JetBrains Mono, Instrument Serif, VT323)<br>
+        Pexels / Unsplash for placeholder trailers<br>
+        Commission the final art. Stock photos read as stock.
+      </div>
+      <div><b>// when stuck, ask</b>
+        Is it bigger than I think? → usually no<br>
+        Is there enough contrast? → usually no<br>
+        Is there motion? → usually no<br>
+        Did I cut 50% yet? → usually no
+      </div>
+    </div>
+    <div class="sig">
+      <span>NULL → NEON · v1.0 · compiled on the edge</span>
+      <span>end of transmission <span class="caret" style="background:var(--plasma)"></span></span>
+    </div>
+  </div>
+</footer>
+
+</main>
+
+<script>
+// ================================ CLOCK
+(function(){
+  const el = document.getElementById('clock');
+  setInterval(()=>{
+    const d = new Date();
+    el.textContent = [d.getHours(),d.getMinutes(),d.getSeconds()]
+      .map(n=>String(n).padStart(2,'0')).join(':');
+  },1000);
+})();
+
+// ================================ COUNTDOWN (target: 2026-11-13)
+(function(){
+  const target = new Date('2026-11-13T00:00:00Z').getTime();
+  const d = document.getElementById('cd-d');
+  const h = document.getElementById('cd-h');
+  const m = document.getElementById('cd-m');
+  const s = document.getElementById('cd-s');
+  function tick(){
+    const now = Date.now();
+    let delta = Math.max(0, target - now);
+    const days = Math.floor(delta/86400000); delta -= days*86400000;
+    const hrs  = Math.floor(delta/3600000);  delta -= hrs*3600000;
+    const min  = Math.floor(delta/60000);    delta -= min*60000;
+    const sec  = Math.floor(delta/1000);
+    d.textContent = String(days).padStart(3,'0');
+    h.textContent = String(hrs).padStart(2,'0');
+    m.textContent = String(min).padStart(2,'0');
+    s.textContent = String(sec).padStart(2,'0');
+  }
+  tick(); setInterval(tick,1000);
+})();
+
+// ================================ TYPO SANDBOX
+(function(){
+  const input = document.getElementById('typo-input');
+  const samples = document.querySelectorAll('#typo-samples .sample');
+  input.addEventListener('input',()=>{
+    const v = input.value || 'VEINRUNNER';
+    samples.forEach(s=> s.textContent = v);
+  });
+})();
+
+// ================================ PALETTE
+(function(){
+  const palettes = {
+    cyber:{
+      caption:"Cyberpunk. Void base with one plasma-pink accent and an electric cyan for diegetic interface. Acid green earns its keep only on the CTA.",
+      sw:[
+        {role:'void',        hex:'#050507', fg:'#f3ede0'},
+        {role:'carbon',      hex:'#14141a', fg:'#d8d3c6'},
+        {role:'ink',         hex:'#f3ede0', fg:'#050507'},
+        {role:'plasma ✦',    hex:'#ff2d6f', fg:'#050507'},
+        {role:'freon',       hex:'#27e2ff', fg:'#050507'},
+        {role:'acid · CTA',  hex:'#c8ff00', fg:'#050507'},
+      ]
+    },
+    soulslike:{
+      caption:"Soulslike / dark fantasy. Graphite base, parchment text, a single oxidized-copper accent. Saturate nothing. Let the UI breathe like candlelight.",
+      sw:[
+        {role:'obsidian',    hex:'#0c0b0a', fg:'#e9dcc0'},
+        {role:'iron',        hex:'#1f1a15', fg:'#e9dcc0'},
+        {role:'parchment',   hex:'#e9dcc0', fg:'#0c0b0a'},
+        {role:'ash',         hex:'#7a6a55', fg:'#0c0b0a'},
+        {role:'ember ✦',     hex:'#c26a2b', fg:'#0c0b0a'},
+        {role:'gold · CTA',  hex:'#d9a441', fg:'#0c0b0a'},
+      ]
+    },
+    horror:{
+      caption:"Cosmic horror. Abyssal teal base, cold-bone text. One viscera-red accent used sparingly, like a wound. Never cheerful. Never safe.",
+      sw:[
+        {role:'abyss',       hex:'#04080a', fg:'#d6d4c9'},
+        {role:'brine',       hex:'#0b1e25', fg:'#d6d4c9'},
+        {role:'fog',         hex:'#2b3a40', fg:'#d6d4c9'},
+        {role:'bone',        hex:'#d6d4c9', fg:'#04080a'},
+        {role:'viscera ✦',   hex:'#8a1320', fg:'#d6d4c9'},
+        {role:'bile · CTA',  hex:'#a3c14a', fg:'#04080a'},
+      ]
+    },
+    indie:{
+      caption:"Indie / cozy. Cream and rose base, earthy mid-tones, one joyful terracotta. Serif-dominant. Looks warm even on a cold monitor.",
+      sw:[
+        {role:'cream',       hex:'#f4ead6', fg:'#3a2418'},
+        {role:'rose',        hex:'#ecd0c7', fg:'#3a2418'},
+        {role:'mushroom',    hex:'#b39a82', fg:'#3a2418'},
+        {role:'forest',      hex:'#3f5a3a', fg:'#f4ead6'},
+        {role:'terracotta ✦',hex:'#d76a3a', fg:'#f4ead6'},
+        {role:'ink · CTA',   hex:'#3a2418', fg:'#f4ead6'},
+      ]
+    },
+    arena:{
+      caption:"Arena shooter. High-contrast red on carbon. Team colors reserved. Electric yellow strictly for damage numbers and CTA. Loud, legible, honest.",
+      sw:[
+        {role:'carbon',      hex:'#0a0a0b', fg:'#ffffff'},
+        {role:'steel',       hex:'#1c1e22', fg:'#ffffff'},
+        {role:'snow',        hex:'#ffffff', fg:'#0a0a0b'},
+        {role:'blood',       hex:'#e21d1d', fg:'#ffffff'},
+        {role:'volt',        hex:'#fffb00', fg:'#0a0a0b'},
+        {role:'team · CTA',  hex:'#0084ff', fg:'#ffffff'},
+      ]
+    },
+    scifi:{
+      caption:"Hard sci-fi. Nearly-monochrome steel with a cold iodine accent. Whites are never pure — always tinted with a hint of cyan to signal 'clinical'.",
+      sw:[
+        {role:'deck',        hex:'#0f1418', fg:'#e4edf2'},
+        {role:'panel',       hex:'#1a2229', fg:'#e4edf2'},
+        {role:'hull',        hex:'#2a363f', fg:'#e4edf2'},
+        {role:'glass',       hex:'#e4edf2', fg:'#0f1418'},
+        {role:'iodine ✦',    hex:'#3ab0ff', fg:'#0f1418'},
+        {role:'warn · CTA',  hex:'#ffb86b', fg:'#0f1418'},
+      ]
+    }
+  };
+  const disp = document.getElementById('pal-display');
+  const cap  = document.getElementById('pal-caption');
+  const btns = document.querySelectorAll('#pal-switch button');
+  function render(key){
+    const p = palettes[key];
+    disp.innerHTML = p.sw.map(s=>
+      `<div class="swatch" style="background:${s.hex};color:${s.fg}">
+         <div class="role">${s.role}</div>
+         <div class="hex">${s.hex}</div>
+       </div>`
+    ).join('');
+    cap.textContent = p.caption;
+  }
+  btns.forEach(b=> b.addEventListener('click', ()=>{
+    btns.forEach(x=>x.classList.remove('on'));
+    b.classList.add('on');
+    render(b.dataset.p);
+  }));
+  render('cyber');
+})();
+
+// ================================ COPY BUTTONS
+document.querySelectorAll('[data-copy]').forEach(btn=>{
+  btn.addEventListener('click', e=>{
+    const pre = btn.closest('pre');
+    const text = Array.from(pre.childNodes)
+      .filter(n=> n.nodeType===1 ? !n.matches('button') : true)
+      .map(n=> n.textContent).join('');
+    navigator.clipboard.writeText(text.trim()).then(()=>{
+      const prev = btn.textContent;
+      btn.textContent = 'COPIED ✓';
+      btn.style.background = 'var(--acid)';
+      btn.style.color = 'var(--void)';
+      setTimeout(()=>{
+        btn.textContent = prev;
+        btn.style.background = '';
+        btn.style.color = '';
+      },1200);
+    });
+  });
+});
+
+// ================================ NAV HIGHLIGHT
+(function(){
+  const links = document.querySelectorAll('.topbar nav a');
+  const map = new Map(Array.from(links).map(a=>[a.getAttribute('href').slice(1), a]));
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        links.forEach(a=>a.classList.remove('active'));
+        map.get(e.target.id)?.classList.add('active');
+      }
+    });
+  },{rootMargin:'-40% 0px -55% 0px'});
+  document.querySelectorAll('section[id]').forEach(s=>obs.observe(s));
+})();
+
+// ================================ SIGNAL JITTER
+(function(){
+  const el = document.getElementById('sig');
+  const states = ['OK','OK','OK','OK','SYNC','OK','OK','LIVE','OK','OK'];
+  let i = 0;
+  setInterval(()=>{
+    el.textContent = states[i++ % states.length];
+  }, 1800);
+})();
+
+// ================================ PARALLAX DEMO
+(function(){
+  const demo = document.getElementById('parax');
+  if(!demo) return;
+  const bg = demo.querySelector('.px-bg');
+  const fg = demo.querySelector('.px-fg');
+  let raf = null;
+  window.addEventListener('scroll', ()=>{
+    if(raf) return;
+    raf = requestAnimationFrame(()=>{
+      const rect = demo.getBoundingClientRect();
+      const mid = (rect.top + rect.height/2) - window.innerHeight/2;
+      bg.style.transform = `translateY(${mid*-0.06}px)`;
+      fg.style.transform = `translateY(${mid*-0.12}px)`;
+      raf = null;
+    });
+  }, {passive:true});
+})();
+</script>
+</body>
+</html>
