@@ -232,9 +232,79 @@ export async function POST(request: NextRequest) {
       "Submission error:",
       error instanceof Error ? error.message : error
     );
+    return classifySubmissionError(error);
+  }
+}
+
+/**
+ * Turns whatever Octokit / network / D1 threw into a useful response.
+ *
+ * Most submission failures originate at GitHub:
+ *   - secondary rate limit on rapid PR creation → 403 with "abuse" /
+ *     "secondary" in the message → we surface as 429 so the submitter
+ *     gets the right "wait and retry" framing.
+ *   - upstream 5xx / 504 → we surface as 502 ("GitHub is having a moment").
+ *   - 401 / 403 on the PAT itself → we surface as 502 with a "site is
+ *     misconfigured" message; that's an admin problem, not the user's.
+ *
+ * Anything we can't classify falls through to the generic 500.
+ */
+function classifySubmissionError(error: unknown): NextResponse {
+  const ghStatus = getGithubStatus(error);
+  const ghMessage = errorMessage(error).toLowerCase();
+
+  if (ghStatus === 403 && /abuse|secondary rate/.test(ghMessage)) {
     return NextResponse.json(
-      { error: "Submission failed. Please try again later." },
-      { status: 500 }
+      {
+        error:
+          "GitHub is rate-limiting submissions right now (too many PRs in a short window). Try again in 5–10 minutes.",
+      },
+      { status: 429, headers: { "Retry-After": "600" } }
     );
   }
+
+  if (ghStatus === 429) {
+    return NextResponse.json(
+      {
+        error: "GitHub rate-limited the submission. Try again in a few minutes.",
+      },
+      { status: 429, headers: { "Retry-After": "300" } }
+    );
+  }
+
+  if (ghStatus === 401 || ghStatus === 403) {
+    // Auth or scope problem with our PAT — the user can't fix this.
+    return NextResponse.json(
+      {
+        error:
+          "Submission can't reach GitHub right now. The site admin has been notified.",
+      },
+      { status: 502 }
+    );
+  }
+
+  if (typeof ghStatus === "number" && ghStatus >= 500) {
+    return NextResponse.json(
+      { error: "GitHub is having a moment. Try again in a minute." },
+      { status: 502 }
+    );
+  }
+
+  return NextResponse.json(
+    { error: "Submission failed. Please try again later." },
+    { status: 500 }
+  );
+}
+
+// Octokit's RequestError carries .status with the upstream HTTP status.
+function getGithubStatus(error: unknown): number | null {
+  if (!error || typeof error !== "object") return null;
+  const status = (error as { status?: unknown }).status;
+  return typeof status === "number" ? status : null;
+}
+
+function errorMessage(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === "string") return error;
+  return "";
 }
