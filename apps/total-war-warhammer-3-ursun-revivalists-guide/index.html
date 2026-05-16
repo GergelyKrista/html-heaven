@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ursun Revivalists &mdash; New Player's Guide</title>
+<meta name="description" content="A new player's guide to Boris Ursus and the Ursun Revivalists in Total War: Warhammer III. Lore, Kislev mechanics, full unit roster, Atamans, hero management, campaign and battle strategy, settlement decisions, diplomacy, economy, and tech priorities.">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ursun Revivalists &mdash; New Player's Guide">
+<meta property="og:description" content="A beginner-friendly guide to Boris Ursus and the Ursun Revivalists (Kislev) in Total War: Warhammer III. Lore, mechanics, units, Atamans, strategy, settlement decisions.">
+<meta property="og:image" content="titlecard.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Ursun Revivalists titlecard with the bear-shield over a frost-blue snowfield.">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ursun Revivalists &mdash; New Player's Guide">
+<meta name="twitter:description" content="A beginner-friendly guide to Boris Ursus and the Ursun Revivalists in Total War: Warhammer III.">
+<meta name="twitter:image" content="titlecard.png">
+<meta name="twitter:image:alt" content="Ursun Revivalists titlecard with the bear-shield over a frost-blue snowfield.">
+<style>
+:root {
+    --bg:     #0b1322;
+    --sf:     #131e30;
+    --sf2:    #1c2a40;
+    --sf3:    #243650;
+    --ember:  #d4863a;
+    --ember2: #f0a754;
+    --gold:   #c89b3c;
+    --gold2:  #f0c459;
+    --frost:  #d8e4f0;
+    --tx:     #ecf2fa;
+    --mu:     #93a3bd;
+    --bdr:    rgba(232,196,89,.14);
+    --rune:   #8a4d1d;
+    --hdr-1:  #14253f;
+    --hdr-2:  #0a1322;
+    --hdr-tx: #ecf2fa;
+    --hdr-mu: #93a3bd;
+    --hdr-btn-bg:    rgba(232,196,89,.08);
+    --hdr-btn-bdr:   rgba(232,196,89,.3);
+    --hdr-btn-bg-h:  rgba(232,196,89,.18);
+}
+body.light {
+    --bg:     #f3f6fb;
+    --sf:     #ffffff;
+    --sf2:    #e6ecf5;
+    --sf3:    #d3dde9;
+    --ember:  #a8541a;
+    --ember2: #c66a23;
+    --gold:   #8a6a1f;
+    --gold2:  #a88029;
+    --frost:  #2a2f3a;
+    --tx:     #1d2433;
+    --mu:     #5d6a80;
+    --bdr:    rgba(168,84,26,.18);
+    --rune:   #7a3c12;
+    --hdr-1:  #e3ecf7;
+    --hdr-2:  #cfdbeb;
+    --hdr-tx: #15202f;
+    --hdr-mu: #4a576c;
+    --hdr-btn-bg:    rgba(168,84,26,.06);
+    --hdr-btn-bdr:   rgba(168,84,26,.28);
+    --hdr-btn-bg-h:  rgba(168,84,26,.14);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body {
+    background:var(--bg); color:var(--tx);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.72;
+    transition:background .2s,color .2s;
+}
+
+/* Header */
+header {
+    background:linear-gradient(180deg,var(--hdr-1) 0%,var(--hdr-2) 100%);
+    padding:1.4rem 1.8rem;
+    display:flex; align-items:center; gap:1rem;
+    border-bottom:2px solid var(--ember);
+    position:relative;
+}
+header::after{
+    content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px;
+    background:linear-gradient(90deg,transparent 0%,var(--gold) 50%,transparent 100%);
+    opacity:.55;
+}
+.skull{font-size:1.75rem;line-height:1;color:var(--gold2);text-shadow:0 0 12px rgba(212,134,58,.45)}
+body.light .skull{color:var(--ember);text-shadow:0 0 8px rgba(168,84,26,.2)}
+header h1{font-size:1.4rem;font-weight:700;letter-spacing:.3px;color:var(--hdr-tx)}
+header h1 .accent{color:var(--ember2)}
+header p {color:var(--hdr-mu);font-size:.85rem;margin-top:.2rem}
+.hdr-right{margin-left:auto;display:flex;gap:.5rem;flex-shrink:0}
+.hdr-btn {
+    background:var(--hdr-btn-bg);
+    border:1px solid var(--hdr-btn-bdr);
+    color:var(--hdr-tx); border-radius:5px;
+    padding:.4rem .9rem;
+    font-size:.8rem; font-weight:600;
+    cursor:pointer; transition:all .15s;
+    text-decoration:none; display:inline-flex; align-items:center;
+    font-family:inherit; line-height:1.2;
+}
+.hdr-btn:hover{background:var(--hdr-btn-bg-h);border-color:var(--gold)}
+
+/* Nav */
+nav {
+    background:var(--sf); display:flex;
+    overflow-x:auto; border-bottom:1px solid var(--sf2);
+    scrollbar-width:none;
+    position:sticky; top:0; z-index:10;
+}
+nav::-webkit-scrollbar{display:none}
+nav button {
+    background:none; border:none;
+    border-bottom:2px solid transparent;
+    color:var(--mu); padding:1rem 1.4rem;
+    cursor:pointer; font-size:.92rem; font-weight:500;
+    white-space:nowrap; transition:color .15s, border-color .15s;
+    font-family:inherit;
+}
+nav button:hover{color:var(--tx)}
+nav button.active{color:var(--ember2);border-bottom-color:var(--ember)}
+
+/* Layout */
+main{max-width:1100px;margin:0 auto;padding:2.4rem 1.8rem 5rem}
+.tab{display:none}
+.tab.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+h2{
+    font-size:1.45rem;color:var(--gold2);
+    margin-bottom:1.6rem;padding-bottom:.7rem;
+    border-bottom:1px solid var(--sf2);
+    letter-spacing:.2px;font-weight:700;
+}
+h2 .rune{color:var(--ember);margin-right:.55rem}
+h3{font-size:1.12rem;font-weight:600;color:var(--ember2);margin:2rem 0 .9rem;letter-spacing:.1px}
+h4{font-size:.82rem;font-weight:700;color:var(--gold);margin:1.3rem 0 .55rem;text-transform:uppercase;letter-spacing:.7px}
+
+p{margin-bottom:1.05rem}
+strong{color:var(--frost);font-weight:600}
+em{color:var(--gold2);font-style:normal;font-weight:600}
+
+ul,ol{padding-left:1.45rem;margin-bottom:1.1rem}
+li{margin-bottom:.55rem;line-height:1.65}
+li::marker{color:var(--ember)}
+
+.lead{
+    font-size:1.04rem;color:var(--mu);margin-bottom:2rem;
+    padding:1.15rem 1.35rem;background:var(--sf);border-left:3px solid var(--ember);
+    border-radius:0 6px 6px 0;line-height:1.7;
+}
+
+/* Grid layouts */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+@media(max-width:780px){.two-col,.three-col{grid-template-columns:1fr}}
+
+/* Cards */
+.card{
+    background:var(--sf);border-radius:7px;
+    padding:1.25rem 1.45rem;margin-bottom:1rem;
+    border:1px solid var(--bdr);
+}
+.card-blood{border-left:3px solid var(--ember)}
+.card-brass{border-left:3px solid var(--gold)}
+.card-bone{border-left:3px solid var(--frost)}
+.card p:last-child,.card ul:last-child,.card ol:last-child{margin-bottom:0}
+
+/* Callouts */
+.tip,.warn,.note,.tactic{
+    border-radius:6px;padding:.95rem 1.2rem;font-size:.92rem;
+    margin:1.1rem 0;color:var(--mu);line-height:1.65;
+}
+.tip {background:rgba(200,155,60,.07);border:1px solid rgba(200,155,60,.22)}
+.tip  strong{color:var(--gold2)}
+.warn{background:rgba(212,134,58,.08);border:1px solid rgba(212,134,58,.28)}
+.warn strong{color:var(--ember2)}
+.note{background:rgba(216,228,240,.05);border:1px solid rgba(216,228,240,.15)}
+.note strong{color:var(--frost)}
+.tactic{background:rgba(138,77,29,.12);border:1px solid rgba(138,77,29,.4)}
+.tactic strong{color:var(--ember2)}
+
+/* Stat lines */
+.stat-row{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--bdr);gap:1rem}
+.stat-row:last-child{border-bottom:none}
+.stat-row .label{color:var(--mu)}
+.stat-row .val{color:var(--frost);font-weight:600;text-align:right}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+th,td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--sf2);vertical-align:top}
+th{color:var(--gold2);font-weight:600;background:var(--sf2);font-size:.78rem;text-transform:uppercase;letter-spacing:.6px}
+tr:hover td{background:rgba(232,196,89,.04)}
+td .role{display:inline-block;font-size:.7rem;padding:.18rem .55rem;border-radius:3px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.role-tank{background:rgba(216,228,240,.15);color:var(--frost)}
+.role-melee{background:rgba(212,134,58,.18);color:var(--ember2)}
+.role-cav{background:rgba(200,155,60,.18);color:var(--gold2)}
+.role-mons{background:rgba(138,77,29,.28);color:#f0b07a}
+.role-fast{background:rgba(120,160,200,.18);color:#9bc4ec}
+.role-art{background:rgba(140,90,200,.18);color:#c5a4f0}
+.role-hero{background:rgba(232,196,89,.15);color:var(--gold2)}
+.role-cast{background:rgba(120,200,220,.18);color:#88d3e3}
+
+/* Decision flow (raze / sack / occupy) */
+.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin:1.4rem 0}
+@media(max-width:780px){.decision{grid-template-columns:1fr}}
+.choice{
+    background:var(--sf);padding:1.3rem 1.45rem;border-radius:7px;
+    border:1px solid var(--bdr);border-top:3px solid var(--gold);
+}
+.choice.raze{border-top-color:var(--ember)}
+.choice.sack{border-top-color:var(--gold)}
+.choice.occupy{border-top-color:var(--frost)}
+.choice h4{margin-top:0;font-size:1.05rem;color:var(--frost);text-transform:none;letter-spacing:.2px}
+.choice .verdict{
+    margin-top:.85rem;padding:.6rem .8rem;font-size:.86rem;
+    background:var(--sf2);border-radius:5px;color:var(--gold2);
+    border:1px solid var(--bdr);
+}
+
+/* Mechanic blocks */
+.mech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem;margin:1.2rem 0}
+@media(max-width:780px){.mech-grid{grid-template-columns:1fr}}
+.mech{
+    background:var(--sf);padding:1.25rem 1.4rem;border-radius:7px;
+    border:1px solid var(--bdr);position:relative;
+}
+.mech-icon{
+    position:absolute;top:1.05rem;right:1.05rem;
+    font-size:1.5rem;opacity:.35;color:var(--gold);
+}
+.mech h4{margin-top:0;color:var(--ember2);text-transform:none;letter-spacing:0;font-size:1.04rem}
+.mech p:last-child{margin-bottom:0}
+
+/* Pros/cons */
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1rem 0}
+@media(max-width:680px){.pc{grid-template-columns:1fr}}
+.pc-block{padding:1.15rem 1.35rem;border-radius:6px;background:var(--sf);border:1px solid var(--bdr)}
+.pc-pros{border-left:3px solid var(--gold)}
+.pc-cons{border-left:3px solid var(--ember)}
+.pc-block h4{margin-top:0;font-size:.85rem}
+.pc-pros h4{color:var(--gold2)}
+.pc-cons h4{color:var(--ember2)}
+.pc-block ul{margin-bottom:0;padding-left:1.25rem}
+.pc-block li{font-size:.94rem;color:var(--mu);margin-bottom:.5rem;line-height:1.6}
+
+/* Hero block (Boris) */
+.hero-block{
+    background:linear-gradient(135deg,var(--sf) 0%,var(--sf2) 100%);
+    padding:1.6rem 1.75rem;border-radius:8px;
+    border:1px solid var(--ember);position:relative;overflow:hidden;
+    margin-bottom:1.5rem;
+}
+.hero-block::before{
+    content:"";position:absolute;top:-30px;right:-30px;
+    width:140px;height:140px;border-radius:50%;
+    background:radial-gradient(circle,rgba(212,134,58,.22),transparent 70%);
+}
+.hero-name{font-size:1.55rem;color:var(--ember2);font-weight:700;letter-spacing:.5px}
+.hero-title{font-size:.9rem;color:var(--gold2);margin-bottom:.95rem;font-style:italic}
+
+/* Tag chips */
+.tags{display:flex;flex-wrap:wrap;gap:.45rem;margin:.85rem 0}
+.tag{
+    font-size:.72rem;padding:.25rem .65rem;border-radius:3px;
+    background:var(--sf2);color:var(--mu);border:1px solid var(--bdr);
+    text-transform:uppercase;letter-spacing:.5px;font-weight:600;
+}
+.tag.good{color:var(--gold2);border-color:rgba(200,155,60,.4)}
+.tag.bad{color:var(--ember2);border-color:rgba(212,134,58,.4)}
+
+/* Numbered steps */
+.steps{counter-reset:step;list-style:none;padding:0;margin:1rem 0}
+.steps li{
+    counter-increment:step;
+    position:relative;padding:.95rem 1.15rem .95rem 3rem;
+    background:var(--sf);border-radius:6px;margin-bottom:.7rem;
+    border:1px solid var(--bdr);border-left:2px solid var(--gold);
+    line-height:1.6;
+}
+.steps li::before{
+    content:counter(step);
+    position:absolute;left:.85rem;top:1rem;
+    width:1.65rem;height:1.65rem;border-radius:50%;
+    background:var(--ember);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.82rem;
+}
+
+/* Section intro */
+.intro-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1.6rem;margin-bottom:1.5rem}
+@media(max-width:780px){.intro-grid{grid-template-columns:1fr}}
+
+/* Quick reference panel */
+.qref{
+    background:var(--sf2);padding:1.3rem 1.45rem;border-radius:7px;
+    border:1px solid var(--bdr);
+}
+.qref h4{margin-top:0}
+.qref .stat-row{font-size:.92rem}
+
+footer{
+    text-align:center;padding:2rem 1.5rem;color:var(--mu);font-size:.84rem;
+    border-top:1px solid var(--sf2);margin-top:3rem;line-height:1.7;
+}
+footer a{color:var(--gold);text-decoration:none}
+footer a:hover{color:var(--gold2);text-decoration:underline}
+</style>
+</head>
+<body>
+
+<header>
+    <span class="skull" aria-hidden="true">&#9763;</span>
+    <div>
+        <h1>Ursun <span class="accent">Revivalists</span> &mdash; New Player's Guide</h1>
+        <p>Total War: Warhammer III &middot; Boris Ursus &middot; Beginner-friendly</p>
+    </div>
+    <div class="hdr-right">
+        <button class="hdr-btn" id="themeBtn" type="button">Theme</button>
+    </div>
+</header>
+
+<nav id="navBar">
+    <button data-tab="overview" class="active">Overview</button>
+    <button data-tab="lore">Lore</button>
+    <button data-tab="mechanics">Kislev Mechanics</button>
+    <button data-tab="ursun">Ursun Mechanics</button>
+    <button data-tab="boris">Boris Ursus</button>
+    <button data-tab="strengths">Strengths &amp; Weaknesses</button>
+    <button data-tab="campaign">Campaign Strategy</button>
+    <button data-tab="battle">Battle Strategy</button>
+    <button data-tab="roster">Unit Roster</button>
+    <button data-tab="heroes">Heroes &amp; Atamans</button>
+    <button data-tab="settlements">Raze / Sack / Occupy</button>
+    <button data-tab="economy">Diplomacy &amp; Economy</button>
+    <button data-tab="tech">Technologies</button>
+</nav>
+
+<main>
+
+<!-- ============================================================ OVERVIEW -->
+<section class="tab active" id="overview">
+    <h2><span class="rune">&#9763;</span>Overview</h2>
+    <p class="lead">
+        The Ursun Revivalists are the militant offensive arm of Kislev, led by <strong>Boris Ursus, the Tzar of Tzars</strong> &mdash; a dead emperor preserved by the Motherland in ice and woken by Ursun's pained roar to fight for Kislev in its darkest hour. While the Ice Court and the Great Orthodoxy bicker in the south, Boris is already deep in the Chaos Wastes, swinging an enchanted shard-blade alongside a doomstack of giant-bear cavalry.
+    </p>
+
+    <div class="intro-grid">
+        <div>
+            <h3>Why Boris is a great campaign for the right player</h3>
+            <ul>
+                <li>The signature meta is simple to learn and devastating to use: <strong>a War Bear Riders doomstack</strong>, supported by Patriarchs, snowballs entire continents.</li>
+                <li>Boris himself is a <strong>melee all-rounder bruiser</strong> &mdash; armoured, AP, anti-large, and immune to Chaos corruption / Chaos Wastes attrition.</li>
+                <li>Unique to Boris: <strong>Wasteland climate is Suitable</strong>. You can hold Chaos Dwarf cities the other Kislev factions can't touch.</li>
+                <li>His <strong>Resettler</strong> skill (level 6) lets him colonise ruins for free and grants +2 growth to every newly-occupied province &mdash; an enormous expansion engine.</li>
+                <li>Doesn't participate in the Court vs. Orthodoxy supremacy race &mdash; one less political headache.</li>
+            </ul>
+        </div>
+        <div class="qref">
+            <h4>At a glance</h4>
+            <div class="stat-row"><span class="label">Legendary Lord</span><span class="val">Boris Ursus</span></div>
+            <div class="stat-row"><span class="label">Race</span><span class="val">Kislev</span></div>
+            <div class="stat-row"><span class="label">Start (Immortal Empires)</span><span class="val">near The Tower of Torment, Bloodfire Falls</span></div>
+            <div class="stat-row"><span class="label">Start (Realm of Chaos)</span><span class="val">Fort Dorznye-Vort, Zorn Uzkul</span></div>
+            <div class="stat-row"><span class="label">Faction style</span><span class="val">Offensive crusade / bear-cav doomstack</span></div>
+            <div class="stat-row"><span class="label">Difficulty</span><span class="val">Hard &mdash; one of the hardest IE starts</span></div>
+            <div class="stat-row"><span class="label">Magic</span><span class="val">Lore of Ice (Frost Maidens, Witches); 6 lores total available</span></div>
+            <div class="stat-row"><span class="label">Suitable climates</span><span class="val">Cold/Snow, Frozen, Wasteland (unique)</span></div>
+        </div>
+    </div>
+
+    <h3>The Boris loop, in one sentence</h3>
+    <div class="tactic">
+        <strong>Smash a Chaos / Norscan stack with War Bear Riders &rarr; gain Devotion &rarr; trigger a Motherland Ritual to Ursun, Tor, Dazh, or Salyak &rarr; let Boris's Resettler skill snap up the freshly-emptied province at zero cost &rarr; move to the next target.</strong>
+        Every fight pays four ways: gold, Devotion, free territory, +2 growth.
+    </div>
+
+    <div class="warn">
+        <strong>Hardest-start warning:</strong> The wiki is explicit that the Ursun Revivalists' Immortal Empires start, played straight, is "<em>one of the absolute hardest starts in Immortal Empires</em>." Unpleasant climate, Chaos corruption, and Archaon's vassals on your doorstep mean <strong>you will lose some settlements early &mdash; that's near-inevitable</strong>. Don't quit; the snowball after the first 30 turns is enormous.
+    </div>
+
+    <h3>What this guide covers</h3>
+    <div class="three-col">
+        <div class="card card-blood">
+            <h4>The faction</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Lore, Boris's awakening from the ice, the Cult of Ursun, and what makes the Revivalists different from the Ice Court and the Great Orthodoxy.
+            </p>
+        </div>
+        <div class="card card-brass">
+            <h4>The systems</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Devotion, Motherland Rituals, Atamans, Supporters, the Ice Court mechanic, hybrid By Our Blood units, and the Revivalist-specific faction effects.
+            </p>
+        </div>
+        <div class="card card-bone">
+            <h4>The play</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Two viable opening paths, hero management with skill priorities, the full unit roster with use cases, settlement decisions, and battle templates.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ LORE -->
+<section class="tab" id="lore">
+    <h2><span class="rune">&#9763;</span>Lore &mdash; The Tzar Reborn from the Ice</h2>
+    <p class="lead">
+        To understand the Revivalists you have to understand two things: who Boris was the first time he died, and what hidden hand kept his body whole until Kislev needed him again.
+    </p>
+
+    <h3>Boris Bohka &mdash; the Red Tzar</h3>
+    <p>
+        Boris Ursus &mdash; born <strong>Boris Bohka</strong>, also called <em>Raddi Bohka</em> and titled the <strong>Red Tzar</strong> &mdash; was a previous Tzar of Kislev, "<em>the Tzar of Tzars, the true believer, reborn to light in Kislev's darkest hour</em>." A formidable warlord and cultural reformer, he was famous in his lifetime as both an implacable general and the Tzar who <strong>revived the Cult of Ursun</strong> and made the bear-god the centre of Kislevite religion. The pious adored him; the soldiery followed him without question.
+    </p>
+    <p>
+        He died &mdash; or so the folk of Kislev believed. Yet his body was claimed by the Motherland herself and laid in <strong>sacred ice</strong> at a hidden site in the cold oblasts, watched over for centuries by the Great Orthodoxy.
+    </p>
+
+    <h3>The Awakening</h3>
+    <p>
+        When the Bear-God Ursun was bound and tortured by the Dark Gods, his roars of pain rolled across the world &mdash; and reached the ice that held Boris. The campaign opens with a hidden Ursunite priest journeying to wake him. The introduction reads:
+    </p>
+    <p style="font-style:italic;color:var(--mu);padding-left:1rem;border-left:3px solid var(--gold);margin-bottom:1.1rem">
+        "Kislev. The bulwark against the darkness. Yet the Motherland suffers, severed from its god. If it is to survive, the nation needs its saviour once more &hellip; If anyone can save the Bear-God of Kislev, it is Ursun's High Priest&hellip; Raddi Bohka&hellip; Boris Ursus."
+    </p>
+
+    <div class="warn">
+        <strong>The detail that defines him in battle:</strong> Boris is a <em>mortal melee fighter</em>, not a wizard. He has no magic lore. His combat kit is <em>Fury of Ursun</em>, <em>Foe-Seeker</em>, <em>Colossal Strike</em>, and <em>Stand Your Ground!</em> &mdash; bruiser tools, not spells. The faction's magic comes entirely from Frost Maidens / Ice Witches you recruit separately.
+    </div>
+
+    <h3>The four Kislev factions &mdash; where the Revivalists fit</h3>
+    <p>
+        Kislev ships <strong>four playable factions</strong> in Total War: Warhammer III. Knowing they exist helps you read the campaign:
+    </p>
+    <ul>
+        <li><strong>Ursun Revivalists</strong> &mdash; Boris Ursus. The reborn Red Tzar, an offensive faction starting deep in Chaos territory. The faction this guide covers.</li>
+        <li><strong>The Ice Court</strong> &mdash; Tzarina Katarin, the Ice Queen. Ice-magic empire, supreme caster lord, aristocratic playstyle.</li>
+        <li><strong>The Great Orthodoxy</strong> &mdash; Kostaltyn, Supreme Patriarch of Ursun. The militant Cult of Ursun, prayer-focused.</li>
+        <li><strong>Daughters of the Forest</strong> &mdash; Mother Ostankya, the witch-hag of the Forest of Echoes. Hexes and totally different mechanics.</li>
+    </ul>
+    <p>
+        Boris does <em>not</em> participate in the Ice Court vs. Great Orthodoxy supremacy race. He starts with <strong>+30 starting relations with The Ice Court</strong> &mdash; Katarin's faction is your single best diplomatic partner in Kislev.
+    </p>
+
+    <div class="note">
+        <strong>Why this matters mechanically:</strong> the lore <em>is</em> the mechanics. Devotion fuels Motherland Rituals to the four gods (Ursun, Tor, Dazh, Salyak). Ursun's Roar is a Patriarch's signature battle ability. The +30 with the Ice Court reflects Boris's status as the legitimate former Tzar. The Resettler skill expresses his cultural-reformer past &mdash; the man who once <em>built</em> Kislev knows how to do it again.
+    </div>
+</section>
+
+<!-- ============================================================ KISLEV MECHANICS -->
+<section class="tab" id="mechanics">
+    <h2><span class="rune">&#9763;</span>General Kislev Mechanics</h2>
+    <p class="lead">
+        These five systems apply to every Kislev faction. Master them and you understand the race.
+    </p>
+
+    <div class="mech-grid">
+        <div class="mech">
+            <span class="mech-icon">&#9763;</span>
+            <h4>Devotion</h4>
+            <p>The Kislev religious resource. <strong>Earned by winning battles against Chaos armies and constructing certain religion buildings.</strong> Lost when you attack other Kislev factions &mdash; <em>and if Devotion gets too low, Chaos armies are more likely to attack you</em>.</p>
+            <p style="margin:0"><strong>Spent on:</strong> Motherland Rituals to the four gods (Salyak, Dazh, Ursun, Tor) and on building higher-tier structures.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#10052;</span>
+            <h4>Motherland Rituals</h4>
+            <p><strong>Four faction-level Devotion-funded rituals</strong>, one to each god: <em>Salyak</em> (healing/comfort), <em>Dazh</em> (sun/fire), <em>Ursun</em> (winter/strength), and <em>Tor</em> (storms/vengeance). Each grants powerful temporary bonuses.</p>
+            <p style="margin:0">Save your Devotion for the turn you launch a major offensive &mdash; not for a quiet farming run.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#9876;</span>
+            <h4>Court &amp; Orthodoxy &mdash; Supporters</h4>
+            <p>The <strong>Ice Court</strong> (Katarin) and the <strong>Great Orthodoxy</strong> (Kostaltyn) compete for <em>Supporters</em>. More Supporters &rarr; more Kislev minor factions willing to confederate with the winner. Gold and Devotion can also be spent to limit the rival's Supporters.</p>
+            <p style="margin:0"><strong>For Boris:</strong> you do <em>not</em> compete in this race directly. Your Supporters earn closer relations with the other two big Kislev factions <em>and add Supporters to The Ice Court</em> (you naturally ally with Katarin).</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#9874;</span>
+            <h4>Atamans</h4>
+            <p>A unique kind of Lord. <strong>Atamans don't earn XP &mdash; they gain traits through dilemmas</strong> that enhance whichever region or army they're in. <em>One Ataman per two provinces</em>, recruited <strong>for free</strong>, and they can lead armies into battle.</p>
+            <p style="margin:0">If an Ataman dies, you have to recruit a new one &mdash; their accumulated traits are lost.</p>
+        </div>
+    </div>
+
+    <h3>Three more rules that shape every Kislev campaign</h3>
+
+    <div class="card card-blood">
+        <h4>The Ice Court mechanic</h4>
+        <p style="margin:0">Ice Witches and Frost Maidens take a long time to train, but when they finally arrive they are <strong>discounted, recruited at higher level, and already come with abilities and traits</strong>. Plan recruitment a few turns ahead &mdash; don't expect an Ice Witch the same turn you click "recruit."</p>
+    </div>
+
+    <div class="card card-blood">
+        <h4>By Our Blood &mdash; the &quot;second wind&quot;</h4>
+        <p style="margin:0">Most Kislev human units (everything except <em>Snow Leopard</em> and <em>Elemental Bear</em>) carry the <strong>By Our Blood</strong> passive. The first time their leadership starts to waver in a battle, they become <em>temporarily unbreakable</em>. This is your buffer against rout cascades &mdash; a mid-fight collapse usually self-rescues once.</p>
+    </div>
+
+    <div class="card card-blood">
+        <h4>Six lores of magic</h4>
+        <p style="margin:0">Kislev spellcasters can access <strong>Lore of Beasts, Lore of Death, Lore of Ice, Lore of Shadows, Lore of Tempest,</strong> and the <strong>Lore of the Hag</strong>. Different lord/hero types unlock different lores. Ice and Tempest are the most flavour-defining; Beasts and Death give you off-meta options if you want to specialise.</p>
+    </div>
+</section>
+
+<!-- ============================================================ URSUN-SPECIFIC -->
+<section class="tab" id="ursun">
+    <h2><span class="rune">&#9763;</span>Ursun Revivalists &mdash; Faction-Specific Effects</h2>
+    <p class="lead">
+        On top of the general Kislev systems, Boris's faction has a tight bundle of unique effects that all push toward the same idea: <em>be the offensive arm of Kislev, fight Chaos personally, and snowball through cheap garrisons and free re-colonisations</em>.
+    </p>
+
+    <h3>Faction effects (always-on)</h3>
+    <div class="three-col">
+        <div class="card card-brass">
+            <h4>+30 with The Ice Court</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">A massive starting diplomatic bonus with Tzarina Katarin's faction. Trade, NAPs, defensive alliance, even confederation later are realistic. <strong>Use it.</strong></p>
+        </div>
+        <div class="card card-brass">
+            <h4>&minus;50% Garrison &amp; Religion building cost</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Garrison upgrades and religious buildings cost half. This is how you keep frontier provinces defended without drowning in expenses &mdash; the rest of your treasury can go on military.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>&minus;1 turn capital construction</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Province Capital and Settlement buildings finish one turn faster. Compounds with the Resettler skill &mdash; new provinces come online quickly.</p>
+        </div>
+    </div>
+    <div class="three-col" style="margin-top:1rem">
+        <div class="card card-brass">
+            <h4>+2 recruit rank for War Bear Riders</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Every War Bear Rider unit you raise comes out at <strong>rank 3 instead of rank 1</strong>. That's significant XP-bar saving on the unit that defines your doomstack.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>Wasteland climate is Suitable</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65"><strong>Unique to Ursun Revivalists.</strong> The other Kislev factions can't hold Chaos Dwarf provinces; Boris can. This opens an entire alternative campaign direction east into the Dark Lands.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>Boris's army &amp; lord effects</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">&minus;25% upkeep War Bear Riders, +7 leadership and +9 melee attack vs. Warriors of Chaos / Daemons / Norsca, immune to Chaos corruption and Chaos Wastes attrition. Built to crusade.</p>
+        </div>
+    </div>
+
+    <h3>How these stack in practice</h3>
+    <div class="tactic">
+        <strong>Compounding effect:</strong> Boris marches into a Norscan settlement. War Bear Riders (cheaper, recruited at rank 3) shred the garrison. He occupies via Resettler if it's a ruin (free + 2 growth). Garrison upgrades cost half; Religion buildings cost half &mdash; the new province is fortified and Devotion-positive in a couple of turns. Meanwhile, Boris suffers no attrition from the Chaos Wastes climate. Every part of the kit turns the wheel.
+    </div>
+
+    <h3>Boris's lord-line bonuses</h3>
+    <ul>
+        <li><strong>Red Tzar (personal trait):</strong> +7 leadership and +9 melee attack vs. Warriors of Chaos, Daemons of Chaos, and Norsca, plus immunity to Chaos corruption and Chaos Wastes attrition (Boris's army).</li>
+        <li><strong>&minus;25% upkeep for War Bear Riders</strong> in his army.</li>
+        <li><strong>Resettler (level 6):</strong> Boris can colonise Ruins for <em>zero gold cost</em>, and provinces gain +2 growth on occupation. The fastest expansion engine in Kislev.</li>
+        <li><strong>Court &amp; Orthodoxy unlocks</strong> let him gain <em>regeneration</em> while mounted on his Urskin bear &mdash; a major mid-game survivability spike.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ BORIS -->
+<section class="tab" id="boris">
+    <h2><span class="rune">&#9763;</span>Boris Ursus</h2>
+
+    <div class="hero-block">
+        <div class="hero-name">Boris Ursus</div>
+        <div class="hero-title">The Tzar of Tzars &middot; Red Tzar &middot; High Priest of Ursun &middot; Legendary Lord</div>
+        <p style="margin:0;color:var(--frost);font-size:.92rem">
+            "<em>The Tzar of Tzars, the true believer, reborn to light in Kislev's darkest hour.</em>"
+            A melee-focused all-rounder fighter and one of the strongest direct duelists in the Kislev roster.
+        </p>
+    </div>
+
+    <div class="two-col">
+        <div>
+            <h3>Combat profile</h3>
+            <div class="tags">
+                <span class="tag good">Halberd Infantry</span>
+                <span class="tag good">Armoured</span>
+                <span class="tag good">Armour-Piercing</span>
+                <span class="tag good">Anti-Large</span>
+                <span class="tag good">Magical Attacks</span>
+                <span class="tag good">Frostbite!</span>
+                <span class="tag good">Encourage</span>
+                <span class="tag good">Hide (forest)</span>
+                <span class="tag good">Siege Attacker</span>
+                <span class="tag good">Resilience (Snow)</span>
+                <span class="tag bad">Mortal HP</span>
+                <span class="tag bad">No flight</span>
+            </div>
+            <ul>
+                <li><strong>Stats:</strong> 4,672 HP, 80 Leadership, 50 Melee Attack, 55 Melee Defence, 40 Charge Bonus, 34 Speed.</li>
+                <li><strong>Weapon Strength 430</strong> (130 base + <em>300 AP</em>) with +25 vs. Large &mdash; he reliably solos enemy lords and chunks monsters.</li>
+                <li><strong>Armour 85 (63.75% reduction)</strong> plus <strong>+15% Missile Resistance</strong>. He absorbs ranged punishment far better than Kostaltyn would.</li>
+                <li><strong>Hide (forest):</strong> can ambush from forest tiles &mdash; a quietly powerful campaign-map tool against Norscans who think they're chasing you safely.</li>
+                <li><strong>Siege Attacker:</strong> can attack walls/gates without towers or rams &mdash; instant siege battles against Chaos camps.</li>
+                <li><strong>Active abilities:</strong> <em>Fury of Ursun</em>, <em>Foe-Seeker</em>, <em>Colossal Strike</em>, <em>Stand Your Ground!</em>; campaign-only <em>Rally!</em></li>
+                <li><strong>Passives:</strong> <em>Heroic Resilience</em>, <em>By Our Blood</em>, <em>Wounds</em> (he survives lethal hits and is wounded instead, recovering in Kislev cities).</li>
+            </ul>
+        </div>
+        <div>
+            <h3>Weaknesses to respect</h3>
+            <div class="pc">
+                <div class="pc-block pc-cons" style="grid-column:1 / -1">
+                    <h4>The two ways to lose Boris</h4>
+                    <ul>
+                        <li><strong>Focused artillery and AP missiles.</strong> 4,672 HP and 85 armour are good but not Bloodthirster-tier. Empire Great Cannons, Dwarf Organ Guns, Skaven Ratling Guns, and the like will still remove him if you let them concentrate.</li>
+                        <li><strong>Sustained melee swarms.</strong> Melee Defence 55 is fine for picking duels, but standing him in the middle of 200 chaff models for two minutes will chip him down.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn">
+                <strong>Don't pull him at yellow HP &mdash; pull him at orange HP <em>and</em> if specific units are focusing him.</strong> The <em>Wounds</em> passive means he survives a lethal blow as a wounded character (recovers in friendly territory). What you want to avoid is the second wound in the same battle.
+            </div>
+        </div>
+    </div>
+
+    <h3>Unique items</h3>
+    <div class="card card-brass">
+        <ul style="margin:0">
+            <li><strong>Shard Blade</strong> &mdash; a piece of Ursun's god-shard forged into a halberd. Grants Boris his armour-piercing damage profile and the on-weapon item ability.</li>
+            <li><strong>Armour of Ursun</strong> &mdash; ancient bear-themed plate. Grants the on-armour item ability and contributes to his physical resistance package.</li>
+        </ul>
+    </div>
+
+    <h3>Mounts</h3>
+    <ul>
+        <li><strong>On foot</strong> &mdash; the default. Hardest to snipe; lowest profile.</li>
+        <li><strong>Warhorse</strong> &mdash; faster than foot, less protected. Use for early-game when you need to chase routs.</li>
+        <li><strong>Urskin</strong> &mdash; a giant ridden bear. The <em>correct</em> mid-to-late-game choice. With Court &amp; Orthodoxy unlocks you also get <em>regeneration</em> while on Urskin, which fixes Boris's main fragility.</li>
+    </ul>
+
+    <h3>Lord Effects (army-wide)</h3>
+    <div class="card card-brass">
+        <ul style="margin:0">
+            <li><strong>Upkeep: &minus;25% for War Bear Riders</strong> (Boris's army).</li>
+            <li><strong>Leadership: +7</strong> when fighting Warriors of Chaos, Daemons of Chaos, and Norsca.</li>
+            <li><strong>Melee Attack: +9</strong> when fighting Warriors of Chaos, Daemons of Chaos, and Norsca.</li>
+            <li><strong>Immune to Chaos corruption</strong> and <strong>Chaos Wastes attrition</strong> (Boris's army only).</li>
+        </ul>
+    </div>
+    <div class="tip">
+        <strong>Build implication:</strong> Boris's stack should lean <em>hard</em> into War Bear Riders. Cheaper upkeep, +2 starting recruit rank, his lord effects, and Patriarchs to buff them &mdash; everything in the faction points the same direction.
+    </div>
+
+    <h3>Skill tree priorities (in order)</h3>
+    <ol class="steps">
+        <li><strong>Race to level 6 for Resettler.</strong> Pick fights you can win; Resettler unlocks free Ruin colonisation and +2 growth, the single best skill in the tree. Do this before optimising anything else.</li>
+        <li><strong>Yellow combat line.</strong> Weapon strength, armour, charge bonus &mdash; he is your best duelist; lean into it.</li>
+        <li><strong>Court &amp; Orthodoxy unlocks for Urskin regeneration.</strong> The mount becomes nearly untouchable in melee.</li>
+        <li><strong>Leadership aura range / strength.</strong> Boris's Encourage stacks with army-wide leadership; widening the aura buys you flexible deployments.</li>
+        <li><strong>Lightning Strike</strong> when it appears &mdash; lets you isolate Norscan and Chaos stacks before reinforcements arrive.</li>
+        <li><strong>Blue line campaign skills.</strong> Movement, replenishment, post-battle income; useful but rank lower than the above.</li>
+    </ol>
+
+    <h3>How to use him in battle</h3>
+    <ol>
+        <li><strong>Deploy Boris near your front line</strong>, behind a screen of Tzar Guard or alongside a wedge of War Bear Riders.</li>
+        <li><strong>Open with Stand Your Ground!</strong> on the unit holding the highest-pressure point in your line.</li>
+        <li><strong>Charge into the enemy lord or biggest single-entity threat.</strong> Use <em>Foe-Seeker</em> to lock onto it, then <em>Fury of Ursun</em> for the AoE damage. With Shard Blade's small range, stay <em>in</em> the blob &mdash; don't try to peel chasers.</li>
+        <li><strong>Colossal Strike</strong> for finishing a wounded large target &mdash; the alpha damage breaks routs.</li>
+        <li><strong>Rally! is a campaign-only ability</strong> &mdash; use it to keep wavering Bear Riders pinned in melee one more critical second.</li>
+        <li><strong>If the line is collapsing, pull him to a flank.</strong> Wounded recovery is fine; a permanent loss is not.</li>
+    </ol>
+</section>
+
+<!-- ============================================================ STRENGTHS / WEAKNESSES -->
+<section class="tab" id="strengths">
+    <h2><span class="rune">&#9763;</span>Faction Strengths &amp; Weaknesses</h2>
+
+    <div class="pc">
+        <div class="pc-block pc-pros">
+            <h4>Strengths</h4>
+            <ul>
+                <li><strong>War Bear Riders are a doomstack-tier unit.</strong> Anti-large AP attacks, monstrous mass, high HP, and they cover most Kislev weaknesses by themselves.</li>
+                <li><strong>Boris is a legitimate duelist.</strong> Halberd-class anti-large with 300 AP damage; he kills enemy lords on the charge.</li>
+                <li><strong>Wasteland-suitable climate</strong> is unique to Ursun Revivalists &mdash; you can crusade through Chaos Dwarf lands no other Kislev faction can hold.</li>
+                <li><strong>Resettler skill</strong> turns every razed Norscan or Chaos border province into free territory.</li>
+                <li><strong>+30 starting relations with The Ice Court</strong> &mdash; your immediate diplomatic anchor.</li>
+                <li><strong>Cheap garrisons / religion buildings</strong> mean fortified frontiers without breaking the treasury.</li>
+                <li><strong>Hybrid ranged/melee infantry</strong> (Streltsi, Kossars) gives the army real flexibility on the approach phase.</li>
+                <li><strong>By Our Blood</strong> across most units gives you a one-time rout-immunity buffer per battle.</li>
+                <li><strong>Six lores of magic</strong> available across the various caster heroes &mdash; Ice and Tempest do most of the work.</li>
+            </ul>
+        </div>
+        <div class="pc-block pc-cons">
+            <h4>Weaknesses</h4>
+            <ul>
+                <li><strong>One of the hardest IE starts.</strong> Surrounded by Archaon's vassals; unpleasant climate; Chaos corruption; you <em>will</em> lose settlements early.</li>
+                <li><strong>No flying units in the entire roster.</strong> Backline targets must be reached by cavalry, never by air.</li>
+                <li><strong>No magic-using lord by default.</strong> Boris isn't a caster; you have to recruit Frost Maidens / Witches separately.</li>
+                <li><strong>Only Boris is immune to Chaos Wastes attrition.</strong> Secondary armies suffer in the very lands you most want to crusade through.</li>
+                <li><strong>No allies to the north.</strong> The Realm of Chaos start is largely friendless; Immortal Empires has potential Dwarf allies but only at distance.</li>
+                <li><strong>Streltsi expensive vs. unarmoured enemies.</strong> Their AP damage is wasted on light targets &mdash; consider matchups before recruiting four of them.</li>
+                <li><strong>Doesn't compete in the Court vs. Orthodoxy supremacy race.</strong> Fewer Devotion-driven faction-wide political plays available.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>Who you should fear and why</h3>
+    <table>
+        <tr><th>Threat</th><th>Why they're dangerous</th><th>Counter</th></tr>
+        <tr><td><strong>Warhost of the Apocalypse / Archaon's vassals</strong></td><td>Heavily-armoured Warriors of Chaos right next to your starting army; they hit hard and don't break easily</td><td>Streltsi for the AP damage; War Bear Riders for the anti-large; Boris's +9 melee attack vs. Chaos closes the gap</td></tr>
+        <tr><td><strong>Wintertooth / Norscan factions</strong></td><td>Mammoths, Frost-Wyrms, fast cavalry on snow</td><td>War Bear Riders shred monstrous infantry; Little Grom for Mammoths; Patriarchs for replenishment between battles</td></tr>
+        <tr><td><strong>Clan Moulder</strong></td><td>Cheap Skaven swarms and monstrous flesh-hounds outproduce you economically</td><td>Tzar Guard with shields anchors; cycle-charge with War Bear Riders; don't get drawn into long battles</td></tr>
+        <tr><td><strong>Chaos Dwarfs</strong></td><td>Heavily-armoured infantry, artillery, magic; Wasteland is their home turf</td><td>Wasteland is also <em>your</em> climate; Streltsi alpha-strike their casters; ally with regular Dwarfs to share the front</td></tr>
+        <tr><td><strong>Tzeentch / Daemons of Chaos</strong></td><td>Magic damage you have no in-army dispel for early game</td><td>Recruit a Frost Maiden as soon as possible &mdash; the Lore of Ice slows let you mass-melee their casters</td></tr>
+        <tr><td><strong>Grimgor's 'Ardboyz / Greenskins</strong></td><td>Numbers and Waaagh!-stack momentum</td><td>Tzar Guard anvil + War Bear flank; By Our Blood lets you survive the leadership dip</td></tr>
+    </table>
+</section>
+
+<!-- ============================================================ CAMPAIGN STRATEGY -->
+<section class="tab" id="campaign">
+    <h2><span class="rune">&#9763;</span>Campaign Strategy</h2>
+    <p class="lead">
+        Two viable openings depending on whether you want a hard fight or a smart pivot. Both end the same way: a Bear-cavalry crusade north into the Chaos Wastes once Kislev is unified behind Katarin (whom you'll help confederate).
+    </p>
+
+    <h3>Immortal Empires &mdash; the offensive opening</h3>
+    <div class="note">
+        <strong>Starting position:</strong> near <em>The Tower of Torment, Bloodfire Falls</em> &mdash; far north, deep in Chaos territory. <strong>Main threats:</strong> Warhost of the Apocalypse, Legion of Chaos, Grimgor's 'Ardboyz, Bonerattlaz, Clan Moulder, Challengers of Khorne, Tallymen of Pestilence.
+    </div>
+    <ol class="steps">
+        <li><strong>Turn 1:</strong> capture the nearby minor settlement. Don't dawdle &mdash; the AI armies around you scale faster if you're passive.</li>
+        <li><strong>Turn 2&ndash;5:</strong> consolidate the immediate area. Use Boris as your single hammer; auto-resolve smaller Chaos warbands with War Bear Riders only when the odds are clearly in your favour.</li>
+        <li><strong>Hire your first Ataman</strong> immediately. Free recruitment, traits via dilemmas. Park them in your most contested province for the regional buffs.</li>
+        <li><strong>Diplomacy turn 1:</strong> trade with anyone southerly who'll take it &mdash; the Empire, Dwarfs, fellow Kislev. Cash in the +30 with The Ice Court.</li>
+        <li><strong>Race Boris to level 6 for Resettler.</strong> Pick fights against weak Chaos minors specifically to bank XP.</li>
+        <li><strong>By turn ~15:</strong> you'll have lost <em>some</em> settlements &mdash; that's expected. Don't quit. Once Resettler is online and you have one or two upgraded War Bear Rider units, the snowball begins.</li>
+        <li><strong>Take out Archaon early if possible.</strong> He is on your hitlist for victory and is best killed before he establishes a power base.</li>
+    </ol>
+
+    <h3>Immortal Empires &mdash; the &quot;Cylostra Direfin&quot; pivot</h3>
+    <div class="tactic">
+        <strong>The alternative opening: don't fight Archaon. Just leave.</strong> The wiki spells this out as a legitimate strategy. <em>Retreat south across the Frozen Sea</em>, build up your economy against weaker minor Norsca and Skaven, encounter the Ice Court and Ropsmenn Clan for diplomatic relations, and snap up the <strong>Frozen Landing</strong> ruin south of your starting location as your real first base. The Norscan Dwarfs may even survive long enough to be a useful ally; if they don't, you take over their dwarfholds.
+    </div>
+    <p style="margin-top:1rem">
+        Either path works. The offensive path is more rewarding if you pull it off; the pivot is significantly easier and lets you confederate Kislev before crusading.
+    </p>
+
+    <h3>Realm of Chaos &mdash; Fort Dorznye-Vort start</h3>
+    <p>
+        You begin east of Kislev proper, in <strong>Zorn Uzkul</strong>. No Kislevite opponents nearby, so attacking other Kislev factions (which costs you Devotion) isn't even a temptation. Your enemies are <em>Ogres, Skaven, Greenskins, and Chaos Dwarfs</em>.
+    </p>
+    <ul>
+        <li><strong>Secure Zorn Uzkul and the High Pass</strong> &mdash; solid initial moves, defensible terrain.</li>
+        <li><strong>Consider an early strike on the Legion of the Gorequeen.</strong> Hurts massively but helps Kislev proper survive longer; holding the Goromadny is hard and attracts Chaos like a magnet.</li>
+        <li><strong>Crusade through Chaos Dwarf lands.</strong> Their Wasteland is <em>Suitable</em> for you, and they'll wipe out the Dwarfs (your best potential ally) if you don't intervene.</li>
+        <li><strong>Try to ally with the regular Dwarfs.</strong> Trade route west to Kislev, plus access to their artillery / Irondrakes makes the rest of the campaign easier.</li>
+    </ul>
+
+    <h3>The mid-game pattern</h3>
+    <div class="tactic">
+        <strong>Boris + 1 Bear-doomstack + 1 reserve army + Ataman-led garrisons.</strong> Boris is your offensive spear; a second Boyar army with War Bear Riders mops up behind him; Atamans hold provinces and don't move. Push Devotion high enough to fire Motherland Rituals timed to your offensives.
+    </div>
+
+    <h3>Kislev confederation</h3>
+    <p>
+        Helping Katarin secure political supremacy over Kostaltyn is easier for Boris because of the +30 Ice Court relations. Once Katarin (or Kostaltyn) wins the Court vs. Orthodoxy race and confederates the loser, <strong>you should be in a strong enough position to confederate the winner soon afterwards</strong>. Don't wait too long &mdash; both will likely be wiped out by mid-to-late campaign if left alone.
+    </p>
+
+    <div class="warn">
+        <strong>Revival quirk:</strong> if you lose your faction and want to revive it, you cannot raise the rebellion at <em>The Tower of Torment</em>. The only valid place is the <strong>Novchozy</strong> settlement.
+    </div>
+
+    <h3>Endgame &amp; victory</h3>
+    <p>
+        <strong>Short Campaign Victory:</strong> occupy/loot/raze/sack <em>30 different settlements</em> and destroy the <em>Warhost of the Apocalypse</em> and <em>Bloody Sword</em> factions. <strong>Long Campaign Victory:</strong> 70 different settlements and destroy the <em>Legion of Chaos</em> and <em>The Ecstatic Legions</em>. Both rely on the same core: Boris's bear stack rolling north through the Chaos Wastes.
+    </p>
+</section>
+
+<!-- ============================================================ BATTLE STRATEGY -->
+<section class="tab" id="battle">
+    <h2><span class="rune">&#9763;</span>Battle Strategy</h2>
+    <p class="lead">
+        Kislev battles are <strong>combined-arms set-pieces</strong>: hybrid infantry up front, gunpowder behind, bear cavalry on the wings, magic and prayers from the support layer. With Boris specifically, the decisive unit is almost always the <strong>War Bear Riders</strong>.
+    </p>
+
+    <h3>The Boris doomstack template (~20 units)</h3>
+    <table>
+        <tr><th>Slot</th><th>Composition</th><th>Role</th></tr>
+        <tr><td>1</td><td>Boris Ursus (on Urskin)</td><td>Lord &mdash; duelist, leadership aura, regen on Urskin</td></tr>
+        <tr><td>1&ndash;2</td><td>Patriarchs of Ursun</td><td>Embed for replenishment, leadership, charge bonuses; Ursun's Roar &amp; Salyak's Lullaby</td></tr>
+        <tr><td>0&ndash;1</td><td>Frost Maiden</td><td>Optional Lore of Ice support &mdash; slows + AoE damage</td></tr>
+        <tr><td>2&ndash;3</td><td>Armoured Kossars (axe &amp; shield)</td><td>Frontline anchor; absorb the missile phase</td></tr>
+        <tr><td>2&ndash;3</td><td>Tzar Guard (with shields)</td><td>Anvil for cavalry charge; defend the Streltsi line</td></tr>
+        <tr><td>2&ndash;3</td><td>Streltsi</td><td>AP gunpowder vs. armoured enemies; switch to bardiche melee at contact</td></tr>
+        <tr><td>5&ndash;7</td><td>War Bear Riders</td><td><strong>The doomstack core.</strong> Anti-large AP, monstrous mass</td></tr>
+        <tr><td>0&ndash;1</td><td>Elemental Bear of Ursun</td><td>Late-game; Patriarch can keep it healed</td></tr>
+        <tr><td>0&ndash;1</td><td>Little Grom</td><td>Vs. Mammoths and gunpowder lines</td></tr>
+    </table>
+
+    <div class="tip">
+        <strong>Why so many bears?</strong> War Bear Riders alone cover Kislev's main weaknesses &mdash; they plow through infantry, tear apart enemy monsters with anti-large AP, and resist ranged fire better than Tzar Guard. With Boris's &minus;25% upkeep on them and +2 recruit rank, the unit is objectively a better build in his army than in any other Kislev lord's.
+    </div>
+
+    <h3>Standard battle plan</h3>
+    <ol class="steps">
+        <li><strong>Deploy in a U-shape.</strong> Armoured Kossars and Tzar Guard form the line; Streltsi slightly behind and slightly elevated; War Bear Riders on the outside flanks; Boris and Patriarchs central-rear.</li>
+        <li><strong>Streltsi alpha-strike</strong> the highest-armour target on the field as it commits to the approach &mdash; usually an enemy lord or elite unit.</li>
+        <li><strong>By Our Blood is your free panic save.</strong> Don't burn it intentionally; trust your line to ride out the first leadership dip.</li>
+        <li><strong>Cycle-charge War Bear Riders</strong> from the flanks. They have the mass to break a charge but suffer if pinned for too long &mdash; charge, retreat, reform, charge again.</li>
+        <li><strong>Boris drives at the enemy lord</strong> with Foe-Seeker + Fury of Ursun. He scales his damage with his AP profile; he kills lords reliably.</li>
+        <li><strong>Patriarchs cast Ursun's Roar</strong> in the centre of melee for the army-wide combat boost; <em>Salyak's Lullaby</em> heals your high-HP bears in mid-battle.</li>
+        <li><strong>Frost Maiden (if present) drops slows</strong> on enemy cavalry charges or clumped infantry. Save winds-of-magic for the worst threat, not for chip damage.</li>
+        <li><strong>Cavalry chase the rout.</strong> No fliers, so don't let backline survivors escape on foot &mdash; pursue with Bear Riders or Ungol Horse Archers.</li>
+    </ol>
+
+    <h3>Specific matchups</h3>
+
+    <div class="three-col">
+        <div class="card card-blood">
+            <h4>vs. Norsca / Chaos warbands</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Streltsi shred Chaos Warriors. War Bear Riders handle Mammoths and Trolls. Patriarch keeps the bears healed. Boris's +9 melee attack vs. Chaos closes any remaining gap. <strong>Your bread-and-butter.</strong>
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Tzeentch / Daemons</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Bring a Frost Maiden &mdash; the dispels matter and Lore of Ice slows daemonic chaff effectively. Streltsi alpha-strike Lords of Change. Don't auto-resolve.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Chaos Dwarfs</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Their armour is brutal &mdash; Streltsi-heavy stack required. War Bear Riders dive their artillery from the flanks. Patriarchs heal-tank.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Cavalry-heavy (Bretonnia / Empire)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Tzar Guard with shields is a great anvil for incoming charges. War Bear Riders counter-charge their lancers. Boris hunts the lord.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Greenskin / Skaven swarms</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Numbers war &mdash; Tzar Guard anchors, By Our Blood saves the day, War Bear Riders break the morale of the cheap units en masse.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Ranged-heavy (Wood Elves, Skaven slings)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Force open ground. Ungol Horse Archers harass and pull archers out of position. Don't let battles drag &mdash; their ammo eventually wins long fights.
+            </p>
+        </div>
+    </div>
+
+    <h3>Auto-resolve advice</h3>
+    <div class="tip">
+        Boris's stack <strong>auto-resolves well</strong> against weak-but-numerous foes (Greenskins, Beastmen, Norscan minors). <strong>Always manually fight</strong> against Chaos Dwarfs, gunpowder lines, and any battle where Streltsi or Frost Maidens are doing the heavy lifting &mdash; the auto-resolver undervalues alpha-strike gunpowder.
+    </div>
+</section>
+
+<!-- ============================================================ ROSTER -->
+<section class="tab" id="roster">
+    <h2><span class="rune">&#9763;</span>Unit Roster</h2>
+    <p class="lead">
+        Kislev's roster is built around <strong>hybrid melee/ranged infantry</strong>, <strong>strong cavalry including monstrous bears</strong>, and Ice/Tempest magic from caster heroes. <em>There are no flying units.</em> The signature units are <strong>War Bear Riders</strong>, <strong>Streltsi</strong>, <strong>Tzar Guard</strong>, and the <strong>Elemental Bear of Ursun</strong>.
+    </p>
+
+    <h3>Lords &amp; Heroes</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Boris Ursus</strong></td>
+            <td><span class="role role-hero">Combat LL</span></td>
+            <td>AP halberd, anti-large, armoured, missile-resist, Hide (forest), Resettler</td>
+            <td>Mortal HP, no flight, no magic</td>
+            <td>Always &mdash; main army anchor &amp; expansion engine</td>
+        </tr>
+        <tr>
+            <td><strong>Boyar (generic Lord)</strong></td>
+            <td><span class="role role-hero">Mortal Lord</span></td>
+            <td>Solid duelist; cheap; mounted</td>
+            <td>No magic; modest stats vs. Boris</td>
+            <td>2nd / 3rd army leader; screen and recruit</td>
+        </tr>
+        <tr>
+            <td><strong>Frost Maiden</strong></td>
+            <td><span class="role role-cast">Caster Lord</span></td>
+            <td>Lore of Ice (slows, freezes); Ice Court mechanic discounts</td>
+            <td>Fragile; recruitment lead-time</td>
+            <td>2nd army or in Boris's stack vs. magic-heavy enemies</td>
+        </tr>
+        <tr>
+            <td><strong>Ataman</strong></td>
+            <td><span class="role role-hero">Free Lord</span></td>
+            <td>Free recruitment; traits via dilemmas; can lead armies or buff regions</td>
+            <td>No XP gain; permanent loss on death</td>
+            <td>One per two provinces &mdash; non-negotiable</td>
+        </tr>
+        <tr>
+            <td><strong>Patriarch (of Ursun)</strong></td>
+            <td><span class="role role-hero">Combat-Priest Hero</span></td>
+            <td>Ursun's Roar (army-wide combat buff), Salyak's Lullaby (heal)</td>
+            <td>Slow on foot; modest personal damage</td>
+            <td>Embed in every Bear stack &mdash; replenishment + leadership</td>
+        </tr>
+        <tr>
+            <td><strong>Ice Witch</strong></td>
+            <td><span class="role role-cast">Caster Hero</span></td>
+            <td>Lore of Ice; cheaper than a Frost Maiden Lord</td>
+            <td>No melee value; squishy</td>
+            <td>Magic support hero; dispels in tough magic matchups</td>
+        </tr>
+    </table>
+
+    <h3>Infantry</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Kossars (axe &amp; bow)</strong></td>
+            <td><span class="role role-melee">Hybrid Inf</span></td>
+            <td>Bow until contact, axe in melee; flexible</td>
+            <td>Master of nothing; light armour</td>
+            <td>Tier-1 line; replace by mid-game</td>
+        </tr>
+        <tr>
+            <td><strong>Armoured Kossars (axe &amp; shield)</strong></td>
+            <td><span class="role role-tank">Anchor</span></td>
+            <td>Shielded melee; missile-resistant; By Our Blood</td>
+            <td>Damage is mediocre</td>
+            <td>The frontline anchor. 2&ndash;4 in your stack.</td>
+        </tr>
+        <tr>
+            <td><strong>Streltsi</strong></td>
+            <td><span class="role role-art">AP Gunpowder Hybrid</span></td>
+            <td>AP missile (handgun + axe-blade buttstock); switch to melee at contact</td>
+            <td><strong>Expensive</strong>; less return vs. unarmoured enemies; ammo limit</td>
+            <td>2&ndash;3 vs. armoured matchups; consider matchups before over-recruiting</td>
+        </tr>
+        <tr>
+            <td><strong>Tzar Guard (with shields)</strong></td>
+            <td><span class="role role-tank">Elite Anvil</span></td>
+            <td>Heavy armour + shield; excellent defence for the ranged line</td>
+            <td>Slow; not the highest damage</td>
+            <td>Anvil for cavalry; protect Streltsi behind them</td>
+        </tr>
+        <tr>
+            <td><strong>Kossovite Dservatii</strong></td>
+            <td><span class="role role-melee">Anti-Large Elite</span></td>
+            <td>AP, anti-large, lynx-pelt; vanguard deploy</td>
+            <td>Fragile if pinned</td>
+            <td>1&ndash;2 vs. monster-heavy enemies</td>
+        </tr>
+    </table>
+
+    <h3>Cavalry</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Ungol Horse Archers</strong></td>
+            <td><span class="role role-fast">Skirmisher Cav</span></td>
+            <td>Mobile harassment; long range; cheap</td>
+            <td>Fragile in melee; small ammo</td>
+            <td>Counter ranged units; pursuit cavalry</td>
+        </tr>
+        <tr>
+            <td><strong>Winged Lancers</strong></td>
+            <td><span class="role role-cav">Shock Cav</span></td>
+            <td>Massive charge bonus; armoured; counter-charge specialist</td>
+            <td>Low melee defence after charge spent</td>
+            <td>Cycle-charge the flanks</td>
+        </tr>
+        <tr>
+            <td><strong>Gryphon Legion</strong></td>
+            <td><span class="role role-cav">Elite Shock Cav</span></td>
+            <td>Highest charge in the cavalry roster; magical attacks</td>
+            <td>Expensive; small unit count</td>
+            <td>1&ndash;2 per army in late game; alpha-charge hammer</td>
+        </tr>
+        <tr>
+            <td><strong>War Bear Riders</strong></td>
+            <td><span class="role role-mons">Monstrous Cav</span></td>
+            <td><strong>The signature unit.</strong> Anti-large AP, monstrous mass, high HP, terror</td>
+            <td>Slower than horse cav; AP-light per model</td>
+            <td>5&ndash;7 in Boris's doomstack &mdash; the campaign's central unit</td>
+        </tr>
+    </table>
+
+    <h3>Monsters &amp; war machines</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Elemental Bear of Ursun</strong></td>
+            <td><span class="role role-mons">Elite Monster</span></td>
+            <td>Massive HP, magical attacks, terror; <em>Patriarchs can heal it</em></td>
+            <td>Single entity; no By Our Blood</td>
+            <td>1 in late-game stacks; Boris-flavoured</td>
+        </tr>
+        <tr>
+            <td><strong>Snow Leopard</strong></td>
+            <td><span class="role role-fast">Fast Monster</span></td>
+            <td>Fast; anti-infantry; low cost</td>
+            <td>Light; no By Our Blood</td>
+            <td>Hero mount option; situational raider unit</td>
+        </tr>
+        <tr>
+            <td><strong>Little Grom</strong></td>
+            <td><span class="role role-art">Cannon</span></td>
+            <td>Long-range AP cannon; great vs. monsters and Mammoths</td>
+            <td>Slow; ammo limit; vulnerable to dive cavalry</td>
+            <td>1&ndash;2 vs. Norscan monster armies, Chaos Dwarfs, Empire</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>Doomstack note:</strong> a "Boris stack" is normally 2 Armoured Kossars, 2 Tzar Guard, 2 Streltsi, 5&ndash;7 War Bear Riders, 1 Elemental Bear, 1&ndash;2 Patriarchs, optional Frost Maiden, plus Boris on Urskin. Add a Little Grom against Mammoth-heavy Norscan stacks; subtract a Streltsi against unarmoured swarms.
+    </div>
+    <div class="tactic">
+        <strong>Boris-army synergy:</strong> &minus;25% upkeep War Bear Riders + +2 recruit rank + Patriarch's Salyak's Lullaby + Boris's +9 melee attack vs. Chaos all stack. Bear Riders are objectively a better build in his army than in any other Kislev lord's &mdash; lean into it.
+    </div>
+</section>
+
+<!-- ============================================================ HEROES & ATAMANS -->
+<section class="tab" id="heroes">
+    <h2><span class="rune">&#9763;</span>Heroes &amp; Atamans &mdash; Management Guide</h2>
+    <p class="lead">
+        Kislev has a deep hero economy. Atamans (free unique Lords) hold provinces and lead armies; Patriarchs ride with War Bear stacks; Ice Witches and Frost Maidens cast across six lores of magic; Boyars lead your secondary armies. <em>If you ignore the hero layer you are playing the faction at half power.</em>
+    </p>
+
+    <h3>The five hero / lord categories &mdash; what they're for</h3>
+    <div class="mech-grid">
+        <div class="mech">
+            <h4>Atamans (free unique Lords)</h4>
+            <p>Recruited <strong>for free</strong>, capped at <em>one per two provinces</em>. They <strong>do not earn XP</strong>; instead, they gain traits through dilemmas that enhance the current region or army. <em>Can lead armies into battle</em> or sit in a province as a buff.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> hire one the moment you cross the province threshold. Park them where they're most useful right now &mdash; and keep them <em>alive</em>, because death loses all accumulated traits.</p>
+        </div>
+        <div class="mech">
+            <h4>Patriarchs (combat-priest heroes)</h4>
+            <p>Embed in armies. Their primary job is to <strong>lead War Bear cavalry stacks</strong> &mdash; <em>Ursun's Roar</em> for the army-wide combat boost, <em>Salyak's Lullaby</em> to heal your high-HP bears in mid-battle.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> 1&ndash;2 Patriarchs per Bear-heavy army. They also provide replenishment, leadership, and charge bonuses to War Bear Riders specifically.</p>
+        </div>
+        <div class="mech">
+            <h4>Frost Maidens (caster Lords)</h4>
+            <p>Lore of Ice (and other lores depending on unlocks). <strong>Slow</strong> enemies, <strong>freeze</strong> cavalry, lay down AoE damage on clumps. The Ice Court mechanic means they're <em>slow to recruit but arrive at higher rank with abilities pre-loaded</em>.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> queue one early; she'll arrive when you need her. Use as a 2nd-army Lord, or embed in Boris's stack vs. magic-heavy matchups.</p>
+        </div>
+        <div class="mech">
+            <h4>Ice Witches (caster heroes)</h4>
+            <p>Cheaper Lore of Ice support hero. Same Ice Court recruitment quirk. The dispel value alone justifies one in any army facing Tzeentch or Lizardmen.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> one in your second army for dispels; replace with a Patriarch in your bear-doomstack.</p>
+        </div>
+    </div>
+    <div class="mech-grid">
+        <div class="mech">
+            <h4>Boyars (generic combat Lords)</h4>
+            <p>Pure-melee duelists. Less expensive than Boris, mountable, no magic. Perfect for <strong>leading secondary armies</strong> or holding garrisons.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> one Boyar Lord per supplementary army. Don't try to make him do Boris's job &mdash; cheaper, simpler kit.</p>
+        </div>
+        <div class="mech">
+            <h4>Combat heroes (where applicable)</h4>
+            <p>Use combat-style Patriarchs and Boyars in <strong>army-embed</strong> roles, and as <strong>campaign-map agents</strong> &mdash; assault enemy heroes, intercept armies, embed in friendly stacks for buffs.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> never let a hero sit idle for more than 3 turns; hero upkeep adds up.</p>
+        </div>
+    </div>
+
+    <h3>How to manage your hero roster</h3>
+    <ol class="steps">
+        <li><strong>Hire Atamans first.</strong> Free recruitment, instant trait engine. You'll have 1&ndash;2 by mid-early game and they cost nothing.</li>
+        <li><strong>Embed at least one Patriarch in every Bear-heavy army.</strong> The combination of Ursun's Roar + Salyak's Lullaby + replenishment is non-negotiable for a doomstack.</li>
+        <li><strong>Queue your first Frost Maiden / Ice Witch immediately.</strong> The Ice Court recruitment lead-time means you need to start early to have one when it counts.</li>
+        <li><strong>Match a second hero to the matchup.</strong> Going to fight Daemons or Tzeentch? Add an Ice Witch for dispels. Long siege? Add a second Patriarch for sustain.</li>
+        <li><strong>Keep an Ataman alive at all costs</strong> &mdash; if they die, you lose every trait they accumulated through dilemmas. Don't lead suicidal charges with them.</li>
+        <li><strong>Use heroes as campaign-map agents.</strong> Wound Enemy Hero, Intercept Army, Embed for Buffs &mdash; especially against high-value Chaos lords.</li>
+    </ol>
+
+    <h3>Skill priorities by hero / lord type</h3>
+    <table>
+        <tr><th>Hero / Lord</th><th>First three picks</th><th>Why</th></tr>
+        <tr>
+            <td><strong>Boris Ursus</strong></td>
+            <td>Race to <em>Resettler</em> (lvl 6) &rarr; yellow combat &rarr; Court &amp; Orthodoxy unlocks for Urskin regen</td>
+            <td>Resettler is the single best skill in the tree; combat second; regen makes him near-untouchable mid-game</td>
+        </tr>
+        <tr>
+            <td><strong>Patriarch (Ursun)</strong></td>
+            <td>Ursun's Roar buffs &rarr; Salyak's Lullaby heal-strength &rarr; leadership aura range</td>
+            <td>You recruit them for two prayers and an aura &mdash; max all three</td>
+        </tr>
+        <tr>
+            <td><strong>Frost Maiden / Ice Witch</strong></td>
+            <td>Lore of Ice spell discounts &rarr; winds-of-magic regeneration &rarr; campaign-assassin actions</td>
+            <td>Spells are the value &mdash; cheaper, more often, higher impact</td>
+        </tr>
+        <tr>
+            <td><strong>Boyar</strong></td>
+            <td>Yellow combat damage / armour &rarr; leadership aura &rarr; mount unlock</td>
+            <td>Pure duelist build; mount makes them flexible as army leaders</td>
+        </tr>
+        <tr>
+            <td><strong>Ataman</strong></td>
+            <td>(They don't have a normal skill tree &mdash; choices come from dilemmas)</td>
+            <td>Pick dilemma options that match the role you intend: army-embed Atamans want combat traits; province-sitter Atamans want economic traits</td>
+        </tr>
+    </table>
+
+    <h3>Common mistakes to avoid</h3>
+    <ul>
+        <li><strong>Treating Atamans like throwaway agents.</strong> They're free to recruit but their trait stack is permanently lost on death. Protect them.</li>
+        <li><strong>Skipping the early Frost Maiden queue.</strong> By the time you realise you need her, the Ice Court mechanic's lead-time means she arrives 3&ndash;5 turns too late.</li>
+        <li><strong>Letting Patriarchs lead armies on their own.</strong> They're slow combat priests, not Lords. Always pair with a Boyar Lord (or have Boris in the stack).</li>
+        <li><strong>Forgetting to embed a Patriarch in your bear-doomstack.</strong> Without Salyak's Lullaby your high-HP bears bleed out in long fights.</li>
+        <li><strong>Burning Devotion on Motherland Rituals during quiet turns.</strong> Save them for your offensives &mdash; the buffs are timed-window, not permanent.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ SETTLEMENTS -->
+<section class="tab" id="settlements">
+    <h2><span class="rune">&#9763;</span>Raze, Sack, or Occupy?</h2>
+    <p class="lead">
+        Kislev plays standard settlement rules &mdash; but Boris has two unique tools that change the math: <strong>Wasteland-suitable climate</strong> (you can hold Chaos Dwarf cities) and <strong>Resettler</strong> (level-6 Boris occupies Ruins for free + 2 growth).
+    </p>
+
+    <h3>The three actions and what they do</h3>
+    <div class="decision">
+        <div class="choice sack">
+            <h4>Sack</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Beat the garrison, take a one-time gold payout, <strong>do not occupy</strong>, the city stays where it was.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>Modest XP and post-battle income</li>
+                <li>Owner survives; same target can be re-sacked later</li>
+            </ul>
+            <div class="verdict">Use vs. high-tier cities you can't yet hold &mdash; rich Empire cities, distant Chaos Dwarf capitals.</div>
+        </div>
+        <div class="choice raze">
+            <h4>Raze</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Burn the settlement to ruins. The province becomes empty until someone re-colonises it.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>Removes Chaos corruption from the province</li>
+                <li>Denies the enemy a rebuild target</li>
+                <li><strong>Sets up Boris's Resettler skill</strong> for free re-colonisation later</li>
+            </ul>
+            <div class="verdict">Use vs. Norscan / Chaos border settlements you can't garrison <em>now</em> but plan to colonise <em>later</em>.</div>
+        </div>
+        <div class="choice occupy">
+            <h4>Loot &amp; Occupy</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Sack and take the city in one action. The default option for Kislev.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>You now own the settlement &mdash; garrison, building chain, all income</li>
+                <li>Public order takes a hit; an Ataman + Religion building fixes it</li>
+                <li>Garrison &amp; Religion buildings cost &minus;50% (Ursun Revivalists faction effect)</li>
+            </ul>
+            <div class="verdict">Default action for any settlement in Cold / Frozen / <em>Wasteland</em> climate.</div>
+        </div>
+    </div>
+
+    <h3>The decision rule (memorize this)</h3>
+    <div class="tactic">
+        <strong>Climate first, Resettler second.</strong>
+        <ul style="margin-top:.5rem">
+            <li>If it's <strong>Cold, Frozen, or Wasteland climate</strong> &rarr; <em>Loot &amp; Occupy</em>. (Wasteland is unique to you &mdash; this includes Chaos Dwarf cities.)</li>
+            <li>If it's a <strong>Ruin</strong> and Boris is at level 6+ &rarr; <em>Boris colonises for FREE</em> via Resettler, plus +2 growth.</li>
+            <li>If it's <strong>Habitable</strong> (the Empire, Bretonnia) &rarr; <em>Loot &amp; Occupy</em> only if you can defend it; otherwise <em>Sack</em>.</li>
+            <li>If it's <strong>Uninhabitable</strong> &rarr; <em>Sack</em> for the gold, never occupy.</li>
+            <li>If it's a <strong>Chaos / Norscan border settlement</strong> you'll come back to with Boris &rarr; <em>Raze</em> now, Resettle later.</li>
+        </ul>
+    </div>
+
+    <h3>The Resettler combo</h3>
+    <p>
+        <strong>Boris's Resettler skill (level 6)</strong> is the campaign's defining economic engine. The intended sequence:
+    </p>
+    <ol class="steps">
+        <li>Beat a Norscan or Chaos warband; <em>Raze</em> their settlement.</li>
+        <li>Move on to the next target. The province sits as a Ruin behind you.</li>
+        <li>Later, march Boris back through. <em>Resettler</em> colonises the Ruin at zero gold cost, plus +2 growth.</li>
+        <li>The faction's &minus;50% Garrison cost and &minus;1 capital construction time mean the new province is fortified and producing fast.</li>
+    </ol>
+    <p>
+        This is why the wiki strategy explicitly tells you to <em>"abandon a settlement then re-occupy it with Boris"</em> if you want to accelerate growth in an existing province &mdash; it's a +2 growth procc each cycle.
+    </p>
+
+    <h3>Which provinces should you actually keep?</h3>
+    <ul>
+        <li><strong>Your starting cluster</strong> (Tower of Torment area in IE; Zorn Uzkul + High Pass in Realm of Chaos).</li>
+        <li><strong>Frozen Landing</strong> (IE south retreat path) &mdash; ideal economic base if you take the pivot opening.</li>
+        <li><strong>Norscan coastal cities</strong> as you crusade north &mdash; beachheads.</li>
+        <li><strong>Chaos Dwarf settlements once stable</strong> &mdash; Wasteland is suitable for you uniquely.</li>
+        <li><strong>Avoid Habitable cities you can't reinforce</strong> &mdash; sack for gold and walk away.</li>
+    </ul>
+
+    <div class="warn">
+        <strong>Climate trap:</strong> Loot &amp; Occupy a city in <em>Uninhabitable</em> climate and you bleed public order, money, and growth. Read the climate icon before you click. <em>Cold/Frozen/Wasteland = green light, anything else = think twice.</em>
+    </div>
+</section>
+
+<!-- ============================================================ DIPLOMACY / ECONOMY -->
+<section class="tab" id="economy">
+    <h2><span class="rune">&#9763;</span>Diplomacy &amp; Economy</h2>
+    <p class="lead">
+        Boris has full Kislev diplomacy plus a unique +30 with The Ice Court &mdash; a real friend on day one. Combine it with Devotion-management discipline (don't attack other Kislevites) and you can run a stable diplomatic backline while you crusade north.
+    </p>
+
+    <h3>Diplomacy: actually useful</h3>
+    <ul>
+        <li><strong>+30 starting relations with The Ice Court.</strong> Trade, NAP, military access, defensive alliance, eventually confederation. Cash this in turn 1.</li>
+        <li><strong>Don't attack other Kislev factions.</strong> It costs you Devotion, and low Devotion makes Chaos armies more likely to attack you. Even if you <em>can</em> declare on Katarin or Kostaltyn, there's no good reason to do so.</li>
+        <li><strong>Help Katarin (or Kostaltyn) win the Court vs. Orthodoxy supremacy race</strong>, then confederate the winner. This is the cleanest path to a unified Kislev under your control.</li>
+        <li><strong>Trade with the Empire and Bretonnia</strong> from turn 1. Their gold flows back to you while you fight Chaos &mdash; reliable mid-game income.</li>
+        <li><strong>Ally with the Dwarfs</strong> if possible &mdash; their artillery and Irondrakes complement your gunpowder weakness, and they share your enemies.</li>
+        <li><strong>Realm of Chaos:</strong> consider an alliance with the regular Dwarfs for a trade route west to Kislev proper.</li>
+        <li><strong>Don't ally with Tzeentch / Slaanesh / Khorne / Nurgle.</strong> Reputation hit propagates to every Order partner you also want.</li>
+    </ul>
+
+    <div class="tip">
+        <strong>Practical rule:</strong> open the diplomacy screen <em>every turn</em>. Look for new trade partners, friendly-territory access offers, and Supporters movements. There is almost always a free move available.
+    </div>
+
+    <h3>Economy: how you actually make money</h3>
+    <p>
+        Unlike Khorne, Kislev's treasury is fed by <strong>buildings, trade, and Atamans</strong>, supported by battle income. Sources in order of importance:
+    </p>
+
+    <ol class="steps">
+        <li><strong>Trade deals.</strong> Kislev exports Furs, Amber, and Timber &mdash; build a network with the Empire, Bretonnia, and Dwarfs early.</li>
+        <li><strong>Building income.</strong> Higher-tier commodity buildings, ports, and growth chains stack income. The &minus;50% on Garrison and Religion buildings frees gold to invest elsewhere.</li>
+        <li><strong>Atamans</strong> provide regional bonuses through dilemma-driven traits &mdash; many of which are economic.</li>
+        <li><strong>Battle &amp; sack income.</strong> Real but secondary. Don't structure your campaign around it.</li>
+        <li><strong>Resettler reduces costs.</strong> Free colonisation is effectively negative-cost expansion &mdash; a hidden income stream.</li>
+    </ol>
+
+    <h3>Building priorities for the cities you keep</h3>
+    <ul>
+        <li><strong>Province capital recruitment chain to Tier 3</strong> first &mdash; you need War Bear Rider access fast.</li>
+        <li><strong>Religion (Cult of Ursun) buildings</strong> in every settlement &mdash; cheap (&minus;50% cost), Devotion-positive, and they help confederation.</li>
+        <li><strong>Garrison upgrades</strong> on every frontier capital &mdash; cheap (&minus;50% cost) and crucial when you're surrounded by Chaos.</li>
+        <li><strong>Then commodity / port chains</strong> for income &mdash; especially in your safer interior provinces.</li>
+        <li><strong>Skip generic income buildings</strong> in favour of higher-yield commodity chains.</li>
+    </ul>
+
+    <h3>Cash-flow troubleshooting</h3>
+    <div class="warn">
+        <strong>If your treasury is bleeding red:</strong>
+        <ul style="margin-top:.4rem">
+            <li><em>Disband a reserve army.</em> Kislev recruitment is fast; you can rebuild in 4&ndash;5 turns.</li>
+            <li><em>Renegotiate trade deals upward.</em> Trade values change as you develop &mdash; old deals may underprice you.</li>
+            <li><em>Raid-stance an idle main army</em> for the bridge income.</li>
+            <li><em>Sack a southern Habitable city</em> &mdash; you weren't going to keep it anyway.</li>
+            <li><em>Time a Motherland Ritual</em> to a cash-or-replenishment-flavoured offering if Devotion permits.</li>
+        </ul>
+    </div>
+
+    <h3>Public order &amp; corruption</h3>
+    <ul>
+        <li><strong>Boris is immune to Chaos corruption</strong> in his army &mdash; he can stand on a Chaos-corrupted province with no penalty.</li>
+        <li><strong>Religion buildings counter corruption.</strong> They're half-cost for you &mdash; spam them.</li>
+        <li><strong>Atamans</strong> can take dilemma traits that boost public order or corruption resistance regionally.</li>
+        <li><strong>If a settlement does revolt, retake it the same turn</strong> &mdash; free battle XP, free gold, denies the rebel snowball.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ TECHNOLOGIES -->
+<section class="tab" id="tech">
+    <h2><span class="rune">&#9763;</span>Technologies</h2>
+    <p class="lead">
+        Kislev tech is paid in <strong>gold + research time</strong>. Pick a path early and commit &mdash; the tree rewards specialisation. For Boris, that specialisation is <em>bear cavalry, anti-Chaos buffs, and construction discounts</em>.
+    </p>
+
+    <h3>Priority order</h3>
+    <ol class="steps">
+        <li><strong>War Bear Riders / monstrous cavalry tech first.</strong> They're your doomstack core and every buff compounds with Boris's &minus;25% upkeep and +2 recruit rank.</li>
+        <li><strong>Anti-Chaos / anti-Norsca damage and leadership.</strong> The campaign rewards exactly what these techs reward; they stack with Boris's lord effects.</li>
+        <li><strong>Garrison &amp; building cost / time techs.</strong> Compound with the &minus;50% Garrison/Religion cost and &minus;1 capital construction time faction effects.</li>
+        <li><strong>Streltsi / Patriarch buffs.</strong> Reload speed, prayer durations, replenishment-from-Patriarchs.</li>
+        <li><strong>Recruitment cost reductions.</strong> Kislev gold is tight in the mid-game; any % saved is real.</li>
+        <li><strong>Trade &amp; income techs.</strong> Worth taking once you have 3+ trade partners; not before.</li>
+        <li><strong>Late-game elite techs.</strong> Gryphon Legion, Elemental Bear, Tzar Guard. Take last because you'll have these units before the tech, and the buffs are quality-of-life rather than transformative.</li>
+    </ol>
+
+    <h3>What to skip (or de-prioritise)</h3>
+    <ul>
+        <li><strong>Climate-mitigation tech &mdash; mostly skip.</strong> Boris is already immune to Chaos Wastes attrition; the marginal gain is tiny.</li>
+        <li><strong>Generic Boyar lord buffs &mdash; later.</strong> They help your secondary stacks but Boris is your main; prioritise his army.</li>
+        <li><strong>Defensive / siege-defender tech &mdash; situational.</strong> Take it only if you're explicitly turtling vs. Norsca; otherwise the offence techs pay off faster.</li>
+    </ul>
+
+    <h3>Tech &amp; Devotion &mdash; different wallets</h3>
+    <div class="tactic">
+        Tech costs <em>gold and research time</em>. Devotion is its own wallet, spent on Motherland Rituals (and some high-tier buildings). <strong>You don't have to choose between them</strong> &mdash; but you do want to time the rituals alongside tech-completions and offensive turns for maximum stacked impact.
+    </div>
+
+    <h3>What "good tech" looks like in practice</h3>
+    <ul>
+        <li><strong>By turn 25:</strong> War Bear Rider damage / charge bonus, +1 Patriarch slot, basic anti-Chaos damage tech.</li>
+        <li><strong>By turn 50:</strong> trade-network bonus, building-time reduction, Streltsi reload-speed, Patriarch prayer-duration.</li>
+        <li><strong>By turn 75+:</strong> elite-unit buffs (Gryphon Legion, Elemental Bear), leadership and public-order quality-of-life.</li>
+    </ul>
+
+    <div class="tip">
+        <strong>The compounding insight:</strong> Kislev's tree rewards stacking the same effect from multiple sources. <em>Pick the War Bear Rider doomstack and double down.</em> Their buffs stack with Boris's lord effects, Patriarch's Salyak's Lullaby, the +2 recruit rank faction effect, anti-Chaos technology, and Motherland Rituals &mdash; if all six point at the same unit, you have an unbreakable doomstack.
+    </div>
+</section>
+
+<footer>
+    Ursun Revivalists &mdash; New Player's Guide &middot; Total War: Warhammer III
+    <br>Sourced from the official Total War: WARHAMMER Wiki (Boris Ursus, Ursun Revivalists, and Kislev pages).
+</footer>
+
+</main>
+
+<script>
+(function(){
+    const nav = document.getElementById('navBar');
+    const tabs = document.querySelectorAll('.tab');
+    const buttons = nav.querySelectorAll('button');
+
+    nav.addEventListener('click', function(e){
+        const btn = e.target.closest('button[data-tab]');
+        if(!btn) return;
+        const target = btn.dataset.tab;
+        buttons.forEach(b => b.classList.toggle('active', b === btn));
+        tabs.forEach(t => t.classList.toggle('active', t.id === target));
+        window.scrollTo({top:0, behavior:'instant'});
+    });
+
+    const themeBtn = document.getElementById('themeBtn');
+    const stored = localStorage.getItem('ursun-theme');
+    if(stored === 'light') document.body.classList.add('light');
+    themeBtn.addEventListener('click', function(){
+        document.body.classList.toggle('light');
+        localStorage.setItem('ursun-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+})();
+</script>
+</body>
+</html>

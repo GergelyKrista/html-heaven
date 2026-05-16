@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Northern Provinces &mdash; New Player's Guide</title>
+<meta name="description" content="A new player's guide to Miao Ying, the Storm Dragon, and The Northern Provinces in Total War: Warhammer III. Lore, Cathay mechanics, Harmony, the Great Bastion, full unit roster, hero management, campaign and battle strategy, settlement decisions, diplomacy, economy, and tech priorities.">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Northern Provinces &mdash; New Player's Guide">
+<meta property="og:description" content="A beginner-friendly guide to Miao Ying, the Storm Dragon, and The Northern Provinces (Cathay) in Total War: Warhammer III.">
+<meta property="og:image" content="titlecard.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Northern Provinces titlecard with a yin-yang storm dragon over a stormy blue sky.">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Northern Provinces &mdash; New Player's Guide">
+<meta name="twitter:description" content="A beginner-friendly guide to Miao Ying, the Storm Dragon, and The Northern Provinces in Total War: Warhammer III.">
+<meta name="twitter:image" content="titlecard.png">
+<meta name="twitter:image:alt" content="The Northern Provinces titlecard with a yin-yang storm dragon over a stormy blue sky.">
+<style>
+:root {
+    --bg:     #0a1424;
+    --sf:     #131f33;
+    --sf2:    #1c2a44;
+    --sf3:    #243652;
+    --ember:  #c8302a;
+    --ember2: #e84a3a;
+    --gold:   #d4a23a;
+    --gold2:  #f5c74c;
+    --frost:  #cfe4d6;
+    --tx:     #ecf2fa;
+    --mu:     #93a3bd;
+    --bdr:    rgba(245,199,76,.14);
+    --rune:   #8a2418;
+    --hdr-1:  #14253f;
+    --hdr-2:  #0a1424;
+    --hdr-tx: #ecf2fa;
+    --hdr-mu: #93a3bd;
+    --hdr-btn-bg:    rgba(245,199,76,.08);
+    --hdr-btn-bdr:   rgba(245,199,76,.3);
+    --hdr-btn-bg-h:  rgba(245,199,76,.18);
+}
+body.light {
+    --bg:     #f3f6fb;
+    --sf:     #ffffff;
+    --sf2:    #e6ecf5;
+    --sf3:    #d3dde9;
+    --ember:  #a01c14;
+    --ember2: #c1271d;
+    --gold:   #8a6a1f;
+    --gold2:  #a88029;
+    --frost:  #2a3d34;
+    --tx:     #1d2433;
+    --mu:     #5d6a80;
+    --bdr:    rgba(160,28,20,.18);
+    --rune:   #7a1810;
+    --hdr-1:  #e3ecf7;
+    --hdr-2:  #cfdbeb;
+    --hdr-tx: #15202f;
+    --hdr-mu: #4a576c;
+    --hdr-btn-bg:    rgba(160,28,20,.06);
+    --hdr-btn-bdr:   rgba(160,28,20,.28);
+    --hdr-btn-bg-h:  rgba(160,28,20,.14);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body {
+    background:var(--bg); color:var(--tx);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.72;
+    transition:background .2s,color .2s;
+}
+
+/* Header */
+header {
+    background:linear-gradient(180deg,var(--hdr-1) 0%,var(--hdr-2) 100%);
+    padding:1.4rem 1.8rem;
+    display:flex; align-items:center; gap:1rem;
+    border-bottom:2px solid var(--ember);
+    position:relative;
+}
+header::after{
+    content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px;
+    background:linear-gradient(90deg,transparent 0%,var(--gold) 50%,transparent 100%);
+    opacity:.55;
+}
+.skull{font-size:1.75rem;line-height:1;color:var(--gold2);text-shadow:0 0 12px rgba(212,162,58,.45)}
+body.light .skull{color:var(--ember);text-shadow:0 0 8px rgba(160,28,20,.2)}
+header h1{font-size:1.4rem;font-weight:700;letter-spacing:.3px;color:var(--hdr-tx)}
+header h1 .accent{color:var(--ember2)}
+header p {color:var(--hdr-mu);font-size:.85rem;margin-top:.2rem}
+.hdr-right{margin-left:auto;display:flex;gap:.5rem;flex-shrink:0}
+.hdr-btn {
+    background:var(--hdr-btn-bg);
+    border:1px solid var(--hdr-btn-bdr);
+    color:var(--hdr-tx); border-radius:5px;
+    padding:.4rem .9rem;
+    font-size:.8rem; font-weight:600;
+    cursor:pointer; transition:all .15s;
+    text-decoration:none; display:inline-flex; align-items:center;
+    font-family:inherit; line-height:1.2;
+}
+.hdr-btn:hover{background:var(--hdr-btn-bg-h);border-color:var(--gold)}
+
+/* Nav */
+nav {
+    background:var(--sf); display:flex;
+    overflow-x:auto; border-bottom:1px solid var(--sf2);
+    scrollbar-width:none;
+    position:sticky; top:0; z-index:10;
+}
+nav::-webkit-scrollbar{display:none}
+nav button {
+    background:none; border:none;
+    border-bottom:2px solid transparent;
+    color:var(--mu); padding:1rem 1.4rem;
+    cursor:pointer; font-size:.92rem; font-weight:500;
+    white-space:nowrap; transition:color .15s, border-color .15s;
+    font-family:inherit;
+}
+nav button:hover{color:var(--tx)}
+nav button.active{color:var(--ember2);border-bottom-color:var(--ember)}
+
+/* Layout */
+main{max-width:1100px;margin:0 auto;padding:2.4rem 1.8rem 5rem}
+.tab{display:none}
+.tab.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+h2{
+    font-size:1.45rem;color:var(--gold2);
+    margin-bottom:1.6rem;padding-bottom:.7rem;
+    border-bottom:1px solid var(--sf2);
+    letter-spacing:.2px;font-weight:700;
+}
+h2 .rune{color:var(--ember);margin-right:.55rem}
+h3{font-size:1.12rem;font-weight:600;color:var(--ember2);margin:2rem 0 .9rem;letter-spacing:.1px}
+h4{font-size:.82rem;font-weight:700;color:var(--gold);margin:1.3rem 0 .55rem;text-transform:uppercase;letter-spacing:.7px}
+
+p{margin-bottom:1.05rem}
+strong{color:var(--frost);font-weight:600}
+em{color:var(--gold2);font-style:normal;font-weight:600}
+
+ul,ol{padding-left:1.45rem;margin-bottom:1.1rem}
+li{margin-bottom:.55rem;line-height:1.65}
+li::marker{color:var(--ember)}
+
+.lead{
+    font-size:1.04rem;color:var(--mu);margin-bottom:2rem;
+    padding:1.15rem 1.35rem;background:var(--sf);border-left:3px solid var(--ember);
+    border-radius:0 6px 6px 0;line-height:1.7;
+}
+
+/* Grid layouts */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+@media(max-width:780px){.two-col,.three-col{grid-template-columns:1fr}}
+
+/* Cards */
+.card{
+    background:var(--sf);border-radius:7px;
+    padding:1.25rem 1.45rem;margin-bottom:1rem;
+    border:1px solid var(--bdr);
+}
+.card-blood{border-left:3px solid var(--ember)}
+.card-brass{border-left:3px solid var(--gold)}
+.card-bone{border-left:3px solid var(--frost)}
+.card p:last-child,.card ul:last-child,.card ol:last-child{margin-bottom:0}
+
+/* Callouts */
+.tip,.warn,.note,.tactic{
+    border-radius:6px;padding:.95rem 1.2rem;font-size:.92rem;
+    margin:1.1rem 0;color:var(--mu);line-height:1.65;
+}
+.tip {background:rgba(212,162,58,.08);border:1px solid rgba(212,162,58,.24)}
+.tip  strong{color:var(--gold2)}
+.warn{background:rgba(200,48,42,.08);border:1px solid rgba(200,48,42,.28)}
+.warn strong{color:var(--ember2)}
+.note{background:rgba(207,228,214,.05);border:1px solid rgba(207,228,214,.15)}
+.note strong{color:var(--frost)}
+.tactic{background:rgba(138,36,24,.14);border:1px solid rgba(138,36,24,.42)}
+.tactic strong{color:var(--ember2)}
+
+/* Yin/Yang special block */
+.yy{
+    display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1.2rem 0;
+}
+@media(max-width:680px){.yy{grid-template-columns:1fr}}
+.yy-block{
+    padding:1.2rem 1.4rem;border-radius:7px;background:var(--sf);
+    border:1px solid var(--bdr);
+}
+.yy-yin{border-left:3px solid #6ea3d4}
+.yy-yang{border-left:3px solid var(--ember)}
+.yy-block h4{margin-top:0;font-size:1rem;letter-spacing:.2px;text-transform:none}
+.yy-yin h4{color:#9bc4ec}
+.yy-yang h4{color:var(--ember2)}
+
+/* Stat lines */
+.stat-row{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--bdr);gap:1rem}
+.stat-row:last-child{border-bottom:none}
+.stat-row .label{color:var(--mu)}
+.stat-row .val{color:var(--frost);font-weight:600;text-align:right}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+th,td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--sf2);vertical-align:top}
+th{color:var(--gold2);font-weight:600;background:var(--sf2);font-size:.78rem;text-transform:uppercase;letter-spacing:.6px}
+tr:hover td{background:rgba(245,199,76,.04)}
+td .role{display:inline-block;font-size:.7rem;padding:.18rem .55rem;border-radius:3px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.role-tank{background:rgba(207,228,214,.15);color:var(--frost)}
+.role-melee{background:rgba(200,48,42,.18);color:var(--ember2)}
+.role-cav{background:rgba(212,162,58,.18);color:var(--gold2)}
+.role-mons{background:rgba(180,90,150,.22);color:#e8a4d2}
+.role-fast{background:rgba(120,160,200,.18);color:#9bc4ec}
+.role-art{background:rgba(140,90,200,.18);color:#c5a4f0}
+.role-hero{background:rgba(245,199,76,.15);color:var(--gold2)}
+.role-cast{background:rgba(120,200,220,.18);color:#88d3e3}
+.role-fly{background:rgba(180,120,200,.2);color:#d6a3ed}
+.role-yin{background:rgba(120,160,200,.18);color:#9bc4ec}
+.role-yang{background:rgba(200,48,42,.18);color:var(--ember2)}
+
+/* Decision flow (raze / sack / occupy) */
+.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin:1.4rem 0}
+@media(max-width:780px){.decision{grid-template-columns:1fr}}
+.choice{
+    background:var(--sf);padding:1.3rem 1.45rem;border-radius:7px;
+    border:1px solid var(--bdr);border-top:3px solid var(--gold);
+}
+.choice.raze{border-top-color:var(--ember)}
+.choice.sack{border-top-color:var(--gold)}
+.choice.occupy{border-top-color:var(--frost)}
+.choice h4{margin-top:0;font-size:1.05rem;color:var(--frost);text-transform:none;letter-spacing:.2px}
+.choice .verdict{
+    margin-top:.85rem;padding:.6rem .8rem;font-size:.86rem;
+    background:var(--sf2);border-radius:5px;color:var(--gold2);
+    border:1px solid var(--bdr);
+}
+
+/* Mechanic blocks */
+.mech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem;margin:1.2rem 0}
+@media(max-width:780px){.mech-grid{grid-template-columns:1fr}}
+.mech{
+    background:var(--sf);padding:1.25rem 1.4rem;border-radius:7px;
+    border:1px solid var(--bdr);position:relative;
+}
+.mech-icon{
+    position:absolute;top:1.05rem;right:1.05rem;
+    font-size:1.5rem;opacity:.35;color:var(--gold);
+}
+.mech h4{margin-top:0;color:var(--ember2);text-transform:none;letter-spacing:0;font-size:1.04rem}
+.mech p:last-child{margin-bottom:0}
+
+/* Pros/cons */
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1rem 0}
+@media(max-width:680px){.pc{grid-template-columns:1fr}}
+.pc-block{padding:1.15rem 1.35rem;border-radius:6px;background:var(--sf);border:1px solid var(--bdr)}
+.pc-pros{border-left:3px solid var(--gold)}
+.pc-cons{border-left:3px solid var(--ember)}
+.pc-block h4{margin-top:0;font-size:.85rem}
+.pc-pros h4{color:var(--gold2)}
+.pc-cons h4{color:var(--ember2)}
+.pc-block ul{margin-bottom:0;padding-left:1.25rem}
+.pc-block li{font-size:.94rem;color:var(--mu);margin-bottom:.5rem;line-height:1.6}
+
+/* Hero block (Miao Ying) */
+.hero-block{
+    background:linear-gradient(135deg,var(--sf) 0%,var(--sf2) 100%);
+    padding:1.6rem 1.75rem;border-radius:8px;
+    border:1px solid var(--ember);position:relative;overflow:hidden;
+    margin-bottom:1.5rem;
+}
+.hero-block::before{
+    content:"";position:absolute;top:-30px;right:-30px;
+    width:140px;height:140px;border-radius:50%;
+    background:radial-gradient(circle,rgba(200,48,42,.22),transparent 70%);
+}
+.hero-name{font-size:1.55rem;color:var(--ember2);font-weight:700;letter-spacing:.5px}
+.hero-title{font-size:.9rem;color:var(--gold2);margin-bottom:.95rem;font-style:italic}
+
+/* Tag chips */
+.tags{display:flex;flex-wrap:wrap;gap:.45rem;margin:.85rem 0}
+.tag{
+    font-size:.72rem;padding:.25rem .65rem;border-radius:3px;
+    background:var(--sf2);color:var(--mu);border:1px solid var(--bdr);
+    text-transform:uppercase;letter-spacing:.5px;font-weight:600;
+}
+.tag.good{color:var(--gold2);border-color:rgba(212,162,58,.4)}
+.tag.bad{color:var(--ember2);border-color:rgba(200,48,42,.4)}
+
+/* Numbered steps */
+.steps{counter-reset:step;list-style:none;padding:0;margin:1rem 0}
+.steps li{
+    counter-increment:step;
+    position:relative;padding:.95rem 1.15rem .95rem 3rem;
+    background:var(--sf);border-radius:6px;margin-bottom:.7rem;
+    border:1px solid var(--bdr);border-left:2px solid var(--gold);
+    line-height:1.6;
+}
+.steps li::before{
+    content:counter(step);
+    position:absolute;left:.85rem;top:1rem;
+    width:1.65rem;height:1.65rem;border-radius:50%;
+    background:var(--ember);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.82rem;
+}
+
+/* Section intro */
+.intro-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1.6rem;margin-bottom:1.5rem}
+@media(max-width:780px){.intro-grid{grid-template-columns:1fr}}
+
+/* Quick reference panel */
+.qref{
+    background:var(--sf2);padding:1.3rem 1.45rem;border-radius:7px;
+    border:1px solid var(--bdr);
+}
+.qref h4{margin-top:0}
+.qref .stat-row{font-size:.92rem}
+
+footer{
+    text-align:center;padding:2rem 1.5rem;color:var(--mu);font-size:.84rem;
+    border-top:1px solid var(--sf2);margin-top:3rem;line-height:1.7;
+}
+footer a{color:var(--gold);text-decoration:none}
+footer a:hover{color:var(--gold2);text-decoration:underline}
+</style>
+</head>
+<body>
+
+<header>
+    <span class="skull" aria-hidden="true">&#9775;</span>
+    <div>
+        <h1>The Northern <span class="accent">Provinces</span> &mdash; New Player's Guide</h1>
+        <p>Total War: Warhammer III &middot; Miao Ying, the Storm Dragon &middot; Beginner-friendly</p>
+    </div>
+    <div class="hdr-right">
+        <button class="hdr-btn" id="themeBtn" type="button">Theme</button>
+    </div>
+</header>
+
+<nav id="navBar">
+    <button data-tab="overview" class="active">Overview</button>
+    <button data-tab="lore">Lore</button>
+    <button data-tab="mechanics">Cathay Mechanics</button>
+    <button data-tab="northern">Northern Mechanics</button>
+    <button data-tab="miao">Miao Ying</button>
+    <button data-tab="strengths">Strengths &amp; Weaknesses</button>
+    <button data-tab="campaign">Campaign Strategy</button>
+    <button data-tab="battle">Battle Strategy</button>
+    <button data-tab="roster">Unit Roster</button>
+    <button data-tab="heroes">Heroes &amp; Casters</button>
+    <button data-tab="bastion">The Great Bastion</button>
+    <button data-tab="settlements">Raze / Sack / Occupy</button>
+    <button data-tab="economy">Diplomacy &amp; Economy</button>
+</nav>
+
+<main>
+
+<!-- ============================================================ OVERVIEW -->
+<section class="tab active" id="overview">
+    <h2><span class="rune">&#9775;</span>Overview</h2>
+    <p class="lead">
+        The Northern Provinces are the militant northern wing of Grand Cathay, ruled by <strong>Miao Ying, the Storm Dragon</strong> &mdash; first-born of the Celestial Dragon Emperor and Moon Empress, charged with defending the Great Bastion against the Hobgoblin Khanate, Norscan reavers, Kurgan Warbands, Chaos Dwarfs, and any other horror that crawls south from the Eastern Steppes. Miao Ying is a dragon-shapeshifting wizard, the Bastion is a wall that has never <em>fallen entirely</em>, and your job is to make sure it never does on your watch.
+    </p>
+
+    <div class="intro-grid">
+        <div>
+            <h3>Why The Northern Provinces is a great campaign to learn Cathay</h3>
+            <ul>
+                <li>The Great Bastion is the headline mechanic: <strong>well-upgraded gates usually defeat Kurgan Warbands by themselves</strong>, and <em>&minus;20% construction cost on Grand Bastion buildings</em> is the best wall-economy in any Cathay faction.</li>
+                <li>Miao Ying is one of the most well-rounded Legendary Lords in the game &mdash; <strong>caster, dragon-form bruiser, and Harmony Amplifier all in one</strong>.</li>
+                <li>Faction-wide <strong>+10 leadership vs. Daemons / Warriors of Chaos / Chaos Dwarfs / Norsca</strong> &mdash; the matchups the campaign forces on you are exactly the matchups the faction is built for.</li>
+                <li>Faction-wide <strong>+20% ammunition for missile units</strong> means your gunline never runs dry.</li>
+                <li>The Ivory Road and the Wu-Xing Compass give you economic and magical levers no other race has.</li>
+            </ul>
+        </div>
+        <div class="qref">
+            <h4>At a glance</h4>
+            <div class="stat-row"><span class="label">Legendary Lord</span><span class="val">Miao Ying, the Storm Dragon</span></div>
+            <div class="stat-row"><span class="label">Race</span><span class="val">Grand Cathay</span></div>
+            <div class="stat-row"><span class="label">Start (all campaigns)</span><span class="val">Nan-Gau, Gunpowder Road</span></div>
+            <div class="stat-row"><span class="label">Faction style</span><span class="val">Defensive gunline / dragon assault</span></div>
+            <div class="stat-row"><span class="label">Difficulty</span><span class="val">Easy &mdash; sheltered start, learnable mechanics</span></div>
+            <div class="stat-row"><span class="label">Magic</span><span class="val">8 lores available; Miao Ying is a Wizard</span></div>
+            <div class="stat-row"><span class="label">Corruption</span><span class="val">Untainted (faction effect: &minus;2)</span></div>
+            <div class="stat-row"><span class="label">Mood at court</span><span class="val">Cold and aloof</span></div>
+        </div>
+    </div>
+
+    <h3>The Miao Ying loop, in one sentence</h3>
+    <div class="tactic">
+        <strong>Hold the Bastion with cheap Peasant Long Spearmen and Crane Gunners &rarr; rotate Miao Ying between threatened gates &rarr; let her transform into the Storm Dragon when the breach point demands it &rarr; bank Defensive Supplies &rarr; fund the next Ivory Road caravan &rarr; build out the Bastion gates that haven't been threatened yet so they don't get threatened next.</strong> Defense is your offence; the Bastion pays for itself.
+    </div>
+
+    <div class="warn">
+        <strong>Three serious threats to know about:</strong> in Immortal Empires, Miao Ying contends with <em>The Warhost of Zharr</em> (Chaos Dwarfs &mdash; their roster resists fire damage from your Sky-junks; the Luminark Lens helps), <em>Puppets of Misrule</em> (Tzeentch &mdash; Vilitch's Changing of the Ways is a huge pain), and <em>Clan Eshin</em> (Skaven). The fortunate trick: Chaos Dwarfs and Tzeentch <em>mutually dislike each other</em>, so when they fight, you peace out with one or both and pick the third off in peace.
+    </div>
+
+    <h3>What this guide covers</h3>
+    <div class="three-col">
+        <div class="card card-blood">
+            <h4>The faction</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Lore, the Storm Dragon, the Cult of Ursun &mdash; sorry, the <em>Cult of the Celestial Dragon</em> &mdash; and what makes the Northern Provinces different from the Western Provinces and the Jade Court.
+            </p>
+        </div>
+        <div class="card card-brass">
+            <h4>The systems</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Harmony (Yin/Yang), the Wu-Xing Compass, the Ivory Road, the Great Bastion, Mastery of Elemental Winds, and the Northern-specific faction effects.
+            </p>
+        </div>
+        <div class="card card-bone">
+            <h4>The play</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Campaign opening, hero management with Alchemists and Astromancers, the full unit roster with Yin/Yang use cases, gate-defence patterns, and battle templates.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ LORE -->
+<section class="tab" id="lore">
+    <h2><span class="rune">&#9775;</span>Lore &mdash; The Storm Dragon and Her Wall</h2>
+    <p class="lead">
+        To understand the Northern Provinces you have to understand three things: who ultimately rules Cathay, who Miao Ying is in that family, and what the Great Bastion was built to keep out.
+    </p>
+
+    <h3>Grand Cathay &mdash; the Empire of the Celestial Dragon</h3>
+    <p>
+        Grand Cathay is the largest empire in the Warhammer World, occupying most of the Far East. It is ruled by the <strong>Celestial Dragon Emperor</strong> and his consort the <strong>Moon Empress</strong> &mdash; immortal dragons who can shapeshift into human form &mdash; from the Imperial Court. In practice, the day-to-day governing of the empire falls to their nine children, who rule individual provinces. Of the nine, <em>four have been lost to time and enmity</em>; five remain.
+    </p>
+    <p>
+        Cathay's people are mostly humans, with smaller populations of Monkey-Warriors, and trading cities that host Tilean, Estalian, Imperial, High Elf, and Dwarf foreigners. The empire is a power of <strong>Order</strong>, a staunch opponent of Chaos &mdash; but its position in the Far East makes it isolated, thousands of miles from any natural ally.
+    </p>
+
+    <h3>Miao Ying &mdash; the Storm Dragon, eldest child of the Emperor</h3>
+    <p>
+        Miao Ying is "<em>the favoured child of the Celestial Emperor, revered defender of the Great Bastion and imperious majesty incarnate</em>." She is the <strong>first-born</strong>, given the honour of ruling the Northern Provinces and charged with Cathay's defence as commander of the Great Bastion. She has held this position for centuries.
+    </p>
+    <p>
+        She is famously <strong>cold and aloof</strong>. Her armies are almost constantly at war, fighting the predations of Chaos that grow against the Bastion. Her father entrusts her with important tasks &mdash; some of which put her at odds with her siblings.
+    </p>
+
+    <div class="warn">
+        <strong>The detail that defines her in battle:</strong> Miao Ying is <em>both</em> a wizard <em>and</em> a melee monster. She fights in <strong>two forms</strong>: Standard (humanoid, armoured, sword-and-spell caster with full Wizard kit) and <strong>Dragon Form</strong> (a transformation ability that turns her into a single-entity flying dragon). Both forms cast spells. The Dragon form is faster and devastating in single-entity combat; the Standard form is a more flexible front-line caster.
+    </div>
+
+    <h3>The Great Bastion</h3>
+    <p>
+        The most notable feature of the Northern Provinces is the <strong>Great Bastion</strong> &mdash; a huge, ancient fortification stretching along most of Cathay's northern border. It guards against the Hobgoblin Khanate, the forces of Chaos, and other attackers from the Eastern Steppes. Along its length lie <strong>gates, guarded by mighty fortresses</strong>. The Great Bastion has a <em>mysterious, magical connection to the Dragon Emperor himself</em>. On rare occasions it has been breached &mdash; and when it has, the forces of Chaos have cut a bloody swath into the heartland of Cathay &mdash; <strong>but it has never fallen entirely</strong>.
+    </p>
+
+    <h3>Nan-Gau &mdash; the City of Smoke</h3>
+    <p>
+        In the northwest of the Northern Provinces lies <strong>Nan-Gau, the city of smoke</strong> &mdash; countless forges and workshops producing arms and machines for Cathay's armies, including the famous <em>Sky-junks</em>. Because of Nan-Gau's importance to the empire, its Lords are granted <strong>more independence</strong> than most. Your starting capital and a defining piece of the campaign's identity.
+    </p>
+
+    <h3>The four playable Cathay factions &mdash; where the Northern fits</h3>
+    <p>
+        Cathay ships <strong>three vanilla playable factions</strong>, plus the DLC Tiger Warriors:
+    </p>
+    <ul>
+        <li><strong>The Northern Provinces</strong> &mdash; Miao Ying, the Storm Dragon. The Bastion guardians. The faction this guide covers.</li>
+        <li><strong>The Western Provinces</strong> &mdash; Zhao Ming, the Iron Dragon. Guards the city of Shang-Yang in the Warpstone Desert and the Ivory Road westward.</li>
+        <li><strong>The Jade Court</strong> &mdash; Yuan Bo, the Jade Dragon. Rules from Shang Wu; chief bureaucrat and Administrator of the Realm.</li>
+        <li><strong>(DLC) Bhashiva &amp; the Tiger Warriors</strong> &mdash; Bhashiva, the White Tiger.</li>
+    </ul>
+    <p>
+        There are two siblings <em>not</em> playable: <strong>Yin-Yin the Sea Dragon</strong> (Eastern Provinces) and <strong>Li Dao the Fire Dragon</strong> (Southern Provinces). The dragon family doesn't always live in harmony &mdash; jealous competition between siblings is part of the campaign flavour.
+    </p>
+
+    <div class="note">
+        <strong>Why this matters mechanically:</strong> the lore <em>is</em> the mechanics. The Bastion is real terrain you maintain. Harmony &mdash; the balance of Yin and Yang &mdash; is the worldview of Cathay that the game expresses as a meter you steer. The Wu-Xing Compass is the Imperial influence over the Winds of Magic. Caravans to the Old World on the Ivory Road are the same caravans Zhao Ming's faction wrote into history. <em>The flavour is the rulebook</em>.
+    </div>
+</section>
+
+<!-- ============================================================ CATHAY MECHANICS -->
+<section class="tab" id="mechanics">
+    <h2><span class="rune">&#9775;</span>General Cathay Mechanics</h2>
+    <p class="lead">
+        These five systems apply to every Grand Cathay faction. Master them and you understand the race.
+    </p>
+
+    <div class="mech-grid">
+        <div class="mech">
+            <span class="mech-icon">&#9775;</span>
+            <h4>Harmony (Yin / Yang)</h4>
+            <p>Cathay's philosophical core. <strong>Each action you take pushes a Harmony meter</strong> toward either <em>Yin</em> or <em>Yang</em>. The greatest faction-wide bonuses come from <strong>keeping the meter balanced in the centre</strong>; extreme tilt to either pole gives you partial bonuses but loses the harmony bonus.</p>
+            <p style="margin:0">It is, mechanically, similar to Bretonnia's Peasant Economy &mdash; balance two resources to maximise output without penalties.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#10024;</span>
+            <h4>The Wu-Xing Compass</h4>
+            <p>A magical campaign-map device that <strong>directs the Winds of Magic across the land</strong>. Pointing the Compass at a faction-wide buff (military, economic, supply) gives you a powerful temporary effect across every region you own.</p>
+            <p style="margin:0">Pair Compass directions with Harmony alignment for compounding effects &mdash; this is one of the strategic levers other races simply do not have.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#127746;</span>
+            <h4>The Ivory Road</h4>
+            <p>Cathay's <strong>trade-caravan campaign system</strong>. Your factions can send trade caravans west along the Ivory Road to the Old World &mdash; <em>income</em>, plus en-route <strong>dilemmas</strong> that may enhance the rewards or destroy the caravan entirely.</p>
+            <p style="margin:0"><strong>Equip caravans with sturdy infantry and anti-large units</strong> &mdash; especially against Ogre threats. Defeating an Ogre Lord during a caravan run grants meaningful loot.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#127902;</span>
+            <h4>The Great Bastion</h4>
+            <p>The mighty fortification along Cathay's northern border. <strong>It will come under attack</strong>; building it up confers great benefits. Each gate has its own threat bar, garrison, and defensive infrastructure that you upgrade over time.</p>
+            <p style="margin:0">For the Northern Provinces specifically, the Bastion is your campaign &mdash; see the <em>Great Bastion</em> tab for the deep dive.</p>
+        </div>
+    </div>
+
+    <h3>Battle Harmony &mdash; Yin and Yang on the battlefield</h3>
+    <div class="yy">
+        <div class="yy-block yy-yin">
+            <h4>Yin units (typically ranged)</h4>
+            <p style="margin-bottom:.4rem">When near a Yang-aligned ally, Yin units gain a <strong>reload speed buff</strong>.</p>
+            <p style="font-size:.88rem;color:var(--mu);margin:0">Examples: Crane Gunners, Iron Hail Gunners, Jade Warrior Crossbowmen, Astromancers. Place these <em>behind or beside</em> your Yang line.</p>
+        </div>
+        <div class="yy-block yy-yang">
+            <h4>Yang units (typically melee)</h4>
+            <p style="margin-bottom:.4rem">When near a Yin-aligned ally, Yang units gain a <strong>melee defence buff</strong>.</p>
+            <p style="font-size:.88rem;color:var(--mu);margin:0">Examples: Peasant Long Spearmen, Jade Warriors, Celestial Dragon Guard, Jade Lancers. Anchor them <em>in front of or alongside</em> your Yin shooters.</p>
+        </div>
+    </div>
+    <div class="tactic">
+        <strong>The fundamental Cathay battle rule:</strong> never deploy a Yin unit out of supporting range of a Yang unit (or vice versa). A Crane Gunner at half buff is a Crane Gunner at half value. Diverse, well-supported formations are the entire design philosophy of the army.
+    </div>
+
+    <h3>Mastery of the Elemental Winds &mdash; the caster bonus</h3>
+    <div class="card card-brass">
+        <p style="margin:0">Cathay's casters have a unique boost based on <strong>caster count in the same army</strong>. Each caster after the first adds <strong>+15% damage / buff power</strong>, up to a maximum of <strong>+100%</strong>:</p>
+    </div>
+    <table>
+        <tr><th>Casters in army</th><th>Bonus</th><th>Practical effect</th></tr>
+        <tr><td>1</td><td>+0%</td><td>Baseline magic</td></tr>
+        <tr><td>2 (e.g. Lord + Hero)</td><td>+15%</td><td>Slight scaling</td></tr>
+        <tr><td>3</td><td>+30%</td><td>Real impact spike</td></tr>
+        <tr><td>4</td><td>+45%</td><td>Caster-doomstack territory</td></tr>
+        <tr><td>5</td><td>+60%</td><td>Spells dominate the battle</td></tr>
+        <tr><td>7+</td><td>+100% (cap)</td><td>Magic-army endgame</td></tr>
+    </table>
+
+    <h3>Eight lores of magic</h3>
+    <p>
+        Cathay's casters can access <strong>Lore of Beasts, Lore of Heavens, Lore of Life, Lore of Light, Lore of Metal, Lore of Shadows, Lore of Yang,</strong> and <strong>Lore of Yin</strong> &mdash; one of the broadest magic lists in the game. Different lord/hero types unlock different lores.
+    </p>
+
+    <div class="card card-blood">
+        <h4>Roster identity</h4>
+        <p style="margin:0">"<em>Legions of weaker, cheaper human troops backed up by a diverse roster of stronger elite troops, flying cavalry, monsters, and war machines/artillery. A defensive, less mobile army vulnerable to flanking.</em>" Build for set-piece battles, not chase-the-enemy-down.</p>
+    </div>
+</section>
+
+<!-- ============================================================ NORTHERN MECHANICS -->
+<section class="tab" id="northern">
+    <h2><span class="rune">&#9775;</span>The Northern Provinces &mdash; Faction-Specific Effects</h2>
+    <p class="lead">
+        On top of the general Cathay systems, Miao Ying's faction gets a tight bundle of effects that all push toward one identity: <em>defend the Great Bastion, hold a missile-heavy line, and crush Chaos when it finally throws itself at your wall</em>.
+    </p>
+
+    <h3>Faction effects (always-on)</h3>
+    <div class="three-col">
+        <div class="card card-brass">
+            <h4>Defensive Supplies: +300 (all regions)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Defensive Supplies are the regional resource that fuels Bastion upgrades and garrison reinforcements. <strong>+300 across every region you own</strong> means your Bastion gates and provincial defences capitalise faster than any other Cathay faction.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>&minus;20% Grand Bastion construction cost</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">A factionwide discount on every Grand Bastion building chain. Stack with Defensive Supplies and you have the cheapest, fastest-growing Bastion upgrade economy in Cathay.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>Corruption: &minus;2</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">A baseline corruption suppression in every region. Combined with Cathay's <em>Untainted</em> default, your provinces shed Chaos / Skaven / Vampire corruption automatically &mdash; no anti-corruption building chains required.</p>
+        </div>
+    </div>
+    <div class="three-col" style="margin-top:1rem">
+        <div class="card card-brass">
+            <h4>+10 Leadership vs. Chaos &amp; Norsca</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">A flat <strong>+10 leadership</strong> when fighting Daemons of Chaos, Warriors of Chaos, Chaos Dwarfs, and Norsca. The exact factions you'll be fighting at the Bastion. Your Peasant Long Spearmen suddenly hold the line like Celestial Dragon Guard.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>+20% Ammunition for missile units</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Every missile unit in your faction has 20% more ammunition. Crane Gunners, Iron Hail Gunners, Jade Warrior Crossbowmen, Sky-junks &mdash; all run longer in protracted defensive battles.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>Diplomatic traits: <em>Protective, Bastion Defender, Caravan Master</em></h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Other factions read you as a defensive, trade-friendly Bastion power. <em>Bastion Defender</em> in particular is a reputation hook with Cathayan minor factions.</p>
+        </div>
+    </div>
+
+    <h3>Starting state (Immortal Empires)</h3>
+    <ul>
+        <li><strong>Starting at war:</strong> <em>Rebel Lords of Nan-Yang</em> (your immediate target) and <em>Kurgan Warband</em> (intermittent Bastion-attackers).</li>
+        <li><strong>Starting NAP:</strong> <em>Imperial Wardens</em> &mdash; a friendly minor Cathay faction.</li>
+    </ul>
+
+    <h3>Starting state (Realm of Chaos)</h3>
+    <ul>
+        <li><strong>Starting at war:</strong> Rebel Lords of Nan-Yan, Dissenter Lords of Jinshen, Kurgan Warband, Sarthorael's Watchers, Dreaded Wo, and Khazag.</li>
+        <li><strong>Starting NAP:</strong> Celestial Loyalists.</li>
+    </ul>
+
+    <h3>How these stack in practice</h3>
+    <div class="tactic">
+        <strong>Compounding effect:</strong> a Kurgan Warband approaches the Bastion. Your gate has been upgraded for half-price (&minus;20%) and stocked with Defensive Supplies (+300/region). The garrison's Peasant Long Spearmen hold +10 leadership against Chaos and won't break. Crane Gunners overhead have +20% ammunition; their fire never falters. Miao Ying flies in from another gate &mdash; transforms into the Storm Dragon &mdash; and the Warband is dead before they breach. The faction is the wall <em>and</em> the dragon that protects the wall.
+    </div>
+
+    <h3>Miao Ying's lord-line bonuses</h3>
+    <ul>
+        <li><strong>Supreme Matriarch (personal trait):</strong> <em>"I bring the storm winds!"</em></li>
+        <li><strong>Upkeep: &minus;50% for Missile Infantry units</strong> in her army.</li>
+        <li><strong>Recruit rank: +2</strong> for Iron Hail Gunners, Crane Gunners, and Nan-Gau Grenadiers in her army.</li>
+        <li><strong>Missile strength: +10%</strong> for Iron Hail Gunners, Crane Gunners, and Nan-Gau Grenadiers in her army.</li>
+    </ul>
+    <p>
+        Translation: Miao Ying's army is the <em>gunpowder doomstack</em> of Cathay. Build it that way.
+    </p>
+</section>
+
+<!-- ============================================================ MIAO YING -->
+<section class="tab" id="miao">
+    <h2><span class="rune">&#9775;</span>Miao Ying, the Storm Dragon</h2>
+
+    <div class="hero-block">
+        <div class="hero-name">Miao Ying, the Storm Dragon</div>
+        <div class="hero-title">Favoured child of the Celestial Emperor &middot; Supreme Matriarch &middot; Legendary Lord</div>
+        <p style="margin:0;color:var(--frost);font-size:.92rem">
+            "<em>Favoured child of the Celestial Emperor, revered defender of the Great Bastion and imperious majesty incarnate.</em>"
+            One of the most flexible Legendary Lords in the game &mdash; <strong>a Wizard with full spell mastery, a melee combatant in human form, and a flying single-entity dragon when the situation requires it</strong>.
+        </p>
+    </div>
+
+    <div class="two-col">
+        <div>
+            <h3>Combat profile (Standard form)</h3>
+            <div class="tags">
+                <span class="tag good">Wizard</span>
+                <span class="tag good">100% Spell Mastery</span>
+                <span class="tag good">Armoured</span>
+                <span class="tag good">Melee Expert</span>
+                <span class="tag good">Magical Attacks</span>
+                <span class="tag good">Encourage</span>
+                <span class="tag good">Hide (forest)</span>
+                <span class="tag good">Siege Attacker</span>
+                <span class="tag good">Mastery of Elemental Winds</span>
+                <span class="tag good">Harmony Amplifier +100%</span>
+                <span class="tag good">Resilience (Dragon Emperor's Wrath)</span>
+                <span class="tag bad">Single Entity</span>
+            </div>
+            <ul>
+                <li><strong>Stats:</strong> 8,424 HP, Leadership 90, Speed 46, Melee Attack 65, Melee Defence 55, Charge Bonus 50.</li>
+                <li><strong>Weapon Strength 430</strong> (290 base / 140 AP) with magical attacks.</li>
+                <li><strong>Armour 70 (52.5% reduction)</strong> + <strong>+15% Missile Resistance</strong> + <strong>+25% Spell Resistance</strong>.</li>
+                <li><strong>Harmony Amplifier +100%:</strong> doubles the Harmony bonuses for nearby units. <em>Only the strongest amplifier bonus applies</em> &mdash; she <em>is</em> your strongest, so put her central in the line.</li>
+                <li><strong>Mastery of Elemental Winds:</strong> when 2+ units in the same army share this attribute, <em>intensity increases the power of spells cast</em>. Pair her with Astromancers / Alchemists / Shugengan to compound it.</li>
+                <li><strong>Active abilities:</strong> <em>Transformation of the Dragon</em>, <em>Wrath of the Storm</em>; campaign: <em>Foe-Seeker</em>, <em>Deadly Onslaught</em>, <em>Rally!</em>, <em>Stand Your Ground!</em></li>
+                <li><strong>Passives:</strong> <em>Arcane Conduit</em>, <em>Disdain of the Dragons</em>, <em>Power of Yin</em>, <em>Life Bloom</em>, <em>Wounds</em>; campaign-only <em>Evasion</em>.</li>
+            </ul>
+        </div>
+        <div>
+            <h3>Spells &amp; weaknesses</h3>
+            <h4 style="margin-top:0">Spell list</h4>
+            <ul>
+                <li><strong>Earth Blood</strong> &mdash; AoE healing aura. <em>Heals units</em>, not just lords.</li>
+                <li><strong>Storm of Shadows</strong> &mdash; AoE damage spell.</li>
+                <li><strong>Missile Mirror</strong> &mdash; reflects enemy missiles.</li>
+                <li><strong>Flesh to Stone</strong> &mdash; armour buff on a friendly unit.</li>
+                <li><strong>Regrowth</strong> &mdash; large heal-over-time on a friendly unit.</li>
+                <li><strong>Talons of Night</strong> &mdash; damaging projectile spell.</li>
+            </ul>
+            <div class="pc">
+                <div class="pc-block pc-cons" style="grid-column:1 / -1">
+                    <h4>The two ways to lose Miao Ying</h4>
+                    <ul>
+                        <li><strong>Massed AP missiles in Dragon form.</strong> She is a single entity in either form, but the Dragon's bigger silhouette is a magnet for Sisters of Avelorn, Ratling Guns, Empire Great Cannons, and similar focus-fire setups.</li>
+                        <li><strong>Reckless duels with anti-large monsters.</strong> Bonus-vs-large hits her hard; great-weapon Slayers, Halberd Chaos Warriors, and Bloodthirsters chunk her quickly. Her <em>Wounds</em> passive saves her once &mdash; don't push for a second.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn">
+                <strong>The healing edge:</strong> the wiki notes Miao Ying's strategic edge over her playable siblings is access to <em>Life Bloom</em> and <em>Earth Blood</em> &mdash; <strong>healing-unit abilities</strong> that other lords mostly can't replicate. This makes her surprisingly powerful at leading armies of single-entity units (Jet Lions, Jade Lions, Terracotta Sentinels, Celestial Lions) <em>even though she doesn't specifically buff them</em>.
+            </div>
+        </div>
+    </div>
+
+    <h3>Unique items</h3>
+    <div class="card card-brass">
+        <ul style="margin:0">
+            <li><strong>Storm Wind Coronal</strong> &mdash; her crown-style item, contributing to the storm theme.</li>
+            <li><strong>Vambraces of Yin</strong> &mdash; arm-piece with the on-item ability <em>Vambraces of Yin</em>.</li>
+        </ul>
+    </div>
+
+    <h3>Mounts &amp; the Dragon transformation</h3>
+    <ul>
+        <li><strong>Standard form (foot/horse-style):</strong> the default. Caster + melee hybrid. Place near the front line so her Harmony Amplifier and casting both reach the bulk of your units.</li>
+        <li><strong>Dragon form:</strong> activated via <em>Transformation of the Dragon</em>. She becomes a flying single-entity dragon &mdash; faster, far more devastating in melee, and able to dive over walls or backline targets. <strong>Use it when you need a single-target threat removed</strong> (enemy lord, war machine, breach point) or when the line is collapsing and needs a hero's intervention.</li>
+        <li><strong>Note:</strong> she still casts spells in either form &mdash; the transformation doesn't lock you out of her caster kit.</li>
+    </ul>
+
+    <h3>Lord Effects (army-wide)</h3>
+    <div class="card card-brass">
+        <ul style="margin:0">
+            <li><strong>Upkeep: &minus;50% for Missile Infantry</strong> units in her army.</li>
+            <li><strong>Recruit rank: +2</strong> for Iron Hail Gunners, Crane Gunners, and Nan-Gau Grenadiers in her army.</li>
+            <li><strong>Missile strength: +10%</strong> for Iron Hail Gunners, Crane Gunners, and Nan-Gau Grenadiers in her army.</li>
+        </ul>
+    </div>
+    <div class="tip">
+        <strong>Build implication:</strong> Miao Ying's stack should lean <em>hard</em> into Cathay gunpowder and missile infantry. Iron Hail Gunners and Crane Gunners are objectively a better build in her army than in any other Cathay lord's &mdash; the upkeep cut alone lets you field two extra missile slots.
+    </div>
+
+    <h3>Skill tree priorities (in order)</h3>
+    <ol class="steps">
+        <li><strong>Spell-school discounts &amp; winds-of-magic regen first.</strong> Her caster kit is half her combat value; cheaper, more frequent spells are the highest-impact picks.</li>
+        <li><strong>Transformation of the Dragon upgrades.</strong> Earlier / cheaper / better Dragon form is a meaningful battlefield power-spike.</li>
+        <li><strong>Lord effect amplifiers</strong> &mdash; anything that buffs Iron Hail Gunners / Crane Gunners / Nan-Gau Grenadiers further deepens her army's gunline identity.</li>
+        <li><strong>Yellow combat damage / armour</strong> in moderation &mdash; she <em>is</em> a Melee Expert, but you don't want to push her into melee solo.</li>
+        <li><strong>Lightning Strike</strong> when it appears &mdash; lets you isolate Chaos Warbands before reinforcements join.</li>
+        <li><strong>Blue line campaign skills</strong> &mdash; movement, replenishment, post-battle income; valuable but secondary.</li>
+    </ol>
+
+    <h3>How to use her in battle</h3>
+    <ol>
+        <li><strong>Deploy her central, slightly behind the front line.</strong> Her Harmony Amplifier +100% wants to reach as many Yin/Yang pairs as possible.</li>
+        <li><strong>Open with healing prep.</strong> Earth Blood / Regrowth on the unit you expect to take the worst hit; Flesh to Stone on the anvil.</li>
+        <li><strong>Damage spells when enemy infantry blobs.</strong> Storm of Shadows / Talons of Night on a clumped target.</li>
+        <li><strong>Transform when the situation justifies it.</strong> Backline caster threatening to break the line, breach point in a siege, enemy lord on a single-entity mount &mdash; that's when the Dragon comes out.</li>
+        <li><strong>Don't transform &quot;just because.&quot;</strong> Standard form keeps her in Mastery-of-Elemental-Winds range, casting and amplifying. Dragon is a tool for specific moments.</li>
+        <li><strong>Pull her at orange HP if focused fire is on her.</strong> Wounds saves once; a permanent loss is real.</li>
+    </ol>
+</section>
+
+<!-- ============================================================ STRENGTHS / WEAKNESSES -->
+<section class="tab" id="strengths">
+    <h2><span class="rune">&#9775;</span>Faction Strengths &amp; Weaknesses</h2>
+
+    <div class="pc">
+        <div class="pc-block pc-pros">
+            <h4>Strengths</h4>
+            <ul>
+                <li><strong>The Great Bastion.</strong> Real defensive infrastructure &mdash; well-upgraded gates beat Kurgan Warbands with no field army needed.</li>
+                <li><strong>Best gunpowder in Cathay.</strong> Iron Hail Gunners, Crane Gunners, Nan-Gau Grenadiers are all buffed by Miao Ying's lord effects; a missile gunline that runs +20% longer than baseline.</li>
+                <li><strong>Miao Ying herself.</strong> Wizard + dragon + Harmony Amplifier + healing access. One of the most flexible LLs in the game.</li>
+                <li><strong>Eight lores of magic.</strong> Caster diversity is unmatched outside High Elves; Mastery of Elemental Winds scales magic damage with caster count.</li>
+                <li><strong>Strong economy via Ivory Road caravans.</strong> One successful caravan run pays for a Bastion gate upgrade.</li>
+                <li><strong>Wu-Xing Compass &amp; Harmony</strong> give you faction-wide levers no other race has.</li>
+                <li><strong>+10 leadership vs. Chaos / Norsca</strong> across every army &mdash; the matchups the campaign forces.</li>
+                <li><strong>Untainted &amp; &minus;2 corruption.</strong> Provinces stay clean automatically.</li>
+                <li><strong>Strong starting position.</strong> The wiki: "<em>You start in a reasonably sheltered position</em>."</li>
+            </ul>
+        </div>
+        <div class="pc-block pc-cons">
+            <h4>Weaknesses</h4>
+            <ul>
+                <li><strong>Slow-moving and easy to flank.</strong> The race's defining battlefield weakness; Cathay armies are set-piece machines, not pursuers.</li>
+                <li><strong>Harmony decays if you ignore it.</strong> Lazy play tilts the meter; balance takes attention.</li>
+                <li><strong>Caravans can fail.</strong> Ivory Road dilemmas can turn a profit run into a destroyed convoy. Always escort with anti-large units.</li>
+                <li><strong>Three serious threats by mid-game.</strong> Warhost of Zharr, Puppets of Misrule, and Clan Eshin all want you dead by turn 30.</li>
+                <li><strong>Sky-junk fire damage is wasted on Chaos Dwarfs</strong> &mdash; their roster resists fire. Bring the Luminark Lens.</li>
+                <li><strong>Vilitch's Changing of the Ways</strong> can be a campaign-disrupting headache. Plan around it.</li>
+                <li><strong>The Bastion north territory</strong> (Chaos Wastes climate) is "<em>almost completely worthless</em>" &mdash; you can't keep what you take across the wall.</li>
+                <li><strong>Defensive philosophy can feel reactive.</strong> If you want to crusade, the Western Provinces are the better Cathay choice.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>Who you should fear and why</h3>
+    <table>
+        <tr><th>Threat</th><th>Why they're dangerous</th><th>Counter</th></tr>
+        <tr><td><strong>Rebel Lords of Nan-Yang</strong></td><td>Starting enemy; thorn in your side preventing Bastion focus</td><td>Wipe them in the first few turns; Alchemist starting hero + mobility lets you take settlements turn-by-turn</td></tr>
+        <tr><td><strong>Kurgan Warbands</strong></td><td>Intermittently spawn and assault the Bastion; raid your territory if they break through</td><td>Well-upgraded gates usually beat them alone; Threat Reduction edict on each gate cuts spawn frequency; field army on standby for high-threat windows</td></tr>
+        <tr><td><strong>Warhost of Zharr (Chaos Dwarfs)</strong></td><td>Heavy armour, magma artillery, fire-resistant roster &mdash; your Sky-junks under-perform</td><td>Bring Luminark Lens (item); Iron Hail Gunners for the AP damage; Miao Ying snipes their casters with Talons of Night</td></tr>
+        <tr><td><strong>Puppets of Misrule (Tzeentch / Vilitch)</strong></td><td>Changing of the Ways campaign disruption; magical damage</td><td>Spell Resistance from Miao Ying; Astromancers for dispels; isolate Vilitch when Chaos Dwarfs are also at war with him</td></tr>
+        <tr><td><strong>Clan Eshin (Skaven)</strong></td><td>Stalking ambushes, Death Globadiers, eshin Triads, ranged poison</td><td>Pile in on them when they're at war with the Western Provinces; Sky-junks dominate Skaven swarms; Miao Ying transforms to clear stalking globadiers</td></tr>
+        <tr><td><strong>The Blessed Dread (Dark Elves)</strong></td><td>Black Arks, late-game raids on Wei-Jin and Cathay coast</td><td>Confederate Celestial Loyalists and claim Wei-Jin <em>before</em> they do; engage main forces out of Black Ark range</td></tr>
+        <tr><td><strong>Beastman tribe south of start</strong></td><td>Ambush threat on your back-foot</td><td>Don't extend recklessly; double back to recruit in Nan-Li or Weng Chang; wait for them to break cover, then wipe</td></tr>
+    </table>
+</section>
+
+<!-- ============================================================ CAMPAIGN STRATEGY -->
+<section class="tab" id="campaign">
+    <h2><span class="rune">&#9775;</span>Campaign Strategy</h2>
+    <p class="lead">
+        Miao Ying's campaign is <strong>three phases</strong>: secure the Gunpowder Road and Lands of Stone and Steel, lock down the Western/Central/Eastern Bastion provinces, and confederate / destroy the rival Cathay claimants while running scheduled crusades against the named victory targets.
+    </p>
+
+    <h3>Immortal Empires &mdash; the opening ten turns</h3>
+    <div class="note">
+        <strong>Starting position:</strong> <em>Nan-Gau, Gunpowder Road</em>. <strong>Starting wars:</strong> Rebel Lords of Nan-Yang, Kurgan Warband. <strong>Starting NAP:</strong> Imperial Wardens. <strong>Starting hero:</strong> an Alchemist.
+    </div>
+    <ol class="steps">
+        <li><strong>Turn 1:</strong> embed your Alchemist starting hero in Miao Ying's army and upgrade <em>Increase Mobility</em> after the first battle. This unlocks the four-turn province sweep below.</li>
+        <li><strong>Turn 2&ndash;5:</strong> with the bonus mobility, take each of your starting enemy's settlements <em>one turn after the other</em>. Do not let them build a response. <strong>Two complete provinces under your control by turn 4</strong> is the wiki-recommended target.</li>
+        <li><strong>Watch for the Beastmen tribe south of your position.</strong> It may be wise to double back and recruit in Nan-Li or Weng Chang &mdash; wait for them to break cover, then wipe them out cleanly.</li>
+        <li><strong>Activate diplomacy aggressively.</strong> Trade with Imperial Wardens, the Western Provinces, and any Cathay minor that will accept it. Caravans on the Ivory Road start funding your war effort.</li>
+        <li><strong>Stand up Bastion garrisons</strong> in your starting provinces. The &minus;20% construction cost on Grand Bastion buildings starts paying off the moment you queue your first upgrade.</li>
+        <li><strong>By turn ~10</strong> you should have two clean provinces, an Alchemist with Increase Mobility, an upgraded Bastion gate or two, and an Ivory Road caravan en route.</li>
+    </ol>
+
+    <h3>The mid-game pattern</h3>
+    <div class="tactic">
+        <strong>1 mobile Miao Ying army + 1 anchor army + Bastion gate garrisons + caravan tax.</strong> Miao Ying flies to threatened gates and crisis points; a second Boyar / Lord-led army anchors a vulnerable secondary front (typically the south, vs. Beastmen / Skaven); each gate garrison absorbs Kurgan raids; one or two caravans run continuously on the Ivory Road for income.
+    </div>
+
+    <h3>The three serious threats and how to time them</h3>
+    <ul>
+        <li><strong>Clan Eshin</strong> is "<em>likely to wind up at war with a lot of the factions surrounding them, including The Western Provinces</em>." If you feel confident the Bastion can do without you for the time being, <em>pile in on them</em> &mdash; remove the rat infestation as quickly as possible.</li>
+        <li><strong>Chaos Dwarfs (Warhost of Zharr) and Tzeentch (Puppets of Misrule) mutually dislike each other.</strong> Watch their relations; when they're at war, peace out with one or both, then focus down a single target. <em>Vilitch is usually the right pick</em> because his Changing of the Ways disrupts your campaign far worse than Astragoth's static gunline.</li>
+        <li><strong>The Blessed Dread</strong> (Dark Elves) become a problem sooner or later. <em>Confederate the Celestial Loyalists and claim Wei-Jin before they do</em>; engage their main forces out of Black Ark cannon range.</li>
+    </ul>
+
+    <h3>The Sky-junk vs. Chaos Dwarfs gotcha</h3>
+    <div class="warn">
+        <strong>Much of the Chaos Dwarfs' roster is resistant to fire damage.</strong> Sky-junks &mdash; your fire-themed flying war machine &mdash; under-perform in this matchup. The wiki recommends the <em>Luminark Lens</em> item to compensate. Bring it before any Chaos Dwarf war.
+    </div>
+
+    <h3>Empire expansion principles</h3>
+    <ul>
+        <li><strong>Hold the Bastion provinces, sack everything else hostile.</strong> Western Bastion, Central Bastion, Eastern Bastion are your long-victory targets.</li>
+        <li><strong>Don't try to keep territory north of the wall.</strong> Chaos Wastes climate is "<em>almost completely worthless</em>." Raze everything east of The Volary; Kurgans are Rogue Armies and can't ruin-dwell, so razing actively reduces threat.</li>
+        <li><strong>Use the Threat Reduction edict on each gate.</strong> Significantly cuts how often you have to deal with Kurgan raids.</li>
+        <li><strong>Confederate Cathay minor factions</strong> when their loyalty is high enough. Imperial Wardens and Celestial Loyalists are the most realistic targets.</li>
+        <li><strong>Don't crusade for fun.</strong> Miao Ying is a defender, not Skarbrand &mdash; the campaign rewards sitting at the wall.</li>
+    </ul>
+
+    <h3>Endgame &amp; victory</h3>
+    <p><strong>Short Campaign Victory:</strong></p>
+    <ul>
+        <li>Occupy/loot/raze/sack <em>30 different settlements</em></li>
+        <li>Control these provinces (direct ownership, vassals, or military allies): <em>Gunpowder Road, Lands of Stone and Steel, Imperial Road, Western Great Bastion, Central Great Bastion, Eastern Great Bastion</em></li>
+    </ul>
+    <p><strong>Long Campaign Victory:</strong></p>
+    <ul>
+        <li>Occupy/loot/raze/sack <em>70 different settlements</em></li>
+        <li>Control <em>Western, Central, and Eastern Great Bastion</em> provinces</li>
+        <li>Destroy: <em>Rebel Lords of Nan-Yang, Dissenter Lords of Jinshen, Puppets of Misrule, Heralds of the Tempest, The Blessed Dread, Clan Eshin</em></li>
+    </ul>
+    <p><strong>Realm of Chaos:</strong> complete the survival battle for each Chaos Realm and then win the final battle (Forge of Souls).</p>
+</section>
+
+<!-- ============================================================ BATTLE STRATEGY -->
+<section class="tab" id="battle">
+    <h2><span class="rune">&#9775;</span>Battle Strategy</h2>
+    <p class="lead">
+        Cathay battles are <strong>combined-arms set-pieces with Yin/Yang harmony layered on top</strong>. Your line holds, your gunpowder kills, your dragons fly, and your casters compound. With Miao Ying specifically, the gunline is buffed, the Harmony Amplifier is doubled, and the Storm Dragon is in the army.
+    </p>
+
+    <h3>The Miao Ying army template (~16&ndash;20 units)</h3>
+    <table>
+        <tr><th>Slot</th><th>Composition</th><th>Yin/Yang</th><th>Role</th></tr>
+        <tr><td>1</td><td>Miao Ying (Standard form, transforms when needed)</td><td>Lord</td><td>Caster, Harmony Amplifier, dragon emergency</td></tr>
+        <tr><td>1&ndash;2</td><td>Alchemist + Astromancer (or 2nd caster)</td><td>Yin</td><td>Mastery of Elemental Winds scaling; magic support</td></tr>
+        <tr><td>3&ndash;4</td><td>Peasant Long Spearmen (or Jade Warriors w/ Halberds)</td><td>Yang</td><td>Frontline anchor; absorb the approach phase</td></tr>
+        <tr><td>2</td><td>Celestial Dragon Guard</td><td>Yang</td><td>Elite anti-infantry; flanking-resistance</td></tr>
+        <tr><td>3&ndash;4</td><td>Crane Gunners or Iron Hail Gunners</td><td>Yin</td><td>Primary AP gunpowder line</td></tr>
+        <tr><td>1&ndash;2</td><td>Nan-Gau Grenadiers</td><td>Yin</td><td>AoE anti-infantry; Miao Ying buffs them</td></tr>
+        <tr><td>1&ndash;2</td><td>Jade Warrior Crossbowmen</td><td>Yin</td><td>Tier-2 ranged; cheap volume of fire</td></tr>
+        <tr><td>2</td><td>Sky-junks (or Sky Lanterns)</td><td>Yin</td><td>Flying ranged; flanking solution</td></tr>
+        <tr><td>1&ndash;2</td><td>Grand Cannons</td><td>Yin</td><td>Long-range AP artillery; one-shots monsters</td></tr>
+        <tr><td>0&ndash;1</td><td>Terracotta Sentinel</td><td>Yang</td><td>Late-game elite monster; Miao Ying can heal it</td></tr>
+    </table>
+
+    <div class="tip">
+        <strong>Why so many Yin units?</strong> Miao Ying's lord effects (&minus;50% upkeep, +2 recruit rank, +10% missile strength on Iron Hail Gunners / Crane Gunners / Nan-Gau Grenadiers) plus the faction-wide +20% ammunition mean a missile-heavy stack is objectively cheaper, stronger, and more sustained in her army than in any other Cathay lord's.
+    </div>
+
+    <h3>Yin/Yang positioning &mdash; the rule</h3>
+    <div class="yy">
+        <div class="yy-block yy-yin">
+            <h4>Yin units want a Yang neighbour</h4>
+            <p style="margin:0;font-size:.92rem;color:var(--mu)">Place Crane Gunners <em>directly behind or beside</em> Peasant Long Spearmen. Sky-junks should hover near a Yang anchor on the flank. <strong>An isolated Yin unit reloads slower &mdash; that's lost DPS.</strong></p>
+        </div>
+        <div class="yy-block yy-yang">
+            <h4>Yang units want a Yin neighbour</h4>
+            <p style="margin:0;font-size:.92rem;color:var(--mu)">Peasant Long Spearmen behind / next to Crane Gunners gain melee defence. Celestial Dragon Guard fight harder when an Astromancer floats nearby. <strong>An isolated Yang unit takes more melee damage &mdash; that's a thinner line.</strong></p>
+        </div>
+    </div>
+
+    <h3>Standard battle plan</h3>
+    <ol class="steps">
+        <li><strong>Deploy in a Yin/Yang interleaved line.</strong> Spearmen front, Crane Gunners directly behind, Celestial Dragon Guard on the wings, Sky-junks central-rear, Grand Cannons elevated.</li>
+        <li><strong>Open with healing prep.</strong> Miao Ying drops Earth Blood / Flesh to Stone on her front-line as the enemy commits to the approach.</li>
+        <li><strong>Sky-junks alpha-strike</strong> the highest-value target in range &mdash; usually the enemy lord or their flying / fast-cavalry threat.</li>
+        <li><strong>Grand Cannons fire</strong> on enemy artillery, monsters, or the most expensive single target.</li>
+        <li><strong>Crane Gunner / Iron Hail Gunner volleys</strong> as the enemy enters their range. Buffed reload from Yin/Yang and +10% missile strength from Miao Ying = devastating concentrated fire.</li>
+        <li><strong>Spearmen and Jade Warriors absorb the charge.</strong> +10 leadership vs. Chaos means they hold; By Our Beards-style stability.</li>
+        <li><strong>Drop damage spells</strong> when enemy infantry blobs &mdash; Storm of Shadows / Talons of Night on the densest target.</li>
+        <li><strong>Transform Miao Ying into the Storm Dragon</strong> when the moment justifies it &mdash; breach point, enemy lord exposed, line collapsing on a flank. Otherwise, keep her in Standard form for amplifier reach.</li>
+        <li><strong>Sky-junks dive the back line</strong> when their alpha-strike role is done &mdash; chase routing units, hit enemy artillery.</li>
+    </ol>
+
+    <h3>Specific matchups</h3>
+
+    <div class="three-col">
+        <div class="card card-blood">
+            <h4>vs. Chaos / Norscan stacks</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                +10 leadership stabilises your line; Iron Hail Gunners shred Chaos Warriors; Miao Ying's Talons of Night snipes the lord. <strong>The matchup the faction is built for.</strong>
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Chaos Dwarfs (Warhost of Zharr)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                <em>Sky-junks under-perform &mdash; their fire damage is resisted.</em> Bring the Luminark Lens. Lean on Iron Hail Gunners for AP damage and Astromancer / Alchemist spells. Miao Ying snipes their Daemonsmiths.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Tzeentch (Puppets of Misrule / Vilitch)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Spell Resistance on Miao Ying helps personally. Bring two Alchemists / Astromancers for Mastery of Elemental Winds scaling. Snipe Vilitch fast &mdash; Changing of the Ways gets worse the longer he lives.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Skaven (Clan Eshin)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Sky-junks dominate Skaven swarms. Crane Gunners volley through clumped slaves. Miao Ying transforms to clear stalking Globadiers and Triads.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Greenskin / Beastmen swarms</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Numbers war &mdash; Grand Cannons, Sky-junks, Nan-Gau Grenadier AoE. Spearmen anvil; Celestial Dragon Guard counter-flank. Use the Bastion if you can fight on it.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Cavalry-heavy / fast-flanking</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Halberd-equipped Jade Warriors anchor; Crane Gunners volley charges; Celestial Dragon Guard counter-charge. Miao Ying transforms to chase Royal Pegasi or fast cavalry lords.
+            </p>
+        </div>
+    </div>
+
+    <h3>Auto-resolve advice</h3>
+    <div class="tip">
+        Miao Ying's stack <strong>auto-resolves well</strong> against weak-but-numerous foes, because the auto-resolver weights her stats heavily. <strong>Always manually fight</strong> against Chaos Dwarfs (the fire-resist gotcha), magic-heavy stacks (Tzeentch / High Elves), and any battle where you've stacked Sky-junks heavily &mdash; the auto-resolver tends to undervalue the alpha-strike.
+    </div>
+</section>
+
+<!-- ============================================================ ROSTER -->
+<section class="tab" id="roster">
+    <h2><span class="rune">&#9775;</span>Unit Roster</h2>
+    <p class="lead">
+        "<em>Legions of weaker, cheaper human troops backed up by a diverse roster of stronger elite troops, flying cavalry, monsters, and war machines / artillery.</em>" Each unit is aligned <strong>Yin</strong> (typically ranged) or <strong>Yang</strong> (typically melee); the army works best when both are present in close support of each other.
+    </p>
+
+    <h3>Lords</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Miao Ying, the Storm Dragon</strong></td>
+            <td><span class="role role-hero">Caster LL</span></td>
+            <td>Spell Mastery 100%, Dragon transformation, Harmony Amplifier +100%, Earth Blood / Life Bloom heal</td>
+            <td>Single entity; Dragon form attracts AP fire</td>
+            <td>Always &mdash; main army anchor</td>
+        </tr>
+        <tr>
+            <td><strong>Lord (generic)</strong></td>
+            <td><span class="role role-hero">Combat Lord</span></td>
+            <td>Strong duelist; can mount horse / Jade Longma / Dragon depending on faction unlocks</td>
+            <td>No magic</td>
+            <td>2nd / 3rd army leader</td>
+        </tr>
+        <tr>
+            <td><strong>Astromancer</strong></td>
+            <td><span class="role role-cast">Caster Lord</span></td>
+            <td>Lore of Heavens; long-range damage spells</td>
+            <td>Fragile in melee</td>
+            <td>Lead a 2nd caster-army; embed in Miao Ying for Mastery scaling</td>
+        </tr>
+        <tr>
+            <td><strong>Dragon-Blooded Shugengan</strong></td>
+            <td><span class="role role-cast">Caster Lord</span></td>
+            <td>Lore of Yin or Lore of Yang specialisation</td>
+            <td>Fragile</td>
+            <td>Specialised caster; pair with matching Yin or Yang army composition</td>
+        </tr>
+    </table>
+
+    <h3>Heroes</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Alchemist</strong></td>
+            <td><span class="role role-cast">Caster Hero</span></td>
+            <td>Lore of Metal; Increase Mobility skill on campaign map</td>
+            <td>No melee</td>
+            <td>Embed in Miao Ying turn 1 for the mobility opening</td>
+        </tr>
+        <tr>
+            <td><strong>Astromancer (Hero)</strong></td>
+            <td><span class="role role-cast">Caster Hero</span></td>
+            <td>Cheaper Lore of Heavens hero</td>
+            <td>Squishy</td>
+            <td>Mastery-of-Elemental-Winds caster slot</td>
+        </tr>
+        <tr>
+            <td><strong>Lord (Hero variants)</strong></td>
+            <td><span class="role role-hero">Combat Hero</span></td>
+            <td>Solid duelist; leadership aura</td>
+            <td>Slow; no magic</td>
+            <td>Embed in line armies for the leadership</td>
+        </tr>
+    </table>
+
+    <h3>Infantry &mdash; Yang anchors</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Peasant Long Spearmen</strong></td>
+            <td><span class="role role-yang">Tier-1 Yang</span></td>
+            <td>Cheap; anti-large; the line of every early army</td>
+            <td>Light armour; modest damage</td>
+            <td>Tier-1 anchor; replace by Tier 3</td>
+        </tr>
+        <tr>
+            <td><strong>Jade Warriors (Halberd / Sword)</strong></td>
+            <td><span class="role role-yang">Mid-tier Yang</span></td>
+            <td>Solid armour, anti-large variant exists, good melee stats</td>
+            <td>Slow</td>
+            <td>The mid-game frontline core; 3&ndash;4 in your stack</td>
+        </tr>
+        <tr>
+            <td><strong>Celestial Dragon Guard</strong></td>
+            <td><span class="role role-yang">Elite Yang</span></td>
+            <td>Highly-trained elite infantry; high armour, excellent melee stats</td>
+            <td>Expensive</td>
+            <td>Late-game elite; 1&ndash;2 in your stack</td>
+        </tr>
+    </table>
+
+    <h3>Ranged infantry &mdash; Yin shooters</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Peasant Archers</strong></td>
+            <td><span class="role role-yin">Tier-1 Yin</span></td>
+            <td>Cheap; volume of fire</td>
+            <td>No AP; fragile</td>
+            <td>Early-game backline; replace later</td>
+        </tr>
+        <tr>
+            <td><strong>Jade Warrior Crossbowmen</strong></td>
+            <td><span class="role role-yin">Mid-tier Yin</span></td>
+            <td>Armoured; AP crossbow damage</td>
+            <td>Slow reload</td>
+            <td>The mid-game ranged core; 2&ndash;3 in your stack</td>
+        </tr>
+        <tr>
+            <td><strong>Crane Gunners</strong></td>
+            <td><span class="role role-yin">Elite Yin Gunpowder</span></td>
+            <td>AP gunpowder; long range; <em>Miao Ying buffs them: +10% missile strength, +2 recruit rank, &minus;50% upkeep on missile inf</em></td>
+            <td>Expensive; ammo limit</td>
+            <td>3+ in Miao Ying's stack; the faction's signature ranged unit</td>
+        </tr>
+        <tr>
+            <td><strong>Iron Hail Gunners</strong></td>
+            <td><span class="role role-yin">Heavy Gunpowder</span></td>
+            <td>Multi-shot heavy gunpowder; melts armoured infantry; <em>Miao Ying buffs</em></td>
+            <td>Short range</td>
+            <td>2&ndash;3 vs. Chaos Warrior matchups</td>
+        </tr>
+        <tr>
+            <td><strong>Nan-Gau Grenadiers</strong></td>
+            <td><span class="role role-yin">AoE Gunpowder</span></td>
+            <td>AoE grenade damage; anti-clump; <em>Miao Ying buffs them too</em></td>
+            <td>Limited ammo</td>
+            <td>1&ndash;2 vs. infantry-heavy enemies</td>
+        </tr>
+    </table>
+
+    <h3>Cavalry</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Jade Lancers</strong></td>
+            <td><span class="role role-cav">Shock Cav</span></td>
+            <td>Charge bonus; anti-large variant; armoured</td>
+            <td>Low melee def after charge spent</td>
+            <td>Cycle-charge the flanks; 1&ndash;2 per army</td>
+        </tr>
+        <tr>
+            <td><strong>Great Longma Riders / Jade Longma</strong></td>
+            <td><span class="role role-fast">Flying Cav</span></td>
+            <td>Flying mounted cavalry; rare profile in the game</td>
+            <td>Niche; expensive</td>
+            <td>Late-game flanker; bypass terrain entirely</td>
+        </tr>
+    </table>
+
+    <h3>Flying war machines &amp; artillery</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Sky-junk</strong></td>
+            <td><span class="role role-fly">Flying Gunship</span></td>
+            <td>Flying ranged; the flagship Cathay flying war machine</td>
+            <td><em>Fire damage is resisted by Chaos Dwarfs</em>; needs Luminark Lens for that matchup</td>
+            <td>2 in late-game stacks; primary flanking solution</td>
+        </tr>
+        <tr>
+            <td><strong>Sky Lantern</strong></td>
+            <td><span class="role role-fly">Flying Skirmisher</span></td>
+            <td>Cheaper flying gunner; harasses backlines</td>
+            <td>Fragile; lower damage than Sky-junk</td>
+            <td>Mid-game flanker; replace with Sky-junks later</td>
+        </tr>
+        <tr>
+            <td><strong>Grand Cannon</strong></td>
+            <td><span class="role role-art">Direct-Fire Artillery</span></td>
+            <td>Long-range AP; bronze-dragon-shaped; one-shots monsters</td>
+            <td>Vulnerable to dive cavalry / fliers</td>
+            <td>1&ndash;2 in every army</td>
+        </tr>
+        <tr>
+            <td><strong>Wu-Xing War Compass</strong></td>
+            <td><span class="role role-art">Magical War Machine</span></td>
+            <td>Magical ranged damage; faction flavour</td>
+            <td>Slow; needs protection</td>
+            <td>1 in caster-heavy armies for synergy</td>
+        </tr>
+    </table>
+
+    <h3>Monsters</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Terracotta Sentinel</strong></td>
+            <td><span class="role role-mons">Construct Monster</span></td>
+            <td>Massive HP; magical attacks; constructs that lay dormant for centuries</td>
+            <td>Single entity; expensive</td>
+            <td>1 in late-game stacks; Miao Ying can heal it</td>
+        </tr>
+        <tr>
+            <td><strong>Jet Lions / Jade Lions / Celestial Lions</strong></td>
+            <td><span class="role role-mons">Single-Entity Monsters</span></td>
+            <td>Single-entity damage dealers; Miao Ying's healing kit makes them <em>surprisingly</em> survivable</td>
+            <td>Single entities; price tag scales with tier</td>
+            <td>Specialty stacks; a Miao Ying-led mono-monster army is viable</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>Doomstack note:</strong> a "Miao Ying stack" is normally 3 Peasant Long Spearmen / Jade Warriors, 2 Celestial Dragon Guard, 3 Crane Gunners, 2 Iron Hail Gunners, 1 Nan-Gau Grenadier, 2 Sky-junks, 1 Grand Cannon, 1 Terracotta Sentinel, plus Miao Ying, an Alchemist, and an Astromancer. Add a Wu-Xing War Compass against magic-heavy enemies; swap a Sky-junk for an Iron Hail Gunner against Chaos Dwarfs.
+    </div>
+    <div class="tactic">
+        <strong>Miao Ying-army synergy:</strong> &minus;50% upkeep on missile infantry + +2 recruit rank + +10% missile strength on Iron Hail / Crane / Nan-Gau Grenadier units + faction-wide +20% ammunition + Yin/Yang reload buff + Mastery of Elemental Winds caster scaling. <em>Six</em> sources of buffs all stack on the same gunline. The army is objectively a better build in her hands than in any other Cathay lord's.
+    </div>
+</section>
+
+<!-- ============================================================ HEROES -->
+<section class="tab" id="heroes">
+    <h2><span class="rune">&#9775;</span>Heroes &amp; Casters &mdash; Management Guide</h2>
+    <p class="lead">
+        Cathay's hero economy is caster-heavy by design. Alchemists, Astromancers, Shugengan, Lords, and Miao Ying herself all share <em>Mastery of Elemental Winds</em>, which means more casters in the same army <strong>compound spell power up to +100%</strong>. <em>If you don't lean on heroes you are leaving the faction's biggest scaling lever unused.</em>
+    </p>
+
+    <h3>Hero categories &mdash; what they're for</h3>
+    <div class="mech-grid">
+        <div class="mech">
+            <h4>Alchemist (Lore of Metal)</h4>
+            <p>Combat-leaning caster hero. <strong>Embed in Miao Ying's army turn 1</strong> &mdash; their <em>Increase Mobility</em> campaign skill enables the four-turn province sweep that's the recommended opening.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> always one Alchemist in your main army for the campaign-map mobility, plus the Mastery scaling.</p>
+        </div>
+        <div class="mech">
+            <h4>Astromancer (Lore of Heavens)</h4>
+            <p>Long-range damage caster &mdash; lightning, comets, weather. Mastery of Elemental Winds caster slot; second hero in any caster-heavy army.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> embed in armies that face magic-heavy enemies (Tzeentch / High Elves) or whenever you want compounded spell damage.</p>
+        </div>
+        <div class="mech">
+            <h4>Dragon-Blooded Shugengan</h4>
+            <p>Specialist caster &mdash; <strong>Lore of Yin</strong> or <strong>Lore of Yang</strong>. Yin Shugengan emphasise debuffs and ranged support; Yang Shugengan emphasise melee buffs and damage.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> match the Shugengan's lore to your army composition &mdash; Yin army &rarr; Yin Shugengan, Yang army &rarr; Yang Shugengan.</p>
+        </div>
+        <div class="mech">
+            <h4>Lord (combat hero variant)</h4>
+            <p>Pure-melee duelist when you don't want a third caster. Mountable, leadership aura, simpler kit.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> swap in a combat Lord if your army is already at 3+ casters and the Mastery cap is approaching.</p>
+        </div>
+    </div>
+
+    <h3>How to manage your hero roster</h3>
+    <ol class="steps">
+        <li><strong>Embed an Alchemist in Miao Ying's army on turn 1.</strong> The Increase Mobility skill is the campaign opening.</li>
+        <li><strong>Recruit a second caster (Astromancer) by turn 5.</strong> Mastery of Elemental Winds at +15% kicks in immediately; Miao Ying's already a caster, so the army runs at +15% from the second caster onward.</li>
+        <li><strong>Stack 3&ndash;4 casters for major battles.</strong> A "magic-heavy push army" with Miao Ying + 3 caster heroes runs at +45%, which makes Storm of Shadows / Talons of Night / Comet of Cassandora genuinely battle-deciding.</li>
+        <li><strong>Use a Lord (combat) for secondary armies.</strong> They lead Bastion garrisons or Cathay-minor confederation armies cheaply.</li>
+        <li><strong>Use heroes as campaign-map agents.</strong> Wound Enemy Hero, Block Army, Embed for buffs &mdash; particularly against Vilitch and Chaos Dwarf Daemonsmiths.</li>
+        <li><strong>Don't keep idle heroes in cities for more than 3 turns.</strong> Hero upkeep adds up; either embed them, send them as agents, or disband.</li>
+    </ol>
+
+    <h3>Skill priorities by hero / lord type</h3>
+    <table>
+        <tr><th>Hero / Lord</th><th>First three picks</th><th>Why</th></tr>
+        <tr>
+            <td><strong>Miao Ying</strong></td>
+            <td>Spell-school discounts &amp; winds-of-magic regen &rarr; Transformation of the Dragon upgrades &rarr; lord-effect amplifiers (Iron Hail / Crane / Nan-Gau buffs)</td>
+            <td>Caster value first; Dragon transformation is a power spike; lord effects deepen the gunline identity</td>
+        </tr>
+        <tr>
+            <td><strong>Alchemist</strong></td>
+            <td><em>Increase Mobility</em> &rarr; Lore of Metal damage / cooldown &rarr; campaign agent action chance</td>
+            <td>Mobility is non-negotiable for the opening; spells are their value</td>
+        </tr>
+        <tr>
+            <td><strong>Astromancer</strong></td>
+            <td>Lore of Heavens spell discounts &rarr; winds-of-magic regen &rarr; campaign assassin actions</td>
+            <td>Spells are the value; cheaper / more often is the buff that compounds</td>
+        </tr>
+        <tr>
+            <td><strong>Dragon-Blooded Shugengan</strong></td>
+            <td>Yin or Yang lore mastery (match army) &rarr; spell discounts &rarr; Harmony Amplifier scaling if available</td>
+            <td>Specialise into the lore that matches your stack composition</td>
+        </tr>
+        <tr>
+            <td><strong>Lord (combat)</strong></td>
+            <td>Yellow combat damage / armour &rarr; leadership aura &rarr; mount unlock</td>
+            <td>Pure duelist build; mount adds flexibility as army leader</td>
+        </tr>
+    </table>
+
+    <h3>Common mistakes to avoid</h3>
+    <ul>
+        <li><strong>Skipping the Alchemist's mobility upgrade.</strong> The opening four-turn sweep depends on it; without it the campaign opens slower and harder.</li>
+        <li><strong>Putting all your casters in one army.</strong> Mastery of Elemental Winds caps at +100%; stuffing 8 casters wastes the surplus. Spread them &mdash; one main army at +60%, a second at +30%.</li>
+        <li><strong>Mismatching Shugengan lore to army.</strong> A Yin Shugengan in a Yang melee stack is a wasted hero slot.</li>
+        <li><strong>Letting Miao Ying solo cast without amplifier reach.</strong> Her Harmony Amplifier +100% is a battlefield buff &mdash; she belongs near Yin/Yang pairs, not isolated.</li>
+        <li><strong>Forgetting to use Wound Enemy Hero on Vilitch.</strong> Disrupting Changing of the Ways with a hero action is one of the best campaign-map plays available.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ THE GREAT BASTION -->
+<section class="tab" id="bastion">
+    <h2><span class="rune">&#9775;</span>The Great Bastion &mdash; Protecting the Gates</h2>
+    <p class="lead">
+        The Great Bastion is the headline mechanic of the Northern Provinces. Each gate is its own piece of defensive infrastructure with garrisons, threat tracking, and upgrade chains. <strong>Well-upgraded gates beat Kurgan Warbands without your field army even showing up.</strong> Manage them properly and the Bastion is a passive engine of attrition for every Chaos warband that drifts south from the Eastern Steppes.
+    </p>
+
+    <h3>The Bastion at a glance</h3>
+    <ul>
+        <li>The Bastion stretches across <em>three Bastion provinces</em>: <strong>Western Great Bastion, Central Great Bastion, Eastern Great Bastion</strong> &mdash; all three are required for victory.</li>
+        <li>Each gate fortress is a <strong>siege-ready settlement</strong> with its own garrison, walls, and threat bar.</li>
+        <li>Threat bars rise as Chaos / Kurgan armies approach from the north; when high, a Kurgan Warband spawns and assaults.</li>
+        <li>Upgrading gates costs gold + Defensive Supplies; <em>your faction effects discount this by 20%</em>, and Defensive Supplies arrive at +300/region.</li>
+    </ul>
+
+    <h3>The Threat Reduction edict</h3>
+    <div class="tactic">
+        <strong>Use the Threat Reduction edict on every gate.</strong> The wiki states this <em>"will significantly reduce how often you have to deal with"</em> Kurgan Warbands. It's the single best edict choice on a Bastion province; turn it on and leave it on.
+    </div>
+
+    <h3>Gate upgrade priority</h3>
+    <ol class="steps">
+        <li><strong>Walls / fortification chain first.</strong> Upgraded walls let the gate beat assaulting Warbands by garrison alone.</li>
+        <li><strong>Garrison-quality chain second.</strong> Better garrison units mean even unfortunate matchups (e.g., Mammoth-heavy stacks) don't break the gate.</li>
+        <li><strong>Defensive Supplies stockpile / regional supply chain.</strong> Compounds your faction's +300 Defensive Supplies effect.</li>
+        <li><strong>Threat Reduction-supporting buildings.</strong> Buildings or commandments that cut threat accumulation directly.</li>
+        <li><strong>Income / commodity buildings only when the gate is otherwise stable.</strong> Don't make money at the cost of a gate falling.</li>
+    </ol>
+
+    <h3>Field army &amp; gate coverage</h3>
+    <ul>
+        <li><strong>Miao Ying's army should rotate between gates.</strong> Don't let her camp at one &mdash; she's the response force for whichever threat bar climbs fastest.</li>
+        <li><strong>A second army covers gates Miao Ying isn't standing at.</strong> Boyar / Lord-led, missile-heavy, cheaper to maintain.</li>
+        <li><strong>When threat bars are quiet,</strong> use the spare turns for Ivory Road caravans or aggressive minor-Cathay confederations.</li>
+        <li><strong>Lightning Strike on Miao Ying</strong> is critical when a Kurgan Warband approaches with reinforcements &mdash; isolate them, kill them, return to the gate.</li>
+    </ul>
+
+    <h3>The "north of the wall" question</h3>
+    <div class="warn">
+        <strong>Do not try to hold territory north of the Bastion.</strong> The wiki is explicit: it's Chaos Wastes climate, "<em>almost completely worthless</em>" to you, and Kurgan Warbands are <strong>Rogue Armies</strong> &mdash; they can't ruin-dwell, so razing actively reduces the threat. <em>Raze everything east of The Volary</em>; it's better as scorched earth than as your problem.
+    </div>
+
+    <h3>If a gate falls</h3>
+    <div class="tactic">
+        <strong>It happens. The wiki even acknowledges the Bastion has been breached on rare occasions.</strong> When a gate falls:
+        <ul style="margin-top:.5rem">
+            <li><strong>Re-take immediately, in the same turn if possible.</strong> A retaken gate is a settled grudge and a piece of infrastructure recovered.</li>
+            <li><strong>Don't chase the Warband north.</strong> They lure you into Chaos Wastes climate and pile in with reinforcements. Let them spend their attack against your line on the way back.</li>
+            <li><strong>Re-build with priority on walls and garrison.</strong> Income chains can wait.</li>
+            <li><strong>Use Miao Ying's Dragon form</strong> on the retake assault &mdash; siege battles favour the dragon's flying mobility and breach-point firepower.</li>
+        </ul>
+    </div>
+
+    <h3>The Bastion as long-victory infrastructure</h3>
+    <p>
+        The Long Campaign Victory <em>requires</em> you to control the three Bastion provinces (Western, Central, Eastern). Treat the Bastion not as a chore but as the campaign itself &mdash; everything else (Ivory Road income, confederations, hostile-faction destruction) <em>funds and protects</em> the wall.
+    </p>
+</section>
+
+<!-- ============================================================ SETTLEMENTS -->
+<section class="tab" id="settlements">
+    <h2><span class="rune">&#9775;</span>Raze, Sack, or Occupy?</h2>
+    <p class="lead">
+        Cathay plays standard settlement rules &mdash; Loot/Sack/Raze/Occupy. The Northern Provinces twist is that <strong>territory north of the Bastion is worse than worthless</strong> (Chaos Wastes climate), while <strong>every Bastion province is mandatory</strong> for the long victory.
+    </p>
+
+    <h3>The three actions and what they do</h3>
+    <div class="decision">
+        <div class="choice sack">
+            <h4>Sack</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Beat the garrison, take a one-time gold payout, <strong>do not occupy</strong>, the city stays where it was.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>Modest XP and post-battle income</li>
+                <li>Owner survives; can be re-sacked later</li>
+                <li>Useful when you can't justify defending</li>
+            </ul>
+            <div class="verdict">Use vs. distant Empire / Bretonnia / Steppe cities you don't want to keep.</div>
+        </div>
+        <div class="choice raze">
+            <h4>Raze</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Burn the settlement to ruins. The province becomes empty.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>Removes corruption from the region</li>
+                <li>Denies the enemy a rebuild target</li>
+                <li><strong>Specifically against Kurgan Rogue Armies, razing reduces threat</strong></li>
+            </ul>
+            <div class="verdict">Use vs. all territory north of the Bastion. Raze everything east of The Volary.</div>
+        </div>
+        <div class="choice occupy">
+            <h4>Loot &amp; Occupy</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Sack and take the city in one action. Default for Cathay-suitable terrain.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>You now own the settlement &mdash; garrison, building chain, all income</li>
+                <li>Public order takes a hit; standard fixes apply</li>
+                <li>Bastion-relevant settlements unlock gate upgrade chains</li>
+            </ul>
+            <div class="verdict">Default action for any Cathay-climate settlement, especially Bastion provinces.</div>
+        </div>
+    </div>
+
+    <h3>The decision rule (memorize this)</h3>
+    <div class="tactic">
+        <strong>Climate first, Bastion second, Grudges (caravans) third.</strong>
+        <ul style="margin-top:.5rem">
+            <li>If it's a <strong>Bastion province settlement</strong> &rarr; <em>Loot &amp; Occupy</em>, always. These are victory targets.</li>
+            <li>If it's <strong>core Cathay climate</strong> &rarr; <em>Loot &amp; Occupy</em>.</li>
+            <li>If it's <strong>Habitable but exposed</strong> (you can't reinforce it) &rarr; <em>Sack</em> for the gold, then walk away.</li>
+            <li>If it's <strong>north of the Bastion (Chaos Wastes climate)</strong> &rarr; <em>Raze</em>. Always. It's worthless to you and burning it cuts threat.</li>
+            <li>If it belongs to a <strong>victory-target faction you must destroy</strong> &mdash; Rebel Lords, Dissenter Lords, Heralds of the Tempest, Blessed Dread, Clan Eshin &rarr; whatever you do, <em>destroy the faction</em>.</li>
+        </ul>
+    </div>
+
+    <h3>The Volary line &mdash; raze everything east of it</h3>
+    <p>
+        The wiki strategy explicitly states: <strong>raze everything east of The Volary</strong>. The reasoning is that this territory is Chaos Wastes climate (uninhabitable / unpleasant for Cathay) and Kurgan Warbands are Rogue Armies that cannot occupy ruins. Razing actively cuts their habitat and threat. <em>Don't be tempted by gold &mdash; it's a campaign-positive action even if it feels destructive.</em>
+    </p>
+
+    <h3>Which provinces should you actually keep?</h3>
+    <ul>
+        <li><strong>Gunpowder Road</strong> (your starting province around Nan-Gau) &mdash; always.</li>
+        <li><strong>Lands of Stone and Steel</strong> &mdash; short-victory target.</li>
+        <li><strong>Imperial Road</strong> &mdash; short-victory target.</li>
+        <li><strong>Western, Central, and Eastern Great Bastion</strong> &mdash; mandatory for long victory.</li>
+        <li><strong>Wei-Jin region</strong> &mdash; claim before The Blessed Dread does.</li>
+        <li><strong>Avoid territory north of the Bastion.</strong> Chaos Wastes climate is "<em>almost completely worthless</em>."</li>
+        <li><strong>Avoid distant Habitable cities you can't reinforce</strong> &mdash; sack for gold, don't keep.</li>
+    </ul>
+
+    <div class="warn">
+        <strong>Climate trap:</strong> Loot &amp; Occupy a city in <em>Uninhabitable</em> climate and you bleed public order, money, and growth permanently. Read the climate icon before you click. <em>Cathay-suitable climates only &mdash; the Bastion is your wall, not your border.</em>
+    </div>
+</section>
+
+<!-- ============================================================ DIPLOMACY / ECONOMY -->
+<section class="tab" id="economy">
+    <h2><span class="rune">&#9775;</span>Diplomacy &amp; Economy</h2>
+    <p class="lead">
+        Cathay has full diplomacy, real trade, and a rich economy fed by the Ivory Road. The Northern Provinces specifically benefit from <strong>Bastion Defender / Caravan Master</strong> reputation traits and the unique Ivory Road caravan income system.
+    </p>
+
+    <h3>Diplomacy: actually useful</h3>
+    <ul>
+        <li><strong>Starting NAP with Imperial Wardens.</strong> Don't break it; upgrade to trade and defensive alliance as relations improve.</li>
+        <li><strong>Trade with the Western Provinces and Jade Court</strong> as soon as relations allow. Inter-Cathay trade is the strongest commodity flow available to you.</li>
+        <li><strong>Confederate Cathay minor factions.</strong> Imperial Wardens and Celestial Loyalists are realistic candidates &mdash; <em>aim to claim the Celestial Loyalists and Wei-Jin before The Blessed Dread does</em>.</li>
+        <li><strong>Trade with the Empire / Bretonnia / Dwarfs / High Elves</strong> via the Ivory Road. Their gold flows back to you while you defend the Bastion.</li>
+        <li><strong>Don't ally with Chaos / Skaven / Vampires / Dark Elves.</strong> Reputation hit propagates to every Order partner you also want.</li>
+        <li><strong>Diplomatic traits to expect:</strong> other factions read you as <em>Protective, Bastion Defender, Caravan Master</em>. Order factions like working with you; Chaos factions hate you on principle.</li>
+        <li><strong>Don't waste diplomacy on the three named threats.</strong> Warhost of Zharr, Puppets of Misrule, and Clan Eshin will fight you anyway &mdash; play them off each other instead.</li>
+    </ul>
+
+    <div class="tip">
+        <strong>Practical rule:</strong> open the diplomacy screen <em>every turn</em>. Look for new trade partners, friendly-territory access offers, and Cathay-minor confederation triggers. There is almost always a free move available.
+    </div>
+
+    <h3>The Ivory Road &mdash; how caravans actually work</h3>
+    <ol class="steps">
+        <li><strong>Stake a caravan</strong> from a Cathay city heading west to the Old World. The caravan is led by a Caravan Master with a small accompanying army.</li>
+        <li><strong>Equip the caravan with sturdy infantry and anti-large units.</strong> Ogres are the headline threat &mdash; an Ogre Lord ambush ends a poorly-equipped caravan.</li>
+        <li><strong>Watch for dilemmas en route.</strong> The Ivory Road throws random events that may enhance the rewards or destroy the convoy. Choose carefully.</li>
+        <li><strong>Defeating an Ogre Lord</strong> during a caravan run grants meaningful loot, on top of the destination payout.</li>
+        <li><strong>Run caravans continuously.</strong> One in flight at all times; income compounds.</li>
+    </ol>
+
+    <h3>Economy: how you actually make money</h3>
+    <p>
+        Cathay's treasury is fed by <strong>buildings, trade, Ivory Road caravans, and Defensive Supplies</strong>, supported by battle income. Sources in order of importance:
+    </p>
+
+    <ol class="steps">
+        <li><strong>Ivory Road caravans.</strong> A successful run pays for a Bastion gate upgrade.</li>
+        <li><strong>Trade deals.</strong> Bilateral trade with Cathay, Empire, Bretonnia, Dwarfs, High Elves. Five trade partners and you're rich.</li>
+        <li><strong>Building income.</strong> Tier-3+ commodity buildings, ports, and growth chains stack income.</li>
+        <li><strong>Battle / sack income.</strong> Real but secondary. Don't structure your campaign around it.</li>
+        <li><strong>Wu-Xing Compass economic buffs.</strong> When the Compass is pointed at an income setting, faction-wide income spikes.</li>
+    </ol>
+
+    <h3>Building priorities for the cities you keep</h3>
+    <ul>
+        <li><strong>Tier-up the capital recruitment chain</strong> first &mdash; Crane Gunner / Iron Hail Gunner / Sky-junk access fast.</li>
+        <li><strong>Bastion gate upgrades</strong> on every Bastion-province settlement &mdash; the &minus;20% construction cost compounds.</li>
+        <li><strong>Trade resource chains</strong> in interior provinces &mdash; silk, jade, porcelain commodities.</li>
+        <li><strong>Caravan infrastructure</strong> in cities with Ivory Road access &mdash; cheaper / faster caravans = compounding income.</li>
+        <li><strong>Skip generic income buildings</strong> in favour of higher-yield commodity chains.</li>
+    </ul>
+
+    <h3>Cash-flow troubleshooting</h3>
+    <div class="warn">
+        <strong>If your treasury is bleeding red:</strong>
+        <ul style="margin-top:.4rem">
+            <li><em>Run a caravan immediately.</em> Most reliable Cathay income source.</li>
+            <li><em>Renegotiate trade deals upward</em> as your trade-good output grows.</li>
+            <li><em>Disband a reserve army.</em> Cathay recruitment is cheap-but-tier-gated; you can rebuild.</li>
+            <li><em>Sack a southern lowland city</em> &mdash; you weren't going to keep it anyway.</li>
+            <li><em>Point the Wu-Xing Compass at an economic buff</em> for a faction-wide income window.</li>
+        </ul>
+    </div>
+
+    <h3>Public order &amp; corruption</h3>
+    <ul>
+        <li><strong>Faction effect &minus;2 corruption</strong> + Cathay Untainted default = corruption rarely a problem.</li>
+        <li><strong>Public order in newly-occupied cities</strong> is helped by standard happiness chains and a garrisoned Lord.</li>
+        <li><strong>Harmony tilt</strong> can affect public order indirectly &mdash; balanced Harmony stabilises mood.</li>
+        <li><strong>If a settlement does revolt, retake it the same turn</strong> for free XP, gold, and a clean restart.</li>
+    </ul>
+</section>
+
+<footer>
+    The Northern Provinces &mdash; New Player's Guide &middot; Total War: Warhammer III
+    <br>Sourced from the official Total War: WARHAMMER Wiki (The Northern Provinces, Miao Ying the Storm Dragon, and Grand Cathay pages).
+</footer>
+
+</main>
+
+<script>
+(function(){
+    const nav = document.getElementById('navBar');
+    const tabs = document.querySelectorAll('.tab');
+    const buttons = nav.querySelectorAll('button');
+
+    nav.addEventListener('click', function(e){
+        const btn = e.target.closest('button[data-tab]');
+        if(!btn) return;
+        const target = btn.dataset.tab;
+        buttons.forEach(b => b.classList.toggle('active', b === btn));
+        tabs.forEach(t => t.classList.toggle('active', t.id === target));
+        window.scrollTo({top:0, behavior:'instant'});
+    });
+
+    const themeBtn = document.getElementById('themeBtn');
+    const stored = localStorage.getItem('northern-theme');
+    if(stored === 'light') document.body.classList.add('light');
+    themeBtn.addEventListener('click', function(){
+        document.body.classList.toggle('light');
+        localStorage.setItem('northern-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+})();
+</script>
+</body>
+</html>

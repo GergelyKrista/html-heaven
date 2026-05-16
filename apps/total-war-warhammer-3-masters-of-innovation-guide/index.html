@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Masters of Innovation &mdash; New Player's Guide</title>
+<meta name="description" content="A new player's guide to Malakai Makaisson and the Masters of Innovation in Total War: Warhammer III. Lore, Dwarf mechanics, full unit roster, hero management, campaign and battle strategy, settlement decisions, diplomacy, economy, and tech priorities.">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Masters of Innovation &mdash; New Player's Guide">
+<meta property="og:description" content="A beginner-friendly guide to Malakai Makaisson and the Masters of Innovation (Dwarfs) in Total War: Warhammer III. Lore, mechanics, units, heroes, strategy.">
+<meta property="og:image" content="titlecard.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Masters of Innovation titlecard with the Spirit of Grungni airship over a forge-orange sky.">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Masters of Innovation &mdash; New Player's Guide">
+<meta name="twitter:description" content="A beginner-friendly guide to Malakai Makaisson and the Masters of Innovation in Total War: Warhammer III.">
+<meta name="twitter:image" content="titlecard.png">
+<meta name="twitter:image:alt" content="Masters of Innovation titlecard with the Spirit of Grungni airship over a forge-orange sky.">
+<style>
+:root {
+    --bg:     #150f0c;
+    --sf:     #1f1814;
+    --sf2:    #2a2018;
+    --sf3:    #382a1f;
+    --ember:  #d4762a;
+    --ember2: #f0934a;
+    --gold:   #c89b3c;
+    --gold2:  #f0c459;
+    --frost:  #ecd9b0;
+    --tx:     #f0e6d4;
+    --mu:     #a89884;
+    --bdr:    rgba(232,196,89,.14);
+    --rune:   #8a4818;
+    --hdr-1:  #2a1c12;
+    --hdr-2:  #150f0c;
+    --hdr-tx: #f0e6d4;
+    --hdr-mu: #a89884;
+    --hdr-btn-bg:    rgba(232,196,89,.08);
+    --hdr-btn-bdr:   rgba(232,196,89,.3);
+    --hdr-btn-bg-h:  rgba(232,196,89,.18);
+}
+body.light {
+    --bg:     #f7f1e6;
+    --sf:     #ffffff;
+    --sf2:    #ece1cb;
+    --sf3:    #d9c8a8;
+    --ember:  #a8501a;
+    --ember2: #c66325;
+    --gold:   #8a6a1f;
+    --gold2:  #a88029;
+    --frost:  #2c2218;
+    --tx:     #1f1810;
+    --mu:     #6e5a44;
+    --bdr:    rgba(168,80,26,.18);
+    --rune:   #7a3a10;
+    --hdr-1:  #f1e3c8;
+    --hdr-2:  #e0cda3;
+    --hdr-tx: #1f1810;
+    --hdr-mu: #4d3d2a;
+    --hdr-btn-bg:    rgba(168,80,26,.06);
+    --hdr-btn-bdr:   rgba(168,80,26,.28);
+    --hdr-btn-bg-h:  rgba(168,80,26,.14);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body {
+    background:var(--bg); color:var(--tx);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.72;
+    transition:background .2s,color .2s;
+}
+
+/* Header */
+header {
+    background:linear-gradient(180deg,var(--hdr-1) 0%,var(--hdr-2) 100%);
+    padding:1.4rem 1.8rem;
+    display:flex; align-items:center; gap:1rem;
+    border-bottom:2px solid var(--ember);
+    position:relative;
+}
+header::after{
+    content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px;
+    background:linear-gradient(90deg,transparent 0%,var(--gold) 50%,transparent 100%);
+    opacity:.55;
+}
+.skull{font-size:1.75rem;line-height:1;color:var(--gold2);text-shadow:0 0 12px rgba(212,118,42,.45)}
+body.light .skull{color:var(--ember);text-shadow:0 0 8px rgba(168,80,26,.2)}
+header h1{font-size:1.4rem;font-weight:700;letter-spacing:.3px;color:var(--hdr-tx)}
+header h1 .accent{color:var(--ember2)}
+header p {color:var(--hdr-mu);font-size:.85rem;margin-top:.2rem}
+.hdr-right{margin-left:auto;display:flex;gap:.5rem;flex-shrink:0}
+.hdr-btn {
+    background:var(--hdr-btn-bg);
+    border:1px solid var(--hdr-btn-bdr);
+    color:var(--hdr-tx); border-radius:5px;
+    padding:.4rem .9rem;
+    font-size:.8rem; font-weight:600;
+    cursor:pointer; transition:all .15s;
+    text-decoration:none; display:inline-flex; align-items:center;
+    font-family:inherit; line-height:1.2;
+}
+.hdr-btn:hover{background:var(--hdr-btn-bg-h);border-color:var(--gold)}
+
+/* Nav */
+nav {
+    background:var(--sf); display:flex;
+    overflow-x:auto; border-bottom:1px solid var(--sf2);
+    scrollbar-width:none;
+    position:sticky; top:0; z-index:10;
+}
+nav::-webkit-scrollbar{display:none}
+nav button {
+    background:none; border:none;
+    border-bottom:2px solid transparent;
+    color:var(--mu); padding:1rem 1.4rem;
+    cursor:pointer; font-size:.92rem; font-weight:500;
+    white-space:nowrap; transition:color .15s, border-color .15s;
+    font-family:inherit;
+}
+nav button:hover{color:var(--tx)}
+nav button.active{color:var(--ember2);border-bottom-color:var(--ember)}
+
+/* Layout */
+main{max-width:1100px;margin:0 auto;padding:2.4rem 1.8rem 5rem}
+.tab{display:none}
+.tab.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+h2{
+    font-size:1.45rem;color:var(--gold2);
+    margin-bottom:1.6rem;padding-bottom:.7rem;
+    border-bottom:1px solid var(--sf2);
+    letter-spacing:.2px;font-weight:700;
+}
+h2 .rune{color:var(--ember);margin-right:.55rem}
+h3{font-size:1.12rem;font-weight:600;color:var(--ember2);margin:2rem 0 .9rem;letter-spacing:.1px}
+h4{font-size:.82rem;font-weight:700;color:var(--gold);margin:1.3rem 0 .55rem;text-transform:uppercase;letter-spacing:.7px}
+
+p{margin-bottom:1.05rem}
+strong{color:var(--frost);font-weight:600}
+em{color:var(--gold2);font-style:normal;font-weight:600}
+
+ul,ol{padding-left:1.45rem;margin-bottom:1.1rem}
+li{margin-bottom:.55rem;line-height:1.65}
+li::marker{color:var(--ember)}
+
+.lead{
+    font-size:1.04rem;color:var(--mu);margin-bottom:2rem;
+    padding:1.15rem 1.35rem;background:var(--sf);border-left:3px solid var(--ember);
+    border-radius:0 6px 6px 0;line-height:1.7;
+}
+
+/* Grid layouts */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+@media(max-width:780px){.two-col,.three-col{grid-template-columns:1fr}}
+
+/* Cards */
+.card{
+    background:var(--sf);border-radius:7px;
+    padding:1.25rem 1.45rem;margin-bottom:1rem;
+    border:1px solid var(--bdr);
+}
+.card-blood{border-left:3px solid var(--ember)}
+.card-brass{border-left:3px solid var(--gold)}
+.card-bone{border-left:3px solid var(--frost)}
+.card p:last-child,.card ul:last-child,.card ol:last-child{margin-bottom:0}
+
+/* Callouts */
+.tip,.warn,.note,.tactic{
+    border-radius:6px;padding:.95rem 1.2rem;font-size:.92rem;
+    margin:1.1rem 0;color:var(--mu);line-height:1.65;
+}
+.tip {background:rgba(200,155,60,.07);border:1px solid rgba(200,155,60,.22)}
+.tip  strong{color:var(--gold2)}
+.warn{background:rgba(212,118,42,.08);border:1px solid rgba(212,118,42,.28)}
+.warn strong{color:var(--ember2)}
+.note{background:rgba(236,217,176,.05);border:1px solid rgba(236,217,176,.15)}
+.note strong{color:var(--frost)}
+.tactic{background:rgba(138,72,24,.14);border:1px solid rgba(138,72,24,.42)}
+.tactic strong{color:var(--ember2)}
+
+/* Stat lines */
+.stat-row{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--bdr);gap:1rem}
+.stat-row:last-child{border-bottom:none}
+.stat-row .label{color:var(--mu)}
+.stat-row .val{color:var(--frost);font-weight:600;text-align:right}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+th,td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--sf2);vertical-align:top}
+th{color:var(--gold2);font-weight:600;background:var(--sf2);font-size:.78rem;text-transform:uppercase;letter-spacing:.6px}
+tr:hover td{background:rgba(232,196,89,.04)}
+td .role{display:inline-block;font-size:.7rem;padding:.18rem .55rem;border-radius:3px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.role-tank{background:rgba(236,217,176,.15);color:var(--frost)}
+.role-melee{background:rgba(212,118,42,.18);color:var(--ember2)}
+.role-cav{background:rgba(200,155,60,.18);color:var(--gold2)}
+.role-mons{background:rgba(138,72,24,.28);color:#f0a574}
+.role-fast{background:rgba(120,160,200,.18);color:#9bc4ec}
+.role-art{background:rgba(140,90,200,.18);color:#c5a4f0}
+.role-hero{background:rgba(232,196,89,.15);color:var(--gold2)}
+.role-cast{background:rgba(120,200,220,.18);color:#88d3e3}
+.role-fly{background:rgba(180,120,200,.2);color:#d6a3ed}
+
+/* Decision flow (raze / sack / occupy) */
+.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin:1.4rem 0}
+@media(max-width:780px){.decision{grid-template-columns:1fr}}
+.choice{
+    background:var(--sf);padding:1.3rem 1.45rem;border-radius:7px;
+    border:1px solid var(--bdr);border-top:3px solid var(--gold);
+}
+.choice.raze{border-top-color:var(--ember)}
+.choice.sack{border-top-color:var(--gold)}
+.choice.occupy{border-top-color:var(--frost)}
+.choice h4{margin-top:0;font-size:1.05rem;color:var(--frost);text-transform:none;letter-spacing:.2px}
+.choice .verdict{
+    margin-top:.85rem;padding:.6rem .8rem;font-size:.86rem;
+    background:var(--sf2);border-radius:5px;color:var(--gold2);
+    border:1px solid var(--bdr);
+}
+
+/* Mechanic blocks */
+.mech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem;margin:1.2rem 0}
+@media(max-width:780px){.mech-grid{grid-template-columns:1fr}}
+.mech{
+    background:var(--sf);padding:1.25rem 1.4rem;border-radius:7px;
+    border:1px solid var(--bdr);position:relative;
+}
+.mech-icon{
+    position:absolute;top:1.05rem;right:1.05rem;
+    font-size:1.5rem;opacity:.35;color:var(--gold);
+}
+.mech h4{margin-top:0;color:var(--ember2);text-transform:none;letter-spacing:0;font-size:1.04rem}
+.mech p:last-child{margin-bottom:0}
+
+/* Pros/cons */
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1rem 0}
+@media(max-width:680px){.pc{grid-template-columns:1fr}}
+.pc-block{padding:1.15rem 1.35rem;border-radius:6px;background:var(--sf);border:1px solid var(--bdr)}
+.pc-pros{border-left:3px solid var(--gold)}
+.pc-cons{border-left:3px solid var(--ember)}
+.pc-block h4{margin-top:0;font-size:.85rem}
+.pc-pros h4{color:var(--gold2)}
+.pc-cons h4{color:var(--ember2)}
+.pc-block ul{margin-bottom:0;padding-left:1.25rem}
+.pc-block li{font-size:.94rem;color:var(--mu);margin-bottom:.5rem;line-height:1.6}
+
+/* Hero block (Malakai) */
+.hero-block{
+    background:linear-gradient(135deg,var(--sf) 0%,var(--sf2) 100%);
+    padding:1.6rem 1.75rem;border-radius:8px;
+    border:1px solid var(--ember);position:relative;overflow:hidden;
+    margin-bottom:1.5rem;
+}
+.hero-block::before{
+    content:"";position:absolute;top:-30px;right:-30px;
+    width:140px;height:140px;border-radius:50%;
+    background:radial-gradient(circle,rgba(212,118,42,.22),transparent 70%);
+}
+.hero-name{font-size:1.55rem;color:var(--ember2);font-weight:700;letter-spacing:.5px}
+.hero-title{font-size:.9rem;color:var(--gold2);margin-bottom:.95rem;font-style:italic}
+
+/* Tag chips */
+.tags{display:flex;flex-wrap:wrap;gap:.45rem;margin:.85rem 0}
+.tag{
+    font-size:.72rem;padding:.25rem .65rem;border-radius:3px;
+    background:var(--sf2);color:var(--mu);border:1px solid var(--bdr);
+    text-transform:uppercase;letter-spacing:.5px;font-weight:600;
+}
+.tag.good{color:var(--gold2);border-color:rgba(200,155,60,.4)}
+.tag.bad{color:var(--ember2);border-color:rgba(212,118,42,.4)}
+
+/* Numbered steps */
+.steps{counter-reset:step;list-style:none;padding:0;margin:1rem 0}
+.steps li{
+    counter-increment:step;
+    position:relative;padding:.95rem 1.15rem .95rem 3rem;
+    background:var(--sf);border-radius:6px;margin-bottom:.7rem;
+    border:1px solid var(--bdr);border-left:2px solid var(--gold);
+    line-height:1.6;
+}
+.steps li::before{
+    content:counter(step);
+    position:absolute;left:.85rem;top:1rem;
+    width:1.65rem;height:1.65rem;border-radius:50%;
+    background:var(--ember);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.82rem;
+}
+
+/* Section intro */
+.intro-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1.6rem;margin-bottom:1.5rem}
+@media(max-width:780px){.intro-grid{grid-template-columns:1fr}}
+
+/* Quick reference panel */
+.qref{
+    background:var(--sf2);padding:1.3rem 1.45rem;border-radius:7px;
+    border:1px solid var(--bdr);
+}
+.qref h4{margin-top:0}
+.qref .stat-row{font-size:.92rem}
+
+footer{
+    text-align:center;padding:2rem 1.5rem;color:var(--mu);font-size:.84rem;
+    border-top:1px solid var(--sf2);margin-top:3rem;line-height:1.7;
+}
+footer a{color:var(--gold);text-decoration:none}
+footer a:hover{color:var(--gold2);text-decoration:underline}
+</style>
+</head>
+<body>
+
+<header>
+    <span class="skull" aria-hidden="true">&#9874;</span>
+    <div>
+        <h1>Masters of <span class="accent">Innovation</span> &mdash; New Player's Guide</h1>
+        <p>Total War: Warhammer III &middot; Malakai Makaisson &middot; Beginner-friendly</p>
+    </div>
+    <div class="hdr-right">
+        <button class="hdr-btn" id="themeBtn" type="button">Theme</button>
+    </div>
+</header>
+
+<nav id="navBar">
+    <button data-tab="overview" class="active">Overview</button>
+    <button data-tab="lore">Lore</button>
+    <button data-tab="mechanics">Dwarf Mechanics</button>
+    <button data-tab="moi">MoI Mechanics</button>
+    <button data-tab="malakai">Malakai</button>
+    <button data-tab="strengths">Strengths &amp; Weaknesses</button>
+    <button data-tab="campaign">Campaign Strategy</button>
+    <button data-tab="battle">Battle Strategy</button>
+    <button data-tab="roster">Unit Roster</button>
+    <button data-tab="heroes">Heroes &amp; Engineers</button>
+    <button data-tab="settlements">Raze / Sack / Occupy</button>
+    <button data-tab="economy">Diplomacy &amp; Economy</button>
+    <button data-tab="tech">Technologies</button>
+</nav>
+
+<main>
+
+<!-- ============================================================ OVERVIEW -->
+<section class="tab active" id="overview">
+    <h2><span class="rune">&#9874;</span>Overview</h2>
+    <p class="lead">
+        The Masters of Innovation are the engineering wing of the Dwarfs, led by <strong>Malakai Makaisson</strong> &mdash; an exiled Engineers' Guild prodigy turned oath-sworn Slayer who fights from the deck of his airship, the <em>Spirit of Grungni</em>. The faction rewards what Malakai is: <strong>artillery, gyrocopters, gunpowder lines, and big mechanical war machines</strong>. Your battle plan is to outrange and out-shoot anyone who comes at you, and your campaign plan is to use mobility, encampment, and a tight allied front with Kislev to survive being surrounded on day one.
+    </p>
+
+    <div class="intro-grid">
+        <div>
+            <h3>Why Masters of Innovation is a great campaign for a focused player</h3>
+            <ul>
+                <li>You start with two of the most famous heroes in Warhammer fantasy: <strong>Gotrek &amp; Felix</strong>, who alone can carry mid-game battles.</li>
+                <li>Universal faction effects: <strong>&minus;15% upkeep</strong> and <strong>+3 recruit rank</strong> for Artillery and Flying War Machine units in <em>all</em> armies. Your gunline arrives strong out of the recruiter.</li>
+                <li><strong>Malakai's Adventures</strong> &mdash; a unique Legendary-Battle progression that hands out free units (including free cannons), grapeshot ammunition, and special war-machine modifications.</li>
+                <li>Malakai's army has access to <strong>Spirit of Grungni Airship buildings</strong> &mdash; semi-horde-style buildings that travel with the army instead of needing a settlement.</li>
+                <li>Diplomatic gift wrapper: starting <strong>NAPs with The Ice Court and Ursun Revivalists</strong> mean you have real allies in Kislev from turn 1.</li>
+            </ul>
+        </div>
+        <div class="qref">
+            <h4>At a glance</h4>
+            <div class="stat-row"><span class="label">Legendary Lord</span><span class="val">Malakai Makaisson</span></div>
+            <div class="stat-row"><span class="label">Race</span><span class="val">Dwarfs</span></div>
+            <div class="stat-row"><span class="label">Required DLC</span><span class="val">Thrones of Decay</span></div>
+            <div class="stat-row"><span class="label">Start (Immortal Empires)</span><span class="val">Kraka Drak, Gianthome Mountains</span></div>
+            <div class="stat-row"><span class="label">Start (Realm of Chaos)</span><span class="val">Kraka Drak, Gianthome Mountains</span></div>
+            <div class="stat-row"><span class="label">Faction style</span><span class="val">Mobile gunline / artillery doomstack</span></div>
+            <div class="stat-row"><span class="label">Difficulty</span><span class="val">Hard &mdash; surrounded start, rewarding payoff</span></div>
+            <div class="stat-row"><span class="label">Magic</span><span class="val">None (Dwarfs use Runes, not spells)</span></div>
+        </div>
+    </div>
+
+    <h3>The Malakai loop, in one sentence</h3>
+    <div class="tactic">
+        <strong>Activate a Malakai's Adventure &rarr; pocket free cannons or grapeshot &rarr; advance Malakai with the Spirit of Grungni &rarr; encamp without losing movement &rarr; outrange and obliterate the next Chaos / Norscan / Skaven stack &rarr; bank the Grudge clearance.</strong> Every time you push forward you get more artillery, more grudges settled, and more reasons for the Book of Grudges to bless you.
+    </div>
+
+    <div class="warn">
+        <strong>Surrounded-start warning:</strong> Kraka Drak is hemmed in on every side &mdash; Throt's Maggoth Kin to start, then Throgg, Wulfrik, Azazel, Epidemius, the Daemon Prince, Archaon, Astragoth, and a host of minor Chaos and Norscan factions are likely to pile in. <em>Decide early which direction Malakai is pushing</em>, and don't be precious about losing settlements on the other front &mdash; lost holds just become more grudges to collect later.
+    </div>
+
+    <h3>What this guide covers</h3>
+    <div class="three-col">
+        <div class="card card-blood">
+            <h4>The faction</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Lore, Malakai's exile from the Engineers' Guild, the Slayer Oath, the Spirit of Grungni airship, and what makes the Masters different from the other five Dwarf factions.
+            </p>
+        </div>
+        <div class="card card-brass">
+            <h4>The systems</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                The Forge / Oathgold / Runes, Grudges, the Underway, and the Masters-specific Adventures, Airship buildings, and artillery / flying-war-machine bonuses.
+            </p>
+        </div>
+        <div class="card card-bone">
+            <h4>The play</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Campaign opening (wipe Throt, take Hell Pit, sail south to Kislev), battle templates with Adventures-rewarded units, hero management for Gotrek &amp; Felix and Engineers.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ LORE -->
+<section class="tab" id="lore">
+    <h2><span class="rune">&#9874;</span>Lore &mdash; The Disgraced Engineer in the Sky</h2>
+    <p class="lead">
+        To understand the Masters you have to understand two things: what Malakai built that went wrong, and the oath he swore afterwards.
+    </p>
+
+    <h3>Malakai Makaisson &mdash; the Slayer-Engineer</h3>
+    <p>
+        Once a prodigiously gifted member of the renowned Dwarf <strong>Engineers' Guild</strong>, Malakai built two of the most ambitious machines in Dwarf history: the Ironclad <strong>Unsinkable</strong> and the Airship <strong>Indestructible</strong>. <em>Both malfunctioned with devastating results.</em> Many of his kin died because of those failures. The Guild ejected him in disgrace, and the weight of those deaths is, by Dwarf custom, an unbearable shame.
+    </p>
+    <p>
+        There is exactly one path through such shame: the <strong>Slayer Oath</strong>. A Slayer renounces armour, family, and home, and seeks death in single combat against the most dangerous foes the world has to offer. Death &mdash; "<em>doom</em>" &mdash; in glorious battle is the only thing that wipes the stain clean.
+    </p>
+
+    <div class="warn">
+        <strong>The detail that defines him in battle:</strong> Malakai is a Slayer, but he is <em>not</em> a melee Slayer. He is a Slayer who refuses to give up engineering. He fights from the deck of the <strong>Spirit of Grungni</strong>, his own airship design, with cannons, cluster bombs, and what the wiki politely calls "Deranged Munitions." <em>Despite being a Slayer, he is not meant for melee combat &mdash; keep him behind your line, sniping monsters and lords.</em>
+    </div>
+
+    <h3>The Spirit of Grungni</h3>
+    <p>
+        The airship of Malakai's own design is more than flavour &mdash; in-game, his army has access to a special chain of <strong>Spirit of Grungni Airship buildings</strong> that follow the army rather than living in a settlement. This makes Malakai's force semi-mobile in a way no other Dwarf army is, and is a crucial design choice for surviving Kraka Drak's exposed start.
+    </p>
+
+    <h3>Gotrek &amp; Felix &mdash; legendary companions</h3>
+    <p>
+        Malakai begins the campaign with control of <strong>Gotrek Gurnisson</strong>, the most famous Slayer in Warhammer fantasy, and his human chronicler <strong>Felix Jaeger</strong> &mdash; both as Legendary Heroes. He also has access to recruit <strong>Ulrika Magdova</strong>, another famous companion-turned-vampire from the same novels. These three are not generic agents; they are top-tier characters that change the math of any battle they enter.
+    </p>
+
+    <h3>The six Dwarf factions &mdash; where the Masters fit</h3>
+    <p>
+        Total War: Warhammer III ships <strong>six playable Dwarf factions</strong>:
+    </p>
+    <ul>
+        <li><strong>Karaz-a-Karak</strong> &mdash; Thorgrim Grudgebearer, the High King; the orthodox Dwarf experience.</li>
+        <li><strong>Karak Kadrin</strong> &mdash; Ungrim Ironfist; the Slayer Keep, melee-Slayer-focused.</li>
+        <li><strong>Clan Angrund</strong> &mdash; Belegar Ironhammer; reclaim Karak Eight Peaks.</li>
+        <li><strong>Ironbrow's Expedition</strong> &mdash; Thorek Ironbrow; runesmith / forge specialist.</li>
+        <li><strong>The Ancestral Throng</strong> &mdash; Grombrindal, the White Dwarf; the wandering legend.</li>
+        <li><strong>Masters of Innovation</strong> &mdash; Malakai Makaisson; the airship and artillery faction. <em>You.</em></li>
+    </ul>
+
+    <div class="note">
+        <strong>Why this matters mechanically:</strong> the lore is the mechanics. Malakai's unique units &mdash; airship buildings, deranged munitions, cluster bombs &mdash; come from his identity as the disgraced inventor. His Adventures, with their rewards of grapeshot loads and free cannons, are him still building, still innovating, still trying to prove the engineering he was cast out for. Every campaign turn is one more chance at either redemption or doom.
+    </div>
+</section>
+
+<!-- ============================================================ DWARF MECHANICS -->
+<section class="tab" id="mechanics">
+    <h2><span class="rune">&#9874;</span>General Dwarf Mechanics</h2>
+    <p class="lead">
+        These four systems apply to every Dwarf faction. Master them and you understand the race.
+    </p>
+
+    <div class="mech-grid">
+        <div class="mech">
+            <span class="mech-icon">&#9874;</span>
+            <h4>The Forge &amp; Oathgold</h4>
+            <p>The Dwarf crafting system. <strong>Trade resources are collected from buildings, sacks, and caravans</strong>; you spend <em>Oathgold</em> at The Forge to craft <strong>magic items, banners, and runes</strong>. Runes are powerful permanent upgrades: weapon runes, armour runes, talisman runes, banner runes.</p>
+            <p style="margin:0">Used well, the Forge produces enchanted gear and unit-rune buffs that scale beyond what other factions get from regular item drops.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#9836;</span>
+            <h4>The Book of Grudges</h4>
+            <p>Every wrong against the Dwarfs &mdash; cities lost, kin slain, treaties broken &mdash; is logged as a <strong>Grudge</strong>. Settle Grudges by killing the offender or retaking the city, and you earn faction-wide bonuses (income, leadership, Oathgold).</p>
+            <p style="margin:0"><strong>Lost settlements aren't only a loss</strong> &mdash; they are future Grudges waiting to be cashed in. That's a real consolation when the start position forces you to give ground.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#9968;</span>
+            <h4>The Underway</h4>
+            <p>Dwarf armies can travel <strong>through underground tunnels</strong> to cross impassable terrain and dodge enemy stacks. This is how a slow race fights on its own terms &mdash; you appear where the enemy isn't expecting you, then dig in and shoot.</p>
+            <p style="margin:0">Combine the Underway with Encamp / Airship stances and you stop being a slow defensive race and start being a slow but elusive attacker.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#9881;</span>
+            <h4>No magic, no cavalry, no monsters</h4>
+            <p>Dwarfs have <strong>no spellcasters</strong> (Runes are the magical-equivalent system), <strong>no cavalry</strong>, and <strong>no monstrous units</strong>. Your roster is heavily-armoured infantry, gunpowder, artillery, and (with Malakai especially) flying war machines.</p>
+            <p style="margin:0">This means every battle is fought with your line and your shooters. You will <em>never</em> have a flanking horseman or a battle-mage. Plan accordingly.</p>
+        </div>
+    </div>
+
+    <h3>Three more rules that shape every Dwarf campaign</h3>
+
+    <div class="card card-blood">
+        <h4>Strong economy via trade</h4>
+        <p style="margin:0">Dwarf gold is fed by <strong>trade resources</strong> (gold ore, gromril, oathgold, gems, beer, ale). Every commodity building stacks with trade partners; a Dwarf empire with five trade deals is rich. Build commodity chains in held provinces and accept every trade offer that comes in.</p>
+    </div>
+
+    <div class="card card-blood">
+        <h4>Slow population growth, slow expansion</h4>
+        <p style="margin:0">Dwarf population growth is <em>low</em>, and Grudges that demand attention slow conquest further. Don't try to be Empire-of-the-Dwarfs &mdash; hold a high-quality core, settle every Grudge that's nearby, and grow methodically rather than greedily.</p>
+    </div>
+
+    <div class="card card-blood">
+        <h4>Mountain climates only</h4>
+        <p style="margin:0">Dwarfs are at home in <strong>Mountains and Badlands</strong>. Other climates are Unpleasant or Uninhabitable &mdash; a province in the wrong climate is a permanent gold drain. The map's mountain spines (Worlds Edge, Black Mountains, Grey Mountains) are your natural empire shape.</p>
+    </div>
+</section>
+
+<!-- ============================================================ MOI MECHANICS -->
+<section class="tab" id="moi">
+    <h2><span class="rune">&#9874;</span>Masters of Innovation &mdash; Faction-Specific Mechanics</h2>
+    <p class="lead">
+        On top of the general Dwarf systems, Malakai's faction gets a tightly-themed bundle of effects that all push toward one identity: <em>more artillery, more flying war machines, more mobility, and unique progression through Adventures</em>.
+    </p>
+
+    <h3>Faction effects (always-on)</h3>
+    <div class="three-col">
+        <div class="card card-brass">
+            <h4>&minus;15% upkeep, +3 recruit rank</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">For <strong>Artillery and Flying War Machine units in <em>all</em> armies</strong> &mdash; not just Malakai's. Cannons, Organ Guns, Grudge Throwers, Gyrocopters, Gyrobombers all come out cheaper to maintain and at higher starting rank.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>Spirit of Grungni Airship buildings</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65"><strong>Only Malakai's army</strong> has access to a unique chain of buildings that exist on the army itself, not in a settlement. Semi-horde mechanics &mdash; he can stay productive when he can't sit in a city.</p>
+        </div>
+        <div class="card card-brass">
+            <h4>Reduces Corruption</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Standard for Dwarfs &mdash; your provinces shed Chaos / Vampire / Skaven corruption automatically. Useful at Kraka Drak, where corruption pressure is constant.</p>
+        </div>
+    </div>
+
+    <h3>Malakai's Adventures &mdash; the headline mechanic</h3>
+    <div class="tactic">
+        <strong>Malakai's Adventures</strong> are a faction-unique progression system: a chain of <em>Legendary Battles</em> with significant rewards. Activating an Adventure costs money but yields:
+        <ul style="margin-top:.5rem">
+            <li><strong>Free units</strong> &mdash; in particular, your <em>first Adventure gives free cannons</em>, an enormous early-game boost.</li>
+            <li><strong>Powerful war-machine modifications</strong> &mdash; e.g. <em>grapeshot loads for cannons</em>, which is one of the strongest anti-infantry tools in the game.</li>
+            <li><strong>Progress toward victory conditions</strong> &mdash; both Short and Long Campaign Victories require completing Adventures (4 for Short, all 7 for Long).</li>
+        </ul>
+        <strong>Wherever you can spare the money, activate an Adventure.</strong> The wiki is explicit: even when treasury is tight, the rewards generally pay for themselves.
+    </div>
+
+    <h3>Mobility &amp; stances unique to Malakai</h3>
+    <ul>
+        <li><strong>Airship Camp stance</strong> &mdash; Malakai's army's <em>Encamp equivalent</em>. Provides <strong>protection against ambushes</strong> (use it when fighting Skaven, especially Clan Moulder early game) and lets him recruit on the move.</li>
+        <li><strong>Airship Traversal stance</strong> &mdash; allows <strong>battle initiation</strong> over impassable terrain and is <strong>immune to interception</strong>. You can mount a surprise attack across mountains that no enemy stack can block.</li>
+        <li>The combination is enormous: <em>encamp without wasting movement, recruit on the go, then leap a mountain range to attack a stack the enemy thought was safe</em>.</li>
+    </ul>
+
+    <h3>Diplomatic &amp; starting state</h3>
+    <ul>
+        <li><strong>Starts at war with Maggoth Kin</strong> (Throt the Unclean's neighbouring Skaven faction in IE).</li>
+        <li><strong>Non-aggression pacts with The Ice Court and Ursun Revivalists</strong> from turn 1 &mdash; Kislev is your friendly southern flank, not a threat to defend against.</li>
+    </ul>
+
+    <h3>How these stack in practice</h3>
+    <div class="tactic">
+        <strong>Compounding effect:</strong> activate the first Adventure for free cannons; recruit 3 Gyrocopters at +3 rank with &minus;15% upkeep; sit in Airship Camp to recruit while still moving; cross the Worlds Edge in Airship Traversal stance to drop on Throt before he can react. By turn 10 you have a gunline that costs 15% less to maintain than it should and outranges anyone short of a Cathay Sky-Junk.
+    </div>
+
+    <h3>Malakai's lord-line bonuses</h3>
+    <ul>
+        <li><strong>Spirit of Grungni (personal trait):</strong> Malakai's army has access to the Spirit of Grungni's Airship buildings; grants the <em>Deranged Munitions</em> ability; <strong>+20% missile strength for Artillery and Flying War Machine units</strong> in his army (stacks on top of the faction's +3 recruit rank and &minus;15% upkeep).</li>
+        <li><strong>Defeat trait (Slayer-Engineer):</strong> if Malakai dies, his sacrifice grants <em>+3 recruit rank for Artillery units and +10% missile strength</em> (own army) &mdash; even in death he buffs the gunline.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ MALAKAI -->
+<section class="tab" id="malakai">
+    <h2><span class="rune">&#9874;</span>Malakai Makaisson</h2>
+
+    <div class="hero-block">
+        <div class="hero-name">Malakai Makaisson</div>
+        <div class="hero-title">Slayer-Engineer &middot; Master of the Spirit of Grungni &middot; Legendary Lord</div>
+        <p style="margin:0;color:var(--frost);font-size:.92rem">
+            "<em>Once shame has stained the soul, it can only be wiped away with blood.</em>"
+            One of the strongest <strong>missile</strong> Legendary Lords in the game &mdash; and one of the hardest to use correctly, because his Slayer status tempts you to send him into melee where he is at his worst.
+        </p>
+    </div>
+
+    <div class="two-col">
+        <div>
+            <h3>Combat profile</h3>
+            <div class="tags">
+                <span class="tag good">Missile Specialist</span>
+                <span class="tag good">Ballistics Expert</span>
+                <span class="tag good">Armour-Piercing Missiles</span>
+                <span class="tag good">Unbreakable</span>
+                <span class="tag good">Slayer</span>
+                <span class="tag good">Encourage</span>
+                <span class="tag good">Hide (forest)</span>
+                <span class="tag good">Siege Attacker</span>
+                <span class="tag good">Fast (for a Dwarf)</span>
+                <span class="tag bad">Armor 0 (Unarmoured)</span>
+                <span class="tag bad">Single Entity</span>
+            </div>
+            <ul>
+                <li><strong>Stats:</strong> 4,620 HP, <em>Leadership 100</em>, Speed 42 ("Fast for a Dwarf"), Melee Attack 55, Melee Defence 45.</li>
+                <li><strong>Missile Strength 450</strong> &mdash; 50 base / 100 AP per shot, <em>3 shots per volley = 150/300 per volley</em>, Range 180, Reload 10 s, Ammunition 90.</li>
+                <li><strong>Weapon Strength 400</strong> melee (280 base / 120 AP) &mdash; respectable for emergencies, <em>not</em> his role.</li>
+                <li><strong>Armor 0</strong> (Slayer Oath: no armour) &mdash; offset by <em>+15% Missile Resistance</em> and a strong <em>+35% Spell Resistance</em>.</li>
+                <li><strong>Unbreakable</strong> + <strong>Slayer</strong>: never routs, weapon strength cannot be reduced in battle.</li>
+                <li><strong>Active abilities:</strong> <em>Cinderblast Cluster Bombs</em>, <em>Deranged Munitions</em>; campaign: <em>Deadly Onslaught</em>, <em>Deranged Munitions Upgraded</em>, <em>Rally!</em>, <em>Stand Your Ground!</em></li>
+                <li><strong>Passives:</strong> <em>Artillery Master</em>, <em>Deathblow</em>, <em>Wounds</em>; campaign-only <em>Determined</em> and <em>Extremely Daring Deathblow</em>.</li>
+                <li><strong>Items:</strong> <em>Makaisson's Persuader</em> and <em>The Eyes of Grungni</em> &mdash; both with item abilities.</li>
+            </ul>
+        </div>
+        <div>
+            <h3>Weaknesses to respect</h3>
+            <div class="pc">
+                <div class="pc-block pc-cons" style="grid-column:1 / -1">
+                    <h4>The two ways to lose Malakai</h4>
+                    <ul>
+                        <li><strong>Melee swarms.</strong> Armor 0 plus Melee Defence 45 means he <em>melts</em> if you commit him into a clump of axes. Slayer Unbreakable doesn't save you when his HP hits zero &mdash; Wounds passive does, once.</li>
+                        <li><strong>Counter-snipers.</strong> Other shooters with the same range or better (Empire Great Cannons, Cathay Sky-Junks, focus-fire on a single target) will trade with him &mdash; and a wounded Malakai is one battle away from a permanent loss.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn">
+                <strong>Despite being a Slayer, Malakai is not meant for melee combat.</strong> The wiki says it plainly: keep him behind the lines, snipe heavily-armoured monsters and Heroes/Lords, drop Deranged Munitions on enemy ranged units, and let <em>Gotrek and Felix</em> do the melee work.
+            </div>
+        </div>
+    </div>
+
+    <h3>Unique items</h3>
+    <div class="card card-brass">
+        <ul style="margin:0">
+            <li><strong>Makaisson's Persuader</strong> &mdash; his weapon. Provides his ranged item ability.</li>
+            <li><strong>The Eyes of Grungni</strong> &mdash; ocular contraption that grants the second item ability. Both stack into his "snipe lords from across the map" identity.</li>
+        </ul>
+    </div>
+
+    <h3>Lord Effects (army-wide)</h3>
+    <div class="card card-brass">
+        <ul style="margin:0">
+            <li><strong>Spirit of Grungni's Airship buildings</strong> available in his army.</li>
+            <li><strong>Deranged Munitions ability</strong> available faction-wide.</li>
+            <li><strong>+20% Missile Strength for Artillery and Flying War Machine units</strong> in his army.</li>
+        </ul>
+    </div>
+    <div class="tip">
+        <strong>Build implication:</strong> Malakai's stack should lean <em>hard</em> into artillery and flying war machines. Cannons, Organ Guns, Grudge Throwers, Gyrocopters, and Gyrobombers all benefit from &minus;15% faction upkeep, +3 recruit rank, his +20% missile strength, and the Adventure-rewarded modifications. They are objectively a better build in his army than in any other Dwarf lord's.
+    </div>
+
+    <h3>Skill tree priorities (in order)</h3>
+    <ol class="steps">
+        <li><strong>Missile / artillery support line first.</strong> Anything that boosts his ranged damage, reload speed, or his army's missile units. He <em>is</em> his ranged kit.</li>
+        <li><strong>Deranged Munitions / Cinderblast upgrades.</strong> His signature abilities scale aggressively with skill investment.</li>
+        <li><strong>Survivability picks (HP, Wounds, missile resistance).</strong> The unarmoured profile means every defensive point counts.</li>
+        <li><strong>Lightning Strike</strong> when it appears &mdash; lets you isolate Norscan and Chaos stacks before reinforcements join.</li>
+        <li><strong>Blue line campaign skills.</strong> Movement, replenishment, post-battle income; valuable but secondary.</li>
+        <li><strong>Melee combat picks &mdash; skip.</strong> Even buffed, his melee is your panic-button last resort. Don't pretend otherwise.</li>
+    </ol>
+
+    <h3>How to use him in battle</h3>
+    <ol>
+        <li><strong>Deploy him in the second rank</strong>, behind Ironbreakers / Longbeards, alongside your Thunderers and Quarrellers. Out of charge range of enemy cavalry; in range of every priority target.</li>
+        <li><strong>Open the battle with a sniped artillery officer or enemy lord.</strong> Malakai's 180-range AP shots delete soft single-entity casters and Heroes from the back rank.</li>
+        <li><strong>Drop Deranged Munitions on the enemy's best ranged unit.</strong> Their gunners or archers vanish in one ability.</li>
+        <li><strong>Cinderblast Cluster Bombs</strong> when an enemy infantry blob clumps in front of your line &mdash; AoE damage tied to his ranged kit.</li>
+        <li><strong>If melee reaches him, shuffle him sideways and let Ironbreakers re-screen.</strong> Don't park him in combat &mdash; his Wounds passive will fire once, then he's gone for the campaign turn.</li>
+        <li><strong>Reserve melee duels for Gotrek &amp; Felix.</strong> Gotrek alone outclasses most enemy lords; that's <em>his</em> job, not Malakai's.</li>
+    </ol>
+</section>
+
+<!-- ============================================================ STRENGTHS / WEAKNESSES -->
+<section class="tab" id="strengths">
+    <h2><span class="rune">&#9874;</span>Faction Strengths &amp; Weaknesses</h2>
+
+    <div class="pc">
+        <div class="pc-block pc-pros">
+            <h4>Strengths</h4>
+            <ul>
+                <li><strong>Best artillery roster in the game.</strong> Cannons, Organ Guns, Grudge Throwers, Flame Cannons &mdash; all standard Dwarf, all buffed by your faction effects.</li>
+                <li><strong>Flying War Machines.</strong> Gyrocopters and Gyrobombers fix the Dwarf "no flanking units" problem.</li>
+                <li><strong>Heavily-armoured anvil infantry.</strong> Longbeards, Hammerers, and Ironbreakers are some of the toughest line infantry in any roster.</li>
+                <li><strong>Gotrek &amp; Felix from turn 1.</strong> Combined, the most absurd melee duo available; can decide a battle by themselves.</li>
+                <li><strong>Malakai's Adventures</strong> hand out free units, grapeshot, and other modifications that make later games trivial.</li>
+                <li><strong>Mobility you don't expect from Dwarfs.</strong> Airship Camp + Airship Traversal + the Underway = surprise offence anywhere on the map.</li>
+                <li><strong>Strong economy via trade goods + The Forge</strong>; Oathgold-bought runes scale your units for the entire game.</li>
+                <li><strong>Reduces Corruption</strong> automatically &mdash; you don't need to babysit corruption like Empire or Kislev.</li>
+                <li><strong>Starts with NAPs to both Kislev factions.</strong> Real allies on day one.</li>
+            </ul>
+        </div>
+        <div class="pc-block pc-cons">
+            <h4>Weaknesses</h4>
+            <ul>
+                <li><strong>Surrounded start.</strong> Kraka Drak has hostile neighbours on every side; you <em>will</em> lose settlements.</li>
+                <li><strong>No magic at all.</strong> No spell schools, no dispels &mdash; Runesmiths offer some magic-resistance but you can't out-cast a Tzeentch lord.</li>
+                <li><strong>No cavalry, no monsters.</strong> Every battle is line-and-shooters. Backline targets must be reached by Gyrocopters, Miners, or attrition.</li>
+                <li><strong>Slow movement and slow growth.</strong> The Underway helps but you'll never empire-build like a horde faction.</li>
+                <li><strong>Malakai is fragile in melee.</strong> Armor 0; if you misplay him you lose your Legendary Lord.</li>
+                <li><strong>Mountain climates only.</strong> Most of the map is Unpleasant or Uninhabitable for you.</li>
+                <li><strong>Long Adventure unlocks.</strong> The full Adventure chain is gated behind 70 settlement actions and major faction kills &mdash; commit to the campaign length.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>Who you should fear and why</h3>
+    <table>
+        <tr><th>Threat</th><th>Why they're dangerous</th><th>Counter</th></tr>
+        <tr><td><strong>Maggoth Kin (Throt) &mdash; starting enemy</strong></td><td>Skaven swarms with monstrous abominations; tunnels right under your starting cluster</td><td>Wipe them in 3 turns; your starting army is "far superior" per the wiki, especially with the first Adventure's free cannons</td></tr>
+        <tr><td><strong>Throgg / Wulfrik / Norscan tribes</strong></td><td>Will declare war quickly; Mammoths and Trolls overwhelm at close range</td><td>Cannons and Grudge Throwers shred Mammoths from 180+ range; Ironbreakers anvil; Gyrocopters dive berserkers</td></tr>
+        <tr><td><strong>Archaon, Daemon Prince, Azazel, Epidemius</strong></td><td>Likely to pile in on the war Throgg starts; high-tier Chaos units</td><td>Stay defensive on the eastern front; let Kislev tank the brunt; sell sacked settlements to Boris to prop him up as a buffer</td></tr>
+        <tr><td><strong>Disciples of Hashut / Legion of Azgorh (Chaos Dwarfs)</strong></td><td>Mirror-match artillery; their K'daai Destroyer hits your line hard</td><td>Out-range with Grudge Throwers; Adventures-grapeshot for their infantry; Gyrobombers on their artillery</td></tr>
+        <tr><td><strong>Tzeentch / magic-heavy enemies</strong></td><td>You have no dispel; Lords of Change snipe your war machines</td><td>Runesmith with magic-resistance runes; Malakai snipes the Lord of Change with his AP missiles</td></tr>
+        <tr><td><strong>Grimgor's 'Ardboyz / Greenskin Waaaghs</strong></td><td>Numbers and momentum; will roll over a thinly-stretched line</td><td>Tight Ironbreaker / Longbeard front + maximum artillery; do not over-extend in the south</td></tr>
+    </table>
+</section>
+
+<!-- ============================================================ CAMPAIGN STRATEGY -->
+<section class="tab" id="campaign">
+    <h2><span class="rune">&#9874;</span>Campaign Strategy</h2>
+    <p class="lead">
+        The Masters of Innovation campaign is <strong>three phases</strong>: kill Throt and lock down Hell Pit, then choose a direction (north into Norsca or south into Kislev), then activate every Adventure you can afford while crusading toward the Chaos / Chaos-Dwarf victory targets.
+    </p>
+
+    <h3>Immortal Empires &mdash; Kraka Drak start</h3>
+    <div class="note">
+        <strong>Starting position:</strong> <em>Kraka Drak, Gianthome Mountains</em>. <strong>Starting war:</strong> Maggoth Kin (Throt). <strong>Starting NAPs:</strong> The Ice Court (Katarin) and Ursun Revivalists (Boris). <strong>Starting heroes:</strong> Gotrek &amp; Felix.
+    </div>
+    <ol class="steps">
+        <li><strong>Turn 1&ndash;3:</strong> wipe the Maggoth Kin. The wiki says this is "easily dealt with" in three short turns. Use Gotrek and Felix at the front of every battle.</li>
+        <li><strong>Activate your first Malakai's Adventure</strong> as soon as you can afford it &mdash; it gives you free cannons that change every battle for the next 20 turns.</li>
+        <li><strong>Sweep down into Kislev to trap Throt.</strong> Don't let him escape and rebuild &mdash; if you don't finish him, his rats will teleport across the mountain range to harass you indefinitely.</li>
+        <li><strong>Take Hell Pit.</strong> The wiki: "<em>Hell Pit is a relatively sheltered money-maker, which is highly useful in a campaign where you're liable to lose settlements quite a bit.</em>" Don't let nearby Kislev factions snatch it &mdash; it's a Legendary Grudge in the Great Book of Grudges.</li>
+        <li><strong>Endear yourself to Kislev.</strong> Killing Throt makes Katarin and Boris happier with you &mdash; they're the only allies you'll get; the stronger they are, the less you have to handle alone.</li>
+        <li><strong>Pick a direction</strong> for Malakai's army. Don't be precious about losing settlements on the other front &mdash; lost settlements become Grudges to settle later, and Malakai's semi-horde Airship buildings let him keep operating away from any home base.</li>
+    </ol>
+
+    <h3>The mid-game pattern</h3>
+    <div class="tactic">
+        <strong>Aggressive Malakai + defensive 2nd army + Gotrek &amp; Felix wherever the trouble is.</strong>
+        Malakai's stack uses Airship Camp / Traversal to land surprise attacks where the AI doesn't expect Dwarfs. A second, conventional Dwarf army anchors the home cluster and absorbs invasions. Gotrek &amp; Felix can be embedded in either, and act as a "fix it" button for any battle where the auto-resolve looks wrong.
+    </div>
+
+    <h3>The "ferry to Boris" play</h3>
+    <p>
+        A specific wiki-recommended strategy is to <em>sail Malakai over to the Ursun Revivalists' position and prop up Boris</em>. <strong>Take settlements from Throt or Norsca, sell them to Boris</strong>, and you turn Boris into a real bulwark against the eastern Chaos front while you focus elsewhere. It's a labour-intensive play but it works: a stronger Kislev means fewer fronts you have to defend personally.
+    </p>
+
+    <h3>Empire expansion principles</h3>
+    <ul>
+        <li><strong>Hold mountain provinces, sack the rest.</strong> Climate matters; don't try to keep flatland settlements you can't make money from.</li>
+        <li><strong>Don't upgrade settlements you doubt you can hold.</strong> Save the gold; if it's overrun, the upgrade is wasted.</li>
+        <li><strong>Hell Pit is a long-term keep.</strong> Sheltered, profitable, and a Legendary Grudge.</li>
+        <li><strong>Activate every Adventure you can afford.</strong> Free units and grapeshot upgrades materially change battles.</li>
+        <li><strong>Use Airship Traversal stance for surprise attacks across mountains.</strong> The AI does not predict it.</li>
+    </ul>
+
+    <h3>Endgame &amp; victory</h3>
+    <p>
+        <strong>Short Campaign Victory:</strong>
+    </p>
+    <ul>
+        <li>Complete <em>4 Legendary Battles in Malakai's Adventures</em></li>
+        <li>Destroy <em>Warhost of the Apocalypse</em> and <em>Disciples of Hashut</em></li>
+        <li>Occupy/loot/raze/sack <em>30 different settlements</em></li>
+        <li><strong>Reward:</strong> Hero capacity +3 for all Heroes</li>
+    </ul>
+    <p>
+        <strong>Long Campaign Victory:</strong>
+    </p>
+    <ul>
+        <li>Achieve Short Victory conditions</li>
+        <li>Occupy/loot/raze/sack <em>70 different settlements</em></li>
+        <li>Complete <em>all 7 Legendary Battles in Malakai's Adventures</em></li>
+        <li>Destroy <em>The Legion of Azgorh</em>, <em>Servants of the Conclave</em>, and <em>Grimgor's 'Ardboyz</em></li>
+        <li><strong>Reward:</strong> Hero recruit rank +10 (local province) for all provinces</li>
+    </ul>
+</section>
+
+<!-- ============================================================ BATTLE STRATEGY -->
+<section class="tab" id="battle">
+    <h2><span class="rune">&#9874;</span>Battle Strategy</h2>
+    <p class="lead">
+        Dwarf battles are <strong>positional gunlines</strong>. Your line holds, your shooters kill, and your Gyrocopters chase. With Malakai specifically, the gunline goes from "good" to "obscene" &mdash; you have an army-wide +20% missile strength on artillery and flying war machines, plus Malakai himself sniping priority targets from 180 range.
+    </p>
+
+    <h3>The Malakai doomstack template (~20 units)</h3>
+    <table>
+        <tr><th>Slot</th><th>Composition</th><th>Role</th></tr>
+        <tr><td>1</td><td>Malakai Makaisson</td><td>Lord &mdash; long-range AP sniper, missile-army anchor</td></tr>
+        <tr><td>2&ndash;3</td><td>Gotrek &amp; Felix (+ Engineer or Runesmith)</td><td>Heroes &mdash; Gotrek/Felix do the melee work, Engineer buffs gunline / Runesmith grants magic resistance</td></tr>
+        <tr><td>3&ndash;4</td><td>Ironbreakers / Longbeards (with shields)</td><td>Frontline anvil; absorb the approach phase</td></tr>
+        <tr><td>2</td><td>Hammerers</td><td>Elite anti-armour anvil-and-hammer</td></tr>
+        <tr><td>3&ndash;4</td><td>Thunderers (handgunners)</td><td>AP gunpowder; main anti-armour shooting</td></tr>
+        <tr><td>2</td><td>Quarrellers (with great weapons or shields)</td><td>Cheap anti-light missile / second rank</td></tr>
+        <tr><td>2&ndash;3</td><td>Cannons or Grudge Throwers</td><td>Long-range AP &mdash; +20% missile strength under Malakai</td></tr>
+        <tr><td>1&ndash;2</td><td>Organ Guns or Flame Cannons</td><td>Anti-infantry / anti-clump artillery</td></tr>
+        <tr><td>2&ndash;3</td><td>Gyrocopters / Gyrobombers</td><td>Flying war machines; flank harass &amp; backline removal</td></tr>
+    </table>
+
+    <div class="tip">
+        <strong>Why Malakai's stack is built differently:</strong> the +20% Missile Strength on Artillery and Flying War Machine units in his army stacks with the faction-wide &minus;15% upkeep and +3 recruit rank, with Adventure-rewarded grapeshot loads, with Engineer buffs, and with technologies. Same units in Thorgrim's army would be solid; in Malakai's they're the best version of themselves in any Dwarf roster.
+    </div>
+
+    <h3>Standard battle plan</h3>
+    <ol class="steps">
+        <li><strong>Deploy in a defensive line.</strong> Ironbreakers and Longbeards in front, Thunderers/Quarrellers in the second rank, artillery elevated behind, Gyrocopters on the wings, Malakai centre-rear.</li>
+        <li><strong>Engineer drops his missile-buff aura</strong> on your shooting line as the enemy commits to the approach.</li>
+        <li><strong>Open with cannons / Grudge Throwers</strong> on the most expensive enemy unit you can see. Long range means you fire <em>before</em> the enemy is in your gunpowder range.</li>
+        <li><strong>Malakai snipes</strong> enemy lords, casters, and Hero-types with his 180-range AP missiles. Each priority kill saves a Thunderer volley.</li>
+        <li><strong>Thunderers volley</strong> the moment the enemy enters their range &mdash; alpha-strike priority is enemy elite infantry or armoured cavalry.</li>
+        <li><strong>Ironbreakers absorb the charge.</strong> Hammerers move out from behind to flank-counter at the moment of contact.</li>
+        <li><strong>Drop Cinderblast Cluster Bombs / Deranged Munitions</strong> when an enemy infantry blob is densely packed in front of you.</li>
+        <li><strong>Gotrek &amp; Felix engage</strong> the most dangerous enemy melee target &mdash; Greater Daemon, Chaos lord, monstrous infantry. Gotrek alone often wins the duel.</li>
+        <li><strong>Gyrocopters dive the back line</strong> &mdash; enemy artillery, casters, fleeing chaff. They are your only real flanking unit; use them.</li>
+    </ol>
+
+    <h3>Specific matchups</h3>
+
+    <div class="three-col">
+        <div class="card card-blood">
+            <h4>vs. Norsca / Chaos warbands</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Cannons shred Mammoths; Grudge Throwers cluster-bomb Marauder hordes; Thunderers AP-gun the Chaos Warriors. Gotrek tanks the lord. <strong>Your bread-and-butter.</strong>
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Skaven (especially Clan Moulder)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Use <em>Airship Camp stance</em> to immune ambushes. Flame Cannon and Organ Gun melt Skaven slaves. Gyrocopters chase the squeakers. Watch out for Hell Pit Abominations &mdash; cannon them on sight.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Chaos Dwarfs (Disciples of Hashut, Legion of Azgorh)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Mirror gunline &mdash; out-range with Grudge Throwers, Gyrobomber-dive their artillery, Thunderers handle Hashut Infantry. Adventures-grapeshot is excellent here.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Tzeentch / magic-heavy enemies</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Bring a Runesmith for magic resistance runes. Malakai's +35% spell resistance helps him personally. Snipe the Lord of Change with Malakai's AP missiles before they can disrupt your line.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Greenskin / Beastmen swarms</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Numbers war &mdash; Organ Guns, Flame Cannons, Grudge Throwers. Anvil with Ironbreakers and let Hammerers smash any unit that gets through.
+            </p>
+        </div>
+        <div class="card card-blood">
+            <h4>vs. Cavalry-heavy (Bretonnia, Empire)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Quarrellers with shields and Thunderers volley through the charge. Ironbreakers brace; Hammerers AP-counter. Cannons one-shot the cavalry lord.
+            </p>
+        </div>
+    </div>
+
+    <h3>Auto-resolve advice</h3>
+    <div class="tip">
+        Malakai's stack <strong>auto-resolves well</strong> against weak-but-numerous foes (Greenskins, Beastmen, Norscan minors), because the auto-resolver weights his missile strength and Gotrek/Felix's stats heavily. <strong>Always manually fight</strong> against monster-heavy stacks, gunpowder mirror matches, and Skaven Hell Pit Abominations &mdash; the auto-resolver tends to give the AI free hits on your Gyrocopters and undervalue your cannons' alpha-strike.
+    </div>
+</section>
+
+<!-- ============================================================ ROSTER -->
+<section class="tab" id="roster">
+    <h2><span class="rune">&#9874;</span>Unit Roster</h2>
+    <p class="lead">
+        Standard Dwarf roster (heavily-armoured infantry + gunpowder + artillery + flying war machines, <strong>no cavalry, no monsters, no spellcasters</strong>) plus Malakai-specific airship and innovation units. The signature mix is <strong>Ironbreakers, Thunderers, cannons, and Gyrocopters</strong>.
+    </p>
+
+    <h3>Lords &amp; Heroes</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Malakai Makaisson</strong></td>
+            <td><span class="role role-hero">Missile LL</span></td>
+            <td>180-range AP missiles, Unbreakable, Slayer, Ballistics Expert, AoE bombs</td>
+            <td>Armor 0; melee fragile; single entity</td>
+            <td>Always &mdash; main army anchor &amp; sniper</td>
+        </tr>
+        <tr>
+            <td><strong>Thane (generic Lord)</strong></td>
+            <td><span class="role role-hero">Combat Lord</span></td>
+            <td>Heavy armour, leadership aura, solid melee duelist</td>
+            <td>Slow; no magic</td>
+            <td>2nd / 3rd army leader; defensive lord</td>
+        </tr>
+        <tr>
+            <td><strong>Runesmith</strong></td>
+            <td><span class="role role-hero">Anti-Magic Hero</span></td>
+            <td>Runes (magic resistance, dispels); modest combat</td>
+            <td>No real spell offence</td>
+            <td>Embed vs. Tzeentch / Vampires / High Elves</td>
+        </tr>
+        <tr>
+            <td><strong>Master Engineer</strong></td>
+            <td><span class="role role-hero">Missile-Buff Hero</span></td>
+            <td>Buffs nearby Artillery / Thunderers; entrenched-position bonuses</td>
+            <td>Weak melee</td>
+            <td>One per gunline army &mdash; non-negotiable</td>
+        </tr>
+        <tr>
+            <td><strong>Thane (Hero)</strong></td>
+            <td><span class="role role-hero">Combat Hero</span></td>
+            <td>Heavy armour, leadership aura, anti-large variants</td>
+            <td>Slow on the campaign map</td>
+            <td>Embed in line armies for the leadership</td>
+        </tr>
+        <tr>
+            <td><strong>Gotrek Gurnisson (Legendary Hero)</strong></td>
+            <td><span class="role role-hero">Slayer LH</span></td>
+            <td>One of the strongest pure-melee characters in the game; Unbreakable</td>
+            <td>No armour; single entity</td>
+            <td>Embed wherever the toughest melee fight is</td>
+        </tr>
+        <tr>
+            <td><strong>Felix Jaeger (Legendary Hero)</strong></td>
+            <td><span class="role role-hero">Companion LH</span></td>
+            <td>Fast human swordsman; pairs with Gotrek</td>
+            <td>Lower stats than Gotrek alone</td>
+            <td>Embed alongside Gotrek &mdash; they're a pair</td>
+        </tr>
+        <tr>
+            <td><strong>Ulrika Magdova (Legendary Hero)</strong></td>
+            <td><span class="role role-hero">Vampire LH</span></td>
+            <td>Hybrid melee / utility, faster and more mobile than most Dwarfs</td>
+            <td>Recruitment-gated</td>
+            <td>Late-game flex hero; recruit when available</td>
+        </tr>
+    </table>
+
+    <h3>Infantry</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Dwarf Warriors</strong></td>
+            <td><span class="role role-tank">Line Inf</span></td>
+            <td>Cheap; armoured; By Our Beards</td>
+            <td>Damage is mediocre</td>
+            <td>Tier-1 line; replace by Tier 3</td>
+        </tr>
+        <tr>
+            <td><strong>Longbeards</strong></td>
+            <td><span class="role role-tank">Veteran Anchor</span></td>
+            <td>High armour, high leadership; "back in my day" aura</td>
+            <td>Slow</td>
+            <td>The frontline core. 2&ndash;4 in your stack.</td>
+        </tr>
+        <tr>
+            <td><strong>Hammerers</strong></td>
+            <td><span class="role role-melee">Elite AP</span></td>
+            <td>AP great-weapons; high armour; anti-armour</td>
+            <td>No shield; weaker vs. missiles</td>
+            <td>Anti-elite hammer behind the anvil</td>
+        </tr>
+        <tr>
+            <td><strong>Ironbreakers</strong></td>
+            <td><span class="role role-tank">Elite Anvil</span></td>
+            <td>Top-tier armour, shielded, magical attacks</td>
+            <td>Expensive; slow</td>
+            <td>Late-game frontline anchor; nearly unkillable</td>
+        </tr>
+        <tr>
+            <td><strong>Slayers / Giant Slayers</strong></td>
+            <td><span class="role role-melee">Unbreakable</span></td>
+            <td>Unbreakable, anti-large, AP, high damage</td>
+            <td>No armour at all; will lose models</td>
+            <td>Fix the &quot;no anti-large infantry&quot; gap; sacrifice unit vs. monsters</td>
+        </tr>
+        <tr>
+            <td><strong>Quarrellers</strong></td>
+            <td><span class="role role-art">Crossbow Inf</span></td>
+            <td>Cheap missile infantry; shielded variant absorbs missiles</td>
+            <td>No AP base; lower damage than Thunderers</td>
+            <td>Tier-2 anti-light shooting; replace later</td>
+        </tr>
+        <tr>
+            <td><strong>Thunderers</strong></td>
+            <td><span class="role role-art">AP Gunpowder</span></td>
+            <td>AP handguns; great vs. armoured infantry and elites</td>
+            <td>Slow; ammo limit</td>
+            <td>3&ndash;4 in your stack; primary anti-armour shooter</td>
+        </tr>
+        <tr>
+            <td><strong>Miners (with blasting charges)</strong></td>
+            <td><span class="role role-melee">Underway Spec</span></td>
+            <td>Vanguard deploy / underway emerge; AP charges; surprise tool</td>
+            <td>Light armour; situational</td>
+            <td>Drop behind enemy artillery in sieges and field battles</td>
+        </tr>
+        <tr>
+            <td><strong>Rangers</strong></td>
+            <td><span class="role role-art">Hybrid Skirmisher</span></td>
+            <td>Vanguard deploy, hybrid bow/melee, can stalk in forests</td>
+            <td>Light armour</td>
+            <td>Forest skirmisher; harass advancing enemies</td>
+        </tr>
+    </table>
+
+    <h3>Artillery (your bread and butter)</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Bolt Thrower</strong></td>
+            <td><span class="role role-art">Light Artillery</span></td>
+            <td>Cheap AP bolt; long range</td>
+            <td>Low damage at higher tiers</td>
+            <td>Tier-1 artillery; replace by Cannons</td>
+        </tr>
+        <tr>
+            <td><strong>Cannon</strong></td>
+            <td><span class="role role-art">Direct-Fire AP</span></td>
+            <td>Long range AP; one-shots monsters and lords; <em>Adventures grapeshot</em></td>
+            <td>Vulnerable to dive cavalry / fliers</td>
+            <td>2&ndash;3 in every army; THE Dwarf weapon</td>
+        </tr>
+        <tr>
+            <td><strong>Grudge Thrower</strong></td>
+            <td><span class="role role-art">Indirect AoE</span></td>
+            <td>Indirect fire; AoE damage; targets clumps</td>
+            <td>Slower projectile</td>
+            <td>1&ndash;2 vs. infantry hordes; great vs. Skaven, Greenskins</td>
+        </tr>
+        <tr>
+            <td><strong>Organ Gun</strong></td>
+            <td><span class="role role-art">Anti-Inf Volley</span></td>
+            <td>Volley fire; melts light infantry; close-range monster of an artillery piece</td>
+            <td>Short range; ammo limit</td>
+            <td>1 vs. swarmy enemies; deploy behind the line</td>
+        </tr>
+        <tr>
+            <td><strong>Flame Cannon</strong></td>
+            <td><span class="role role-art">Flame AoE</span></td>
+            <td>Flame damage (anti-regen, anti-Trolls); short range AoE</td>
+            <td>Limited range; vulnerable</td>
+            <td>1 vs. regen units (Vampires, Trolls, Beastmen)</td>
+        </tr>
+    </table>
+
+    <h3>Flying War Machines (Malakai's signature category)</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Gyrocopter (Brimstone Gun)</strong></td>
+            <td><span class="role role-fly">Flying Skirmisher</span></td>
+            <td>Flying; harasses backline; cheap; flexible</td>
+            <td>Low HP; vulnerable to anti-air</td>
+            <td>2&ndash;3 in every army; Dwarf flanking solution</td>
+        </tr>
+        <tr>
+            <td><strong>Gyrocopter (Steam Gun)</strong></td>
+            <td><span class="role role-fly">Flying Anti-Inf</span></td>
+            <td>Flame damage; anti-infantry; close-range melt</td>
+            <td>Short range; high-risk approach</td>
+            <td>Vs. Vampires / Trolls / regen swarms</td>
+        </tr>
+        <tr>
+            <td><strong>Gyrobomber</strong></td>
+            <td><span class="role role-fly">Flying Bomber</span></td>
+            <td>Flying; AoE bombs; anti-clump and anti-artillery</td>
+            <td>Slow flier; limited bomb count</td>
+            <td>1&ndash;2 vs. clumped infantry / enemy gunlines</td>
+        </tr>
+        <tr>
+            <td><strong>Spirit of Grungni / Innovation airships</strong></td>
+            <td><span class="role role-fly">Elite Flyer</span></td>
+            <td>Malakai-faction flying war machines from the Spirit of Grungni building chain</td>
+            <td>Expensive; gated by Adventure / building progression</td>
+            <td>Late-game showpiece flying war machine</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>Doomstack note:</strong> a "Malakai stack" is normally 4 Ironbreakers (mix shields/Hammerers), 3 Thunderers, 2 Quarrellers, 3 Cannons, 1 Organ Gun, 3 Gyrocopters, 1 Gyrobomber, plus Malakai, an Engineer hero, and Gotrek &amp; Felix. Add a Flame Cannon or Slayers vs. regen-heavy enemies; add a Runesmith vs. Tzeentch.
+    </div>
+    <div class="tactic">
+        <strong>Malakai-army synergy:</strong> &minus;15% upkeep + +3 recruit rank (faction) + +20% Missile Strength (Malakai's lord effect) + Engineer's missile aura + Adventure-rewarded grapeshot loads + Forge runes &mdash; <em>six</em> sources of buffs all stack on the same artillery and flying war machine units. Lean into it.
+    </div>
+</section>
+
+<!-- ============================================================ HEROES & ENGINEERS -->
+<section class="tab" id="heroes">
+    <h2><span class="rune">&#9874;</span>Heroes &amp; Engineers &mdash; Management Guide</h2>
+    <p class="lead">
+        The Masters of Innovation hero economy is one of the most colourful in the game. You start with <strong>Gotrek &amp; Felix</strong>, get access to <strong>Ulrika Magdova</strong>, and recruit Engineers, Runesmiths, and Thanes from the standard Dwarf pool. <em>If you don't lean on these heroes you are leaving most of the faction's strength on the table.</em>
+    </p>
+
+    <h3>The four hero categories &mdash; what they're for</h3>
+    <div class="mech-grid">
+        <div class="mech">
+            <h4>Master Engineer (missile-buff hero)</h4>
+            <p>The single most-important hero in your gunline. Provides <strong>missile-buff auras to nearby artillery and gunpowder units</strong>, a personal long-range gun, and (with skill investment) entrenchment-style bonuses for stationary war machines.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> at least one Engineer in every army that includes artillery or Thunderers. In Malakai's stack, two is reasonable.</p>
+        </div>
+        <div class="mech">
+            <h4>Runesmith (anti-magic hero)</h4>
+            <p>Dwarfs have no spellcasters &mdash; the Runesmith is your <strong>anti-magic insurance</strong>. Their runes provide magic resistance buffs and dispel-style effects, and their personal kit includes leadership and combat support.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> bring a Runesmith into any battle vs. Tzeentch, Vampires, Lizardmen, or High Elves. Skip in pure-melee matchups.</p>
+        </div>
+        <div class="mech">
+            <h4>Thane (combat hero)</h4>
+            <p>Pure-melee character; heavily armoured; provides leadership aura. Various build variants (anti-large, banner-bearer, etc.) make them flexible.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> embed a Thane in any line army that doesn't have Gotrek for the leadership stability.</p>
+        </div>
+        <div class="mech">
+            <h4>Gotrek, Felix, Ulrika (Legendary Heroes)</h4>
+            <p>Faction-defining named characters. <strong>Gotrek alone is one of the strongest melee duelists in the game</strong> (Unbreakable Slayer, ridiculous stats); <strong>Felix complements him</strong>; <strong>Ulrika</strong> is a vampire ally with hybrid utility and unusual mobility for a Dwarf army.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> Gotrek &amp; Felix go where the toughest melee fight is &mdash; usually with Malakai. Ulrika is a flexible third hero once unlocked.</p>
+        </div>
+    </div>
+
+    <h3>How to manage your hero roster</h3>
+    <ol class="steps">
+        <li><strong>Embed Gotrek &amp; Felix in Malakai's stack from turn 1.</strong> They cover Malakai's melee weakness, and Gotrek's Unbreakable Slayer kit means he holds anything he engages.</li>
+        <li><strong>Recruit a Master Engineer as soon as possible.</strong> The missile-buff aura compounds with every artillery and Thunderer in your stack &mdash; this is the gunline's force multiplier.</li>
+        <li><strong>Recruit a second Engineer for your second army.</strong> Gunlines without Engineers under-perform.</li>
+        <li><strong>Add a Runesmith when you face a magic-heavy enemy.</strong> Don't keep one parked in a backwater province &mdash; the magic resistance only matters in the right battle.</li>
+        <li><strong>Use Thanes as army leaders for secondary stacks.</strong> They're cheaper and steadier than recruiting a second Engineer just to lead.</li>
+        <li><strong>Use heroes as campaign-map agents.</strong> Wound Enemy Hero, Block Army, Embed for buffs &mdash; particularly against Chaos Champions and Norscan Lords.</li>
+    </ol>
+
+    <h3>Skill priorities by hero / lord type</h3>
+    <table>
+        <tr><th>Hero / Lord</th><th>First three picks</th><th>Why</th></tr>
+        <tr>
+            <td><strong>Malakai Makaisson</strong></td>
+            <td>Missile damage / reload &rarr; Deranged Munitions &amp; Cinderblast upgrades &rarr; survivability (HP, Wounds, missile resistance)</td>
+            <td>His ranged kit is 80% of his combat value; Armor 0 means survivability points are real</td>
+        </tr>
+        <tr>
+            <td><strong>Master Engineer</strong></td>
+            <td>Missile-buff aura range / strength &rarr; entrenched-position bonus &rarr; personal long-range damage</td>
+            <td>You recruit them for the aura &mdash; max it before anything else</td>
+        </tr>
+        <tr>
+            <td><strong>Runesmith</strong></td>
+            <td>Magic resistance runes &rarr; dispel-strength &rarr; leadership aura</td>
+            <td>Keep them anti-magic specialised &mdash; that's the whole reason to bring one</td>
+        </tr>
+        <tr>
+            <td><strong>Thane</strong></td>
+            <td>Yellow combat damage / armour &rarr; leadership aura range &rarr; banner-bearer or anti-large branch</td>
+            <td>Pure duelist build; choose the variant that matches the army</td>
+        </tr>
+        <tr>
+            <td><strong>Gotrek</strong></td>
+            <td>Yellow combat damage &rarr; Unbreakable / leadership-immunity branches &rarr; campaign movement</td>
+            <td>Already insane in melee &mdash; just stack damage and survivability</td>
+        </tr>
+        <tr>
+            <td><strong>Felix</strong></td>
+            <td>Combat synergy with Gotrek &rarr; speed / charge &rarr; campaign agent actions</td>
+            <td>Pairs with Gotrek; build him to keep up</td>
+        </tr>
+        <tr>
+            <td><strong>Ulrika</strong></td>
+            <td>Vampiric utility branches &rarr; melee combat &rarr; campaign-map mobility</td>
+            <td>Flex hero; her mobility unlocks plays a Dwarf army doesn't normally have</td>
+        </tr>
+    </table>
+
+    <h3>Common mistakes to avoid</h3>
+    <ul>
+        <li><strong>Sending Malakai into melee.</strong> He is a Slayer in flavour, not in role. Armor 0; melee is his last resort.</li>
+        <li><strong>Recruiting an army without a Master Engineer.</strong> Your gunline under-performs by ~20% without the aura.</li>
+        <li><strong>Splitting Gotrek and Felix.</strong> They're designed as a pair; both in the same stack is the right answer.</li>
+        <li><strong>Skipping Runesmiths because Dwarfs "don't have magic."</strong> Magic resistance is magic defence &mdash; you absolutely need it vs. Tzeentch.</li>
+        <li><strong>Ignoring campaign hero actions.</strong> Wound Enemy Hero on Archaon's lieutenants is one of the best campaign-map plays available.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ SETTLEMENTS -->
+<section class="tab" id="settlements">
+    <h2><span class="rune">&#9874;</span>Raze, Sack, or Occupy?</h2>
+    <p class="lead">
+        Dwarfs play standard settlement rules &mdash; with the unique twist that <strong>every lost settlement is a future Grudge to settle</strong>, and your Dwarf climate preferences strongly limit which provinces you actually want to keep.
+    </p>
+
+    <h3>The three actions and what they do</h3>
+    <div class="decision">
+        <div class="choice sack">
+            <h4>Sack</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Beat the garrison, take a one-time gold payout, <strong>do not occupy</strong>, the city stays where it was.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>Modest XP and post-battle income</li>
+                <li>Owner survives; same target can be re-sacked later</li>
+                <li>Useful when you can't justify defending the city</li>
+            </ul>
+            <div class="verdict">Use vs. lowland and Habitable cities you don't want to keep, or for the wiki's "sell to Boris" play.</div>
+        </div>
+        <div class="choice raze">
+            <h4>Raze</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Burn the settlement to ruins. The province becomes empty until someone re-colonises it.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>Denies the enemy a rebuild target</li>
+                <li>Removes Chaos / Skaven / Vampire corruption from the region</li>
+                <li>Useful when no Dwarf or ally can hold it</li>
+            </ul>
+            <div class="verdict">Use vs. Chaos / Norscan border settlements you can't garrison and don't want them rebuilding.</div>
+        </div>
+        <div class="choice occupy">
+            <h4>Loot &amp; Occupy</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Sack and take the city in one action. The default option for Dwarf-suitable terrain.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>You now own the settlement &mdash; garrison, building chain, all income</li>
+                <li>Public order takes a hit at first; standard fixes (Brewery, Underway) help</li>
+                <li>Generates trade goods if the slot supports it</li>
+            </ul>
+            <div class="verdict">Default action for any Mountain / Badlands settlement.</div>
+        </div>
+    </div>
+
+    <h3>The decision rule (memorize this)</h3>
+    <div class="tactic">
+        <strong>Climate first, Grudges second, geography third.</strong>
+        <ul style="margin-top:.5rem">
+            <li>If it's <strong>Mountains / Badlands</strong> &rarr; <em>Loot &amp; Occupy</em>.</li>
+            <li>If it's a <strong>Hold</strong> with a long Grudge against it &rarr; <em>Loot &amp; Occupy</em> regardless of climate; the Grudge resolution alone is worth it.</li>
+            <li>If it's <strong>Habitable but exposed</strong> (you can't realistically defend it) &rarr; <em>Sack</em> for the gold, then move on.</li>
+            <li>If it's <strong>Uninhabitable</strong> &rarr; <em>Sack</em> only; never occupy.</li>
+            <li>If it's a <strong>Chaos / Norscan border settlement</strong> nobody friendly will hold &rarr; <em>Raze</em> to deny rebuild.</li>
+            <li>If it's <strong>Hell Pit</strong> after killing Throt &rarr; <em>Loot &amp; Occupy</em>. Sheltered money-maker; legendary Grudge resolved.</li>
+        </ul>
+    </div>
+
+    <h3>The "sell to Boris" play</h3>
+    <p>
+        A specific recommended strategy: <strong>occupy lowland Norscan or Skaven settlements you can't realistically hold, then sell them to the Ursun Revivalists</strong>. Boris pays gold, the city goes to a friendly faction, and your eastern flank gets harder for Chaos to push through. You convert short-term throwaway captures into long-term geopolitical leverage.
+    </p>
+
+    <h3>Which provinces should you actually keep?</h3>
+    <ul>
+        <li><strong>Kraka Drak and the Gianthome Mountains cluster</strong> &mdash; your starting capital; always.</li>
+        <li><strong>Hell Pit</strong> &mdash; once you kill Throt, sheltered and rich.</li>
+        <li><strong>Worlds Edge Mountain holds</strong> &mdash; classic Dwarf country; stack Grudge resolutions if any of them belonged to your kin historically.</li>
+        <li><strong>Avoid Chaos Wastes / Naggaroth / lowland Empire settlements</strong> unless they're a one-off Grudge resolution &mdash; the climate cost is permanent.</li>
+    </ul>
+
+    <div class="warn">
+        <strong>Climate trap:</strong> Loot &amp; Occupy a city in <em>Uninhabitable</em> climate and you bleed public order, money, and growth. Read the climate icon before you click. <em>Mountains / Badlands = green light, anything else = think twice.</em>
+    </div>
+
+    <h3>Lost settlements aren't lost</h3>
+    <p>
+        Specifically with this faction, <strong>don't get attached to settlements you weren't sure you could defend</strong>. The wiki line is: "<em>lost settlements simply mean more grudges to collect later!</em>" Malakai's army being semi-mobile (Airship buildings) means you can withdraw from a collapsing front and still operate productively from the air.
+    </p>
+</section>
+
+<!-- ============================================================ DIPLOMACY / ECONOMY -->
+<section class="tab" id="economy">
+    <h2><span class="rune">&#9874;</span>Diplomacy &amp; Economy</h2>
+    <p class="lead">
+        Dwarfs have full diplomacy and a rich trade-based economy. The Masters specifically have <strong>NAPs with both Kislev factions from turn 1</strong> &mdash; a real friendly southern flank in a campaign that otherwise has no allies.
+    </p>
+
+    <h3>Diplomacy: actually useful</h3>
+    <ul>
+        <li><strong>Starting NAPs with The Ice Court and Ursun Revivalists.</strong> Don't break them. Upgrade to trade and defensive alliance as soon as relations allow.</li>
+        <li><strong>Starting war with Maggoth Kin (Throt).</strong> Wipe them in three turns &mdash; this also improves your Kislev relations.</li>
+        <li><strong>Trade with anyone reasonable &mdash; Empire, other Dwarf factions, Bretonnia.</strong> Dwarf trade goods are some of the most valuable in the game.</li>
+        <li><strong>Other Dwarf factions are your natural allies.</strong> Karaz-a-Karak (Thorgrim), Karak Kadrin (Ungrim), Clan Angrund (Belegar) &mdash; all want what you want, all hate what you hate. Confederation deep in the campaign is realistic.</li>
+        <li><strong>Don't ally with Chaos / Skaven / Vampires.</strong> Reputation hit propagates to every Order partner you also want.</li>
+        <li><strong>The "sell to Boris" play</strong> turns settlement captures into Kislev strength &mdash; one of the cleanest soft-power moves in the campaign.</li>
+    </ul>
+
+    <div class="tip">
+        <strong>Practical rule:</strong> open the diplomacy screen <em>every turn</em>. Look for new trade partners, friendly-territory-access offers, and Grudge-driving opportunities. There is almost always a free move available.
+    </div>
+
+    <h3>Economy: how you actually make money</h3>
+    <p>
+        Dwarf treasury is fed by <strong>buildings, trade goods, and Oathgold</strong>, supported by battle income. Sources in order of importance:
+    </p>
+
+    <ol class="steps">
+        <li><strong>Trade resource buildings.</strong> Gromril, gold ore, gemstones, oathgold, beer/ale &mdash; every commodity building stacks with trade partners. The backbone of Dwarf wealth.</li>
+        <li><strong>Trade deals.</strong> Bilateral with the Empire, Kislev, other Dwarf factions, Bretonnia. Three trade partners and you're rich.</li>
+        <li><strong>Battle / sack income.</strong> Real but secondary. Don't structure your campaign around it.</li>
+        <li><strong>Grudge resolution rewards.</strong> Some Grudges grant gold or Oathgold lump sums on settlement.</li>
+        <li><strong>Adventure rewards.</strong> Free units (especially cannons) effectively reduce your recruitment costs to zero on those slots.</li>
+    </ol>
+
+    <h3>Building priorities for the cities you keep</h3>
+    <ul>
+        <li><strong>Tier-up the capital recruitment chain</strong> first &mdash; you need access to Tier-3+ Thunderers, Cannons, and Gyrocopters fast.</li>
+        <li><strong>Trade resource chains</strong> in every settlement that allows them &mdash; Gromril and Oathgold are top priority.</li>
+        <li><strong>The Forge</strong> as soon as available; rune-crafting is a permanent buff machine.</li>
+        <li><strong>Brewery / Underway / public-order buildings</strong> only as needed.</li>
+        <li><strong>Spirit of Grungni Airship buildings</strong> in Malakai's army &mdash; they're army-bound, not settlement-bound, so they don't compete for slot space.</li>
+    </ul>
+
+    <h3>Cash-flow troubleshooting</h3>
+    <div class="warn">
+        <strong>If your treasury is bleeding red:</strong>
+        <ul style="margin-top:.4rem">
+            <li><em>Disband a reserve army.</em> Dwarf recruitment is rich-but-slow; you can rebuild over time.</li>
+            <li><em>Renegotiate trade deals upward</em> as your trade-good output grows.</li>
+            <li><em>Raid-stance an idle main army</em> for the bridge income.</li>
+            <li><em>Sack a southern lowland city</em> &mdash; you weren't going to keep it anyway, and the gold is real.</li>
+            <li><em>Don't pause your Adventures</em> &mdash; the rewards are usually larger than the cost. Skip a building tier instead.</li>
+        </ul>
+    </div>
+
+    <h3>Public order &amp; corruption</h3>
+    <ul>
+        <li><strong>You reduce corruption automatically.</strong> Chaos, Skaven, and Vampire corruption all decay in your provinces &mdash; you don't need anti-corruption buildings.</li>
+        <li><strong>Public order in newly-occupied cities</strong> is helped by Brewery / Underway buildings and a garrisoned Thane.</li>
+        <li><strong>Grudges</strong> can be a public-order pressure if you ignore them &mdash; settle the relevant ones to keep the Hold content.</li>
+        <li><strong>If a settlement does revolt, retake it the same turn</strong> for free XP, gold, and a fresh Grudge to settle.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ TECHNOLOGIES -->
+<section class="tab" id="tech">
+    <h2><span class="rune">&#9874;</span>Technologies</h2>
+    <p class="lead">
+        Dwarf tech is paid in <strong>research time</strong> with some gold gating &mdash; no skull-cost weirdness. Pick a path early and commit. For Malakai, that path is unambiguous: <em>artillery, flying war machines, and gunpowder</em>.
+    </p>
+
+    <h3>Priority order</h3>
+    <ol class="steps">
+        <li><strong>Artillery damage / range / reload tech first.</strong> Stacks with the +20% missile strength, &minus;15% upkeep, +3 recruit rank. Every cannon volley gets compoundingly better.</li>
+        <li><strong>Flying War Machine techs (Gyrocopter / Gyrobomber buffs).</strong> Same compounding logic; your Dwarf flanking solution scales hard.</li>
+        <li><strong>Thunderer / gunpowder reload &amp; range.</strong> Your second-best shooting line; the buffs matter in every battle.</li>
+        <li><strong>Anti-Chaos / anti-Norsca damage and leadership techs.</strong> The campaign rewards exactly what these techs reward.</li>
+        <li><strong>Forge / Oathgold techs.</strong> Cheaper rune crafting and faster Oathgold production scale your unit-rune economy.</li>
+        <li><strong>Recruitment cost reductions.</strong> Stack with the &minus;15% upkeep; meaningful when running multiple armies.</li>
+        <li><strong>Late-game elite buffs.</strong> Ironbreaker, Hammerer, Slayer techs &mdash; take last because the units are already strong; the techs are quality-of-life.</li>
+    </ol>
+
+    <h3>What to skip (or de-prioritise)</h3>
+    <ul>
+        <li><strong>Climate-mitigation tech &mdash; mostly skip.</strong> You shouldn't be in Uninhabitable climate anyway.</li>
+        <li><strong>Cavalry tech &mdash; doesn't exist.</strong> No Dwarf cavalry to buff.</li>
+        <li><strong>Defensive / siege-defender tech &mdash; situational.</strong> Take it only if you're explicitly turtling; otherwise the offence and missile techs pay off faster.</li>
+    </ul>
+
+    <h3>Tech &amp; Adventures &mdash; different wallets</h3>
+    <div class="tactic">
+        Tech costs <em>research time + gold</em>. Adventures cost <em>gold + a turn-investment</em>. <strong>You don't have to choose between them</strong> &mdash; but you should time them so an Adventure-completion (e.g. grapeshot loads unlocked) lands in the same window as an artillery damage tech finishing. Two simultaneous gunline buffs make the next campaign battle unfair.
+    </div>
+
+    <h3>What "good tech" looks like in practice</h3>
+    <ul>
+        <li><strong>By turn 25:</strong> first artillery damage / range tech, +1 Engineer recruit slot, basic anti-Chaos damage tech.</li>
+        <li><strong>By turn 50:</strong> Gyrocopter / Gyrobomber buffs, Thunderer reload-speed, Forge cost reduction.</li>
+        <li><strong>By turn 75+:</strong> elite-unit buffs, late artillery techs (the most damaging ones), leadership and public-order quality-of-life.</li>
+    </ul>
+
+    <div class="tip">
+        <strong>The compounding insight:</strong> Dwarf tech rewards stacking the same effect from multiple sources. <em>Pick the artillery + flying-war-machine doomstack and double down.</em> Their buffs stack with Malakai's lord effect, faction effects, Engineer auras, Adventure-rewarded modifications, Forge runes, and dedicated tech &mdash; if all six point at the same units, you have an unmatched gunline.
+    </div>
+</section>
+
+<footer>
+    Masters of Innovation &mdash; New Player's Guide &middot; Total War: Warhammer III
+    <br>Sourced from the official Total War: WARHAMMER Wiki (Malakai Makaisson, Masters of Innovation, and Dwarfs pages).
+</footer>
+
+</main>
+
+<script>
+(function(){
+    const nav = document.getElementById('navBar');
+    const tabs = document.querySelectorAll('.tab');
+    const buttons = nav.querySelectorAll('button');
+
+    nav.addEventListener('click', function(e){
+        const btn = e.target.closest('button[data-tab]');
+        if(!btn) return;
+        const target = btn.dataset.tab;
+        buttons.forEach(b => b.classList.toggle('active', b === btn));
+        tabs.forEach(t => t.classList.toggle('active', t.id === target));
+        window.scrollTo({top:0, behavior:'instant'});
+    });
+
+    const themeBtn = document.getElementById('themeBtn');
+    const stored = localStorage.getItem('moi-theme');
+    if(stored === 'light') document.body.classList.add('light');
+    themeBtn.addEventListener('click', function(){
+        document.body.classList.toggle('light');
+        localStorage.setItem('moi-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+})();
+</script>
+</body>
+</html>
