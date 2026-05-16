@@ -1,0 +1,16 @@
+{
+  "title": "Tabletop RPG Compass",
+  "slug": "tabletop-rpg-compass",
+  "description": "A reference/guide for tabletop RPG systems.",
+  "author": "ambrusorban",
+  "tags": [
+    "games",
+    "rpg",
+    "tabletop",
+    "role-playing"
+  ],
+  "dateAdded": "2026-05-16",
+  "featured": false,
+  "hostingType": "bundled",
+  "thumbnail": "thumbnail.png"
+}
