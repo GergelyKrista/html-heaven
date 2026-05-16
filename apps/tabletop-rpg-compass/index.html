@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabletop Compass — A Guide to RPG Systems for New Players & GMs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #fafafa;
+    --ink: #0a0a0a;
+    --ink-soft: #1a1a1a;
+    --muted: #6b7280;
+    --line: #0a0a0a;
+    --line-soft: #e5e5e5;
+
+    --c-fantasy: #f59e0b;
+    --c-scifi: #06b6d4;
+    --c-horror: #dc2626;
+    --c-modern: #8b5cf6;
+    --c-historical: #ea580c;
+    --c-universal: #10b981;
+    --c-grimdark: #78350f;
+    --c-heist: #ca8a04;
+    --c-cyberpunk: #ec4899;
+    --c-accent: #2563eb;
+    --c-good: #059669;
+    --c-warn: #dc2626;
+    --c-star: #f59e0b;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body { min-height: 100vh; }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  header.hero {
+    padding: 2.5rem 0 2rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--ink);
+  }
+
+  header.hero h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2.25rem, 5.5vw, 3.5rem);
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    line-height: 1.05;
+  }
+
+  header.hero .subtitle {
+    color: var(--c-accent);
+    font-size: 1.15rem;
+    margin: 0;
+    max-width: 640px;
+    font-weight: 600;
+  }
+
+  header.hero .lede {
+    color: var(--ink-soft);
+    margin: 1.25rem 0 0;
+    max-width: 720px;
+    font-size: 1rem;
+  }
+
+  /* Legend */
+  .legend {
+    background: var(--bg);
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .legend h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.78rem;
+    margin: 0 0 0.85rem;
+    color: var(--c-accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0.85rem 1.5rem;
+  }
+
+  .legend-item {
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .legend-item strong {
+    color: var(--ink);
+    display: block;
+    font-weight: 700;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: -0.005em;
+    margin-bottom: 0.15rem;
+  }
+
+  /* Controls */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    margin-bottom: 1.25rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--line-soft);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+
+  .control-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.85rem;
+    flex-wrap: nowrap;
+  }
+
+  .control-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    padding-top: 0.55rem;
+    min-width: 48px;
+    flex-shrink: 0;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    flex: 1;
+  }
+
+  .chip {
+    background: var(--bg);
+    border: 1.5px solid var(--ink);
+    color: var(--ink);
+    padding: 0.4rem 0.9rem;
+    border-radius: 999px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    cursor: pointer;
+    transition: all 0.12s ease;
+  }
+
+  .chip:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .chip.active {
+    background: var(--ink);
+    color: var(--bg);
+    font-weight: 600;
+  }
+
+  /* Sort chips use accent color when active so they read as a different axis from filters */
+  .chip.sort-chip {
+    border-color: var(--c-accent);
+    color: var(--c-accent);
+  }
+
+  .chip.sort-chip:hover {
+    background: var(--c-accent);
+    color: #fff;
+  }
+
+  .chip.sort-chip.active {
+    background: var(--c-accent);
+    color: #fff;
+    border-color: var(--c-accent);
+  }
+
+  @media (max-width: 680px) {
+    .control-row { flex-wrap: wrap; }
+    .control-label { padding-top: 0; }
+  }
+
+  .results-count {
+    color: var(--muted);
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Cards */
+  #systemList {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .card {
+    background: var(--bg);
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: box-shadow 0.18s ease, transform 0.18s ease;
+  }
+
+  .card:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .card.open {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .card-head {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 1rem;
+    align-items: center;
+    padding: 1.1rem 1.35rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .card-title { min-width: 0; }
+
+  .card-title h2 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.3rem;
+    margin: 0 0 0.25rem;
+    color: var(--ink);
+    letter-spacing: -0.015em;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .card-title .tagline {
+    color: var(--c-accent);
+    font-size: 0.95rem;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-top: 0.6rem;
+  }
+
+  .badge {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 0.22rem 0.6rem;
+    border-radius: 3px;
+    background: var(--ink);
+    color: var(--bg);
+    font-weight: 600;
+  }
+
+  .badge.fantasy     { background: var(--c-fantasy); color: var(--ink); }
+  .badge.scifi       { background: var(--c-scifi); color: var(--ink); }
+  .badge.horror      { background: var(--c-horror); color: #fff; }
+  .badge.modern      { background: var(--c-modern); color: #fff; }
+  .badge.historical  { background: var(--c-historical); color: #fff; }
+  .badge.universal   { background: var(--c-universal); color: #fff; }
+  .badge.grimdark    { background: var(--c-grimdark); color: #fff; }
+  .badge.heist       { background: var(--c-heist); color: var(--ink); }
+  .badge.cyberpunk   { background: var(--c-cyberpunk); color: #fff; }
+
+  .ratings-compact {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    gap: 0.3rem 1rem;
+    font-size: 0.74rem;
+    color: var(--muted);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    align-items: center;
+  }
+
+  .rating-row { display: contents; }
+
+  .rating-row .lbl {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .stars {
+    color: var(--c-star);
+    letter-spacing: 0.05em;
+    font-size: 0.95rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .stars .off { color: var(--line-soft); }
+
+  .expand-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg);
+    background: var(--ink);
+    font-size: 1.3rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+    border-radius: 50%;
+  }
+
+  .card.open .expand-icon {
+    transform: rotate(45deg);
+  }
+
+  .card-body {
+    display: none;
+    padding: 0 1.35rem 1.5rem;
+    border-top: 1px solid var(--line-soft);
+  }
+
+  .card.open .card-body { display: block; }
+
+  .card-body > * + * { margin-top: 1.1rem; }
+
+  .card-body .desc {
+    font-size: 1rem;
+    line-height: 1.65;
+    margin-top: 1.25rem;
+    color: var(--ink-soft);
+  }
+
+  .card-body h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .specs {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.5rem 1.25rem;
+    margin: 0;
+    font-size: 0.94rem;
+  }
+
+  .specs dt {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+    padding-top: 0.2rem;
+  }
+
+  .specs dd {
+    margin: 0;
+    color: var(--ink-soft);
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  @media (max-width: 680px) {
+    .two-col { grid-template-columns: 1fr; }
+    .card-head {
+      grid-template-columns: 1fr auto;
+    }
+    .ratings-compact {
+      grid-column: 1 / -1;
+      margin-top: 0.5rem;
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .pill-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .pill-list li {
+    background: var(--bg-soft);
+    border: 1px solid var(--line-soft);
+    border-radius: 4px;
+    padding: 0.6rem 0.85rem;
+    font-size: 0.93rem;
+    color: var(--ink-soft);
+  }
+
+  .pill-list li a {
+    color: var(--c-accent);
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .pill-list li a:hover {
+    text-decoration: underline;
+  }
+
+  .pill-list li .note {
+    color: var(--muted);
+    font-size: 0.88rem;
+  }
+
+  .pill-list li.no-link { color: var(--ink); }
+
+  .callout {
+    padding: 0.85rem 1rem;
+    border-radius: 4px;
+    background: var(--bg-soft);
+    border: 1px solid var(--line-soft);
+    border-left: 4px solid var(--c-accent);
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+  .callout.warn { border-left-color: var(--c-warn); }
+  .callout.good { border-left-color: var(--c-good); }
+
+  .callout-label {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-accent);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+
+  .callout.warn .callout-label { color: var(--c-warn); }
+  .callout.good .callout-label { color: var(--c-good); }
+
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.88rem;
+    padding: 2.5rem 0 0;
+    border-top: 1px solid var(--line-soft);
+    margin-top: 3rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--muted);
+    border: 1px dashed var(--line-soft);
+    border-radius: 4px;
+  }
+
+  .ornament {
+    text-align: center;
+    color: var(--c-accent);
+    font-size: 0.9rem;
+    margin: 0 0 1rem;
+    letter-spacing: 0.8rem;
+    opacity: 0.6;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <h1>Tabletop Compass</h1>
+    <p class="subtitle">A reference for picking your first tabletop RPG system</p>
+    <p class="lede">Your group is rotating GMs. Some of you have never run a game. This is a side-by-side look at the major RPG systems &mdash; what you need to play, how steep the climb is, and where to read more.</p>
+  </header>
+
+  <section class="legend">
+    <h2>How to read each entry</h2>
+    <div class="legend-grid">
+      <div class="legend-item">
+        <strong>New GM Friendliness</strong>
+        5 = great first-time pick. 1 = bring experience.
+      </div>
+      <div class="legend-item">
+        <strong>Rule Complexity</strong>
+        How much you need to know before play. 5 = thick rulebook, many edge cases.
+      </div>
+      <div class="legend-item">
+        <strong>Character Freedom</strong>
+        5 = invent almost any concept. 1 = pick from defined options.
+      </div>
+      <div class="legend-item">
+        <strong>Homebrew Friendly</strong>
+        5 = systems designed to be modified, huge community content.
+      </div>
+    </div>
+  </section>
+
+  <div class="controls">
+    <div class="control-row">
+      <span class="control-label">Filter</span>
+      <div class="filter-group" id="filterGroup">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="beginner">Beginner Friendly</button>
+        <button class="chip" data-filter="fantasy">Fantasy</button>
+        <button class="chip" data-filter="scifi">Sci-Fi</button>
+        <button class="chip" data-filter="horror">Horror</button>
+        <button class="chip" data-filter="modern">Modern</button>
+        <button class="chip" data-filter="historical">Historical</button>
+        <button class="chip" data-filter="grimdark">Grimdark</button>
+        <button class="chip" data-filter="cyberpunk">Cyberpunk</button>
+        <button class="chip" data-filter="heist">Heist</button>
+        <button class="chip" data-filter="universal">Universal</button>
+        <button class="chip" data-filter="d100">d100 / Percentile</button>
+        <button class="chip" data-filter="custom-dice">Needs Custom Dice</button>
+        <button class="chip" data-filter="standard-dice">Standard Dice Only</button>
+      </div>
+    </div>
+    <div class="control-row">
+      <span class="control-label">Sort</span>
+      <div class="filter-group" id="sortGroup">
+        <button class="chip sort-chip active" data-sort="newcomer">Best for New GMs</button>
+        <button class="chip sort-chip" data-sort="complexity-asc">Simplest Rules</button>
+        <button class="chip sort-chip" data-sort="complexity-desc">Crunchiest Rules</button>
+        <button class="chip sort-chip" data-sort="freedom">Most Character Freedom</button>
+        <button class="chip sort-chip" data-sort="homebrew">Most Homebrew-Friendly</button>
+        <button class="chip sort-chip" data-sort="name">A &rarr; Z</button>
+        <button class="chip sort-chip" data-sort="name-desc">Z &rarr; A</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-count" id="resultsCount"></div>
+
+  <main id="systemList"></main>
+
+  <footer>
+    <div class="ornament">&#10086; &#10086; &#10086;</div>
+    Roll well. May your first session run long.
+  </footer>
+</div>
+
+<script>
+const systems = [
+  {
+    id: 'dnd5e',
+    name: "Dungeons & Dragons (5th Edition)",
+    versions: '5e (2014) and the 2024 revision (sometimes called "One D&D")',
+    genres: ['fantasy'],
+    diceCategory: 'standard',
+    publisher: 'Wizards of the Coast',
+    tagline: 'The default. Where most groups start &mdash; for good reason.',
+    description: "The most-played RPG in the world. A heroic fantasy game built on a clean d20 core: roll d20, add a modifier, beat a target number. The 2024 revision is broadly back-compatible with 2014 5e &mdash; you can mix tables and most published adventures still apply.",
+    newcomer: 5,
+    complexity: 3,
+    charFreedom: 3,
+    homebrew: 5,
+    dice: 'One full polyhedral set per player (d4, d6, d8, d10, d12, d20, plus a percentile d10).',
+    materials: "Player's Handbook is the only book you really need. Battle maps and miniatures are common but not required &mdash; theatre of the mind works fine.",
+    charCreation: 'Pick a species, class, and background. Your options come from books, but inside each class there\'s meaningful customization. Less freeform than horror games, more freeform than career-based systems like WFRP.',
+    bestFor: 'First-time GMs and players. The published starter sets ("Lost Mine of Phandelver", "Dragons of Stormwreck Isle", "Heroes of the Borderlands") are designed to teach you the game as you play.',
+    watchOut: 'Encounter balance gets wobbly above level ~11. Combat can dominate sessions if you let it. Lots of "actual play" examples online set expectations that may not match your table.',
+    resources: [
+      { name: 'D&D Beyond', url: 'https://www.dndbeyond.com', note: 'Official digital toolset, character builder, and rules reference' },
+      { name: 'Roll20', url: 'https://roll20.net', note: 'Free virtual tabletop with built-in 5e support' },
+      { name: 'Foundry VTT', url: 'https://foundryvtt.com', note: 'Premium VTT, one-time purchase, very moddable' },
+      { name: 'DnD Beyond Free Basic Rules', url: 'https://www.dndbeyond.com/sources/dnd/free-rules', note: 'Official free rules sufficient to play' }
+    ]
+  },
+  {
+    id: 'pf2e',
+    name: 'Pathfinder (Second Edition)',
+    versions: 'Released 2019. The "Remaster" (2023) refines and renames a few elements for licensing reasons.',
+    genres: ['fantasy'],
+    diceCategory: 'standard',
+    publisher: 'Paizo',
+    tagline: 'Tightly-engineered crunch. The thinking-person\'s d20 fantasy.',
+    description: "Paizo's modern flagship. A three-action combat system gives every turn unusual flexibility (move-move-strike, or strike-strike-strike, or cast-move-raise-shield). Math is famously tight and balanced, with degrees of success on every roll.",
+    newcomer: 3,
+    complexity: 4,
+    charFreedom: 5,
+    homebrew: 4,
+    dice: 'Standard polyhedral set.',
+    materials: 'Player Core (recently replaces the original Core Rulebook). All official rules are also free online.',
+    charCreation: 'Ancestry + heritage + background + class, then a steady drip of feats every other level. Builds are deep and meaningful but constrained &mdash; there\'s no "invent your own thing", but there are many things to pick from.',
+    bestFor: 'Groups who liked D&D but want more tactical combat, fairer math at high levels, and richer build choices. Also good for GMs who want pre-built encounter math they can trust.',
+    watchOut: 'Information density is higher than 5e. Players who don\'t read their feats slow down combat. Plan to spend a session on character creation.',
+    resources: [
+      { name: 'Archives of Nethys (PF2e)', url: 'https://2e.aonprd.com', note: 'Official free SRD &mdash; full rules online' },
+      { name: 'Pathbuilder 2e', url: 'https://pathbuilder2e.com', note: 'Excellent free character builder' },
+      { name: 'Foundry VTT', url: 'https://foundryvtt.com', note: 'PF2e module is widely considered best-in-class' }
+    ]
+  },
+  {
+    id: 'pf1e',
+    name: 'Pathfinder (First Edition)',
+    versions: 'Released 2009. Still actively played; out of print but PDFs available.',
+    genres: ['fantasy'],
+    diceCategory: 'standard',
+    publisher: 'Paizo',
+    tagline: 'D&D 3.5\'s spiritual successor. Build optimization as a sport.',
+    description: 'Began as an evolution of D&D 3.5 when 4th Edition split the audience. Famously rules-dense with hundreds of feats, archetypes, prestige classes, and stackable modifiers. Combat is deadly with lots of conditional bonuses.',
+    newcomer: 2,
+    complexity: 5,
+    charFreedom: 5,
+    homebrew: 4,
+    dice: 'Standard polyhedral set.',
+    materials: 'Core Rulebook plus ~10 years of supplements. Almost everything is on Archives of Nethys for free.',
+    charCreation: 'Pick race, class, archetype, traits, feats, skill ranks &mdash; many small decisions. Optimization can produce wildly different power levels.',
+    bestFor: 'Long-running campaigns where players love mechanical depth. Also great if you have a 3.5 D&D background.',
+    watchOut: 'A new GM running PF1e for new players will struggle. Choose 2e or 5e first if anyone at the table is new.',
+    resources: [
+      { name: 'Archives of Nethys (PF1e)', url: 'https://aonprd.com', note: 'Official free SRD' },
+      { name: 'Paizo', url: 'https://paizo.com', note: 'Publisher, PDF store' }
+    ]
+  },
+  {
+    id: 'coc',
+    name: 'Call of Cthulhu (7th Edition)',
+    versions: '7e current. Mechanics largely unchanged across decades &mdash; you can run 6e adventures with 7e rules with minimal effort.',
+    genres: ['horror'],
+    diceCategory: 'd100',
+    publisher: 'Chaosium',
+    tagline: 'Investigate the impossible. Mostly lose. Have a great time losing.',
+    description: 'The benchmark horror RPG. Players are ordinary humans &mdash; professors, journalists, antiquarians &mdash; investigating cosmic horrors usually set in 1920s America (but anywhere works). The Sanity mechanic erodes characters even when they survive.',
+    newcomer: 4,
+    complexity: 2,
+    charFreedom: 5,
+    homebrew: 4,
+    dice: 'd100 (two d10s read as tens and ones). That\'s really it. A d6 or two for damage.',
+    materials: 'The Keeper Rulebook, but the Quick-Start Rules are free and sufficient for a first one-shot.',
+    charCreation: 'Pick an occupation (or invent one), assign points to skills. Almost any human concept works. Characters die or break easily, so groups often have a stable of investigators.',
+    bestFor: 'One-shots, horror fans, GMs who prefer mystery and atmosphere over combat. Excellent for players coming from games where combat dominates.',
+    watchOut: 'Themes get heavy. Talk to your players about what kinds of horror are off the table. The "X-card" or "Lines & Veils" tools exist for a reason &mdash; use them.',
+    resources: [
+      { name: 'Chaosium', url: 'https://www.chaosium.com', note: 'Publisher; the free Quick-Start PDF is here' },
+      { name: 'The Masks of Nyarlathotep', url: 'https://www.chaosium.com', note: 'Legendary campaign, often cited as one of the best ever written' },
+      { name: 'DriveThruRPG', url: 'https://www.drivethrurpg.com', note: 'Vast library of CoC adventures, many free' }
+    ]
+  },
+  {
+    id: 'sifrp',
+    name: 'A Song of Ice and Fire Roleplaying',
+    versions: "Often abbreviated SIFRP. Green Ronin's adaptation of George R.R. Martin's novels (predates the TV series).",
+    genres: ['fantasy', 'historical'],
+    diceCategory: 'standard',
+    publisher: 'Green Ronin',
+    tagline: 'Politics first, swords second. Manage a House, not just a character.',
+    description: 'A low-magic, intrigue-driven game set in Westeros. Combat is deadly. The system\'s standout feature is the House-building mini-game &mdash; players collectively design their noble House (resources, lands, military, history) which becomes the campaign\'s backbone.',
+    newcomer: 3,
+    complexity: 3,
+    charFreedom: 3,
+    homebrew: 3,
+    dice: 'd6 pool. Roll several d6, sum the highest "tested" dice against a difficulty.',
+    materials: "SIFRP Core Rulebook. The game's out of print but PDFs are available.",
+    charCreation: 'Build the House first as a group, then individual characters tied to that House. Heavy on background and relationships.',
+    bestFor: 'Groups who want politics, scheming, and slow-burn campaigns. Especially good if your players liked the novels/show for the intrigue, not the battles.',
+    watchOut: 'If your group expects D&D-style adventuring, the House mechanics and political pace can feel slow. Sell the intrigue tone upfront.',
+    resources: [
+      { name: 'Green Ronin', url: 'https://greenronin.com', note: 'Publisher; SIFRP product page' },
+      { name: 'DriveThruRPG', url: 'https://www.drivethrurpg.com', note: 'PDF availability' }
+    ]
+  },
+  {
+    id: 'wfrp4',
+    name: 'Warhammer Fantasy Roleplay (4th Edition)',
+    versions: '4e (Cubicle 7, 2018) is current. 2e (Black Industries, mid-2000s) is also widely played and often cited as a favourite. 1e is a cult classic.',
+    genres: ['fantasy', 'grimdark'],
+    diceCategory: 'd100',
+    publisher: 'Cubicle 7',
+    tagline: 'Mud, blood, and bad luck. The grimdark fantasy original.',
+    description: "Set in the Old World &mdash; a grim, low-magic Renaissance Europe full of plague, corruption, and Chaos cults. Your starting character is probably a rat-catcher, a peasant, or a road warden. Combat is fast and lethal; criticals can lop limbs off.",
+    newcomer: 3,
+    complexity: 4,
+    charFreedom: 3,
+    homebrew: 3,
+    dice: 'd100 / percentile, plus some d10s for damage.',
+    materials: 'WFRP 4e Core Rulebook. The Starter Set ("Ubersreik Adventures") is a fantastic on-ramp.',
+    charCreation: 'Random species roll (or pick if you prefer), then a random career roll from a famous table that might give you "Witch Hunter" or "Rat Catcher". The randomness is half the charm, but tables can opt to choose. Careers form trees you advance through over a campaign.',
+    bestFor: 'Groups tired of high fantasy heroics. Doomed peasants stumbling into world-ending plots. Excellent published adventures, especially "The Enemy Within" campaign.',
+    watchOut: 'Criticals and Fate Points create a brutal but cinematic feel &mdash; characters die. New players need to accept they\'re not playing Superman.',
+    resources: [
+      { name: 'Cubicle 7', url: 'https://cubicle7games.com', note: 'Current publisher' },
+      { name: 'The Enemy Within', url: 'https://cubicle7games.com', note: 'Legendary 6-part campaign, fully updated for 4e' }
+    ]
+  },
+  {
+    id: '40krpg',
+    name: 'Warhammer 40,000 RPGs',
+    versions: 'Wrath & Glory (Cubicle 7, current). Older FFG line: Dark Heresy, Rogue Trader, Deathwatch, Black Crusade, Only War (out of print, beloved).',
+    genres: ['scifi', 'grimdark'],
+    diceCategory: 'mixed',
+    publisher: 'Cubicle 7 (current) / Fantasy Flight Games (legacy)',
+    tagline: 'In the grim darkness of the far future, there is only paperwork &mdash; and very loud guns.',
+    description: 'The 41st millennium. Wrath & Glory is the modern line and lets parties mix wildly different power levels &mdash; a Space Marine, an Imperial Guardsman, and an Ork can share the same campaign via Tier rules. The older FFG games each focused on a specific kind of party: Dark Heresy (Inquisition agents), Rogue Trader (free-trading nobility in unknown space), Deathwatch (Space Marines), Only War (Guardsmen), Black Crusade (Chaos).',
+    newcomer: 3,
+    complexity: 4,
+    charFreedom: 4,
+    homebrew: 3,
+    dice: 'Wrath & Glory uses a d6 dice pool with "Wrath" dice. The older FFG games use d100 percentile.',
+    materials: 'Wrath & Glory Core Rulebook. Pick which legacy game (Dark Heresy etc.) for the older line.',
+    charCreation: 'In W&G, archetypes are tier-gated &mdash; you cannot start as a Space Marine in a low-tier game. Skills and Talents flesh out the rest. In FFG-era games, careers are more rigid but very flavourful.',
+    bestFor: 'Warhammer 40k fans who want to live in the setting. Themes of duty, paranoia, faith, corruption, and survival.',
+    watchOut: 'Setting knowledge helps players a lot &mdash; the Imperium\'s politics are not common-sense. W&G\'s tier system needs the GM to lock party power level early.',
+    resources: [
+      { name: 'Cubicle 7 &mdash; Wrath & Glory', url: 'https://cubicle7games.com', note: 'Current publisher' },
+      { name: 'DriveThruRPG &mdash; FFG 40k line', url: 'https://www.drivethrurpg.com', note: 'Dark Heresy, Rogue Trader, etc. (digital only now)' }
+    ]
+  },
+  {
+    id: 'starwars-ffg',
+    name: 'Star Wars (Edge / FFG Narrative)',
+    versions: 'Three core lines: Edge of the Empire (scoundrels), Age of Rebellion (rebels), Force and Destiny (Force users). Same system, three corners of the galaxy. Originally FFG, now Edge Studio.',
+    genres: ['scifi'],
+    diceCategory: 'custom',
+    publisher: 'Edge Studio (formerly Fantasy Flight Games)',
+    tagline: 'Narrative dice that ask "yes, but&hellip;" instead of "yes/no".',
+    description: 'Custom polyhedral dice are pooled and rolled together; symbols cancel and combine to produce nuanced results: success with complications, failure with side benefits, dramatic Triumphs and Despairs. This pushes combat and skill checks into storytelling rather than pass/fail. The three game lines fully cross-compatible.',
+    newcomer: 3,
+    complexity: 3,
+    charFreedom: 4,
+    homebrew: 3,
+    dice: 'Custom symbol dice. Sold by Edge Studio. The official Star Wars Dice app or third-party dice rollers can substitute.',
+    materials: 'One of the three Core Rulebooks. The Beginner Game boxed sets are excellent learning tools.',
+    charCreation: 'Species + career + specialization. Career talent trees feel chunky and rewarding. Force users use Force Powers as trees too.',
+    bestFor: 'Groups who want cinematic Star Wars where dice rolls drive story complications. Excellent for theatrical GMs.',
+    watchOut: 'Reading the dice takes practice. Players who want a clean "did I succeed?" answer can find it frustrating early on. Other Star Wars RPGs exist (Saga Edition d20 from WotC, West End Games d6 from 1987) and have devotees, but both are out of print.',
+    resources: [
+      { name: 'Edge Studio', url: 'https://www.edge-studio.net', note: 'Current publisher' },
+      { name: 'Beginner Game boxed sets', url: 'https://www.edge-studio.net', note: 'Best entry point &mdash; includes dice, pre-gens, a folding map' }
+    ]
+  },
+  {
+    id: 'one-ring',
+    name: 'The One Ring (2nd Edition)',
+    versions: '2e (Free League, 2021) is current. 1e (Cubicle 7) is the older version.',
+    genres: ['fantasy'],
+    diceCategory: 'mixed',
+    publisher: 'Free League Publishing',
+    tagline: 'The Tolkien RPG that actually feels like Tolkien.',
+    description: 'Designed from the ground up for Middle-earth. The default era is between The Hobbit and The Lord of the Rings, but the rules support other periods. Adventures alternate between Adventuring Phases and Fellowship Phases, where heroes rest, train, and tend to their people. The Shadow mechanic punishes corruption; Hope sustains heroes.',
+    newcomer: 4,
+    complexity: 3,
+    charFreedom: 3,
+    homebrew: 3,
+    dice: 'd6s (Success Dice) + a special d12 (the Feat Die). Available as custom dice or substitutable.',
+    materials: 'Core Rulebook. The Starter Set is a great on-ramp with an adventure and pre-gens.',
+    charCreation: 'Choose a Culture (Hobbit of the Shire, Dwarf of Durin\'s Folk, Bardings, etc.), Calling, and Skills. Backgrounds are baked into Cultures.',
+    bestFor: 'Tolkien fans who feel D&D doesn\'t capture Middle-earth. Slower, more reflective play; combat is dangerous and not the focus.',
+    watchOut: 'If your group wants to fight a Balrog every session, this isn\'t the system. The tone is melancholy and contemplative.',
+    resources: [
+      { name: 'Free League Publishing', url: 'https://freeleaguepublishing.com', note: 'Current publisher' }
+    ]
+  },
+  {
+    id: 'aime',
+    name: 'Adventures in Middle-earth',
+    versions: '5e D&D recompiled for Tolkien\'s world. Out of print following license changes (the license moved to Free League and became The One Ring 2e).',
+    genres: ['fantasy'],
+    diceCategory: 'standard',
+    publisher: 'Cubicle 7 (out of print)',
+    tagline: 'Already know D&D 5e? Play Middle-earth tonight.',
+    description: 'A reskin and reframing of D&D 5e for the Tolkien setting. Classes are renamed (Wanderer, Warden, Slayer, etc.), magic is heavily de-emphasized, and Journeys and Audiences get full subsystems. If your group already plays 5e, this is the lowest-friction way to run a Middle-earth campaign.',
+    newcomer: 5,
+    complexity: 3,
+    charFreedom: 3,
+    homebrew: 4,
+    dice: 'Standard polyhedral set (it\'s 5e under the hood).',
+    materials: 'AiME Player\'s Guide and Loremaster\'s Guide. PDFs still circulate.',
+    charCreation: 'D&D 5e creation but with Middle-earth-appropriate cultures and classes. No Tieflings, no Dragonborn, no fireball-as-default-spell.',
+    bestFor: 'Groups already comfortable with 5e who want Middle-earth without learning a new system.',
+    watchOut: 'Print copies are scarce and command collector prices. PDFs are easier. Consider The One Ring 2e if you want active support.',
+    resources: [
+      { name: 'DriveThruRPG', url: 'https://www.drivethrurpg.com', note: 'PDFs still available' }
+    ]
+  },
+  {
+    id: 'ravenloft',
+    name: 'Ravenloft',
+    versions: 'Currently a 5e setting via "Van Richten\'s Guide to Ravenloft" (2021). Historical: AD&D 2e boxed sets (1990s), 3e d20 "Ravenloft: Realm of Terror" (Sword & Sorcery, 2002).',
+    genres: ['horror', 'fantasy'],
+    diceCategory: 'standard',
+    publisher: 'Wizards of the Coast',
+    tagline: 'A setting of gothic Domains of Dread that has worn several systems.',
+    description: 'Ravenloft is a setting, not really a standalone system &mdash; the Domains of Dread are pocket worlds each ruled by a cursed Darklord (Strahd being the most famous). Currently presented as a 5e supplement. Older boxed sets carry the AD&D version and are sought after for their atmosphere.',
+    newcomer: 5,
+    complexity: 3,
+    charFreedom: 3,
+    homebrew: 5,
+    dice: 'Whatever your underlying system uses &mdash; standard polyhedral for 5e.',
+    materials: 'Van Richten\'s Guide to Ravenloft for 5e. Curse of Strahd is the must-run published adventure.',
+    charCreation: '5e rules apply. New Lineages, Dark Gifts, and Dread Backgrounds offer setting-flavoured options.',
+    bestFor: 'A 5e GM ready to run a horror campaign without learning a new system. "Curse of Strahd" is widely considered one of the best published adventures of any edition.',
+    watchOut: 'It\'s still D&D 5e &mdash; tonal horror comes from your table, not the rules. A horror system like Call of Cthulhu does horror more mechanically. Communicate tone with players.',
+    resources: [
+      { name: "D&D Beyond &mdash; Van Richten's Guide", url: 'https://www.dndbeyond.com', note: 'Digital version of the 5e Ravenloft book' },
+      { name: 'Curse of Strahd', url: 'https://www.dndbeyond.com', note: 'The classic published Ravenloft adventure for 5e' }
+    ]
+  },
+  {
+    id: 'dragonage',
+    name: 'Dragon Age RPG',
+    versions: 'Adventure Game Engine (AGE) system. Originally three boxed sets, later collected.',
+    genres: ['fantasy'],
+    diceCategory: 'standard',
+    publisher: 'Green Ronin',
+    tagline: 'Bioware\'s Thedas at the table, with cinematic Stunt Points.',
+    description: 'Tied to the Dragon Age video game series. The signature mechanic is Stunts: whenever you roll doubles on your dice in a successful action, you spend the Dragon Die value as Stunt Points to trigger flashy effects (knock down, disarm, dual strike, dramatic spell flourishes). Encourages cinematic combat without slowing it down.',
+    newcomer: 4,
+    complexity: 3,
+    charFreedom: 3,
+    homebrew: 3,
+    dice: '3d6, one of which is a distinctively-colored "Dragon Die" (any d6 works, just mark it).',
+    materials: "Dragon Age RPG (collected core) or the AGE Core Rulebook. Green Ronin's Fantasy AGE is the system-agnostic version.",
+    charCreation: 'Class (Warrior, Mage, Rogue), background, focuses. Familiar bones if you\'ve played the games.',
+    bestFor: 'Dragon Age video game fans, and anyone wanting a lighter d6-based fantasy with built-in cinematic moves.',
+    watchOut: 'Smaller community than D&D/Pathfinder &mdash; fewer published adventures and third-party content.',
+    resources: [
+      { name: 'Green Ronin', url: 'https://greenronin.com', note: 'Publisher; Dragon Age and Fantasy AGE' }
+    ]
+  },
+  {
+    id: 'vtm',
+    name: 'Vampire: The Masquerade',
+    versions: 'V5 (5th Edition, Renegade Game Studios, current). V20 (20th Anniversary Edition) is the "classic feel" version still in print. Older editions (Revised, 2nd, 1st) have devoted followings.',
+    genres: ['horror', 'modern'],
+    diceCategory: 'standard',
+    publisher: 'Renegade Game Studios (V5), originally White Wolf',
+    tagline: 'You are a monster. The question is what kind.',
+    description: 'Personal horror. You play a vampire trying to keep your humanity intact while navigating ancient blood politics in modern cities. The Hunger mechanic in V5 quite literally puts a die on the table that increases your risk of doing something monstrous.',
+    newcomer: 3,
+    complexity: 3,
+    charFreedom: 4,
+    homebrew: 4,
+    dice: 'd10 pool. V5 introduces "Hunger Dice" &mdash; some of your dice are special and can drive you to feed.',
+    materials: 'V5 Corebook (or V20 if you prefer the older feel).',
+    charCreation: 'Clan (Brujah, Tremere, Toreador, Nosferatu, etc.) defines your supernatural Disciplines and inclinations. Predator Type defines how you hunt. Backgrounds and Touchstones anchor your humanity.',
+    bestFor: 'Groups interested in character drama, urban gothic, and morally compromised protagonists. Less about combat, more about who you betray.',
+    watchOut: 'Themes get dark: addiction, abuse, violence, and morally indefensible acts. Session-zero safety tools are essential. V5 has been controversial within the fanbase &mdash; some prefer V20 or older editions.',
+    resources: [
+      { name: 'World of Darkness (V5)', url: 'https://www.worldofdarkness.com', note: 'Official setting and product hub' },
+      { name: 'Renegade Game Studios', url: 'https://renegadegamestudios.com', note: 'Current V5 publisher' }
+    ]
+  },
+  {
+    id: 'l5r5',
+    name: 'Legend of the Five Rings (5th Edition, FFG)',
+    versions: 'L5R 5e (Fantasy Flight Games / Edge, 2018). Replaces all earlier editions with a custom-dice approach.',
+    genres: ['fantasy', 'historical'],
+    diceCategory: 'custom',
+    publisher: 'Edge Studio (formerly Fantasy Flight Games)',
+    tagline: 'Samurai drama in Rokugan. Honor and duty are mechanical.',
+    description: 'Set in Rokugan, a fantasy world inspired by feudal Japan. Players are samurai of the Great Clans (Crane, Lion, Phoenix, Scorpion, etc.). Conflict isn\'t just sword fights &mdash; courtly intrigue, formal duels, and meditation are all resolved by the same dice. Honor, Glory, Status, and Strife are tracked stats.',
+    newcomer: 3,
+    complexity: 4,
+    charFreedom: 3,
+    homebrew: 3,
+    dice: 'Custom Ring Dice (d6) and Skill Dice (d12) with special faces. Available from Edge; the official dice app and third-party rollers substitute.',
+    materials: 'L5R 5e Core Rulebook. The Beginner Game introduces it with pre-gens.',
+    charCreation: 'Clan + Family + School. Schools are tight character archetypes &mdash; a Crane Duelist plays very differently from a Phoenix Shugenja.',
+    bestFor: 'Groups who want samurai drama, formal manners, and stories where social moves matter as much as combat.',
+    watchOut: 'Setting research helps. Rokugan\'s social rules are central to play and not always intuitive to Western players.',
+    resources: [
+      { name: 'Edge Studio &mdash; L5R 5e', url: 'https://www.edge-studio.net', note: 'Current publisher' }
+    ]
+  },
+  {
+    id: 'l5r4',
+    name: 'Legend of the Five Rings (4th Edition, AEG)',
+    versions: '4e (Alderac Entertainment Group, 2010). Out of print, beloved by long-time fans. 1e&ndash;3e all use the same "Roll & Keep" core.',
+    genres: ['fantasy', 'historical'],
+    diceCategory: 'standard',
+    publisher: 'Alderac Entertainment Group (out of print)',
+    tagline: 'The classic Rokugan, in plain d10s.',
+    description: 'The pre-FFG L5R. Uses the "Roll & Keep" mechanic: roll a number of d10s, keep a subset, sum the kept dice. Setting and themes are the same as L5R 5e &mdash; samurai drama in Rokugan &mdash; but the dice math is approachable with no custom dice required.',
+    newcomer: 3,
+    complexity: 3,
+    charFreedom: 3,
+    homebrew: 3,
+    dice: 'Plenty of d10s (no custom dice).',
+    materials: 'L5R 4e Core Rulebook. PDFs available.',
+    charCreation: 'Clan + Family + School, much like 5e. Mechanics differ but the flavour is identical.',
+    bestFor: 'Long-time L5R fans, or anyone who wants Rokugan without buying custom dice.',
+    watchOut: 'Out of print &mdash; PDF only and supplements take some hunting. New official material is in 5e.',
+    resources: [
+      { name: 'DriveThruRPG &mdash; L5R 4e', url: 'https://www.drivethrurpg.com', note: 'PDFs of 4e and earlier editions' }
+    ]
+  },
+  {
+    id: 'cyberpunk-red',
+    name: 'Cyberpunk RED',
+    versions: 'RED (2020) is current. Set between the older Cyberpunk 2020 and the Cyberpunk 2077 video game timeline.',
+    genres: ['scifi', 'modern', 'cyberpunk'],
+    diceCategory: 'standard',
+    publisher: 'R. Talsorian Games',
+    tagline: 'Style over substance. Survive Night City.',
+    description: 'High-tech low-life. Punks with chrome arms running jobs in a fractured megacity. Combat is fast and brutal. Roles (Solo, Netrunner, Fixer, Rockerboy, Tech, Media, Medtech, Lawman, Exec, Nomad) each get a distinctive Role Ability that defines play.',
+    newcomer: 3,
+    complexity: 3,
+    charFreedom: 4,
+    homebrew: 3,
+    dice: 'Single d10 + skill + stat vs. target number. Some d6s for damage.',
+    materials: 'Cyberpunk RED Core Rulebook. The Jumpstart Kit is a great quick-start.',
+    charCreation: 'Pick a Role, allocate stats, buy gear and cyberware. Lifepath generation is fast and dramatic.',
+    bestFor: 'Fans of the video game and the genre. Heist-flavoured jobs and a clear loop of "get the gig, do the gig, spend the money".',
+    watchOut: 'Netrunning (hacking) is a parallel mini-game and can leave the rest of the table waiting. Plan how you\'ll run it.',
+    resources: [
+      { name: 'R. Talsorian Games', url: 'https://rtalsoriangames.com', note: 'Publisher' }
+    ]
+  },
+  {
+    id: 'shadowrun',
+    name: 'Shadowrun',
+    versions: '6e (current). 5e is widely loved and arguably more polished. 4e and earlier have devoted followings.',
+    genres: ['scifi', 'fantasy', 'cyberpunk'],
+    diceCategory: 'standard',
+    publisher: 'Catalyst Game Labs',
+    tagline: 'Cyberpunk meets elves and dragons. Magic and Microsoft on the same job.',
+    description: 'Wage-slaves and shadowy operatives in a future where magic returned to a cyberpunk Earth. Your team might include an elven decker, a troll street samurai, a dwarven mage, and a human face. Jobs ("runs") for shadowy corporate patrons drive every session.',
+    newcomer: 2,
+    complexity: 5,
+    charFreedom: 4,
+    homebrew: 3,
+    dice: 'd6 pool &mdash; sometimes lots of them. Count 5s and 6s as hits.',
+    materials: 'Core Rulebook (a thick book), and edition selection matters.',
+    charCreation: 'Famously involved. Priority/Karma generation distributes resources across Metatype, Magic/Resonance, Attributes, Skills, and Money &mdash; tradeoffs are sharp.',
+    bestFor: 'Groups who love the setting and want a long campaign of escalating jobs.',
+    watchOut: 'Rules are crunchy in three parallel subsystems (Matrix/hacking, Magic, Combat). Each can stall the other players. Pick an edition deliberately &mdash; 5e is often recommended over 6e by veterans.',
+    resources: [
+      { name: 'Catalyst Game Labs', url: 'https://www.catalystgamelabs.com', note: 'Publisher' }
+    ]
+  },
+  {
+    id: 'fate',
+    name: 'Fate Core / Fate Accelerated',
+    versions: 'Fate Core is the standard. Fate Accelerated (FAE) is a lighter, faster version of the same engine. Both 2013, still in print.',
+    genres: ['universal'],
+    diceCategory: 'custom',
+    publisher: 'Evil Hat Productions',
+    tagline: 'Narrative-first universal system. You define what matters.',
+    description: 'A toolkit for almost any genre. Characters are defined by Aspects &mdash; short phrases like "Brilliant but Reckless" or "Owes a Debt to the Sicilian Mafia" &mdash; that you invoke for bonuses and that the GM compels for complications and Fate Points. The dice barely matter; the narrative does.',
+    newcomer: 5,
+    complexity: 2,
+    charFreedom: 5,
+    homebrew: 5,
+    dice: 'Fudge / Fate dice (4dF). Each die shows +, blank, or -. Standard d6s substitute fine (treat 1-2 as -, 3-4 as 0, 5-6 as +).',
+    materials: 'Fate Core or Fate Accelerated. Both are pay-what-you-want from Evil Hat (literally free if you choose).',
+    charCreation: 'Define a few Aspects, distribute skill ratings (or Approaches in FAE). Whole groups can build characters together in 30 minutes.',
+    bestFor: 'GMs who want a system that gets out of the way. Mixed-genre games. One-shots. Story-focused groups.',
+    watchOut: 'Players coming from rules-heavy games sometimes ask "but what does my character DO?" &mdash; Fate trusts you to invent it, which not everyone wants.',
+    resources: [
+      { name: 'Evil Hat Productions', url: 'https://www.evilhat.com', note: 'Publisher; Fate Core and Accelerated are pay-what-you-want' },
+      { name: 'Fate SRD', url: 'https://fate-srd.com', note: 'Free, full rules online' }
+    ]
+  },
+  {
+    id: 'savage-worlds',
+    name: 'Savage Worlds Adventure Edition (SWADE)',
+    versions: 'SWADE (2018) is current. Earlier editions: Deluxe, Explorer\'s Edition.',
+    genres: ['universal'],
+    diceCategory: 'standard',
+    publisher: 'Pinnacle Entertainment Group',
+    tagline: 'Fast! Furious! Fun! &mdash; their tagline, and it\'s earned.',
+    description: 'Universal pulp system: pirates, weird west, post-apoc, supers, fantasy, horror &mdash; any of it. Combat uses initiative cards (literally a poker deck). Each trait is a die type (d4 to d12); higher is better.',
+    newcomer: 4,
+    complexity: 3,
+    charFreedom: 4,
+    homebrew: 4,
+    dice: 'Full polyhedral set + a deck of standard playing cards for initiative.',
+    materials: 'SWADE Core Rulebook. Many setting books ("Deadlands", "Rifts", "50 Fathoms") apply Savage Worlds to specific worlds.',
+    charCreation: 'Distribute die ranks across traits, pick a few Edges. Quick &mdash; under an hour.',
+    bestFor: 'Pulp action and one-shots. Genre flexibility. GMs who want to run "any genre" tonight.',
+    watchOut: 'The card-based initiative is unusual and not everyone loves it. Wild Cards (PCs and major NPCs) survive longer than mooks, which keeps things cinematic but can surprise new players.',
+    resources: [
+      { name: 'Pinnacle Entertainment', url: 'https://peginc.com', note: 'Publisher' }
+    ]
+  },
+  {
+    id: 'blades',
+    name: 'Blades in the Dark',
+    versions: 'First edition, in print and supported.',
+    genres: ['fantasy', 'heist'],
+    diceCategory: 'standard',
+    publisher: 'Evil Hat Productions',
+    tagline: 'A scoundrel crew in a haunted industrial city. Plan less, do more.',
+    description: 'Your crew of criminals operates in Doskvol, a city of ghosts and industrial gloom. The signature mechanic is flashbacks: you don\'t plan jobs, you start the job, and when things go sideways you flash back to "of course I bribed the guard yesterday" &mdash; rolling for it then. Downtime phases let you recover, heal, indulge vices, and develop the crew.',
+    newcomer: 4,
+    complexity: 2,
+    charFreedom: 4,
+    homebrew: 4,
+    dice: 'd6 pool. Count the highest die. 6 = full success. 4-5 = partial success with consequence. 1-3 = bad outcome.',
+    materials: 'Blades in the Dark core rulebook.',
+    charCreation: 'Playbook (Cutter, Hound, Leech, Lurk, Slide, Spider, Whisper). The crew has a playbook too (Assassins, Smugglers, Bravos, Cult, Hawkers, Shadows).',
+    bestFor: 'Groups who hate planning sessions and just want to do the heist. GMs who want strong scaffolding.',
+    watchOut: 'The flashback mechanic and Position/Effect framing take a session or two to internalise. Trust the system; it works.',
+    resources: [
+      { name: 'Evil Hat Productions', url: 'https://www.evilhat.com', note: 'Publisher' },
+      { name: 'Blades in the Dark SRD', url: 'https://bladesinthedark.com', note: 'Free reference site' }
+    ]
+  },
+  {
+    id: 'mork-borg',
+    name: 'M&ouml;rk Borg',
+    versions: 'First and only edition (2020). A "rules-light" doomsday OSR game.',
+    genres: ['fantasy', 'horror'],
+    diceCategory: 'standard',
+    publisher: 'Stockholm Kartell / Free League (distribution)',
+    tagline: 'A doom-metal rulebook. The world ends. Loot what you can.',
+    description: 'Apocalyptic dark fantasy. Beautiful, brutal, brief. The Calendar of Nechrubel tracks the end of the world, and when it hits, the game ends. Characters are wretched: a Heretical Priest of Verhu, a Gutterborn Scum, a Wretched Royalty. They die easily. The rulebook is a piece of graphic design as much as an RPG.',
+    newcomer: 5,
+    complexity: 2,
+    charFreedom: 3,
+    homebrew: 5,
+    dice: 'd20, d6, d4, d8, d10. A full set works.',
+    materials: 'M&ouml;rk Borg Core Rules (a slim, beautiful book). Free SRD covers the basics.',
+    charCreation: 'Roll on a few tables. Done in 5 minutes.',
+    bestFor: 'One-shots, short campaigns, doomed-and-loving-it tone. New GMs because there isn\'t much to learn.',
+    watchOut: 'The book\'s art direction is gleefully unreadable in places (white text on yellow, etc.). The free SRD is a cleaner reference for play.',
+    resources: [
+      { name: 'M&ouml;rk Borg SRD', url: 'https://morkborg.com', note: 'Official site; free SRD' },
+      { name: 'Free League', url: 'https://freeleaguepublishing.com', note: 'Distribution' }
+    ]
+  },
+  {
+    id: 'mothership',
+    name: 'Mothership',
+    versions: '1e (Tuesday Knight Games, 2023).',
+    genres: ['scifi', 'horror'],
+    diceCategory: 'd100',
+    publisher: 'Tuesday Knight Games',
+    tagline: 'Sci-fi horror like Alien and Event Horizon. Fast death in deep space.',
+    description: 'You\'re a Teamster, Scientist, Marine, or Android working in space. The rules are tight and lethal. Stress accumulates and can break you. The Warden\'s Operations Manual is one of the cleanest GM guides ever printed.',
+    newcomer: 5,
+    complexity: 2,
+    charFreedom: 3,
+    homebrew: 4,
+    dice: 'd100, d10, d5 (a d10 read in halves). A standard d10 set covers it.',
+    materials: 'Player\'s Survival Guide and Warden\'s Operations Manual (sold separately, both essential).',
+    charCreation: 'Pick a Class, roll a few stats, done in 10 minutes.',
+    bestFor: 'One-shots and short campaigns. GMs who want a system that supports them with crisp procedures.',
+    watchOut: 'Tone is bleak. Player characters die quickly &mdash; that\'s the point. Make sure your group is on board.',
+    resources: [
+      { name: 'Tuesday Knight Games', url: 'https://www.tuesdayknightgames.com', note: 'Publisher' }
+    ]
+  },
+  {
+    id: 'avatar-legends',
+    name: 'Avatar Legends: The Roleplaying Game',
+    versions: '1e (Magpie Games, 2022). One of the largest tabletop Kickstarters ever; supplements still releasing.',
+    genres: ['fantasy'],
+    diceCategory: 'standard',
+    publisher: 'Magpie Games',
+    tagline: 'Bend the elements. Find your balance. You\'re not the Avatar &mdash; but you\'re in their world.',
+    description: "Set in the world of Avatar: The Last Airbender and The Legend of Korra. Players pick one of five canonical eras (Kyoshi, Roku, Hundred Year War, Aang, or Korra) and play newcomers to the saga &mdash; never the Avatar themselves. Built on Powered by the Apocalypse: every move resolves into narrative outcomes, not pass/fail. The standout mechanic is Balance &mdash; each character is defined by two opposing principles (e.g. Tradition vs. Progress), and the story pushes them toward one pole.",
+    newcomer: 5,
+    complexity: 2,
+    charFreedom: 3,
+    homebrew: 3,
+    dice: '2d6 + stat. Standard PbtA. No custom dice, no polyhedral set required.',
+    materials: 'Avatar Legends Core Rulebook. The free Quickstart includes a full intro adventure and pre-gens.',
+    charCreation: 'Pick a Playbook (The Bold, The Idealist, The Hammer, The Pillar, The Successor, and others) and a Training (Waterbending, Earthbending, Firebending, Airbending, Weapons, or Technology). Playbook defines your inner conflict; Training defines your fighting style. Fast and evocative &mdash; under an hour at the table.',
+    bestFor: 'Fans of the animated series. Players new to RPGs &mdash; PbtA is famously approachable, and the world needs little setup. Groups who want emotional drama and choreographed martial arts over crunchy combat math.',
+    watchOut: 'Combat uses Fatigue and Conditions (Afraid, Angry, Insecure, Foolish, Guilty) instead of hit points. This is intentional and tone-perfect, but players trained on D&D may find it abstract until the first session lands.',
+    resources: [
+      { name: 'Magpie Games', url: 'https://magpiegames.com', note: 'Publisher; books, free Quickstart, and supplements' }
+    ]
+  },
+  {
+    id: 'daggerheart',
+    name: 'Daggerheart',
+    versions: '1e (2025).',
+    genres: ['fantasy'],
+    diceCategory: 'standard',
+    publisher: 'Darrington Press (Critical Role)',
+    tagline: 'Critical Role\'s in-house fantasy system. Hope and Fear on every roll.',
+    description: 'A fantasy RPG built by Darrington Press, the publishing arm of Critical Role. The signature mechanic uses two d12s &mdash; a Hope die and a Fear die. Whichever rolls higher tells you the emotional tenor of the result. Card-and-dice character options give a tactile feel.',
+    newcomer: 4,
+    complexity: 3,
+    charFreedom: 3,
+    homebrew: 4,
+    dice: 'Two d12s (one Hope, one Fear), plus standard polyhedrals for ancestry/class effects.',
+    materials: 'Daggerheart Core Set (book + cards). Cards are part of play.',
+    charCreation: 'Ancestry + Community + Class. Domain cards (drawn from your class\'s lists) give you mechanical options you can swap between rests.',
+    bestFor: 'Critical Role fans, and groups who liked 5e but wanted more narrative-tilted resolution. New &mdash; community and third-party content are still growing.',
+    watchOut: 'Very new system as of 2025 &mdash; published adventures are limited. Cards can be lost or get awkward in VTT play (though digital tools exist).',
+    resources: [
+      { name: 'Darrington Press', url: 'https://darringtonpress.com', note: 'Publisher' }
+    ]
+  },
+  {
+    id: '13th-age',
+    name: '13th Age',
+    versions: '1e (2013). 2nd Edition recently released from Pelgrane Press.',
+    genres: ['fantasy'],
+    diceCategory: 'standard',
+    publisher: 'Pelgrane Press',
+    tagline: "D&D, lighter on the rules, heavier on the story. By two of D&D's own designers.",
+    description: "Designed by Rob Heinsoo (D&D 4e lead) and Jonathan Tweet (D&D 3e lead). A d20 fantasy that strips out grid-based tactical density and replaces it with story-driven mechanics. Three signatures: the 13 Icons (powerful NPCs that shape the world &mdash; every PC has rated relationships with them), One Unique Thing per character (a narrative hook only you have: \"I am the last living dwarf in the world\"), and the Escalation Die (each combat round a die ticks up and adds to all PC attack rolls, ending fights faster).",
+    newcomer: 4,
+    complexity: 3,
+    charFreedom: 4,
+    homebrew: 4,
+    dice: 'Standard polyhedral set.',
+    materials: '13th Age Core Rulebook. The 13th Age SRD is free online.',
+    charCreation: 'Pick a class (familiar D&D archetypes), race, and most importantly your One Unique Thing and Icon relationships. Backgrounds replace skill lists &mdash; "spent ten years as a gladiator" gives bonuses on relevant rolls.',
+    bestFor: 'D&D-trained GMs who want less prep. Story-first groups. GMs who like the d20 framework but want fewer rules to memorize.',
+    watchOut: "Icon Relationship dice rolled at the start of each session can feel directionless without a GM willing to improvise hooks from the results. Lean into them.",
+    resources: [
+      { name: 'Pelgrane Press', url: 'https://pelgranepress.com', note: 'Publisher' },
+      { name: '13th Age SRD', url: 'https://www.13thagesrd.com', note: 'Free official rules reference' }
+    ]
+  },
+  {
+    id: 'night-witches',
+    name: 'Night Witches',
+    versions: '1st Edition (Bully Pulpit Games, 2015). Designed by Jason Morningstar (also of Fiasco).',
+    genres: ['historical'],
+    diceCategory: 'standard',
+    publisher: 'Bully Pulpit Games',
+    tagline: 'Soviet women bomber pilots in WWII. Powered by the Apocalypse. Heavy and brilliant.',
+    description: "Inspired by the historical 588th Night Bomber Regiment &mdash; the all-female Soviet aviators who flew obsolete Polikarpov Po-2 biplanes on harassment runs against Nazi forces. The Germans nicknamed them \"Nachthexen\", Night Witches. Powered by the Apocalypse, the game alternates two cycles: Duty (the missions) and Night (the airbase between flights, where politics, friendship, and grief play out).",
+    newcomer: 4,
+    complexity: 2,
+    charFreedom: 3,
+    homebrew: 3,
+    dice: '2d6 + stat. Standard PbtA.',
+    materials: 'Night Witches core rulebook (slim &mdash; PbtA games typically are).',
+    charCreation: 'Pick a playbook (each modeled on a real type of pilot or ground crew), establish a Soviet rank, draw out relationships. Brief and character-focused.',
+    bestFor: 'Players interested in WWII history from a perspective rarely seen at the table. Strong fit for short campaigns and one-shots.',
+    watchOut: "Themes are dark and historically grounded: misogyny, Stalinist purges, death, the moral weight of bombing. Session-zero is essential. Not a power-fantasy game.",
+    resources: [
+      { name: 'Bully Pulpit Games', url: 'https://bullypulpitgames.com', note: 'Publisher' }
+    ]
+  },
+  {
+    id: 'deadlands',
+    name: 'Deadlands',
+    versions: "Deadlands: The Weird West (current, on Savage Worlds Adventure Edition). Earlier: Deadlands Reloaded (Savage Worlds Deluxe). Classic Deadlands (original system, 1996). Spin-offs: Hell on Earth (post-apocalypse) and Lost Colony (sci-fi).",
+    genres: ['horror', 'historical'],
+    diceCategory: 'standard',
+    publisher: 'Pinnacle Entertainment Group',
+    tagline: 'Weird West. Cowboys, gunslingers, mad scientists, and the literal walking dead.',
+    description: "Alternate-history American West where the dead won't stay buried, mad scientists fuel six-shooters with ghost rock, and Hucksters strike bargains with malevolent spirits for spells. The current line runs on Savage Worlds Adventure Edition with Weird West rules layered on: poker chips for Bennies, playing cards for initiative and Huckster magic, and Joker pulls that can swing the game wildly.",
+    newcomer: 3,
+    complexity: 3,
+    charFreedom: 4,
+    homebrew: 3,
+    dice: 'Full polyhedral set + a standard playing card deck + poker chips. The cards and chips are part of play, not optional flavour.',
+    materials: 'Deadlands: The Weird West core. Savage Worlds Adventure Edition (SWADE) is also required &mdash; Deadlands is a setting layered on top of it.',
+    charCreation: 'SWADE chassis: distribute die ranks to traits, pick Edges. Then choose your Arcane Background if any (Huckster, Blessed, Shaman, Mad Scientist) &mdash; each plays very differently.',
+    bestFor: "Fans of weird western tone &mdash; Tombstone meets Cabin in the Woods. Groups who already know or are willing to learn Savage Worlds.",
+    watchOut: "Two systems to learn: Savage Worlds first, Deadlands additions second. Hucksters and Mad Scientists each have parallel sub-rules. Lock the table's power level early or one PC will outshine the rest.",
+    resources: [
+      { name: 'Pinnacle Entertainment', url: 'https://peginc.com', note: 'Publisher of Deadlands and Savage Worlds' }
+    ]
+  },
+  {
+    id: 'sotdl',
+    name: 'Shadow of the Demon Lord',
+    versions: "1e (2015), by Robert J. Schwalb (longtime D&D 4e and 5e designer). Companion line: Shadow of the Weird Wizard (2024), a lighter, less grim version of the same engine.",
+    genres: ['fantasy', 'horror', 'grimdark'],
+    diceCategory: 'standard',
+    publisher: 'Schwalb Entertainment',
+    tagline: 'Dark fantasy on the eve of the apocalypse. Quick to learn, quick to die.',
+    description: "The world is ending; the Demon Lord is coming. The signature mechanic is Boons and Banes: instead of stacking +1s and -1s, you roll d6s alongside your d20 &mdash; Boons add, Banes subtract, and multiple Boons or Banes mean rolling several d6s and taking the highest. The math stays clean no matter how many modifiers pile up. The Path system layers a Novice path at level 1, an Expert path at level 3, and a Master path at level 7 &mdash; multiclassing built in.",
+    newcomer: 4,
+    complexity: 3,
+    charFreedom: 4,
+    homebrew: 4,
+    dice: 'd20 + several d6s for Boons/Banes. Full polyhedral set helpful for damage.',
+    materials: 'Shadow of the Demon Lord core. A starter set exists. Many short supplements priced low.',
+    charCreation: "Roll on (or pick from) ancestry tables &mdash; with charmingly weird options like Clockwork or Goblin. Choose Paths as you level. Famously fast: under 15 minutes for a starting character.",
+    bestFor: 'D&D-trained groups craving a grimmer tone without a brand-new system to learn. GMs who want short, intense campaigns &mdash; the game caps at level 10.',
+    watchOut: "Themes are explicitly dark: corruption, body horror, religious violence, despair. Tone is dialled up from D&D. If your group wants heroic fantasy, choose Weird Wizard or another system.",
+    resources: [
+      { name: 'Schwalb Entertainment', url: 'https://schwalbentertainment.com', note: 'Publisher; supports both Demon Lord and Weird Wizard' }
+    ]
+  },
+  {
+    id: 'starfinder',
+    name: 'Starfinder',
+    versions: "Starfinder 1e (2017). Starfinder 2e launched in 2025 from Paizo, rebuilt on a Pathfinder 2e-compatible chassis.",
+    genres: ['scifi', 'fantasy'],
+    diceCategory: 'standard',
+    publisher: 'Paizo',
+    tagline: "Pathfinder's science-fantasy cousin. Wizards in space, mecha, and starship dogfights.",
+    description: "Sci-fantasy spin-off of Pathfinder. Set in the Pact Worlds &mdash; what comes after Golarion (Pathfinder's homeworld) mysteriously vanished from history. Magic and technology coexist: a Solarian channels stellar energy, a Mechanic builds drones, an Operative shoots from cover. Starship combat is its own subsystem with crew roles &mdash; each PC has a station on the bridge during space battles. 1e plays like a modernized Pathfinder 1e; 2e harmonizes with PF2e and shares its three-action structure.",
+    newcomer: 3,
+    complexity: 4,
+    charFreedom: 5,
+    homebrew: 4,
+    dice: 'Standard polyhedral set.',
+    materials: 'Starfinder Core Rulebook (pick your edition). Archives of Nethys hosts the rules online for free.',
+    charCreation: 'Race + Theme + Class. Themes add flavour and a small mechanical hook (Outlaw, Scholar, Mercenary, Icon, etc.). Builds are crunchy in the Paizo tradition &mdash; many choices, deep combos.',
+    bestFor: 'Pathfinder fans who want space opera. Groups who like character-build depth and the idea of bridge-crew starship combat.',
+    watchOut: 'The starship combat subsystem is fun but takes a whole session to internalize. Choose an edition deliberately &mdash; 1e and 2e adventures are not directly cross-compatible.',
+    resources: [
+      { name: 'Paizo', url: 'https://paizo.com', note: 'Publisher; rules and adventure paths' },
+      { name: 'Archives of Nethys (Starfinder)', url: 'https://aonsrd.com', note: 'Official free SRD' }
+    ]
+  }
+];
+
+const starRow = (n) => {
+  const filled = '★'.repeat(n);
+  const empty = '☆'.repeat(5 - n);
+  return `<span class="stars">${filled}<span class="off">${empty}</span></span>`;
+};
+
+const genreBadge = (g) => {
+  const labels = {
+    fantasy: 'Fantasy',
+    scifi: 'Sci-Fi',
+    horror: 'Horror',
+    modern: 'Modern',
+    historical: 'Historical',
+    universal: 'Universal',
+    grimdark: 'Grimdark',
+    heist: 'Heist',
+    cyberpunk: 'Cyberpunk'
+  };
+  return `<span class="badge ${g}">${labels[g] || g}</span>`;
+};
+
+const diceCategoryLabel = {
+  standard: 'Standard polyhedral dice',
+  d100: 'd100 / percentile',
+  custom: 'Needs custom dice',
+  mixed: 'Mixed (some custom)'
+};
+
+const renderCard = (s) => {
+  const card = document.createElement('article');
+  card.className = 'card';
+  card.dataset.id = s.id;
+  card.dataset.genres = s.genres.join(' ');
+  card.dataset.dice = s.diceCategory;
+  card.dataset.newcomer = s.newcomer;
+  card.dataset.complexity = s.complexity;
+  card.dataset.freedom = s.charFreedom;
+  card.dataset.name = s.name;
+
+  const resources = s.resources.map(r => {
+    if (r.url) {
+      return `<li><a href="${r.url}" target="_blank" rel="noopener noreferrer">${r.name}</a> <span class="note">&mdash; ${r.note}</span></li>`;
+    }
+    return `<li class="no-link">${r.name} <span class="note">&mdash; ${r.note}</span></li>`;
+  }).join('');
+
+  card.innerHTML = `
+    <div class="card-head" role="button" tabindex="0" aria-expanded="false">
+      <div class="card-title">
+        <h2>${s.name}</h2>
+        <p class="tagline">${s.tagline}</p>
+        <div class="card-meta">
+          ${s.genres.map(genreBadge).join('')}
+          <span class="badge">${diceCategoryLabel[s.diceCategory]}</span>
+        </div>
+      </div>
+      <div class="ratings-compact" aria-label="Ratings">
+        <div class="rating-row"><span class="lbl">New GM</span>${starRow(s.newcomer)}</div>
+        <div class="rating-row"><span class="lbl">Complexity</span>${starRow(s.complexity)}</div>
+        <div class="rating-row"><span class="lbl">Freedom</span>${starRow(s.charFreedom)}</div>
+        <div class="rating-row"><span class="lbl">Homebrew</span>${starRow(s.homebrew)}</div>
+      </div>
+      <div class="expand-icon" aria-hidden="true">+</div>
+    </div>
+    <div class="card-body">
+      <p class="desc">${s.description}</p>
+
+      <dl class="specs">
+        <dt>Publisher</dt><dd>${s.publisher}</dd>
+        <dt>Versions</dt><dd>${s.versions}</dd>
+        <dt>Dice</dt><dd>${s.dice}</dd>
+        <dt>Materials</dt><dd>${s.materials}</dd>
+        <dt>Character Creation</dt><dd>${s.charCreation}</dd>
+      </dl>
+
+      <div class="two-col">
+        <div class="callout good">
+          <span class="callout-label">Best for</span>
+          ${s.bestFor}
+        </div>
+        <div class="callout warn">
+          <span class="callout-label">Watch out for</span>
+          ${s.watchOut}
+        </div>
+      </div>
+
+      <div>
+        <h3>Resources</h3>
+        <ul class="pill-list">${resources}</ul>
+      </div>
+    </div>
+  `;
+
+  const head = card.querySelector('.card-head');
+  const toggle = () => {
+    const isOpen = card.classList.toggle('open');
+    head.setAttribute('aria-expanded', String(isOpen));
+  };
+  head.addEventListener('click', toggle);
+  head.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggle();
+    }
+  });
+
+  return card;
+};
+
+const listEl = document.getElementById('systemList');
+const resultsEl = document.getElementById('resultsCount');
+const sortGroup = document.getElementById('sortGroup');
+const filterGroup = document.getElementById('filterGroup');
+
+let activeFilter = 'all';
+let activeSort = 'newcomer';
+
+const matchesFilter = (s, filter) => {
+  if (filter === 'all') return true;
+  if (filter === 'beginner') return s.newcomer >= 4;
+  if (filter === 'd100') return s.diceCategory === 'd100';
+  if (filter === 'custom-dice') return s.diceCategory === 'custom' || s.diceCategory === 'mixed';
+  if (filter === 'standard-dice') return s.diceCategory === 'standard';
+  return s.genres.includes(filter);
+};
+
+const sortFns = {
+  newcomer: (a, b) => b.newcomer - a.newcomer || a.name.localeCompare(b.name),
+  'complexity-asc': (a, b) => a.complexity - b.complexity || a.name.localeCompare(b.name),
+  'complexity-desc': (a, b) => b.complexity - a.complexity || a.name.localeCompare(b.name),
+  freedom: (a, b) => b.charFreedom - a.charFreedom || a.name.localeCompare(b.name),
+  homebrew: (a, b) => b.homebrew - a.homebrew || a.name.localeCompare(b.name),
+  name: (a, b) => a.name.localeCompare(b.name),
+  'name-desc': (a, b) => b.name.localeCompare(a.name)
+};
+
+const render = () => {
+  listEl.innerHTML = '';
+  const visible = systems
+    .filter(s => matchesFilter(s, activeFilter))
+    .sort(sortFns[activeSort]);
+
+  if (visible.length === 0) {
+    listEl.innerHTML = '<div class="empty-state">No systems match that filter.</div>';
+    resultsEl.textContent = '';
+    return;
+  }
+
+  visible.forEach(s => listEl.appendChild(renderCard(s)));
+  resultsEl.textContent = `Showing ${visible.length} of ${systems.length} systems`;
+};
+
+filterGroup.addEventListener('click', (e) => {
+  const btn = e.target.closest('.chip');
+  if (!btn) return;
+  filterGroup.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  activeFilter = btn.dataset.filter;
+  render();
+});
+
+sortGroup.addEventListener('click', (e) => {
+  const btn = e.target.closest('.chip');
+  if (!btn) return;
+  sortGroup.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  activeSort = btn.dataset.sort;
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
