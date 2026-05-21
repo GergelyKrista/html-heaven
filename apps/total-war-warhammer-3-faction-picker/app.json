@@ -1,0 +1,19 @@
+{
+  "title": "Total War Warhammer 3 - Faction Picker",
+  "slug": "total-war-warhammer-3-faction-picker",
+  "description": "The tool helps players to pick factions based on a few questions and preferences.",
+  "author": "ambrusorban",
+  "tags": [
+    "games",
+    "strategy",
+    "multiplayer",
+    "single-player",
+    "totalwar",
+    "warhammer",
+    "turn-based"
+  ],
+  "dateAdded": "2026-05-21",
+  "featured": false,
+  "hostingType": "bundled",
+  "thumbnail": "thumbnail.png"
+}
