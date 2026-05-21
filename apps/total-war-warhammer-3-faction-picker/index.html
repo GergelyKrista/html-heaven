@@ -1,0 +1,1532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faction Picker &mdash; Total War: Warhammer III</title>
+<meta name="description" content="A questionnaire-based recommender that suggests Total War: Warhammer III factions to play, with descriptions, advantages, and disadvantages tailored to your answers.">
+<style>
+:root {
+    --bg:        #0c0a14;
+    --bg2:       #15101f;
+    --sf:        #1a1428;
+    --sf2:       #241a36;
+    --sf3:       #2e2245;
+    --gold:      #c89b3c;
+    --gold2:     #f0c459;
+    --ember:     #d4863a;
+    --ember2:    #f0a754;
+    --blood:     #a8332a;
+    --blood2:    #c84a40;
+    --ord:       #5fa3d0;
+    --chs:       #b85bd0;
+    --dst:       #6fb858;
+    --tx:        #ecdfff;
+    --tx2:       #b8a8d0;
+    --mu:        #8478a0;
+    --mu2:       #5a5070;
+    --bdr:       rgba(232,196,89,.16);
+    --bdr2:      rgba(232,196,89,.28);
+    --shadow:    0 8px 28px rgba(0,0,0,.55);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body {
+    background:
+        radial-gradient(ellipse at 20% 0%, rgba(168,51,42,.10), transparent 55%),
+        radial-gradient(ellipse at 80% 100%, rgba(95,163,208,.08), transparent 55%),
+        var(--bg);
+    color:var(--tx);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.65;
+    min-height:100vh;
+}
+
+/* Header */
+header {
+    background:linear-gradient(180deg,#1f1632 0%,#120c1c 100%);
+    padding:1.4rem 1.8rem;
+    border-bottom:2px solid var(--gold);
+    position:relative;
+    text-align:center;
+}
+header::after{
+    content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px;
+    background:linear-gradient(90deg,transparent 0%,var(--gold) 50%,transparent 100%);
+    opacity:.55;
+}
+header h1{
+    font-size:1.55rem; font-weight:700;
+    letter-spacing:.5px; color:var(--gold2);
+    text-shadow:0 0 12px rgba(212,134,58,.35);
+}
+header h1 .accent{color:var(--blood2)}
+header p {color:var(--mu);font-size:.88rem;margin-top:.3rem;letter-spacing:.3px}
+
+/* Main */
+main{max-width:1100px;margin:0 auto;padding:2.2rem 1.6rem 4rem}
+
+.screen{display:none}
+.screen.active{display:block;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Intro */
+.intro{
+    background:var(--sf);
+    border:1px solid var(--bdr);
+    border-radius:8px;
+    padding:2.4rem 2rem;
+    box-shadow:var(--shadow);
+    text-align:center;
+}
+.intro h2{
+    color:var(--gold2);
+    font-size:1.7rem;
+    margin-bottom:1rem;
+    letter-spacing:.3px;
+}
+.intro p{
+    color:var(--tx2);
+    max-width:680px;
+    margin:0 auto 1rem;
+    line-height:1.7;
+}
+.intro .meta{
+    color:var(--mu);
+    font-size:.85rem;
+    margin-top:1.4rem;
+}
+.intro .meta span{color:var(--gold)}
+
+.start-btn{
+    background:linear-gradient(180deg,var(--blood2) 0%,var(--blood) 100%);
+    color:#fff;
+    border:none;
+    border-radius:6px;
+    padding:.9rem 2.4rem;
+    font-size:1.05rem;
+    font-weight:600;
+    cursor:pointer;
+    letter-spacing:.4px;
+    margin-top:1.4rem;
+    box-shadow:0 4px 14px rgba(168,51,42,.4);
+    transition:transform .12s ease, box-shadow .12s ease, filter .12s ease;
+    font-family:inherit;
+}
+.start-btn:hover{filter:brightness(1.12);transform:translateY(-1px);box-shadow:0 6px 20px rgba(168,51,42,.55)}
+.start-btn:active{transform:translateY(0)}
+
+/* Progress */
+.progress{
+    margin-bottom:1.6rem;
+    display:flex;
+    align-items:center;
+    gap:1rem;
+}
+.progress-bar{
+    flex:1;
+    height:8px;
+    background:var(--sf);
+    border:1px solid var(--bdr);
+    border-radius:4px;
+    overflow:hidden;
+}
+.progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,var(--blood),var(--ember2),var(--gold2));
+    transition:width .35s ease;
+    width:0%;
+}
+.progress-label{
+    font-size:.82rem;
+    color:var(--mu);
+    letter-spacing:.5px;
+    text-transform:uppercase;
+    min-width:88px;
+    text-align:right;
+}
+
+/* Question */
+.q-card{
+    background:var(--sf);
+    border:1px solid var(--bdr);
+    border-radius:8px;
+    padding:2rem;
+    box-shadow:var(--shadow);
+}
+.q-num{
+    color:var(--ember2);
+    font-size:.78rem;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:.5rem;
+}
+.q-text{
+    color:var(--gold2);
+    font-size:1.3rem;
+    font-weight:600;
+    margin-bottom:.6rem;
+    line-height:1.4;
+}
+.q-hint{
+    color:var(--mu);
+    font-size:.88rem;
+    margin-bottom:1.4rem;
+    font-style:italic;
+}
+
+.options{
+    display:grid;
+    gap:.65rem;
+    grid-template-columns:1fr;
+}
+.opt{
+    background:var(--sf2);
+    border:1px solid var(--bdr);
+    border-radius:6px;
+    padding:.95rem 1.1rem;
+    cursor:pointer;
+    color:var(--tx);
+    text-align:left;
+    font-family:inherit;
+    font-size:.98rem;
+    line-height:1.5;
+    transition:all .12s ease;
+    display:flex;
+    align-items:flex-start;
+    gap:.85rem;
+}
+.opt:hover{background:var(--sf3);border-color:var(--gold);transform:translateX(2px)}
+.opt-mark{
+    color:var(--ember2);
+    font-weight:700;
+    font-size:.95rem;
+    min-width:1.4rem;
+    margin-top:1px;
+}
+.opt-body strong{color:var(--gold2);font-weight:600;display:block;margin-bottom:.15rem}
+.opt-body span{color:var(--tx2);font-size:.9rem}
+
+.multi-hint{
+    color:var(--mu);
+    font-size:.82rem;
+    margin-bottom:.9rem;
+    font-style:italic;
+}
+.opt.selected{background:rgba(168,51,42,.18);border-color:var(--blood2)}
+.opt.selected .opt-mark{color:var(--blood2)}
+
+.q-nav{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:1.4rem;
+    gap:1rem;
+}
+.btn{
+    background:var(--sf2);
+    color:var(--tx);
+    border:1px solid var(--bdr);
+    border-radius:5px;
+    padding:.6rem 1.2rem;
+    font-size:.92rem;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+    letter-spacing:.3px;
+    transition:all .12s;
+}
+.btn:hover{background:var(--sf3);border-color:var(--gold)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-primary{
+    background:linear-gradient(180deg,var(--blood2) 0%,var(--blood) 100%);
+    border-color:transparent;
+    color:#fff;
+}
+.btn-primary:hover{filter:brightness(1.1);border-color:transparent}
+
+/* Results */
+.results-header{
+    text-align:center;
+    margin-bottom:2rem;
+}
+.results-header h2{
+    color:var(--gold2);
+    font-size:1.7rem;
+    margin-bottom:.5rem;
+}
+.results-header p{color:var(--tx2);max-width:680px;margin:0 auto}
+
+.faction-card{
+    background:var(--sf);
+    border:1px solid var(--bdr);
+    border-radius:8px;
+    margin-bottom:1.4rem;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+.fc-head{
+    padding:1.2rem 1.5rem;
+    background:linear-gradient(180deg,var(--sf2) 0%,var(--sf) 100%);
+    border-bottom:1px solid var(--bdr);
+    display:flex;
+    align-items:flex-start;
+    justify-content:space-between;
+    gap:1rem;
+    flex-wrap:wrap;
+}
+.fc-rank{
+    color:var(--gold);
+    font-size:.76rem;
+    font-weight:700;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    margin-bottom:.3rem;
+}
+.fc-name{
+    color:var(--gold2);
+    font-size:1.35rem;
+    font-weight:700;
+    margin-bottom:.3rem;
+    letter-spacing:.3px;
+}
+.fc-lords{
+    color:var(--tx2);
+    font-size:.86rem;
+}
+.fc-lords span{color:var(--ember2)}
+.badges{display:flex;gap:.4rem;flex-wrap:wrap}
+.badge{
+    font-size:.7rem;
+    font-weight:700;
+    letter-spacing:1.2px;
+    text-transform:uppercase;
+    padding:.28rem .7rem;
+    border-radius:3px;
+    border:1px solid;
+}
+.badge-order{color:var(--ord);border-color:var(--ord);background:rgba(95,163,208,.08)}
+.badge-chaos{color:var(--chs);border-color:var(--chs);background:rgba(184,91,208,.08)}
+.badge-dst{color:var(--dst);border-color:var(--dst);background:rgba(111,184,88,.08)}
+.badge-score{color:var(--gold2);border-color:var(--gold);background:rgba(232,196,89,.08)}
+.badge-diff-easy{color:#6fb858;border-color:#6fb858;background:rgba(111,184,88,.08)}
+.badge-diff-medium{color:var(--ember2);border-color:var(--ember);background:rgba(212,134,58,.08)}
+.badge-diff-hard{color:var(--blood2);border-color:var(--blood);background:rgba(168,51,42,.10)}
+
+.fc-body{padding:1.4rem 1.5rem}
+.fc-desc{
+    color:var(--tx);
+    margin-bottom:1.2rem;
+    line-height:1.7;
+}
+.fc-why{
+    background:rgba(232,196,89,.06);
+    border-left:3px solid var(--gold);
+    padding:.85rem 1rem;
+    border-radius:0 4px 4px 0;
+    margin-bottom:1.2rem;
+}
+.fc-why-label{
+    color:var(--gold2);
+    font-size:.76rem;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:.45rem;
+}
+.fc-why-list{list-style:none;padding:0;margin:0}
+.fc-why-list li{
+    color:var(--tx2);
+    font-size:.92rem;
+    padding:.15rem 0 .15rem 1rem;
+    position:relative;
+    line-height:1.55;
+}
+.fc-why-list li::before{
+    content:"\2731";
+    position:absolute;
+    left:0;
+    color:var(--gold);
+    font-size:.7rem;
+    top:.3rem;
+}
+
+.fc-pn{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1rem;
+}
+@media (max-width:680px){.fc-pn{grid-template-columns:1fr}}
+
+.pn-block{
+    background:var(--sf2);
+    border:1px solid var(--bdr);
+    border-radius:5px;
+    padding:.95rem 1.1rem;
+}
+.pn-label{
+    font-size:.76rem;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:.5rem;
+}
+.pn-pro .pn-label{color:#7bc868}
+.pn-con .pn-label{color:var(--blood2)}
+.pn-block ul{list-style:none;padding:0;margin:0}
+.pn-block li{
+    color:var(--tx2);
+    font-size:.9rem;
+    padding:.15rem 0 .15rem 1rem;
+    position:relative;
+    line-height:1.55;
+}
+.pn-pro li::before{content:"+";position:absolute;left:0;color:#7bc868;font-weight:700}
+.pn-con li::before{content:"\2212";position:absolute;left:0;color:var(--blood2);font-weight:700}
+
+.results-actions{
+    text-align:center;
+    margin-top:2.5rem;
+    display:flex;
+    gap:.8rem;
+    justify-content:center;
+    flex-wrap:wrap;
+}
+
+.summary{
+    background:var(--bg2);
+    border:1px solid var(--bdr);
+    border-radius:6px;
+    padding:1rem 1.2rem;
+    margin-bottom:1.8rem;
+    font-size:.88rem;
+    color:var(--tx2);
+}
+.summary-label{
+    color:var(--gold);
+    font-size:.76rem;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    margin-bottom:.4rem;
+}
+.summary-row{margin-bottom:.25rem}
+.summary-row strong{color:var(--tx);font-weight:600}
+
+footer{
+    text-align:center;
+    color:var(--mu2);
+    font-size:.78rem;
+    padding:1.6rem 1rem 1rem;
+    line-height:1.7;
+}
+footer a{color:var(--mu)}
+</style>
+</head>
+<body>
+<header>
+    <h1>Total War: Warhammer III &mdash; <span class="accent">Faction Picker</span></h1>
+    <p>Answer a few questions about how you like to play. Get matched to a faction.</p>
+</header>
+
+<main>
+    <!-- INTRO -->
+    <section id="screen-intro" class="screen active">
+        <div class="intro">
+            <h2>Which faction is right for you?</h2>
+            <p>The Mortal Realms hold over twenty playable factions, each with its own units, magic, mechanics, and tone. This picker asks six short questions about your preferred playstyle, then ranks the factions that best fit your answers.</p>
+            <p>You will get four top suggestions, each with a short description, why it fits your answers, and the main advantages and disadvantages of the faction in campaign.</p>
+            <button class="start-btn" id="btn-start">Begin the Hunt</button>
+            <div class="meta">Covers Immortal Empires playable factions &middot; <span>Fan-made</span> &middot; No affiliation with Games Workshop or Creative Assembly</div>
+        </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section id="screen-quiz" class="screen">
+        <div class="progress">
+            <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+            <div class="progress-label" id="progress-label">Q 1 / 6</div>
+        </div>
+        <div class="q-card">
+            <div class="q-num" id="q-num">QUESTION 1</div>
+            <div class="q-text" id="q-text"></div>
+            <div class="q-hint" id="q-hint"></div>
+            <div class="multi-hint" id="multi-hint" style="display:none">Pick up to three.</div>
+            <div class="options" id="q-options"></div>
+            <div class="q-nav">
+                <button class="btn" id="btn-back">&larr; Back</button>
+                <button class="btn btn-primary" id="btn-next" disabled>Next &rarr;</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section id="screen-results" class="screen">
+        <div class="results-header">
+            <h2>Your faction suggestions</h2>
+            <p>Ranked by how closely each faction matches the playstyle you described.</p>
+        </div>
+        <div class="summary" id="answers-summary"></div>
+        <div id="results-list"></div>
+        <div class="results-actions">
+            <button class="btn btn-primary" id="btn-restart">Start over</button>
+            <button class="btn" id="btn-tweak">Tweak my answers</button>
+        </div>
+    </section>
+</main>
+
+<footer>
+    Warhammer, Total War, and all related marks belong to Games Workshop and Creative Assembly / SEGA.<br>
+    This is an unofficial fan tool. Faction summaries drawn from public wikis and community guides.
+</footer>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   QUESTIONS
+   Each question maps player answers to faction trait tags. Factions that
+   carry those tags accumulate match points. "weight" boosts a strong signal.
+   ========================================================================= */
+const QUESTIONS = [
+    {
+        id: "pacing",
+        text: "How do you like your campaigns to flow?",
+        hint: "Are you constantly on the warpath, or do you settle in and build?",
+        options: [
+            { id:"aggressive", label:"Constant warfare", desc:"Always at war, raiding, snowballing through enemies.", tags:["pacing-aggressive"] },
+            { id:"economy",    label:"Build and optimise", desc:"Stack provinces, optimise an economy, then expand carefully.", tags:["pacing-economy"] },
+            { id:"balanced",   label:"A bit of both",     desc:"Some breathing room between wars; balanced expansion.", tags:["pacing-balanced"] },
+        ],
+    },
+    {
+        id: "mainForce",
+        text: "What kind of armies do you like to field?",
+        hint: "Pick the answer that excites you most on the battle map.",
+        options: [
+            { id:"infantry",  label:"Tough infantry lines", desc:"Shield walls, armoured frontlines, attritional grinds.",       tags:["force-infantry"] },
+            { id:"cavalry",   label:"Devastating cavalry",  desc:"Knights and horsemen smashing into flanks.",                   tags:["force-cavalry"] },
+            { id:"ranged",    label:"Ranged firepower",     desc:"Archers, crossbows, handgunners shredding enemies at range.",  tags:["force-ranged"] },
+            { id:"monsters",  label:"Monsters and giants",  desc:"Dragons, giants, hydras, mammoths leading the charge.",        tags:["force-monsters"] },
+        ],
+    },
+    {
+        id: "tech",
+        text: "Warmachines, magic, both, or none of it?",
+        hint: "Spells and lores versus cannons and gunpowder.",
+        options: [
+            { id:"magic",       label:"Magic and spells",         desc:"I want strong wizards casting devastating spells.", tags:["tech-magic"] },
+            { id:"warmachines", label:"Artillery and warmachines",desc:"Cannons, mortars, ratling guns, doom-rockets.",     tags:["tech-warmachines"] },
+            { id:"both",        label:"Both",                     desc:"A roster that mixes magic and warmachines freely.", tags:["tech-magic","tech-warmachines","tech-both"] },
+            { id:"neither",     label:"Pure martial",             desc:"Steel on steel, no spells or guns required.",       tags:["tech-neither"] },
+        ],
+    },
+    {
+        id: "alignment",
+        text: "Whose side do you want to play?",
+        hint: "Order defends civilisation. Chaos corrupts it. Destruction tears it down.",
+        options: [
+            { id:"order",       label:"Order",       desc:"Defenders of civilisation — Empire, Dwarfs, Elves, Lizardmen, Kislev, Cathay.", tags:["align-order"] },
+            { id:"chaos",       label:"Chaos",       desc:"Daemons, Warriors of Chaos, Beastmen — corrupt and conquer for the Dark Gods.", tags:["align-chaos"] },
+            { id:"destruction", label:"Destruction", desc:"Greenskins, Skaven, Vampires, Ogres, Dark Elves — raid, ruin, and devour.",     tags:["align-destruction"] },
+            { id:"any",         label:"Any side",    desc:"I do not mind — surprise me.",                                                  tags:["align-any"] },
+        ],
+    },
+    {
+        id: "difficulty",
+        text: "How tough a start are you up for?",
+        hint: "Some factions begin surrounded; others are tucked away with breathing room.",
+        options: [
+            { id:"easy",   label:"Comfortable",  desc:"Friendly neighbours, defensible terrain, gentle on-ramp.",  tags:["diff-easy"] },
+            { id:"medium", label:"In the middle",desc:"Some threats nearby, but room to grow.",                    tags:["diff-medium"] },
+            { id:"hard",   label:"Brutal",       desc:"Surrounded, isolated, or under immediate pressure.",        tags:["diff-hard"] },
+        ],
+    },
+    {
+        id: "complexity",
+        text: "How many faction-unique mechanics are you happy to learn?",
+        hint: "Some factions are minimalist; others have layered economies and unique systems.",
+        options: [
+            { id:"low",    label:"Keep it simple",     desc:"I want to focus on the battles and not juggle systems.", tags:["cmx-low"] },
+            { id:"medium", label:"Some unique systems",desc:"A handful of distinctive mechanics is fine.",            tags:["cmx-medium"] },
+            { id:"high",   label:"Give me everything", desc:"I love managing layered, faction-unique mechanics.",     tags:["cmx-high"] },
+        ],
+    },
+];
+
+/* =========================================================================
+   FACTIONS
+   Each faction lists trait tags it matches strongly. Scoring is +1 per tag
+   that the player selected. Theme matches receive +2 for emphasis.
+   Difficulty/complexity are softer signals (+1 on match, otherwise neutral).
+   ========================================================================= */
+const FACTIONS = [
+    {
+        id:"empire", name:"The Empire", alignment:"order", difficulty:"medium",
+        lords:["Karl Franz","Volkmar","Balthasar Gelt","Elspeth von Draken"],
+        tags:[
+            "pacing-balanced","pacing-economy",
+            "force-infantry","force-cavalry","force-ranged",
+            "tech-magic","tech-warmachines","tech-both",
+            "align-order","align-any",
+            "theme-gunpowder","theme-knights",
+            "diff-medium",
+            "cmx-medium",
+        ],
+        desc:"Renaissance-flavoured humans facing Chaos, Greenskins, and Vampires on every border. The Empire has the most well-rounded roster in the game — disciplined spearmen and halberdiers, Reiksguard knights, cannons and mortars, hellblaster volley guns, eight lores of magic, and Steam Tanks. Elector Counts politics tie the provinces together; gunpowder defines the late game.",
+        pros:[
+            "Most flexible toolkit — every battlefield role is covered.",
+            "Strong gunpowder, strong magic, strong cavalry, all at once.",
+            "Multiple distinctive lords offering very different campaigns.",
+            "Diplomacy options through the Elector Count system.",
+        ],
+        cons:[
+            "Surrounded by enemies on day one — expect a tough early game.",
+            "Many fronts to defend; vulnerable if you stretch thin.",
+            "Karl Franz has to babysit the Empire confederation politics.",
+        ],
+    },
+    {
+        id:"bretonnia", name:"Bretonnia", alignment:"order", difficulty:"easy",
+        lords:["Louen Leoncoeur","Alberic","Repanse","The Fay Enchantress"],
+        tags:[
+            "pacing-aggressive","pacing-balanced",
+            "force-cavalry","force-elite",
+            "tech-magic",
+            "align-order","align-any",
+            "theme-knights",
+            "diff-easy","diff-medium",
+            "cmx-low","cmx-medium",
+        ],
+        desc:"Arthurian knights on horseback charging across Europe-flavoured plains. Bretonnia's identity is heavy cavalry: questing knights, grail knights, royal pegasus knights, and the rare-but-elite hippogryph riders. Peasants are cannon fodder you tolerate to keep the cavalry stocked. The Vow / Chivalry system tracks how knightly your conduct is.",
+        pros:[
+            "World-class cavalry — some of the strongest charges in the game.",
+            "Strong, easy-to-learn campaign in a defensible corner of the map.",
+            "Knightly aesthetic is unmatched if you love the fantasy.",
+            "Bretonnian peasant economy is forgiving once you understand the Public Order cap.",
+        ],
+        cons:[
+            "Weak infantry — lose the cavalry and the army crumbles.",
+            "Limited ranged options (peasant bowmen and trebuchets only).",
+            "No gunpowder, limited artillery variety.",
+        ],
+    },
+    {
+        id:"dwarfs", name:"Dwarfs", alignment:"order", difficulty:"easy",
+        lords:["Thorgrim Grudgebearer","Belegar Ironhammer","Ungrim Ironfist","Grombrindal","Malakai Makaisson"],
+        tags:[
+            "pacing-economy","pacing-balanced",
+            "force-infantry","force-ranged","force-elite",
+            "tech-warmachines","tech-neither",
+            "align-order","align-any",
+            "theme-dwarfs","theme-gunpowder",
+            "diff-easy","diff-medium",
+            "cmx-medium",
+        ],
+        desc:"Stunted, armoured grudge-bearers with no cavalry, no magic, and the best artillery and infantry in the game. Dwarf armies stomp forward in shield walls behind cannons, organ guns, and grudge throwers; gyrocopters provide air support. The Book of Grudges and the Forge / Underway add unique campaign objectives.",
+        pros:[
+            "Best-in-class warmachines and gunpowder.",
+            "Tough, heavily armoured infantry that anchors any line.",
+            "Defensible mountain holds make for forgiving starts.",
+            "No magic to manage, no cavalry to micro — simple to pilot.",
+        ],
+        cons:[
+            "No cavalry. None. Slow strategic and tactical movement.",
+            "No casters — vulnerable to enemy magic without runelords.",
+            "Greenskins, Skaven, and Vampires harass you constantly.",
+        ],
+    },
+    {
+        id:"highelves", name:"High Elves", alignment:"order", difficulty:"medium",
+        lords:["Tyrion","Teclis","Eltharion","Imrik","Alarielle","Alith Anar"],
+        tags:[
+            "pacing-balanced","pacing-economy",
+            "force-elite","force-infantry","force-ranged","force-cavalry","force-monsters",
+            "tech-magic",
+            "align-order","align-any",
+            "theme-highelves",
+            "diff-medium",
+            "cmx-medium","cmx-high",
+        ],
+        desc:"The proud first-born elves of Ulthuan. Elite line infantry (Phoenix Guard, Swordmasters, White Lions), the best archers in the game, dragon princes, and actual dragons. Every High Elf hero is a powerful caster. The Influence system lets you intrigue at the Phoenix Court instead of fighting on every front.",
+        pros:[
+            "Top-tier elite infantry and archers.",
+            "Excellent magic across multiple lores; every faction lord is a mage.",
+            "Dragons and elite monsters at the top of the roster.",
+            "Diplomacy via Influence creates non-military victory paths.",
+        ],
+        cons:[
+            "Expensive units — a recoverable defeat is rare.",
+            "Initially walled off on Ulthuan; some lords have isolated starts.",
+            "Vulnerable to attrition if you bleed the elite line.",
+        ],
+    },
+    {
+        id:"woodelves", name:"Wood Elves", alignment:"order", difficulty:"hard",
+        lords:["Orion","Durthu","Sisters of Twilight","Drycha"],
+        tags:[
+            "pacing-aggressive","pacing-balanced",
+            "force-ranged","force-elite","force-monsters",
+            "tech-magic",
+            "align-order","align-any",
+            "theme-woodelves","theme-beasts",
+            "diff-hard","diff-medium",
+            "cmx-high","cmx-medium",
+        ],
+        desc:"Asrai of Athel Loren — reclusive forest elves with the best ranged units in the game, ambush-anywhere mobility, and angry trees. The Worldroots let armies teleport between sacred groves; campaigns revolve around protecting magical forests and culling threats outside them. Kiting and forest spirits define the battle style.",
+        pros:[
+            "Best archers in the game by some margin.",
+            "Worldroots teleport gives strategic mobility no one else has.",
+            "Forest spirits and treemen are mobile, durable monsters.",
+            "Highly mobile, highly thematic, very rewarding to master.",
+        ],
+        cons:[
+            "Weak in melee — punishing if the enemy closes the distance.",
+            "Limited settlement options outside forests.",
+            "Magical Forest mechanic adds a layer some find tedious.",
+        ],
+    },
+    {
+        id:"lizardmen", name:"Lizardmen", alignment:"order", difficulty:"easy",
+        lords:["Mazdamundi","Kroq-Gar","Tehenhauin","Gor-Rok","Tiktaq'to","Nakai"],
+        tags:[
+            "pacing-balanced","pacing-aggressive",
+            "force-infantry","force-monsters","force-elite",
+            "tech-magic",
+            "align-order","align-any",
+            "theme-lizardmen",
+            "diff-easy","diff-medium",
+            "cmx-medium",
+        ],
+        desc:"The first civilisation of the Old Ones: stoic Saurus, ranged Skinks, towering Slann mage-priests, and dinosaurs of every size. Lustria provides a jungle homeland with strong defensive geography. Slann are the strongest casters in the game, and Carnosaurs, Stegadons, and Dread Saurians anchor late-game stacks.",
+        pros:[
+            "Slann are top-tier casters — magic dominance from turn one.",
+            "Strong monster roster, including some of the best in the game.",
+            "Saurus infantry is durable and high damage.",
+            "Defensible homeland and forgiving early game.",
+        ],
+        cons:[
+            "Skink infantry is fragile; Cold Ones aside, cavalry is limited.",
+            "Heat / Geomantic Web are flavourful but extra to track.",
+            "Some lords (Tehenhauin, Nakai) are notably harder starts.",
+        ],
+    },
+    {
+        id:"kislev", name:"Kislev", alignment:"order", difficulty:"hard",
+        lords:["Boris Ursus","Kostaltyn","Tzarina Katarin"],
+        tags:[
+            "pacing-aggressive","pacing-balanced",
+            "force-ranged","force-cavalry","force-monsters",
+            "tech-magic",
+            "align-order","align-any",
+            "theme-kislev",
+            "diff-hard","diff-medium",
+            "cmx-medium","cmx-high",
+        ],
+        desc:"The Russo-fantasy Tsardom of Kislev, the first wall against Chaos. Ice magic, Bear Riders, Kossars who shoot and fight in melee, and the divinity-tracking Motherland Rituals make Kislev distinct. Boris and Katarin both start with Chaos pouring through the gates; survival is the early-game theme.",
+        pros:[
+            "Strong hybrid infantry (Kossars / Streltsi) that shoot and stab.",
+            "Bear cavalry and ice magic feel unique on the battlefield.",
+            "Atamans add satisfying provincial-management depth.",
+            "Heroic underdog campaign — holding the line against Chaos.",
+        ],
+        cons:[
+            "Hard start — you are besieged from the first turn.",
+            "Devotion and Motherland Rituals can feel punishing if you fall behind.",
+            "Limited roster compared to older races; very few warmachines.",
+        ],
+    },
+    {
+        id:"cathay", name:"Grand Cathay", alignment:"order", difficulty:"medium",
+        lords:["Miao Ying","Zhao Ming","Yuan Bo"],
+        tags:[
+            "pacing-economy","pacing-balanced",
+            "force-infantry","force-ranged","force-cavalry",
+            "tech-magic","tech-warmachines","tech-both",
+            "align-order","align-any",
+            "theme-cathay","theme-gunpowder",
+            "diff-medium","diff-easy",
+            "cmx-high","cmx-medium",
+        ],
+        desc:"The Celestial Empire of dragons, the Great Bastion, and the Ivory Road. Cathay fields disciplined Jade Warriors and Lancers, Crane Gunners, Grand Cannons, Wu-Xing War Compass, and a Storm and Iron Dragon (Miao Ying and Zhao Ming themselves). Harmony (Yin / Yang) buffs units when balanced — a satisfying army-building puzzle.",
+        pros:[
+            "Excellent balanced roster: infantry, cavalry, ranged, monsters, casters.",
+            "Strong gunpowder and unique war machines (Wu-Xing).",
+            "Harmony bonuses reward thoughtful army composition.",
+            "Bastion mechanic gives a powerful defensive anchor in the north.",
+        ],
+        cons:[
+            "Harmony, Bastion, and Ivory Road mean lots to manage.",
+            "Cathayan units are individually strong but a touch expensive.",
+            "Yuan Bo is currently the easier start; Miao Ying's Bastion is rougher.",
+        ],
+    },
+    {
+        id:"warriorsofchaos", name:"Warriors of Chaos", alignment:"chaos", difficulty:"medium",
+        lords:["Archaon","Kholek","Sigvald","Vilitch","Valkia","Azazel","Festus"],
+        tags:[
+            "pacing-aggressive","pacing-balanced",
+            "force-infantry","force-cavalry","force-elite","force-monsters",
+            "tech-magic","tech-neither",
+            "align-chaos",
+            "theme-chaoswar","theme-daemons",
+            "diff-medium","diff-hard",
+            "cmx-medium","cmx-high",
+        ],
+        desc:"The mortal champions of the Dark Gods, swinging axes the size of doors. The post-4.0 rework lets you mark units to any of the four gods, customise their gifts, and field a roster that mixes Chaos Warriors with daemons. The Eye of the Gods and Dark Fortress mechanics give a strong identity. Archaon's run for ascendancy is the marquee campaign.",
+        pros:[
+            "Top-tier melee infantry across all four Chaos gods.",
+            "Eye of the Gods customisation rewards experimentation.",
+            "Multiple lords offer wildly different playstyles.",
+            "Confederation-by-conquest avoids tedious diplomacy.",
+        ],
+        cons:[
+            "Limited ranged options outside specific marks.",
+            "Public order and corruption can be fiddly outside Chaos Wastes.",
+            "Some lords (Festus, Azazel) start in very hostile neighbourhoods.",
+        ],
+    },
+    {
+        id:"khorne", name:"Khorne (Daemons)", alignment:"chaos", difficulty:"hard",
+        lords:["Skarbrand","Arbaal the Undefeated"],
+        tags:[
+            "pacing-aggressive",
+            "force-infantry","force-monsters","force-elite",
+            "tech-neither",
+            "align-chaos",
+            "theme-khorne",
+            "diff-hard","diff-medium",
+            "cmx-low","cmx-medium",
+        ],
+        desc:"Pure rage made flesh. Khorne has no magic, no ranged units, no diplomacy — only melee. Bloodthirsters, Bloodletters, Skullcrushers, and Skarbrand the Exiled charge into combat under the Skulls economy. Constant warfare keeps your armies replenishing and your treasury full of skulls.",
+        pros:[
+            "Devastating melee — every Khorne unit hits like a truck.",
+            "Skulls economy rewards constant aggression.",
+            "Simple campaign loop: find enemy, attack enemy, take skulls.",
+            "Skarbrand's free Bloodthirster lord-replacement is one of the strongest snowballs in the game.",
+        ],
+        cons:[
+            "No ranged, no magic — anti-large enemies and ranged armies hurt.",
+            "No diplomacy — you cannot make peace with anyone.",
+            "If you ever stop fighting, the economy collapses.",
+        ],
+    },
+    {
+        id:"slaanesh", name:"Slaanesh (Daemons)", alignment:"chaos", difficulty:"hard",
+        lords:["N'Kari","Sigvald"],
+        tags:[
+            "pacing-aggressive","pacing-balanced",
+            "force-cavalry","force-elite","force-monsters",
+            "tech-magic",
+            "align-chaos",
+            "theme-slaanesh",
+            "diff-hard","diff-medium",
+            "cmx-high",
+        ],
+        desc:"The fastest faction in the game. Slaanesh trades durability for speed, debuffs, and seduction; Seekers and Hellstriders run circles around foes while Keepers of Secrets carve them apart. The Gifts of Slaanesh let you vassalise enemies after weakening them. Magic of Slaanesh debuffs and disrupts.",
+        pros:[
+            "Fastest army speed in the game — you choose every fight.",
+            "Vassal mechanic turns defeated enemies into income.",
+            "Excellent flanking, charge bonuses, and disrupting magic.",
+            "Lore of Slaanesh is one of the most evocative magic lores.",
+        ],
+        cons:[
+            "Fragile units — once caught, they melt.",
+            "No real ranged options.",
+            "N'Kari's race-the-map start is one of the toughest in the game.",
+        ],
+    },
+    {
+        id:"nurgle", name:"Nurgle (Daemons)", alignment:"chaos", difficulty:"medium",
+        lords:["Ku'gath","Tamurkhan","Festus"],
+        tags:[
+            "pacing-economy","pacing-balanced",
+            "force-infantry","force-monsters","force-horde",
+            "tech-magic","tech-neither",
+            "align-chaos",
+            "theme-nurgle",
+            "diff-medium","diff-hard",
+            "cmx-high",
+        ],
+        desc:"The Plague God's followers — slow, tough, attritional. Plaguebearers, Great Unclean Ones, Beasts of Nurgle, and Toad Dragons. The Plague system lets you brew custom plagues, spread them across enemy territory, and watch their economies collapse. Cycles of Decay regenerate units after each battle.",
+        pros:[
+            "Some of the tankiest units in the game; very hard to break.",
+            "Custom plagues are a unique, satisfying campaign tool.",
+            "Strong magic and powerful single-entity lords.",
+            "Cycles of Decay regeneration makes campaigns very forgiving.",
+        ],
+        cons:[
+            "Slow on the battlefield and on the campaign map.",
+            "Plague brewing has a learning curve.",
+            "Limited ranged options outside artillery additions.",
+        ],
+    },
+    {
+        id:"tzeentch", name:"Tzeentch (Daemons)", alignment:"chaos", difficulty:"hard",
+        lords:["Kairos Fateweaver","The Changeling","Vilitch"],
+        tags:[
+            "pacing-balanced","pacing-aggressive",
+            "force-ranged","force-elite","force-monsters",
+            "tech-magic","tech-warmachines",
+            "align-chaos",
+            "theme-tzeentch",
+            "diff-hard","diff-medium",
+            "cmx-high",
+        ],
+        desc:"The wizard's wizard. Tzeentch fields shooty Pink Horrors, Flamers, Burning Chariots, Lords of Change, and the most magic-focused roster in the game. Grimoires let you cast a different lore on each lord. The Changeling plays the entire game in disguise; Kairos sees the future.",
+        pros:[
+            "Highest-magic faction in the game — some of the best casters and lores.",
+            "Excellent ranged daemons and flying mobility.",
+            "Grimoire system gives unmatched lore flexibility.",
+            "The Changeling's disguise campaign is unlike anything else.",
+        ],
+        cons:[
+            "Tzeentch infantry is fragile in melee.",
+            "Winds of Magic dependence — bad rolls hurt.",
+            "Complex mechanics layered on complex mechanics.",
+        ],
+    },
+    {
+        id:"daemons", name:"Daemons of Chaos", alignment:"chaos", difficulty:"medium",
+        lords:["Daniel (The Daemon Prince)","Be'lakor"],
+        tags:[
+            "pacing-aggressive","pacing-balanced",
+            "force-infantry","force-cavalry","force-monsters","force-elite",
+            "tech-magic","tech-neither",
+            "align-chaos",
+            "theme-daemons","theme-khorne","theme-slaanesh","theme-nurgle","theme-tzeentch",
+            "diff-medium","diff-hard",
+            "cmx-high",
+        ],
+        desc:"The pick-and-mix Chaos faction. Daniel the Daemon Prince customises his own body part by part and can field any combination of Khorne, Slaanesh, Nurgle, and Tzeentch units in the same army. Glory with each god unlocks more options; the campaign is built around hopping between favours.",
+        pros:[
+            "Most flexible roster in the entire game — mix any daemon units freely.",
+            "Daniel's customisation is a deep, fun progression.",
+            "Strong access to magic across all four lores.",
+            "Be'lakor adds a darker, more focused alternative campaign.",
+        ],
+        cons:[
+            "Glory system is fiddly — favours are easy to lose.",
+            "Cannot specialise as strongly as the monogod factions.",
+            "Be'lakor's nerf range and Daniel's flexibility both ask for system mastery.",
+        ],
+    },
+    {
+        id:"beastmen", name:"Beastmen", alignment:"chaos", difficulty:"hard",
+        lords:["Khazrak","Morghur","Malagor","Taurox"],
+        tags:[
+            "pacing-aggressive",
+            "force-infantry","force-monsters","force-horde","force-elite",
+            "tech-magic","tech-neither",
+            "align-chaos",
+            "theme-beasts",
+            "diff-hard","diff-medium",
+            "cmx-medium",
+        ],
+        desc:"Beast-headed monsters of the dark forests. Beastmen are a horde faction — no settled provinces, mobile herdstones, ambush stance everywhere. Gors and Ungors flood the line, Minotaurs and Cygors crash flanks, and the Bestial Rage system fuels constant warfare. The 3.0 rework made them genuinely strong.",
+        pros:[
+            "Ambush-anywhere makes campaign warfare extremely flexible.",
+            "Strong, mobile monsters across the roster.",
+            "Bestial Rage adds momentum to aggressive play.",
+            "Hidden Herdstones let you corrupt the map invisibly.",
+        ],
+        cons:[
+            "Horde upkeep is unforgiving if you lose a stack.",
+            "Limited ranged — a couple of poor-quality options.",
+            "Some lords still have rough starts; takes practice to play well.",
+        ],
+    },
+    {
+        id:"norsca", name:"Norsca", alignment:"chaos", difficulty:"medium",
+        lords:["Wulfrik the Wanderer","Throgg"],
+        tags:[
+            "pacing-aggressive",
+            "force-infantry","force-monsters","force-elite",
+            "tech-magic","tech-neither",
+            "align-chaos",
+            "theme-norsca","theme-chaoswar",
+            "diff-medium","diff-hard",
+            "cmx-low","cmx-medium",
+        ],
+        desc:"Frost-bitten Viking-flavoured berserkers riding mammoths and trolls. Norsca's Monster Hunts unlock powerful mounts (Frost Wyrm, Fimir Warriors, mammoths) as you raid your way across the world. Wulfrik picks fights anywhere with The Seafang; Throgg builds an army of frost monsters.",
+        pros:[
+            "Monster Hunts give a clear, fun campaign progression.",
+            "Strong mammoths and trolls anchor late-game stacks.",
+            "Wulfrik's free naval raiding is one of the most fun mechanics in the game.",
+            "Reasonable starting position with breathing room.",
+        ],
+        cons:[
+            "Limited ranged units — a few skirmishers, not much more.",
+            "Roster is smaller and less varied than top-tier factions.",
+            "Magic options are restricted to two lores.",
+        ],
+    },
+    {
+        id:"greenskins", name:"Greenskins", alignment:"destruction", difficulty:"medium",
+        lords:["Grimgor Ironhide","Azhag","Skarsnik","Wurrzag","Grom the Paunch"],
+        tags:[
+            "pacing-aggressive","pacing-balanced",
+            "force-infantry","force-monsters","force-horde","force-elite",
+            "tech-magic","tech-neither","tech-warmachines",
+            "align-destruction",
+            "theme-greenskins",
+            "diff-medium","diff-easy",
+            "cmx-medium",
+        ],
+        desc:"Orcs, goblins, squigs, and trolls roaring across the map under the Waaagh!. Greenskins build momentum through Scrap, Pillaging, and the Waaagh! itself — wins unlock a free secondary army that follows your lord. Roster spans Black Orcs, River Trolls, Arachnaroks, and (under Grom) some of the best cooking-based buffs in the game.",
+        pros:[
+            "Waaagh! mechanic makes a winning streak snowball brutally.",
+            "Wide, fun roster with monsters, big units, and big damage.",
+            "Multiple lords with very different identities (Grom's cuisine, Skarsnik's goblins).",
+            "Easy to learn, hard to master — forgiving for new players.",
+        ],
+        cons:[
+            "Squabbling (low Fightiness) tears your provinces apart in peacetime.",
+            "Animosity randomly disrupts battles.",
+            "Some lord starts (Grimgor, Azhag) sit in genuinely tough neighbourhoods.",
+        ],
+    },
+    {
+        id:"vampcounts", name:"Vampire Counts", alignment:"destruction", difficulty:"medium",
+        lords:["Mannfred von Carstein","Vlad","Isabella","Helman Ghorst"],
+        tags:[
+            "pacing-balanced","pacing-aggressive",
+            "force-infantry","force-monsters","force-horde","force-elite",
+            "tech-magic","tech-neither",
+            "align-destruction",
+            "theme-vampires",
+            "diff-medium","diff-easy",
+            "cmx-medium",
+        ],
+        desc:"Skeletal hordes summoned from the earth by aristocratic vampires. Vampire Counts have no ranged units at all — the entire roster is melee, fueled by Lore of Vampires raising more troops mid-battle. Terrorgheists, Crypt Horrors, Vargheists, Black Knights, and the Lords of Undeath themselves carry late game.",
+        pros:[
+            "Magic-fueled army summons reinforcements during battle.",
+            "Strong monstrous infantry and flying nightmares.",
+            "Skeletons are dirt cheap — easy to throw away.",
+            "Vampire Lords are absurdly powerful in single combat.",
+        ],
+        cons:[
+            "Zero ranged — you must close every gap on foot.",
+            "Units crumble at low leadership (Vampires never rout, they vanish).",
+            "Bloodlines / Vampiric Corruption are extra layers to track.",
+        ],
+    },
+    {
+        id:"vcoast", name:"Vampire Coast", alignment:"destruction", difficulty:"medium",
+        lords:["Luthor Harkon","Aranessa","Count Noctilus","Cylostra Direfin"],
+        tags:[
+            "pacing-balanced","pacing-aggressive",
+            "force-ranged","force-monsters","force-horde",
+            "tech-magic","tech-warmachines",
+            "align-destruction",
+            "theme-vcoast","theme-vampires","theme-gunpowder",
+            "diff-medium",
+            "cmx-medium",
+        ],
+        desc:"Zombie pirates with handguns. Vampire Coast is the undead faction that loves ranged — Deck Gunners, Mortars, Queen Bess (a giant cannon), Terrorgheists, and the Necrofex Colossus. Treasure Maps and a unique Pieces of Eight rivalry add a pirate flavour to the campaign.",
+        pros:[
+            "Gunpowder undead — the only Vampire faction with real ranged.",
+            "Excellent artillery, including unique singletons like Queen Bess.",
+            "Ports / treasure maps add fun side objectives.",
+            "Strong roster of monsters from giant crabs to Necrofex Colossi.",
+        ],
+        cons:[
+            "Melee infantry is mediocre — leans hard on ranged and monsters.",
+            "Pieces of Eight rivalry is opaque to new players.",
+            "Some lords have isolated starts on Lustria's coast.",
+        ],
+    },
+    {
+        id:"tombkings", name:"Tomb Kings", alignment:"destruction", difficulty:"medium",
+        lords:["Settra","Khalida","Khatep","Arkhan the Black"],
+        tags:[
+            "pacing-economy","pacing-balanced",
+            "force-infantry","force-ranged","force-cavalry","force-monsters","force-horde",
+            "tech-magic","tech-warmachines",
+            "align-destruction",
+            "theme-tombkings",
+            "diff-medium","diff-easy",
+            "cmx-high",
+        ],
+        desc:"Ancient Egyptian undead kings of Nehekhara, raised by liche priest magic. Tomb Kings have unit caps instead of upkeep, archers, chariots, constructs (Necrosphinx, Tomb Scorpions), and free skeleton infantry. The Books of Nagash drive a global victory race; Mortuary Cult lets you craft custom magic items.",
+        pros:[
+            "Unit cap economy — no upkeep, so big armies are sustainable.",
+            "Genuinely balanced undead roster: archers, chariots, monsters, magic.",
+            "Mortuary Cult crafting is a unique, deep mechanic.",
+            "Defensible starting region with good neighbours.",
+        ],
+        cons:[
+            "Unit caps mean expansion is slow at first.",
+            "Skeleton tier-1 troops crumble easily without buffs.",
+            "Books of Nagash race can force tough strategic detours.",
+        ],
+    },
+    {
+        id:"skaven", name:"Skaven", alignment:"destruction", difficulty:"medium",
+        lords:["Queek Headtaker","Lord Skrolk","Ikit Claw","Deathmaster Snikch","Throt the Unclean","Tretch Craventail"],
+        tags:[
+            "pacing-aggressive","pacing-balanced",
+            "force-horde","force-ranged","force-monsters","force-infantry",
+            "tech-magic","tech-warmachines","tech-both",
+            "align-destruction",
+            "theme-skaven",
+            "diff-medium","diff-hard",
+            "cmx-high",
+        ],
+        desc:"Treacherous ratmen with the deepest tech tree in the game. Skaven combine cheap clanrat hordes with weapons teams (Ratling Guns, Warpfire Throwers, Jezzails), Hell Pit Abominations, Doomwheels, and the unique Menace Below underground reinforcement. Multiple lord-specific identities (Ikit's tech, Throt's flesh-labs, Snikch's assassins).",
+        pros:[
+            "Deepest, weirdest, most varied roster in the game.",
+            "Cheap horde infantry + insane weapons teams = best-of-both worlds.",
+            "Distinct, flavourful campaign mechanics across each lord.",
+            "Strong magic (Lores of Plague, Stealth, Ruin).",
+        ],
+        cons:[
+            "Low leadership across the board — panic routs are common.",
+            "Food / Under-Empire / Menace Below mean lots to manage.",
+            "Weapons-team micromanagement has a real skill ceiling.",
+        ],
+    },
+    {
+        id:"ogres", name:"Ogre Kingdoms", alignment:"destruction", difficulty:"easy",
+        lords:["Greasus Goldtooth","Skrag the Slaughterer"],
+        tags:[
+            "pacing-aggressive","pacing-balanced",
+            "force-infantry","force-monsters","force-elite",
+            "tech-magic","tech-warmachines",
+            "align-destruction",
+            "theme-ogres",
+            "diff-easy","diff-medium",
+            "cmx-low","cmx-medium",
+        ],
+        desc:"Big-bellied mercenaries with even bigger clubs. Ogres are a small but tough monstrous-infantry roster — every unit is a giant. Ironguts, Maneaters, Mournfang Cavalry, Stonehorns, Thundertusks, and Ironblasters bring serious melee and decent ranged. Contracts and the Big Names system add unique progression.",
+        pros:[
+            "Every unit is essentially a monster — huge per-model power.",
+            "Strong tankiness; ogres take a lot of killing.",
+            "Mournfang cavalry are some of the best heavy cavalry in the game.",
+            "Contracts give a fun, mercenary feel to the campaign.",
+        ],
+        cons:[
+            "Small roster compared to Empire / Skaven / Lizardmen.",
+            "Slow on the strategic map outside Mournfang armies.",
+            "Camp building / meat economy is a learning curve.",
+        ],
+    },
+    {
+        id:"darkelves", name:"Dark Elves", alignment:"destruction", difficulty:"medium",
+        lords:["Malekith","Morathi","Hellebron","Lokhir Fellheart","Malus Darkblade","Rakarth"],
+        tags:[
+            "pacing-aggressive","pacing-balanced",
+            "force-infantry","force-cavalry","force-ranged","force-monsters","force-elite",
+            "tech-magic",
+            "align-destruction",
+            "theme-darkelves",
+            "diff-medium","diff-easy",
+            "cmx-medium","cmx-high",
+        ],
+        desc:"The cruel kin of Naggaroth. Dark Elves rival High Elves in roster depth: Dreadspears, Black Guard, Cold One Knights, Witch Elves, Dark Riders, Hydras, Black Dragons. Strong elite infantry, strong cavalry, strong monsters, strong magic. Slaves drive an economic / military feedback loop.",
+        pros:[
+            "Top-tier roster across every category.",
+            "Strong magic via Dark and Shadow lores; strong heroes.",
+            "Slaves and Black Arks add real strategic flavour.",
+            "Multiple lord identities (Morathi's Cult, Hellebron's blood, Rakarth's beasts).",
+        ],
+        cons:[
+            "Elite units are expensive — a lost army hurts.",
+            "Internal politics (Loyalty system) can backfire badly.",
+            "Some lord starts are isolated on Naggaroth's icy coast.",
+        ],
+    },
+    {
+        id:"chaosdwarfs", name:"Chaos Dwarfs", alignment:"chaos", difficulty:"medium",
+        lords:["Astragoth Ironhand","Drazhoath the Ashen","Zhatan the Black","Gorduz Backstabber"],
+        tags:[
+            "pacing-economy","pacing-balanced",
+            "force-infantry","force-ranged","force-elite","force-monsters",
+            "tech-warmachines","tech-magic","tech-both",
+            "align-chaos","align-destruction",
+            "theme-chaosdwarfs","theme-dwarfs",
+            "diff-medium","diff-hard",
+            "cmx-high",
+        ],
+        desc:"Industrial-hellscape dwarfs with the best warmachines in the game. Chaos Dwarfs run a deep production economy (labour, armaments, fuel) feeding artillery, K'daai Destroyers, Bull Centaurs, and Magma Cannons. The Tower of Zharr and Convocation of Hashut add layered campaign systems. Premium DLC, but considered one of the best.",
+        pros:[
+            "Best artillery roster in the game — it is silly how strong they are.",
+            "Layered economy is satisfying for management fans.",
+            "Strong elite infantry (Infernal Guard) plus daemonic monsters.",
+            "Convocation of Hashut adds a fun macro-progression race.",
+        ],
+        cons:[
+            "Resource economy is genuinely complex — not for new players.",
+            "Slow strategic movement; no real cavalry.",
+            "Hostile starting region surrounded by Greenskins, Ogres, and Kislev.",
+        ],
+    },
+];
+
+/* =========================================================================
+   STATE
+   ========================================================================= */
+const state = {
+    answers: {},      // question.id -> selected option id(s)
+    selectedTags: new Set(),
+    currentIdx: 0,
+};
+
+/* =========================================================================
+   DOM REFERENCES
+   ========================================================================= */
+const scrIntro = document.getElementById("screen-intro");
+const scrQuiz = document.getElementById("screen-quiz");
+const scrResults = document.getElementById("screen-results");
+const elQNum = document.getElementById("q-num");
+const elQText = document.getElementById("q-text");
+const elQHint = document.getElementById("q-hint");
+const elMultiHint = document.getElementById("multi-hint");
+const elOptions = document.getElementById("q-options");
+const elProgressFill = document.getElementById("progress-fill");
+const elProgressLabel = document.getElementById("progress-label");
+const btnStart = document.getElementById("btn-start");
+const btnBack = document.getElementById("btn-back");
+const btnNext = document.getElementById("btn-next");
+const btnRestart = document.getElementById("btn-restart");
+const btnTweak = document.getElementById("btn-tweak");
+const elResults = document.getElementById("results-list");
+const elSummary = document.getElementById("answers-summary");
+
+/* =========================================================================
+   FLOW
+   ========================================================================= */
+function showScreen(name) {
+    [scrIntro, scrQuiz, scrResults].forEach(s => s.classList.remove("active"));
+    if (name === "intro") scrIntro.classList.add("active");
+    if (name === "quiz") scrQuiz.classList.add("active");
+    if (name === "results") scrResults.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function startQuiz() {
+    state.answers = {};
+    state.currentIdx = 0;
+    renderQuestion();
+    showScreen("quiz");
+}
+
+function renderQuestion() {
+    const q = QUESTIONS[state.currentIdx];
+    const prev = state.answers[q.id];
+
+    elQNum.textContent = `Question ${state.currentIdx + 1} of ${QUESTIONS.length}`;
+    elQText.textContent = q.text;
+    elQHint.textContent = q.hint || "";
+    elMultiHint.style.display = q.multi ? "block" : "none";
+    if (q.multi) {
+        elMultiHint.textContent = `Pick up to ${q.maxPick || 3}.`;
+    }
+
+    elProgressFill.style.width = `${(state.currentIdx / QUESTIONS.length) * 100}%`;
+    elProgressLabel.textContent = `Q ${state.currentIdx + 1} / ${QUESTIONS.length}`;
+
+    elOptions.innerHTML = "";
+    q.options.forEach((opt, i) => {
+        const btn = document.createElement("button");
+        btn.className = "opt";
+        btn.type = "button";
+        const letter = String.fromCharCode(65 + i);
+        btn.innerHTML = `
+            <span class="opt-mark">${letter}</span>
+            <span class="opt-body"><strong>${escapeHtml(opt.label)}</strong><span>${escapeHtml(opt.desc)}</span></span>
+        `;
+        if (q.multi) {
+            const arr = Array.isArray(prev) ? prev : [];
+            if (arr.includes(opt.id)) btn.classList.add("selected");
+            btn.addEventListener("click", () => toggleMultiOption(q, opt, btn));
+        } else {
+            if (prev === opt.id) btn.classList.add("selected");
+            btn.addEventListener("click", () => pickSingleOption(q, opt));
+        }
+        elOptions.appendChild(btn);
+    });
+
+    btnBack.disabled = state.currentIdx === 0;
+    updateNextEnabled(q);
+}
+
+function updateNextEnabled(q) {
+    const cur = state.answers[q.id];
+    const hasAnswer = q.multi ? Array.isArray(cur) && cur.length > 0 : typeof cur === "string";
+    btnNext.disabled = !hasAnswer;
+    btnNext.textContent = state.currentIdx === QUESTIONS.length - 1 ? "See Results →" : "Next →";
+}
+
+function pickSingleOption(q, opt) {
+    state.answers[q.id] = opt.id;
+    [...elOptions.children].forEach(c => c.classList.remove("selected"));
+    const idx = q.options.findIndex(o => o.id === opt.id);
+    if (idx >= 0) elOptions.children[idx].classList.add("selected");
+    updateNextEnabled(q);
+}
+
+function toggleMultiOption(q, opt, btn) {
+    if (!Array.isArray(state.answers[q.id])) state.answers[q.id] = [];
+    const arr = state.answers[q.id];
+    const max = q.maxPick || 3;
+    const idx = arr.indexOf(opt.id);
+    if (idx >= 0) {
+        arr.splice(idx, 1);
+        btn.classList.remove("selected");
+    } else {
+        if (arr.length >= max) {
+            // pop the oldest pick so users can keep clicking
+            const removedId = arr.shift();
+            const removedIdx = q.options.findIndex(o => o.id === removedId);
+            if (removedIdx >= 0) elOptions.children[removedIdx].classList.remove("selected");
+        }
+        arr.push(opt.id);
+        btn.classList.add("selected");
+    }
+    updateNextEnabled(q);
+}
+
+function nextQuestion() {
+    const q = QUESTIONS[state.currentIdx];
+    if (btnNext.disabled) return;
+    if (state.currentIdx === QUESTIONS.length - 1) {
+        renderResults();
+        showScreen("results");
+        return;
+    }
+    state.currentIdx += 1;
+    renderQuestion();
+}
+
+function backQuestion() {
+    if (state.currentIdx === 0) return;
+    state.currentIdx -= 1;
+    renderQuestion();
+}
+
+/* =========================================================================
+   SCORING
+   ========================================================================= */
+function gatherSelectedTags() {
+    const tags = new Set();
+    QUESTIONS.forEach(q => {
+        const ans = state.answers[q.id];
+        if (!ans) return;
+        const ids = Array.isArray(ans) ? ans : [ans];
+        ids.forEach(id => {
+            const opt = q.options.find(o => o.id === id);
+            if (opt) opt.tags.forEach(t => tags.add(t));
+        });
+    });
+    return tags;
+}
+
+function scoreFaction(faction, selectedTags) {
+    let score = 0;
+    const matched = [];
+    faction.tags.forEach(t => {
+        if (selectedTags.has(t)) {
+            const w = t.startsWith("align-") ? 2 : 1;
+            score += w;
+            matched.push(t);
+        }
+    });
+
+    // "any" alignment does not exclude anything, but should not crowd out specific picks
+    if (selectedTags.has("align-any")) score += 1;
+
+    return { score, matched };
+}
+
+function buildWhyMatches(faction, matched, selectedTags) {
+    const reasons = [];
+
+    // Pacing
+    if (matched.includes("pacing-aggressive")) reasons.push("Built for constant warfare — the campaign rewards aggression.");
+    if (matched.includes("pacing-economy"))    reasons.push("Has the settlements and tech tree to reward an economy-first approach.");
+    if (matched.includes("pacing-balanced"))   reasons.push("Supports balanced expansion — you can pace your wars.");
+
+    // Force
+    if (matched.includes("force-infantry"))   reasons.push("Strong infantry lines anchor every battle.");
+    if (matched.includes("force-cavalry"))    reasons.push("Excellent cavalry roster for the charges you love.");
+    if (matched.includes("force-ranged"))     reasons.push("One of the better ranged rosters in the game.");
+    if (matched.includes("force-monsters"))   reasons.push("Plenty of monsters and big single entities.");
+    if (matched.includes("force-horde"))      reasons.push("Cheap, expendable troops to throw forward in waves.");
+    if (matched.includes("force-elite"))      reasons.push("Small armies of high-end elite units.");
+
+    // Tech
+    if (matched.includes("tech-magic"))       reasons.push("Strong access to magic and powerful casters.");
+    if (matched.includes("tech-warmachines")) reasons.push("Notable warmachines and / or gunpowder roster.");
+    if (matched.includes("tech-both"))        reasons.push("Mixes magic and warmachines in the same army comfortably.");
+    if (matched.includes("tech-neither"))     reasons.push("Pure martial roster — no spells or guns to manage.");
+
+    // Alignment
+    if (matched.includes("align-order"))       reasons.push("Sits on the Order side of the conflict.");
+    if (matched.includes("align-chaos"))       reasons.push("Serves Chaos — corruption, dark gods, the works.");
+    if (matched.includes("align-destruction")) reasons.push("A Destruction faction — raid, ruin, devour.");
+
+    // Difficulty
+    if (matched.includes("diff-easy") && selectedTags.has("diff-easy")) reasons.push("Has a forgiving start that fits the comfort level you asked for.");
+    if (matched.includes("diff-medium") && selectedTags.has("diff-medium")) reasons.push("Mid-range difficulty start — fits the comfort level you picked.");
+    if (matched.includes("diff-hard") && selectedTags.has("diff-hard")) reasons.push("Has a genuinely brutal start — the challenge you wanted.");
+
+    // Complexity
+    if (matched.includes("cmx-low") && selectedTags.has("cmx-low")) reasons.push("Minimal unique mechanics — you can focus on the battles.");
+    if (matched.includes("cmx-medium") && selectedTags.has("cmx-medium")) reasons.push("A moderate amount of unique faction mechanics.");
+    if (matched.includes("cmx-high") && selectedTags.has("cmx-high")) reasons.push("Layered, distinctive mechanics to dig into.");
+
+    // De-duplicate and cap
+    const seen = new Set();
+    const out = [];
+    reasons.forEach(r => {
+        if (!seen.has(r)) { seen.add(r); out.push(r); }
+    });
+    return out.slice(0, 6);
+}
+
+/* =========================================================================
+   RENDER RESULTS
+   ========================================================================= */
+function renderResults() {
+    const selectedTags = gatherSelectedTags();
+    state.selectedTags = selectedTags;
+
+    const ranked = FACTIONS
+        .map(f => ({ faction: f, ...scoreFaction(f, selectedTags) }))
+        .sort((a, b) => b.score - a.score);
+
+    const top = ranked.slice(0, 4);
+
+    elSummary.innerHTML = renderSummary();
+    elResults.innerHTML = top.map((r, i) => renderFactionCard(r, i)).join("");
+}
+
+function renderSummary() {
+    const rows = QUESTIONS.map(q => {
+        const ans = state.answers[q.id];
+        if (!ans) return null;
+        const ids = Array.isArray(ans) ? ans : [ans];
+        const labels = ids.map(id => {
+            const opt = q.options.find(o => o.id === id);
+            return opt ? opt.label : id;
+        });
+        return `<div class="summary-row"><strong>${escapeHtml(q.text)}</strong> &mdash; ${labels.map(escapeHtml).join(", ")}</div>`;
+    }).filter(Boolean).join("");
+    return `<div class="summary-label">Your answers</div>${rows}`;
+}
+
+function renderFactionCard(r, rank) {
+    const f = r.faction;
+    const badgeClass = f.alignment === "order" ? "badge-order"
+        : f.alignment === "chaos" ? "badge-chaos"
+        : "badge-dst";
+    const alignLabel = f.alignment === "order" ? "Order"
+        : f.alignment === "chaos" ? "Chaos"
+        : "Destruction";
+    const diffClass = `badge-diff-${f.difficulty}`;
+    const diffLabel = f.difficulty === "easy" ? "Easy start"
+        : f.difficulty === "medium" ? "Medium start"
+        : "Hard start";
+    const why = buildWhyMatches(f, r.matched, state.selectedTags);
+    const lordsHtml = f.lords.map(escapeHtml).join(", ");
+    const matchPct = computeMatchPct(r.score);
+
+    return `
+        <div class="faction-card">
+            <div class="fc-head">
+                <div>
+                    <div class="fc-rank">Match ${rank + 1}</div>
+                    <div class="fc-name">${escapeHtml(f.name)}</div>
+                    <div class="fc-lords">Legendary lords: <span>${lordsHtml}</span></div>
+                </div>
+                <div class="badges">
+                    <span class="badge ${badgeClass}">${alignLabel}</span>
+                    <span class="badge ${diffClass}">${diffLabel}</span>
+                    <span class="badge badge-score">${matchPct}% match</span>
+                </div>
+            </div>
+            <div class="fc-body">
+                <p class="fc-desc">${escapeHtml(f.desc)}</p>
+                ${why.length ? `
+                <div class="fc-why">
+                    <div class="fc-why-label">Why it fits your answers</div>
+                    <ul class="fc-why-list">
+                        ${why.map(w => `<li>${escapeHtml(w)}</li>`).join("")}
+                    </ul>
+                </div>` : ""}
+                <div class="fc-pn">
+                    <div class="pn-block pn-pro">
+                        <div class="pn-label">Advantages</div>
+                        <ul>${f.pros.map(p => `<li>${escapeHtml(p)}</li>`).join("")}</ul>
+                    </div>
+                    <div class="pn-block pn-con">
+                        <div class="pn-label">Disadvantages</div>
+                        <ul>${f.cons.map(c => `<li>${escapeHtml(c)}</li>`).join("")}</ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+function computeMatchPct(score) {
+    // Six questions: align match is +2, others +1. Realistic strong matches land around 7-8.
+    const pct = Math.min(99, Math.round((score / 8) * 100));
+    return Math.max(20, pct);
+}
+
+/* =========================================================================
+   UTILITIES
+   ========================================================================= */
+function escapeHtml(s) {
+    if (s == null) return "";
+    return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+/* =========================================================================
+   BINDINGS
+   ========================================================================= */
+btnStart.addEventListener("click", startQuiz);
+btnNext.addEventListener("click", nextQuestion);
+btnBack.addEventListener("click", backQuestion);
+btnRestart.addEventListener("click", () => { startQuiz(); });
+btnTweak.addEventListener("click", () => {
+    state.currentIdx = QUESTIONS.length - 1;
+    renderQuestion();
+    showScreen("quiz");
+});
+
+// Keyboard: 1-9 picks an option on the current question; Enter advances.
+document.addEventListener("keydown", (e) => {
+    if (!scrQuiz.classList.contains("active")) return;
+    const q = QUESTIONS[state.currentIdx];
+    if (e.key === "Enter") {
+        if (!btnNext.disabled) nextQuestion();
+        return;
+    }
+    if (e.key === "Backspace" && !e.target.matches("input,textarea")) {
+        if (!btnBack.disabled) backQuestion();
+        return;
+    }
+    const n = parseInt(e.key, 10);
+    if (!isNaN(n) && n >= 1 && n <= q.options.length) {
+        const opt = q.options[n - 1];
+        const btn = elOptions.children[n - 1];
+        if (q.multi) {
+            toggleMultiOption(q, opt, btn);
+        } else {
+            pickSingleOption(q, opt);
+        }
+    }
+});
+</script>
+</body>
+</html>
