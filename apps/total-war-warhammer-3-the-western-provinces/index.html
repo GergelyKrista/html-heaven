@@ -1,0 +1,1674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Western Provinces &mdash; New Player's Guide</title>
+<meta name="description" content="A new player's guide to Zhao Ming, the Iron Dragon, and The Western Provinces in Total War: Warhammer III. Covers Cathay mechanics, the post-Update-8.0 tech tree, Harmony &amp; the Wu-Xing Compass, the Ivory Road caravan economy, Zhao Ming's dual-form combat kit, hero management with Alchemists and Gate Masters, the full unit roster, the surrounded Qiang opening, and Realm of Chaos and Immortal Empires victory paths.">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Western Provinces &mdash; New Player's Guide">
+<meta property="og:description" content="A beginner-friendly guide to Zhao Ming, the Iron Dragon, and The Western Provinces (Cathay) in Total War: Warhammer III. Reflects Update 8.0 (May 2026).">
+<meta property="og:image" content="titlecard.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The Western Provinces titlecard with an iron-dragon sigil over a slate-grey stone field.">
+
+<!-- Twitter / X -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Western Provinces &mdash; New Player's Guide">
+<meta name="twitter:description" content="A beginner-friendly guide to Zhao Ming, the Iron Dragon, and The Western Provinces in Total War: Warhammer III.">
+<meta name="twitter:image" content="titlecard.png">
+<meta name="twitter:image:alt" content="The Western Provinces titlecard with an iron-dragon sigil over a slate-grey stone field.">
+<style>
+:root {
+    --bg:     #0b0c0f;
+    --sf:     #16181d;
+    --sf2:    #22252c;
+    --sf3:    #32363f;
+    --ember:  #9a9ca6;
+    --ember2: #d8dae3;
+    --gold:   #7d7f87;
+    --gold2:  #b8bac3;
+    --frost:  #e8ebf1;
+    --tx:     #ebedf2;
+    --mu:     #8b8d96;
+    --bdr:    rgba(216,218,227,.12);
+    --rune:   #c0c2cb;
+    --hdr-1:  #1a1c22;
+    --hdr-2:  #0b0c0f;
+    --hdr-tx: #ebedf2;
+    --hdr-mu: #8b8d96;
+    --hdr-btn-bg:    rgba(216,218,227,.06);
+    --hdr-btn-bdr:   rgba(216,218,227,.22);
+    --hdr-btn-bg-h:  rgba(216,218,227,.14);
+}
+body.light {
+    --bg:     #ececef;
+    --sf:     #ffffff;
+    --sf2:    #dcdee3;
+    --sf3:    #c2c5cd;
+    --ember:  #4a4c54;
+    --ember2: #1f2128;
+    --gold:   #6a6c74;
+    --gold2:  #3a3c44;
+    --frost:  #1a1b22;
+    --tx:     #1a1b22;
+    --mu:     #5a5c66;
+    --bdr:    rgba(58,60,68,.18);
+    --rune:   #3a3c44;
+    --hdr-1:  #d8dade;
+    --hdr-2:  #c0c2c8;
+    --hdr-tx: #14151a;
+    --hdr-mu: #4a4c54;
+    --hdr-btn-bg:    rgba(58,60,68,.06);
+    --hdr-btn-bdr:   rgba(58,60,68,.28);
+    --hdr-btn-bg-h:  rgba(58,60,68,.14);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body {
+    background:var(--bg); color:var(--tx);
+    font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.72;
+    transition:background .2s,color .2s;
+}
+
+/* Subtle stone-grain texture on body */
+body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+    background-image:
+        radial-gradient(circle at 18% 22%,rgba(255,255,255,.018) 0,transparent 38%),
+        radial-gradient(circle at 82% 78%,rgba(255,255,255,.014) 0,transparent 42%);
+}
+
+/* Header */
+header {
+    background:linear-gradient(180deg,var(--hdr-1) 0%,var(--hdr-2) 100%);
+    padding:1.4rem 1.8rem;
+    display:flex; align-items:center; gap:1rem;
+    border-bottom:2px solid var(--ember);
+    position:relative;
+}
+header::after{
+    content:""; position:absolute; left:0; right:0; bottom:-2px; height:2px;
+    background:linear-gradient(90deg,transparent 0%,var(--gold2) 50%,transparent 100%);
+    opacity:.45;
+}
+.skull{font-size:1.85rem;line-height:1;color:var(--ember2);text-shadow:0 0 14px rgba(216,218,227,.32);font-weight:400}
+body.light .skull{color:var(--gold2);text-shadow:0 0 6px rgba(58,60,68,.18)}
+header h1{font-size:1.4rem;font-weight:700;letter-spacing:.3px;color:var(--hdr-tx)}
+header h1 .accent{color:var(--ember2)}
+body.light header h1 .accent{color:var(--ember)}
+header p {color:var(--hdr-mu);font-size:.85rem;margin-top:.2rem}
+.hdr-right{margin-left:auto;display:flex;gap:.5rem;flex-shrink:0}
+.hdr-btn {
+    background:var(--hdr-btn-bg);
+    border:1px solid var(--hdr-btn-bdr);
+    color:var(--hdr-tx); border-radius:5px;
+    padding:.4rem .9rem;
+    font-size:.8rem; font-weight:600;
+    cursor:pointer; transition:all .15s;
+    text-decoration:none; display:inline-flex; align-items:center;
+    font-family:inherit; line-height:1.2;
+}
+.hdr-btn:hover{background:var(--hdr-btn-bg-h);border-color:var(--gold2)}
+
+/* Nav */
+nav {
+    background:var(--sf); display:flex;
+    overflow-x:auto; border-bottom:1px solid var(--sf2);
+    scrollbar-width:none;
+    position:sticky; top:0; z-index:10;
+}
+nav::-webkit-scrollbar{display:none}
+nav button {
+    background:none; border:none;
+    border-bottom:2px solid transparent;
+    color:var(--mu); padding:1rem 1.4rem;
+    cursor:pointer; font-size:.92rem; font-weight:500;
+    white-space:nowrap; transition:color .15s, border-color .15s;
+    font-family:inherit;
+}
+nav button:hover{color:var(--tx)}
+nav button.active{color:var(--ember2);border-bottom-color:var(--gold2)}
+body.light nav button.active{color:var(--ember);border-bottom-color:var(--ember)}
+
+/* Layout */
+main{max-width:1100px;margin:0 auto;padding:2.4rem 1.8rem 5rem}
+.tab{display:none}
+.tab.active{display:block;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+h2{
+    font-size:1.45rem;color:var(--frost);
+    margin-bottom:1.6rem;padding-bottom:.7rem;
+    border-bottom:1px solid var(--sf2);
+    letter-spacing:.2px;font-weight:700;
+}
+h2 .rune{color:var(--ember);margin-right:.55rem;font-weight:400}
+h3{font-size:1.12rem;font-weight:600;color:var(--ember2);margin:2rem 0 .9rem;letter-spacing:.1px}
+body.light h3{color:var(--ember)}
+h4{font-size:.82rem;font-weight:700;color:var(--gold2);margin:1.3rem 0 .55rem;text-transform:uppercase;letter-spacing:.7px}
+body.light h4{color:var(--gold)}
+
+p{margin-bottom:1.05rem}
+strong{color:var(--frost);font-weight:600}
+em{color:var(--ember2);font-style:normal;font-weight:600}
+body.light em{color:var(--ember)}
+
+ul,ol{padding-left:1.45rem;margin-bottom:1.1rem}
+li{margin-bottom:.55rem;line-height:1.65}
+li::marker{color:var(--gold)}
+body.light li::marker{color:var(--ember)}
+
+.lead{
+    font-size:1.04rem;color:var(--mu);margin-bottom:2rem;
+    padding:1.15rem 1.35rem;background:var(--sf);border-left:3px solid var(--ember);
+    border-radius:0 6px 6px 0;line-height:1.7;
+}
+
+/* Grid layouts */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:1.6rem}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+@media(max-width:780px){.two-col,.three-col{grid-template-columns:1fr}}
+
+/* Cards */
+.card{
+    background:var(--sf);border-radius:7px;
+    padding:1.25rem 1.45rem;margin-bottom:1rem;
+    border:1px solid var(--bdr);
+}
+.card-iron{border-left:3px solid var(--ember2)}
+.card-stone{border-left:3px solid var(--gold)}
+.card-bone{border-left:3px solid var(--frost)}
+.card p:last-child,.card ul:last-child,.card ol:last-child{margin-bottom:0}
+
+/* Callouts */
+.tip,.warn,.note,.tactic{
+    border-radius:6px;padding:.95rem 1.2rem;font-size:.92rem;
+    margin:1.1rem 0;color:var(--mu);line-height:1.65;
+}
+.tip {background:rgba(216,218,227,.05);border:1px solid rgba(216,218,227,.20)}
+.tip  strong{color:var(--gold2)}
+.warn{background:rgba(216,218,227,.03);border:1px solid rgba(216,218,227,.30);border-left:3px solid var(--ember2)}
+.warn strong{color:var(--frost)}
+.note{background:rgba(216,218,227,.025);border:1px solid rgba(216,218,227,.12)}
+.note strong{color:var(--frost)}
+.tactic{background:rgba(125,127,135,.18);border:1px solid rgba(216,218,227,.30);border-left:3px solid var(--ember2)}
+.tactic strong{color:var(--frost)}
+
+/* Patch 8.0 callout */
+.patch{
+    background:linear-gradient(135deg,rgba(216,218,227,.06) 0%,rgba(125,127,135,.10) 100%);
+    border:1px solid rgba(216,218,227,.28);
+    border-radius:7px;padding:1.05rem 1.3rem;margin:1.1rem 0;
+    font-size:.92rem;color:var(--mu);position:relative;line-height:1.65;
+}
+.patch::before{
+    content:"UPDATE 8.0";position:absolute;top:-.7rem;left:1rem;
+    background:var(--sf2);color:var(--frost);
+    font-size:.66rem;font-weight:700;letter-spacing:1px;
+    padding:.2rem .55rem;border-radius:3px;border:1px solid var(--gold);
+}
+.patch strong{color:var(--frost)}
+
+/* Yin/Yang special block */
+.yy{
+    display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1.2rem 0;
+}
+@media(max-width:680px){.yy{grid-template-columns:1fr}}
+.yy-block{
+    padding:1.2rem 1.4rem;border-radius:7px;background:var(--sf);
+    border:1px solid var(--bdr);
+}
+.yy-yin{border-left:3px solid #7e8a98}
+.yy-yang{border-left:3px solid var(--ember2)}
+.yy-block h4{margin-top:0;font-size:1rem;letter-spacing:.2px;text-transform:none}
+.yy-yin h4{color:#aebac8}
+.yy-yang h4{color:var(--ember2)}
+body.light .yy-yang h4{color:var(--ember)}
+
+/* Stat lines */
+.stat-row{display:flex;justify-content:space-between;padding:.5rem 0;border-bottom:1px solid var(--bdr);gap:1rem}
+.stat-row:last-child{border-bottom:none}
+.stat-row .label{color:var(--mu)}
+.stat-row .val{color:var(--frost);font-weight:600;text-align:right}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.92rem}
+th,td{padding:.85rem 1rem;text-align:left;border-bottom:1px solid var(--sf2);vertical-align:top}
+th{color:var(--gold2);font-weight:600;background:var(--sf2);font-size:.78rem;text-transform:uppercase;letter-spacing:.6px}
+body.light th{color:var(--gold)}
+tr:hover td{background:rgba(216,218,227,.035)}
+td .role{display:inline-block;font-size:.7rem;padding:.18rem .55rem;border-radius:3px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.role-tank{background:rgba(207,228,214,.13);color:var(--frost)}
+.role-melee{background:rgba(216,218,227,.16);color:var(--ember2)}
+.role-cav{background:rgba(160,165,180,.20);color:#c7cbd6}
+.role-mons{background:rgba(180,180,190,.22);color:#dcdde6}
+.role-fast{background:rgba(150,160,180,.18);color:#bcc4d4}
+.role-art{background:rgba(140,150,170,.18);color:#aab4c5}
+.role-hero{background:rgba(216,218,227,.13);color:var(--gold2)}
+.role-cast{background:rgba(160,180,210,.15);color:#a8c0d8}
+.role-fly{background:rgba(190,180,160,.16);color:#d4c9af}
+.role-yin{background:rgba(150,160,180,.16);color:#aebac8}
+.role-yang{background:rgba(216,218,227,.16);color:var(--ember2)}
+.role-merc{background:rgba(184,160,120,.18);color:#d8bb88}
+
+/* Decision flow (raze / sack / occupy) */
+.decision{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;margin:1.4rem 0}
+@media(max-width:780px){.decision{grid-template-columns:1fr}}
+.choice{
+    background:var(--sf);padding:1.3rem 1.45rem;border-radius:7px;
+    border:1px solid var(--bdr);border-top:3px solid var(--gold);
+}
+.choice.raze{border-top-color:var(--ember2)}
+.choice.sack{border-top-color:var(--gold2)}
+.choice.occupy{border-top-color:var(--frost)}
+.choice h4{margin-top:0;font-size:1.05rem;color:var(--frost);text-transform:none;letter-spacing:.2px}
+.choice .verdict{
+    margin-top:.85rem;padding:.6rem .8rem;font-size:.86rem;
+    background:var(--sf2);border-radius:5px;color:var(--gold2);
+    border:1px solid var(--bdr);
+}
+body.light .choice .verdict{color:var(--gold)}
+
+/* Mechanic blocks */
+.mech-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.2rem;margin:1.2rem 0}
+@media(max-width:780px){.mech-grid{grid-template-columns:1fr}}
+.mech{
+    background:var(--sf);padding:1.25rem 1.4rem;border-radius:7px;
+    border:1px solid var(--bdr);position:relative;
+}
+.mech-icon{
+    position:absolute;top:1.05rem;right:1.05rem;
+    font-size:1.5rem;opacity:.30;color:var(--gold2);font-weight:400;
+}
+.mech h4{margin-top:0;color:var(--ember2);text-transform:none;letter-spacing:0;font-size:1.04rem}
+body.light .mech h4{color:var(--ember)}
+.mech p:last-child{margin-bottom:0}
+
+/* Pros/cons */
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin:1rem 0}
+@media(max-width:680px){.pc{grid-template-columns:1fr}}
+.pc-block{padding:1.15rem 1.35rem;border-radius:6px;background:var(--sf);border:1px solid var(--bdr)}
+.pc-pros{border-left:3px solid var(--gold2)}
+.pc-cons{border-left:3px solid var(--ember2)}
+.pc-block h4{margin-top:0;font-size:.85rem}
+.pc-pros h4{color:var(--gold2)}
+.pc-cons h4{color:var(--ember2)}
+body.light .pc-pros h4{color:var(--gold)}
+body.light .pc-cons h4{color:var(--ember)}
+.pc-block ul{margin-bottom:0;padding-left:1.25rem}
+.pc-block li{font-size:.94rem;color:var(--mu);margin-bottom:.5rem;line-height:1.6}
+
+/* Hero block (Zhao Ming) */
+.hero-block{
+    background:linear-gradient(135deg,var(--sf) 0%,var(--sf2) 100%);
+    padding:1.6rem 1.75rem;border-radius:8px;
+    border:1px solid var(--ember2);position:relative;overflow:hidden;
+    margin-bottom:1.5rem;
+}
+.hero-block::before{
+    content:"";position:absolute;top:-30px;right:-30px;
+    width:160px;height:160px;border-radius:50%;
+    background:radial-gradient(circle,rgba(216,218,227,.10),transparent 70%);
+}
+.hero-block::after{
+    content:"";position:absolute;bottom:-40px;left:-40px;
+    width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(circle,rgba(125,127,135,.16),transparent 70%);
+}
+.hero-name{font-size:1.55rem;color:var(--frost);font-weight:700;letter-spacing:.5px;position:relative}
+.hero-title{font-size:.9rem;color:var(--gold2);margin-bottom:.95rem;font-style:italic;position:relative}
+body.light .hero-title{color:var(--gold)}
+
+/* Tag chips */
+.tags{display:flex;flex-wrap:wrap;gap:.45rem;margin:.85rem 0}
+.tag{
+    font-size:.72rem;padding:.25rem .65rem;border-radius:3px;
+    background:var(--sf2);color:var(--mu);border:1px solid var(--bdr);
+    text-transform:uppercase;letter-spacing:.5px;font-weight:600;
+}
+.tag.good{color:var(--gold2);border-color:rgba(184,186,195,.4)}
+.tag.bad{color:var(--ember2);border-color:rgba(216,218,227,.32)}
+body.light .tag.good{color:var(--gold)}
+body.light .tag.bad{color:var(--ember)}
+
+/* Numbered steps */
+.steps{counter-reset:step;list-style:none;padding:0;margin:1rem 0}
+.steps li{
+    counter-increment:step;
+    position:relative;padding:.95rem 1.15rem .95rem 3rem;
+    background:var(--sf);border-radius:6px;margin-bottom:.7rem;
+    border:1px solid var(--bdr);border-left:2px solid var(--gold2);
+    line-height:1.6;
+}
+.steps li::before{
+    content:counter(step);
+    position:absolute;left:.85rem;top:1rem;
+    width:1.65rem;height:1.65rem;border-radius:50%;
+    background:var(--ember);color:#0b0c0f;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:.82rem;
+}
+body.light .steps li::before{background:var(--ember);color:#ffffff}
+
+/* Section intro */
+.intro-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:1.6rem;margin-bottom:1.5rem}
+@media(max-width:780px){.intro-grid{grid-template-columns:1fr}}
+
+/* Quick reference panel */
+.qref{
+    background:var(--sf2);padding:1.3rem 1.45rem;border-radius:7px;
+    border:1px solid var(--bdr);
+}
+.qref h4{margin-top:0}
+.qref .stat-row{font-size:.92rem}
+
+/* Compass directions */
+.compass{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem;margin:1.2rem 0}
+@media(max-width:780px){.compass{grid-template-columns:1fr}}
+.compass-dir{
+    padding:1.1rem 1.3rem;border-radius:7px;background:var(--sf);
+    border:1px solid var(--bdr);border-top:2px solid var(--gold);
+}
+.compass-dir h4{margin-top:0;text-transform:none;letter-spacing:0;font-size:1rem;color:var(--ember2)}
+body.light .compass-dir h4{color:var(--ember)}
+.compass-dir.warpstone{border-top-color:var(--ember2)}
+.compass-dir.warpstone h4{color:var(--frost)}
+
+footer{
+    text-align:center;padding:2rem 1.5rem;color:var(--mu);font-size:.84rem;
+    border-top:1px solid var(--sf2);margin-top:3rem;line-height:1.7;
+}
+footer a{color:var(--gold2);text-decoration:none}
+footer a:hover{color:var(--frost);text-decoration:underline}
+body.light footer a{color:var(--gold)}
+body.light footer a:hover{color:var(--ember)}
+</style>
+</head>
+<body>
+
+<header>
+    <span class="skull" aria-hidden="true">&#40845;</span>
+    <div>
+        <h1>The Western <span class="accent">Provinces</span> &mdash; New Player's Guide</h1>
+        <p>Total War: Warhammer III &middot; Zhao Ming, the Iron Dragon &middot; Reflects Update 8.0 (May 2026)</p>
+    </div>
+    <div class="hdr-right">
+        <button class="hdr-btn" id="themeBtn" type="button">Theme</button>
+    </div>
+</header>
+
+<nav id="navBar">
+    <button data-tab="overview" class="active">Overview</button>
+    <button data-tab="lore">Lore</button>
+    <button data-tab="mechanics">Cathay Mechanics</button>
+    <button data-tab="western">Western Mechanics</button>
+    <button data-tab="zhao">Zhao Ming</button>
+    <button data-tab="strengths">Strengths &amp; Weaknesses</button>
+    <button data-tab="campaign">Campaign Strategy</button>
+    <button data-tab="battle">Battle Strategy</button>
+    <button data-tab="roster">Unit Roster</button>
+    <button data-tab="heroes">Heroes &amp; Casters</button>
+    <button data-tab="caravans">Caravans &amp; Ivory Road</button>
+    <button data-tab="settlements">Raze / Sack / Occupy</button>
+    <button data-tab="economy">Diplomacy &amp; Economy</button>
+    <button data-tab="patch">Update 8.0 Notes</button>
+</nav>
+
+<main>
+
+<!-- ============================================================ OVERVIEW -->
+<section class="tab active" id="overview">
+    <h2><span class="rune">&#40845;</span>Overview</h2>
+    <p class="lead">
+        The Western Provinces are the trading, alchemical, and frontier wing of Grand Cathay, ruled from the city of <strong>Shang-Yang</strong> on the edge of the Warpstone Desert by <strong>Zhao Ming, the Iron Dragon</strong>. Where his elder sister Miao Ying tends the wall and her gunline, Zhao Ming tends the road &mdash; the <em>Ivory Road</em> westward to the Old World, the caravans that travel it, and the alchemists who keep his armoured wagons safe through warpstone-poisoned country. The Iron Dragon's faction is the <strong>trader</strong>, the <strong>caravan baron</strong>, and the <strong>armoured-line warlord</strong> all in one.
+    </p>
+
+    <div class="intro-grid">
+        <div>
+            <h3>Why the Western Provinces is a great campaign to learn Cathay</h3>
+            <ul>
+                <li>The richest <strong>caravan economy</strong> in Cathay: <em>+20% maximum cargo capacity</em> on every Ivory Road run. One successful caravan covers a full army's upkeep.</li>
+                <li><strong>+15 armour on every melee unit</strong> faction-wide &mdash; your Peasant Long Spearmen suddenly stop dying to small-arms fire.</li>
+                <li><strong>&minus;25% upkeep on Ogre Mercenary units</strong> and a friendly neighbour in Goldtooth means a brawler stack is genuinely affordable.</li>
+                <li><strong>+5 recruit rank for Alchemists</strong> &mdash; you start with a strong starting Alchemist and you can train more at silver-skill level for free.</li>
+                <li>Zhao Ming himself is one of the most <em>survivable</em> Legendary Lords in the game &mdash; <strong>dual regen pools across his human and dragon forms give him roughly three effective HP bars</strong>.</li>
+            </ul>
+        </div>
+        <div class="qref">
+            <h4>At a glance</h4>
+            <div class="stat-row"><span class="label">Legendary Lord</span><span class="val">Zhao Ming, the Iron Dragon</span></div>
+            <div class="stat-row"><span class="label">Race</span><span class="val">Grand Cathay</span></div>
+            <div class="stat-row"><span class="label">Start (Immortal Empires)</span><span class="val">Qiang, Warpstone Desert</span></div>
+            <div class="stat-row"><span class="label">True capital</span><span class="val">Shang-Yang (rebel-held)</span></div>
+            <div class="stat-row"><span class="label">Faction style</span><span class="val">Armoured line + caravan economy + dragon assault</span></div>
+            <div class="stat-row"><span class="label">Difficulty</span><span class="val">Medium &mdash; surrounded start, juggling caravans</span></div>
+            <div class="stat-row"><span class="label">Magic</span><span class="val">8 lores available; Zhao Ming uses Yang &amp; Metal</span></div>
+            <div class="stat-row"><span class="label">Mood at court</span><span class="val">Favoured by the Moon Empress, less so by the Emperor</span></div>
+        </div>
+    </div>
+
+    <h3>The Zhao Ming loop, in one sentence</h3>
+    <div class="tactic">
+        <strong>Send a caravan west turn 1 &rarr; clear the Dissenter Lords of Jinshen and retake Shang-Yang &rarr; lock down trade with Goldtooth &rarr; recruit cheap Ogre Mercenaries on the front line &rarr; build up an armoured Cathay line behind them &rarr; keep one caravan in flight at all times &rarr; let Zhao Ming personally tank single-target threats in either form.</strong> The road funds the wall; the wall protects the road.
+    </div>
+
+    <div class="patch">
+        <strong>Important &mdash; this guide reflects Update 8.0 (released 21 May 2026).</strong> Creative Assembly split the Cathay tech tree into <em>Military</em> and <em>Provinces</em> branches, reworked the four Dragon Edicts, moved Longma Paddocks from tier V to tier IV, redistributed the <em>Eye of the Dragon</em> support passive from Sky-junks onto Sky Lanterns, and overhauled Gate Master, Alchemist, and Astromancer hero kits. Older guides written before 21 May still describe the monolithic tech tree and the old Sky-junk support role &mdash; <em>ignore those bits</em>. See the <strong>Update 8.0 Notes</strong> tab for the full diff.
+    </div>
+
+    <div class="warn">
+        <strong>Three serious threats to know about:</strong> in Immortal Empires, Zhao Ming has to deal with <em>The Puppets of Misrule</em> (Vilitch / Tzeentch &mdash; settlement-stealing rituals can quietly walk your captured cities off the map), <em>Clan Eshin</em> (Snikch / Skaven &mdash; stalking armies, sneak assaults from the east), and a constant low-level grind from <em>Ghorst</em> (Vampire Counts &mdash; zombie spam on Qiang in the early game). Goldtooth is friendly to your face and will still <em>raid your caravans</em>, so don't treat the trade route as safe.
+    </div>
+
+    <h3>What this guide covers</h3>
+    <div class="three-col">
+        <div class="card card-iron">
+            <h4>The faction</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Lore, the Iron Dragon, the Moon Empress's favoured son, the city of Shang-Yang, the Warpstone Desert, and how the Western Provinces differ from the Northern and Jade Court branches.
+            </p>
+        </div>
+        <div class="card card-stone">
+            <h4>The systems</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                The post-rework Harmony, the Wu-Xing Compass (especially the Warpstone Desert direction), the Ivory Road caravan economy, Mastery of Elemental Winds, and the Western-specific faction effects.
+            </p>
+        </div>
+        <div class="card card-bone">
+            <h4>The play</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                The surrounded Qiang opening, Ogre Mercenary integration, hero management with Alchemists and Gate Masters, the armoured-line battle template, and Zhao Ming's dual-form combat kit.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ LORE -->
+<section class="tab" id="lore">
+    <h2><span class="rune">&#40845;</span>Lore &mdash; The Iron Dragon and His Road</h2>
+    <p class="lead">
+        Zhao Ming is the second of the dragon-children of the Celestial Emperor, the warden of Cathay's western frontier, and the man whose alchemists carved the Ivory Road through warpstone-poisoned desert. He is less beloved by his father than Miao Ying &mdash; but the Moon Empress favours him particularly, and that quiet bond shapes most of his politics.
+    </p>
+
+    <h3>Grand Cathay &mdash; the Empire of the Celestial Dragon</h3>
+    <p>
+        Grand Cathay is the largest empire in the Warhammer world, occupying most of the Far East. It is ruled by the <strong>Celestial Dragon Emperor</strong> and his consort the <strong>Moon Empress</strong> &mdash; immortal dragons who shapeshift into human form &mdash; from the Imperial Court. Day-to-day rule is delegated to their dragon-children, who govern individual provinces. Five remain in play; four have been lost to enmity or to time.
+    </p>
+
+    <h3>Zhao Ming &mdash; the Iron Dragon, Lord of Shang-Yang</h3>
+    <p>
+        Zhao Ming rules the Western Provinces from <strong>Shang-Yang</strong>, the great trading city at the edge of the Warpstone Desert. He is responsible for the western edge of the Celestial Empire and for keeping the <strong>desert clans</strong> in line. He is <em>not as beloved as his elder sister Miao Ying</em>, but the <strong>Moon Empress favours him particularly</strong> &mdash; a quiet political weight that often saves him from Imperial irritation.
+    </p>
+
+    <div class="warn">
+        <strong>The detail that defines him in battle:</strong> like his sister, Zhao Ming fights in <strong>two forms</strong>: a standard armoured humanoid (sword-and-spell wizard) and a flying single-entity <strong>Iron Dragon</strong>. Each form has its own healing pool. Combined with his on-skill regeneration, his unique items, and his Master of Alchemy weapon-damage passive, he is functionally <em>three HP bars stacked on one model</em> &mdash; one of the most resilient Legendary Lords the game has.
+    </div>
+
+    <h3>The Warpstone Desert &amp; the origin of the Ivory Road</h3>
+    <p>
+        The wiki tells this story plainly:
+    </p>
+    <div class="card card-stone">
+        <p style="margin:0;font-style:italic;color:var(--frost)">
+            "Within the twisted and warped landscape of the Warpstone Desert, Zhao Ming's agents discovered unlimited alchemical treasures, treasures that were enthusiastically mined by the people of his capital at Shang-Yang. To facilitate such industry in such unfavourable climes, the Cathayans sought safe routes through the desert and crafted armoured wagons to which they bound protective charms. Through these endeavours the agents of the Iron Dragon forged a permanent route through the narrowest part of the Warpstone Desert."
+        </p>
+    </div>
+    <p>
+        That permanent route became <strong>the Ivory Road</strong>: the trade artery that Cathay still uses to reach the Old World. Zhao Ming did not commission the road as a gift to his siblings; he commissioned it because his alchemists needed a way to get warpstone-derived goods home alive. <em>Every caravan you run in this campaign is running a road his ancestors built.</em>
+    </p>
+
+    <h3>Shang-Yang and the alchemist cabals</h3>
+    <p>
+        Shang-Yang is the great mercantile hub of western Cathay &mdash; foreign traders, alchemical workshops, and (significantly) the home of the <strong>unsanctioned alchemist cabals</strong>. Per the wiki: <em>"In Shang-Yang are the cabals of Cathayan Alchemists who are not officially sanctioned by the Dragon Emperor, but are sheltered by Zhao Ming."</em> The Imperial court would prefer they didn't exist. Zhao Ming protects them anyway. Mechanically, this is why your Alchemists arrive at <strong>+5 recruit rank</strong>: the unsanctioned cabals train them harder than the official ones do.
+    </p>
+
+    <h3>His siblings &amp; the broader dragon family</h3>
+    <p>
+        Cathay ships <strong>three vanilla playable factions</strong>, plus DLC additions:
+    </p>
+    <ul>
+        <li><strong>The Northern Provinces</strong> &mdash; Miao Ying, the Storm Dragon. The Bastion guardian; eldest. Cold, aloof, and the favoured child of the Emperor.</li>
+        <li><strong>The Western Provinces</strong> &mdash; Zhao Ming, the Iron Dragon. The caravan baron; the Moon Empress's favourite. <em>The faction this guide covers.</em></li>
+        <li><strong>The Jade Court</strong> &mdash; Yuan Bo, the Jade Dragon. Administrator of the Realm and the Emperor's executioner. Rules from Shang Wu.</li>
+        <li><strong>Bhashiva, Legendary Hero</strong> &mdash; the White Tiger, added to all Cathay rosters as a free Legendary Hero in Update 8.0.</li>
+    </ul>
+    <p>
+        Two siblings are <em>not</em> playable: <strong>Yin-Yin the Sea Dragon</strong> (Eastern Provinces) and <strong>Li Dao the Fire Dragon</strong> (Southern Provinces). A third, <strong>Shen-Zoo</strong>, was lost beyond the Norscan Mountains; per Zhao Ming's own account, <em>Ursun of Kislev witnessed her fate</em> &mdash; the same Ursun whose worshippers feature in the Kislev campaign. Zhao Ming carries that grievance.
+    </p>
+
+    <div class="note">
+        <strong>Why this matters mechanically:</strong> Zhao Ming is the <em>Moon Empress's favoured son</em> and the <em>shelter of unsanctioned alchemists</em>. Both threads explain why his faction effects are what they are &mdash; an Alchemist bonus, a caravan-cargo bonus that funds his trading capital, and the armour buff that protects the merchants on the road. The flavour is the rulebook.
+    </div>
+</section>
+
+<!-- ============================================================ CATHAY MECHANICS -->
+<section class="tab" id="mechanics">
+    <h2><span class="rune">&#40845;</span>General Cathay Mechanics</h2>
+    <p class="lead">
+        These five systems apply to every Grand Cathay faction. The first three were reworked or rebalanced in Update 8.0 &mdash; the changes are folded into the descriptions below.
+    </p>
+
+    <div class="mech-grid">
+        <div class="mech">
+            <span class="mech-icon">&#9775;</span>
+            <h4>Harmony (Yin / Yang) &mdash; province-level</h4>
+            <p>Cathay's philosophical core. Each green building you slot in a province is <strong>aligned Yin or Yang</strong>; <em>Harmony balance</em> equals the larger value minus the smaller. <strong>Balanced harmony</strong> grants +25% income, &minus;25% upkeep, increased movement range, and removes all penalties.</p>
+            <p style="margin:0"><strong>Yin-aligned</strong> provinces favour construction, growth, and population at the cost of recruitment and research. <strong>Yang-aligned</strong> provinces flip that &mdash; recruitment, research, and rank up faster, but growth and construction slow. Conversion takes 1&ndash;3 turns. <em>Perfect balance is no longer always optimal &mdash; tune each province to its purpose</em>.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#10024;</span>
+            <h4>The Wu-Xing Compass</h4>
+            <p>A magical campaign-map device that <strong>directs the Winds of Magic across the realm</strong>. The Compass has four directions; the selected one gains <em>+2 energy per turn</em>, the others decay at &minus;1, and you start with a 10-point reserve. A <strong>9-turn cooldown</strong> applies between realignments.</p>
+            <p style="margin:0">Each direction has <strong>four tiers</strong> of intensity. Pair a Compass direction with a campaign goal &mdash; trade, war, defence, conquest &mdash; for a faction-wide effect window. For Zhao Ming, the <em>Warpstone Desert</em> direction is the one with your name on it.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#127746;</span>
+            <h4>The Ivory Road</h4>
+            <p>Cathay's <strong>trade-caravan campaign system</strong>. You can despatch caravans west along the Ivory Road from any Cathay city; each caravan runs as a small army with a Caravan Master at the head. <em>Caravans cost zero upkeep</em>, run continuously, and a successful run pays out gold plus &mdash; on the first visit to a new destination &mdash; a <strong>magic item</strong>.</p>
+            <p style="margin:0"><strong>Equip caravans with sturdy infantry and anti-large units.</strong> Ogres are the headline threat &mdash; an Ogre Lord ambush will end a poor caravan. Defeating one yields meaningful loot on top of the destination payout.</p>
+        </div>
+
+        <div class="mech">
+            <span class="mech-icon">&#127902;</span>
+            <h4>The Great Bastion (shared infrastructure)</h4>
+            <p>The huge fortification along Cathay's northern border. <strong>You are not its primary defender</strong> &mdash; that's Miao Ying's job &mdash; but it remains shared infrastructure for the long victory, and the <em>Bastion Pagoda</em> building in your provinces gives Chaos Wastes attrition immunity (up to 90% at max rank, 50% at rank 3).</p>
+            <p style="margin:0">In Realm of Chaos and Immortal Empires alike, you'll occasionally support Bastion gate defences with a fast Zhao Ming dragon flight north &mdash; a Lightning-Strike-and-relief move, not a permanent posting.</p>
+        </div>
+    </div>
+
+    <h3>Battle Harmony &mdash; Yin and Yang on the battlefield</h3>
+    <div class="yy">
+        <div class="yy-block yy-yin">
+            <h4>Yin units (typically ranged)</h4>
+            <p style="margin-bottom:.4rem">When near a Yang-aligned ally, Yin units gain a <strong>reload speed buff</strong>.</p>
+            <p style="font-size:.88rem;color:var(--mu);margin:0">Examples: Crane Gunners, Iron Hail Gunners, Jade Warrior Crossbowmen, Astromancers, Sky Lanterns. Place these <em>behind or beside</em> your Yang line.</p>
+        </div>
+        <div class="yy-block yy-yang">
+            <h4>Yang units (typically melee)</h4>
+            <p style="margin-bottom:.4rem">When near a Yin-aligned ally, Yang units gain a <strong>melee defence buff</strong>.</p>
+            <p style="font-size:.88rem;color:var(--mu);margin:0">Examples: Peasant Long Spearmen, Jade Warriors, Celestial Dragon Guard, Jade Lancers, Ogre Mercenaries. Anchor them <em>in front of or alongside</em> your Yin shooters.</p>
+        </div>
+    </div>
+    <div class="tactic">
+        <strong>The fundamental Cathay battle rule:</strong> never deploy a Yin unit out of supporting range of a Yang unit (or vice versa). With Zhao Ming's <em>+15 armour on all melee units</em>, the Yang line is even tougher than in the other Cathay rosters &mdash; lean into it.
+    </div>
+
+    <h3>The Wu-Xing Compass &mdash; four directions</h3>
+    <div class="compass">
+        <div class="compass-dir">
+            <h4>Celestial Lake &mdash; the default</h4>
+            <p style="margin:0;font-size:.94rem;color:var(--mu)">Growth, control, and <strong>+15% income</strong>. The safe rotation when nothing else is pressing &mdash; especially in the early game while you're building Shang-Yang back up.</p>
+        </div>
+        <div class="compass-dir">
+            <h4>Great Bastion &mdash; siege defence</h4>
+            <p style="margin:0;font-size:.94rem;color:var(--mu)">Replenishment, supply points, and unlocks the <em>Ancestral Warrior</em> summon. Use when defending sieges. <strong>Don't use during the Cathay civil-war opening</strong> &mdash; the rebels are Cathay too and will share the benefit.</p>
+        </div>
+        <div class="compass-dir">
+            <h4>Dragon Emperor's Wrath &mdash; offence</h4>
+            <p style="margin:0;font-size:.94rem;color:var(--mu)">Unlocks the devastating <em>Celestial Intervention</em> army ability; grants Untainted at high gauge but <em>extreme attrition</em> outside the Bastion. Push the gauge during a focused offensive, then back off.</p>
+        </div>
+        <div class="compass-dir warpstone">
+            <h4>Warpstone Desert &mdash; Zhao Ming's direction</h4>
+            <p style="margin:0;font-size:.94rem;color:var(--mu)"><strong>Caravan cargo capacity</strong> and <strong>recruitment</strong> bonuses. Reworked in patch 5.04 and still the highest-yield Compass setting for the Western Provinces. <em>This is the direction with your name on it</em>; default-rotate it whenever you have a caravan in flight, which is to say, almost always.</p>
+        </div>
+    </div>
+
+    <h3>Mastery of the Elemental Winds &mdash; the caster bonus</h3>
+    <div class="card card-stone">
+        <p style="margin:0">Cathay's casters have a unique boost based on <strong>caster count in the same army</strong>. Each caster after the first adds <strong>+15% damage / buff power</strong>, up to <strong>+100%</strong>:</p>
+    </div>
+    <table>
+        <tr><th>Casters in army</th><th>Bonus</th><th>Practical effect</th></tr>
+        <tr><td>1</td><td>+0%</td><td>Baseline magic</td></tr>
+        <tr><td>2 (Zhao Ming + Alchemist)</td><td>+15%</td><td>Slight scaling, your default opening</td></tr>
+        <tr><td>3</td><td>+30%</td><td>Real impact spike</td></tr>
+        <tr><td>4</td><td>+45%</td><td>Caster-doomstack territory</td></tr>
+        <tr><td>5</td><td>+60%</td><td>Spells dominate the battle</td></tr>
+        <tr><td>7+</td><td>+100% (cap)</td><td>Magic-army endgame</td></tr>
+    </table>
+
+    <h3>Eight lores of magic</h3>
+    <p>
+        Cathay's casters access <strong>Lore of Beasts, Lore of Heavens, Lore of Life, Lore of Light, Lore of Metal, Lore of Shadows, Lore of Yang,</strong> and <strong>Lore of Yin</strong>. Lord and hero type determines which lores you can pick. Zhao Ming himself draws from <strong>Lore of Yang and Lore of Metal</strong> &mdash; he is the Iron Dragon, after all.
+    </p>
+
+    <div class="card card-iron">
+        <h4>Roster identity</h4>
+        <p style="margin:0">"<em>Legions of weaker, cheaper human troops backed up by a diverse roster of stronger elite troops, flying cavalry, monsters, and war machines.</em>" In Zhao Ming's hands the cheap-line is also <strong>+15 armour tougher</strong>, and he gets the choice of supplementing it with discounted Ogre Mercenary heavies.</p>
+    </div>
+</section>
+
+<!-- ============================================================ WESTERN MECHANICS -->
+<section class="tab" id="western">
+    <h2><span class="rune">&#40845;</span>The Western Provinces &mdash; Faction-Specific Effects</h2>
+    <p class="lead">
+        On top of the general Cathay systems, Zhao Ming's faction gets a tight bundle of effects that all push toward one identity: <em>fund the campaign with caravan income, recruit cheap Ogre heavies up front, line up an armoured Cathay back-rank behind them, and let the Iron Dragon personally tank the threats no army can</em>.
+    </p>
+
+    <h3>Faction effects (always-on)</h3>
+    <div class="three-col">
+        <div class="card card-stone">
+            <h4>+20% maximum caravan cargo capacity</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">The headline. Every caravan you despatch carries 20% more goods, which means 20% more payout at the destination. Combined with the Warpstone Desert Compass direction, Zhao Ming runs the highest-yield trade routes in Cathay.</p>
+        </div>
+        <div class="card card-stone">
+            <h4>+15 armour for all melee units</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">A flat <strong>+15 armour</strong> on every melee unit in every army you field &mdash; Peasant Long Spearmen, Jade Warriors, Celestial Dragon Guard, and even Ogre Mercenaries. Tier-1 chaff turns into a real anvil.</p>
+        </div>
+        <div class="card card-stone">
+            <h4>&minus;25% upkeep on Ogre Mercenary units</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Ogre Mercs are accessible to all Cathay factions but only <em>cheap</em> in Zhao Ming's. Combined with friendly relations with Goldtooth on the border, you can field a brawler stack at a price the Northern Provinces cannot match.</p>
+        </div>
+    </div>
+    <div class="three-col" style="margin-top:1rem">
+        <div class="card card-stone">
+            <h4>+5 hero recruit rank for Alchemists</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Every Alchemist you recruit arrives <strong>five levels above baseline</strong> &mdash; immediate access to Increase Mobility, mid-tier Lore of Metal damage, and (post-8.0) the new army-buff actions. The flavour reason: Shang-Yang's unsanctioned alchemist cabals do the training.</p>
+        </div>
+        <div class="card card-stone">
+            <h4>Iron Dragon's Edict (provincial commandment)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65"><em>Post-Update 8.0:</em> Zhao Ming's faction edict now grants <strong>building construction cost reduction</strong> <em>and</em> <strong>increased research</strong>. It's the strongest <em>economic</em> Dragon edict in the game; toggle it on whichever province is mid-build-out.</p>
+        </div>
+        <div class="card card-stone">
+            <h4>Untainted (Cathay default) + corruption suppression</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Inherited from base Cathay. Your provinces shed Chaos, Skaven, and Vampire corruption automatically, which matters when you're sitting next to Ghorst at Qiang and Eshin out east.</p>
+        </div>
+    </div>
+
+    <h3>Starting state (Immortal Empires)</h3>
+    <ul>
+        <li><strong>Starting settlement:</strong> <em>Qiang</em>, in the Warpstone Desert region.</li>
+        <li><strong>True capital:</strong> <em>Shang-Yang</em> &mdash; rebel-held at start. A <strong>quest battle</strong> unlocks after you capture the hidden Skaven settlement of Xen Wu.</li>
+        <li><strong>Starting at war:</strong> <em>Dissenter Lords of Jinshen</em> (Sheng Ye, occupying Shang-Yang and the surrounding desert) and, depending on patch, minor Skaven and Greenskin neighbours.</li>
+        <li><strong>Friendly-but-dangerous:</strong> <em>Goldtooth</em> (Ogre Kingdoms) &mdash; you have a strong positive diplomatic modifier with them, but their armies will still raid your caravans.</li>
+        <li><strong>Early pressure:</strong> <em>Ghorst</em> (Vampire Counts) sends zombie stacks at Qiang in the opening turns; <em>Clan Eshin</em> probes from the east; <em>The Blessed Dread</em> (Dark Elves) is a longer-term southern threat.</li>
+    </ul>
+
+    <h3>Zhao Ming's lord-line bonuses</h3>
+    <p>
+        Zhao Ming <em>is</em> the faction leader, so most of the bonuses above also count as his personal lord effects. In his army specifically:
+    </p>
+    <ul>
+        <li><strong>Master of Alchemy passive:</strong> <em>+130% weapon damage multiplier</em> on himself.</li>
+        <li><strong>Warding Iron active:</strong> grants nearby units a brief window of his own near-invulnerability profile (high physical / missile / spell resistance).</li>
+        <li><strong>Encourage:</strong> standard leadership aura for nearby allies.</li>
+    </ul>
+
+    <h3>How these stack in practice</h3>
+    <div class="tactic">
+        <strong>Compounding effect:</strong> a caravan rolls home from Marienburg loaded 20% over baseline. The gold pays for two Ogre Mercenary units at &minus;25% upkeep. They line up in front of two Jade Warriors at +15 armour, behind whom three Crane Gunners reload faster thanks to Yin/Yang. Zhao Ming hovers between them, casts Searing Doom on the enemy line, then transforms into the Iron Dragon and dives an enemy lord while his Warding Iron buff turns the front rank temporarily near-invulnerable. <em>The road, the wall, and the dragon &mdash; all funded by trade you started on turn 1.</em>
+    </div>
+
+    <h3>Starting hero loadout</h3>
+    <p>
+        You begin with a <strong>starting Alchemist</strong> already at silver-skill level thanks to the +5 recruit rank bonus. Embed them in Zhao Ming's army immediately; their <em>Increase Mobility</em> campaign skill is the same mobility-enabler the Northern Provinces opening relies on, and the new Update 8.0 army-buff actions in their kit are <em>especially strong</em> in Zhao Ming's stack because the underlying line is already +15 armour.
+    </p>
+</section>
+
+<!-- ============================================================ ZHAO MING -->
+<section class="tab" id="zhao">
+    <h2><span class="rune">&#40845;</span>Zhao Ming, the Iron Dragon</h2>
+
+    <div class="hero-block">
+        <div class="hero-name">Zhao Ming, the Iron Dragon</div>
+        <div class="hero-title">Lord of Shang-Yang &middot; Shelter of the Alchemists &middot; Legendary Lord</div>
+        <p style="margin:0;color:var(--frost);font-size:.92rem;position:relative">
+            "<em>Lord of Shang-Yang, second of the dragon-children of the Celestial Emperor, favoured by the Moon Empress.</em>"
+            One of the most <strong>survivable</strong> Legendary Lords in the game &mdash; a wizard with Lore of Yang and Lore of Metal, a melee combatant in human form, and a flying single-entity Iron Dragon when the moment justifies it. Dual regen pools across his two forms give him roughly <em>three effective HP bars</em>.
+        </p>
+    </div>
+
+    <div class="two-col">
+        <div>
+            <h3>Combat profile (Standard form)</h3>
+            <div class="tags">
+                <span class="tag good">Wizard</span>
+                <span class="tag good">Lore of Yang &amp; Metal</span>
+                <span class="tag good">Armoured</span>
+                <span class="tag good">Master of Alchemy (+130% wpn dmg)</span>
+                <span class="tag good">Warding Iron</span>
+                <span class="tag good">Encourage</span>
+                <span class="tag good">+15% Missile Resistance</span>
+                <span class="tag good">+25% Spell Resistance</span>
+                <span class="tag good">Dual regen pools</span>
+                <span class="tag good">Mastery of Elemental Winds</span>
+                <span class="tag bad">Single Entity</span>
+            </div>
+            <ul>
+                <li><strong>Armoured</strong> with strong baseline missile and spell resistance &mdash; non-AP shooting essentially bounces.</li>
+                <li><strong>Dual regen pools</strong> mean his human-form HP and dragon-form HP refill independently. Use form-switching as a healing ability in protracted fights.</li>
+                <li><strong>Master of Alchemy</strong> gives him a flat <em>+130% weapon damage</em> multiplier &mdash; he hits like a heavy melee lord even in human form.</li>
+                <li><strong>Warding Iron</strong> is an active that temporarily grants nearby units his own near-invulnerable resistance profile. Pop it when the line is about to be charged.</li>
+                <li><strong>Mastery of Elemental Winds</strong> stacks with embedded casters &mdash; 2+ casters in his army boosts spell power up to +100%.</li>
+                <li><em>Verify exact stat numbers in-game.</em> Update 8.0 may have shifted base values; the in-game tooltip is authoritative.</li>
+            </ul>
+        </div>
+        <div>
+            <h3>Spells &amp; weaknesses</h3>
+            <h4 style="margin-top:0">Signature spells</h4>
+            <ul>
+                <li><strong>Dragon's Breath</strong> &mdash; cone AoE; <em>melts unarmoured infantry hordes</em>; weak vs. heavy armour.</li>
+                <li><strong>Constellation of the Dragon</strong> &mdash; high-damage AoE explosion; saves it for clumped targets.</li>
+                <li><strong>Searing Doom</strong> &mdash; AP missile-style damage (Lore of Metal); accessible via his starting Alchemist as well.</li>
+                <li><strong>Plus a Lore of Yang spell-pool</strong> drawn from the standard Cathay magical kit &mdash; verify which spells unlock per level in-game.</li>
+                <li>In <strong>Dragon form</strong> he <em>keeps one spell</em> (typically Dragon's Breath); the rest go on cooldown until he switches back.</li>
+            </ul>
+            <div class="pc">
+                <div class="pc-block pc-cons" style="grid-column:1 / -1">
+                    <h4>The two ways to lose Zhao Ming</h4>
+                    <ul>
+                        <li><strong>Sustained AP missile focus in Dragon form.</strong> Three HP bars is a lot, but Dwarf gunlines, Ratling Guns, and Sisters of Avelorn can still chew through them all if you park him. Hit-and-fade.</li>
+                        <li><strong>Anti-large monsters with bonus damage.</strong> Bloodthirsters, halberd Chaos Warriors, great-weapon Slayers, and Hammerers tear his dragon form apart fast. Pick targets &mdash; he is a <em>sniper of single targets</em>, not a duel-everything bruiser.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn">
+                <strong>The survivability edge:</strong> his dual regen pools mean form-switching <em>is</em> a heal. If his human form drops to orange, swap to Dragon, let human regen fill, swap back when Dragon takes pressure. With the on-skill <em>~0.1% HP/sec passive</em>, his solo armies are genuinely viable &mdash; not as a doomstack gimmick but as a real campaign option.
+            </div>
+        </div>
+    </div>
+
+    <h3>Unique items &amp; banner synergy</h3>
+    <div class="card card-stone">
+        <ul style="margin:0">
+            <li><strong>Two signature items</strong> &mdash; one auto-casts a damaging explosion at a set interval; one creates an aura that applies a fire-damage weakness debuff on nearby enemies (which compounds with his Dragon's Breath and Constellation of the Dragon spells). <em>Verify exact item names in-game; community guides refer to them functionally.</em></li>
+            <li><strong>Cathay's faction-wide +20 armour banner</strong> stacks beautifully on top of the +15 armour faction effect &mdash; pin it on the unit you most want to survive a charge.</li>
+        </ul>
+    </div>
+
+    <h3>Mounts &amp; the Dragon transformation</h3>
+    <ul>
+        <li><strong>Standard form (foot):</strong> the default. Caster + melee hybrid; Master of Alchemy makes him a real melee threat even on foot. Place near the front line so his Warding Iron reaches the anvil and his casting reaches the bulk of the army.</li>
+        <li><strong>Iron Dragon form:</strong> activated by his transformation. Becomes a flying single-entity dragon &mdash; faster, more damaging, and able to dive over walls or backline targets. Keeps <em>one spell</em>; the rest are unavailable until he switches back.</li>
+        <li><strong>He has no horse / chariot mount</strong> &mdash; he <em>is</em> the mount.</li>
+    </ul>
+
+    <h3>Skill tree priorities (in order, post-Update 8.0)</h3>
+    <ol class="steps">
+        <li><strong>HP regeneration passive first.</strong> The <em>~0.1% HP/sec</em> on-skill regen turns his three-HP-bar profile into a near-immortal one. Single highest-impact skill point in his tree.</li>
+        <li><strong>Dragon-form upgrades.</strong> Earlier, cheaper, longer Dragon form is a battlefield power-spike &mdash; especially for the form-as-heal pattern.</li>
+        <li><strong>Master of Alchemy / weapon damage nodes.</strong> Push his single-target killing power further; lets you snipe enemy lords solo.</li>
+        <li><strong>Warding Iron upgrades.</strong> Longer / shorter cooldown / wider radius all matter when you're using it as a charge-receive button.</li>
+        <li><strong>Spell-school discounts &amp; winds-of-magic regen.</strong> Cheaper, more frequent Searing Doom and Constellation of the Dragon.</li>
+        <li><strong>Lightning Strike</strong> when it appears &mdash; isolates lone Chaos / Skaven / Greenskin armies before reinforcements join.</li>
+        <li><strong>Blue line campaign skills</strong> &mdash; movement, replenishment, post-battle income. The post-8.0 split tech tree gives you the campaign options here that used to live in the technology tree; don't double up.</li>
+    </ol>
+
+    <h3>How to use him in battle</h3>
+    <ol>
+        <li><strong>Deploy him central, slightly behind the front line.</strong> Warding Iron radius and caster reach both want him near the bulk of the army.</li>
+        <li><strong>Open with Searing Doom or Dragon's Breath</strong> on the most threatening enemy formation &mdash; AP missile spell on armoured infantry, breath on chaff hordes.</li>
+        <li><strong>Pop Warding Iron just before the enemy charge hits the line.</strong> Turns the first impact window into wasted damage.</li>
+        <li><strong>Transform when the moment justifies it.</strong> An enemy lord exposed, an artillery park unprotected, a flank collapsing &mdash; that's when the Iron Dragon comes out.</li>
+        <li><strong>Form-switch as a heal.</strong> Dragon hits orange? Switch to human, let the dragon pool refill, switch back. Don't burn through both pools in the same engagement.</li>
+        <li><strong>Drop Constellation of the Dragon</strong> on the densest enemy formation when his winds-of-magic budget allows &mdash; a clean cast wins fights.</li>
+        <li><strong>Pull him at orange HP if focused fire is on him.</strong> Three HP bars is a lot, but a permanent loss is real and you cannot replace him.</li>
+    </ol>
+</section>
+
+<!-- ============================================================ STRENGTHS / WEAKNESSES -->
+<section class="tab" id="strengths">
+    <h2><span class="rune">&#40845;</span>Faction Strengths &amp; Weaknesses</h2>
+
+    <div class="pc">
+        <div class="pc-block pc-pros">
+            <h4>Strengths</h4>
+            <ul>
+                <li><strong>The richest caravan economy in Cathay.</strong> +20% cargo on every run; one good caravan funds a fresh stack.</li>
+                <li><strong>Faction-wide +15 armour on melee units.</strong> Tier-1 chaff turns into a real anvil.</li>
+                <li><strong>Discounted Ogre Mercenaries.</strong> &minus;25% upkeep + Goldtooth on your doorstep = an affordable brawler line.</li>
+                <li><strong>Zhao Ming's survivability.</strong> Three HP bars stacked on one model; dual regen pools; one of the hardest Legendary Lords to actually kill.</li>
+                <li><strong>Alchemists arrive at +5 recruit rank.</strong> Immediate Increase Mobility and (post-8.0) army-buff actions.</li>
+                <li><strong>Iron Dragon's Edict</strong> is the strongest <em>economic</em> Dragon edict &mdash; construction cost reduction <em>and</em> research speed.</li>
+                <li><strong>Eight lores of magic available</strong> across the roster; Mastery of Elemental Winds scales spell power with caster count.</li>
+                <li><strong>Untainted &amp; baseline corruption suppression.</strong> Provinces stay clean automatically.</li>
+                <li><strong>Wu-Xing Compass &amp; Harmony</strong> levers no other race has, and the <em>Warpstone Desert</em> direction was designed for you.</li>
+            </ul>
+        </div>
+        <div class="pc-block pc-cons">
+            <h4>Weaknesses</h4>
+            <ul>
+                <li><strong>Surrounded start at Qiang.</strong> Dissenters west, Ghorst north, Eshin east, Dark Elves south. Less sheltered than Miao Ying.</li>
+                <li><strong>True capital is rebel-held.</strong> Shang-Yang sits behind a quest battle &mdash; you start without your headline city.</li>
+                <li><strong>Caravans can fail.</strong> Ivory Road dilemmas can convert profit runs into destroyed convoys; Ogre Lord ambush is the headline threat.</li>
+                <li><strong>Goldtooth raids caravans regardless.</strong> The positive diplomatic modifier does not stop their armies from picking off your convoys.</li>
+                <li><strong>Cathay armies are slow-moving and easy to flank.</strong> The race's defining battlefield weakness; combined-arms set-piece play, not pursuit.</li>
+                <li><strong>Harmony decays if you ignore it.</strong> Province balance is now a real tuning lever &mdash; lazy play loses the balance bonus.</li>
+                <li><strong>Three serious mid-game threats</strong> &mdash; Vilitch's Changing of the Ways, Snikch's stalking, and the constant Ghorst zombie tide.</li>
+                <li><strong>Confederation is hard.</strong> Inter-Cathay confederation has roughly a &minus;100 baseline modifier; assume you'll have to take cities by force or via loyalty.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h3>Who you should fear and why</h3>
+    <table>
+        <tr><th>Threat</th><th>Why they're dangerous</th><th>Counter</th></tr>
+        <tr><td><strong>Dissenter Lords of Jinshen (Sheng Ye)</strong></td><td>Starting enemy; holds Shang-Yang and blocks your westward expansion</td><td>Capture Xen Wu to trigger the Shang-Yang quest battle; rush them down before Ghorst becomes a problem</td></tr>
+        <tr><td><strong>Ghorst (Vampire Counts)</strong></td><td>Early zombie spam at Qiang; relentless attritional pressure</td><td>Iron Hail Gunners and Crane Gunners chew through zombies fast; Searing Doom and Constellation of the Dragon are AP enough to matter; don't let him stack three zombie armies before you respond</td></tr>
+        <tr><td><strong>Clan Eshin (Snikch)</strong></td><td>Stalking armies, Death Globadiers, Triads, ranged poison &mdash; sneaks past your line</td><td>Hero scouting via Alchemist; ambush stance to spot stalkers; Zhao Ming Dragon-form clears Triads quickly; pile in when they're at war with the Northern Provinces</td></tr>
+        <tr><td><strong>Puppets of Misrule (Vilitch / Tzeentch)</strong></td><td>Changing of the Ways can reassign your captured territories; magical damage</td><td>Spell Resistance on Zhao Ming helps personally; bring Astromancers for dispels; isolate Vilitch when Chaos Dwarfs are also at war with him; <em>Wound Enemy Hero on Vilitch</em> every cooldown</td></tr>
+        <tr><td><strong>The Blessed Dread (Lohkir / Dark Elves)</strong></td><td>Black Arks, late-game raids on the southern coast</td><td>Engage main forces out of Black Ark cannon range; trade access to Wei-Jin with Miao Ying to keep the coast in Cathay hands</td></tr>
+        <tr><td><strong>Goldtooth (friendly raids)</strong></td><td>Strong positive diplo modifier, but their armies will still raid your caravans</td><td>Caravans must travel with anti-large infantry; Master Engineer / Alchemist embedded in the caravan helps; don't run unsupported convoys</td></tr>
+        <tr><td><strong>Heralds of the Tempest (Kholek)</strong></td><td>Long-victory target; heavy late-game Chaos pressure on the Bastion</td><td>Lightning Strike + Iron Dragon form snipe Kholek directly; bring Iron Hail Gunners for AP melt; coordinate with Miao Ying if she's still alive</td></tr>
+    </table>
+</section>
+
+<!-- ============================================================ CAMPAIGN STRATEGY -->
+<section class="tab" id="campaign">
+    <h2><span class="rune">&#40845;</span>Campaign Strategy</h2>
+    <p class="lead">
+        Zhao Ming's campaign is <strong>three phases</strong>: stabilise Qiang and retake Shang-Yang, lock in the caravan economy and Ogre-merc supplemented line, then push outward to hit the long-victory destruction targets while running scheduled caravans for income.
+    </p>
+
+    <h3>Immortal Empires &mdash; the opening fifteen turns</h3>
+    <div class="note">
+        <strong>Starting position:</strong> <em>Qiang, Warpstone Desert</em>. <strong>Starting wars:</strong> Dissenter Lords of Jinshen (Sheng Ye) plus a sprinkling of minor neighbours. <strong>Starting hero:</strong> a strong Alchemist (silver-skill via +5 recruit rank). <strong>True capital:</strong> Shang-Yang, rebel-held, behind a quest battle.
+    </div>
+    <ol class="steps">
+        <li><strong>Turn 1:</strong> embed your Alchemist in Zhao Ming's army and upgrade <em>Increase Mobility</em> as soon as a skill point becomes available. Despatch a caravan west &mdash; <strong>Drakenhof is the headline first-destination pick</strong> for the Von Carstein Blade (HP regen) which slots beautifully onto Zhao Ming or an Ogre Mercenary.</li>
+        <li><strong>Turn 1&ndash;3:</strong> set the Wu-Xing Compass to <em>Warpstone Desert</em> immediately &mdash; cargo and recruitment scaling start working at once. <em>Do not</em> set it to Great Bastion during the Cathay civil war &mdash; the rebels are Cathay too.</li>
+        <li><strong>Turn 2&ndash;6:</strong> march on Xen Wu (the hidden Skaven settlement). Clearing it triggers the <strong>quest battle for Shang-Yang</strong>, which is your true capital and a long-term build-out anchor.</li>
+        <li><strong>Turn 6&ndash;10:</strong> retake Shang-Yang via the quest battle. Begin building the capital recruitment chain &mdash; you want Crane Gunner and Iron Hail Gunner access as fast as possible.</li>
+        <li><strong>Turn 10&ndash;15:</strong> caravan #2 in flight; Ogre Mercenary contracts open up; embed a second Alchemist or an Astromancer for Mastery of Elemental Winds scaling. <strong>Defensive alliance with Goldtooth</strong> if available &mdash; reduces the caravan raids and shores up your western flank.</li>
+        <li><strong>Throughout:</strong> watch Ghorst north of Qiang. If he spawns a stack, hit it with Zhao Ming personally &mdash; zombies fold to AP gunpowder and dragon dives.</li>
+    </ol>
+
+    <h3>The mid-game pattern</h3>
+    <div class="tactic">
+        <strong>1 mobile Zhao Ming army + 1 anchor army + 1 caravan in flight + Iron Dragon's Edict on whichever province is mid-build-out.</strong> Zhao Ming pushes the destruction targets and answers crises personally; a second Lord-led army garrisons Shang-Yang and patrols the desert; one or two caravans run continuously for income; the Compass alternates Warpstone Desert (for caravans) and Celestial Lake (for everything else).
+    </div>
+
+    <h3>Geographic expansion order</h3>
+    <ul>
+        <li><strong>West first</strong> &mdash; reclaim the Dissenter cities and lock down the Warpstone Desert.</li>
+        <li><strong>South into the Ogre mountains</strong> &mdash; defensible terrain, better settlements than the western desert. Trade unwanted Ogre cities <em>to Goldtooth</em> for diplomatic credit instead of razing.</li>
+        <li><strong>East along the Ivory Road</strong> &mdash; consolidate the Cathay heartland; trade and confederate where possible (rare but viable late).</li>
+        <li><strong>North only when supporting Miao Ying.</strong> The Bastion is hers; you don't need to garrison it permanently, but a fast Zhao Ming relief flight can save a gate.</li>
+        <li><strong>Don't try to hold Chaos Wastes territory.</strong> Climate penalty makes it a money sink; raze or trade.</li>
+    </ul>
+
+    <h3>The three serious threats and how to time them</h3>
+    <ul>
+        <li><strong>Clan Eshin (Snikch)</strong> sneaks out from the east. If you feel confident, pile in when they're already at war with Miao Ying &mdash; remove the rat infestation while she absorbs the front.</li>
+        <li><strong>Tzeentch (Vilitch)</strong> is a campaign-disruptor far worse than his army strength suggests. <em>Wound Enemy Hero on Vilitch every cooldown</em> with your Alchemist; snipe him personally with Zhao Ming's Dragon form when he steps outside reinforcement range.</li>
+        <li><strong>Ghorst's zombies</strong> never stop. The fix is permanent gunline presence in northern garrisons &mdash; not a Zhao Ming personal answer. Build it once, forget it.</li>
+    </ul>
+
+    <h3>Caravan routing as strategy</h3>
+    <div class="warn">
+        <strong>The first run to a new destination grants a magic item.</strong> Prioritise <em>variety</em> over repeat trips &mdash; first run to Drakenhof (Von Carstein Blade), first run to Karaz-a-Karak, first run to Marienburg, first run to Altdorf. Each new destination expands your item library. Once the library is built, repeated runs are pure gold &mdash; valuable, but no longer the headline reward.
+    </div>
+
+    <h3>Endgame &amp; victory</h3>
+    <p><strong>Short Campaign Victory (post-rework):</strong></p>
+    <ul>
+        <li>Destroy the <em>Dissenter Lords of Jinshen</em></li>
+        <li>Maintain control of three nearby provinces</li>
+        <li>Occupy / loot / raze / sack <em>30 different settlements</em></li>
+        <li><strong>Reward:</strong> +3 hero capacity for all heroes</li>
+    </ul>
+    <p><strong>Long Campaign Victory:</strong></p>
+    <ul>
+        <li>Achieve the Short Victory</li>
+        <li>Occupy / loot / raze / sack <em>70 different settlements</em> total</li>
+        <li>Destroy: <em>Puppets of Misrule</em> (Vilitch), <em>Heralds of the Tempest</em> (Kholek), <em>The Blessed Dread</em> (Lohkir), <em>Clan Eshin</em> (Snikch)</li>
+        <li>Maintain control of the three Great Bastion provinces (directly or via vassals / military allies)</li>
+        <li><strong>Reward:</strong> +10 hero recruitment rank faction-wide</li>
+    </ul>
+    <p><strong>Realm of Chaos:</strong> alternate quest victories include <em>Iron into Gold</em> (500,048 gold, 9+ caravans, 13,400 goods delivered, Great Embassy at Shang-Yang &rarr; +60% trade tariff and doubled caravan capacity), <em>All That Glitters Is Not Gold</em> (raze five Skaven strongholds &rarr; Warpstorm army ability), and <em>Don't Tread on Ming</em> (control the Ivory Road region, eliminate Caravan of Blue Roses and Poxmakers of Nurgle).</p>
+
+    <div class="tip">
+        <strong>The Realm of Chaos route is a different game.</strong> If you want a focused mercantile / dragon-knight roleplay, RoC's quest victories are richer than Immortal Empires' destroy-faction list. <em>Iron into Gold in particular doubles caravan capacity</em> &mdash; on top of the +20% faction effect &mdash; and turns your treasury into a runaway.
+    </div>
+</section>
+
+<!-- ============================================================ BATTLE STRATEGY -->
+<section class="tab" id="battle">
+    <h2><span class="rune">&#40845;</span>Battle Strategy</h2>
+    <p class="lead">
+        Zhao Ming's battles are <strong>armoured-line set-pieces with Ogre Mercenary heavies up front and a Cathay gunline behind</strong>. Yin/Yang positioning is layered on top, Mastery of Elemental Winds compounds spell power with embedded casters, and Zhao Ming himself functions as a one-model crisis response.
+    </p>
+
+    <h3>The Zhao Ming army template (~16&ndash;20 units)</h3>
+    <table>
+        <tr><th>Slot</th><th>Composition</th><th>Yin/Yang</th><th>Role</th></tr>
+        <tr><td>1</td><td>Zhao Ming (Standard, transforms when needed)</td><td>Lord</td><td>Caster, Warding Iron, dragon crisis response</td></tr>
+        <tr><td>1&ndash;2</td><td>Alchemist + Astromancer (or 2nd Alchemist)</td><td>Yin</td><td>Mastery of Elemental Winds scaling; magic support; army-buff actions</td></tr>
+        <tr><td>2&ndash;3</td><td>Ogre Mercenaries (Bulls / Ironguts)</td><td>Yang</td><td>Frontline anvil; &minus;25% upkeep makes them cheap</td></tr>
+        <tr><td>2&ndash;3</td><td>Peasant Long Spearmen or Jade Warriors (Halberds)</td><td>Yang</td><td>Cathay line; +15 armour from faction effect</td></tr>
+        <tr><td>1&ndash;2</td><td>Celestial Dragon Guard</td><td>Yang</td><td>Elite anti-infantry; flanking resistance</td></tr>
+        <tr><td>3</td><td>Crane Gunners</td><td>Yin</td><td>Primary AP gunpowder line</td></tr>
+        <tr><td>1&ndash;2</td><td>Iron Hail Gunners</td><td>Yin</td><td>Heavy AP gunpowder; melts armour</td></tr>
+        <tr><td>1</td><td>Jade Warrior Crossbowmen</td><td>Yin</td><td>Mid-tier AP volume of fire; cheap</td></tr>
+        <tr><td>1&ndash;2</td><td>Sky Lanterns (post-8.0 buff)</td><td>Yin</td><td>Flying ranged support; carries the Eye of the Dragon reload/leadership buff</td></tr>
+        <tr><td>1&ndash;2</td><td>Grand Cannons</td><td>Yin</td><td>Long-range AP artillery; one-shots monsters</td></tr>
+        <tr><td>0&ndash;1</td><td>Terracotta Sentinel</td><td>Yang</td><td>Late-game elite monster; unbreakable</td></tr>
+    </table>
+
+    <div class="patch">
+        <strong>Update 8.0 roster change:</strong> the <em>Eye of the Dragon</em> passive (reload speed + leadership buff to nearby ranged units) has been <strong>removed entirely from Sky-junks and now lives only on Sky Lanterns</strong>. The support role of the army is now Sky Lantern's. Use Sky-junks for damage flights, not for parking near your gunline.
+    </div>
+
+    <h3>Why Ogre Mercenaries?</h3>
+    <div class="tip">
+        <strong>The math:</strong> &minus;25% upkeep on Ogres + +15 armour on melee (which they qualify for) + Yang alignment for the Yin/Yang buff pattern. Your Cathay Spearmen are fine; your Ogres are <em>better than fine</em>. The wiki notes Zhao Ming's faction is <em>designed</em> to lean on the discount &mdash; not using Ogre Mercs is leaving the headline faction effect on the floor.
+    </div>
+
+    <h3>Yin/Yang positioning &mdash; the rule</h3>
+    <div class="yy">
+        <div class="yy-block yy-yin">
+            <h4>Yin units want a Yang neighbour</h4>
+            <p style="margin:0;font-size:.92rem;color:var(--mu)">Place Crane Gunners <em>directly behind or beside</em> Ogre Mercs or Jade Warriors. Sky Lanterns should hover near a Yang anchor on the flank. <strong>An isolated Yin unit reloads slower &mdash; that's lost DPS.</strong></p>
+        </div>
+        <div class="yy-block yy-yang">
+            <h4>Yang units want a Yin neighbour</h4>
+            <p style="margin:0;font-size:.92rem;color:var(--mu)">Ogre Mercs behind / next to Crane Gunners gain melee defence. Celestial Dragon Guard fight harder when an Astromancer floats nearby. <strong>An isolated Yang unit takes more melee damage &mdash; that's a thinner line.</strong></p>
+        </div>
+    </div>
+
+    <h3>Standard battle plan</h3>
+    <ol class="steps">
+        <li><strong>Deploy in a Yin/Yang interleaved line</strong>: Ogre Mercs / Jade Warriors front, Crane Gunners directly behind, Celestial Dragon Guard on the wings, Sky Lanterns mid-rear, Grand Cannons elevated.</li>
+        <li><strong>Open with spell prep.</strong> Zhao Ming drops Searing Doom or Dragon's Breath on the most threatening enemy formation as they commit to the approach.</li>
+        <li><strong>Sky-junks alpha-strike</strong> the enemy lord or a fast-cavalry threat &mdash; they're for damage now, not support.</li>
+        <li><strong>Grand Cannons fire</strong> on enemy artillery, monsters, or the most expensive single target.</li>
+        <li><strong>Crane Gunner / Iron Hail Gunner volleys</strong> as the enemy enters range. +15 armour on your line means the volleys connect before the enemy reaches you.</li>
+        <li><strong>Pop Warding Iron just before the charge connects.</strong> Turns the first impact window into wasted damage.</li>
+        <li><strong>Ogre Mercs and Cathay infantry absorb the charge.</strong> Their armour holds; their melee stats finish the job.</li>
+        <li><strong>Drop Constellation of the Dragon</strong> on the densest enemy formation when winds-of-magic budget allows.</li>
+        <li><strong>Transform Zhao Ming</strong> when the moment justifies it &mdash; enemy lord exposed, line collapsing on a flank, artillery park unguarded. Otherwise keep him in Standard form for Warding Iron reach.</li>
+        <li><strong>Form-switch to heal.</strong> If Dragon hits orange, swap to human; let the dragon pool refill.</li>
+    </ol>
+
+    <h3>Specific matchups</h3>
+
+    <div class="three-col">
+        <div class="card card-iron">
+            <h4>vs. Vampire Counts (Ghorst)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Zombie hordes melt to AP gunpowder. Iron Hail Gunners shred Crypt Ghouls; Crane Gunners chew through swarms; Constellation of the Dragon one-shots clumped zombie blobs. <strong>The matchup the early game forces on you.</strong>
+            </p>
+        </div>
+        <div class="card card-iron">
+            <h4>vs. Skaven (Clan Eshin)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Sky-junks dominate Skaven swarms. Crane Gunners volley clumps. Zhao Ming transforms to clear Triads and stalking Globadiers. <em>Watch for ambushes</em> &mdash; ambush stance pre-emptively when patrolling east.
+            </p>
+        </div>
+        <div class="card card-iron">
+            <h4>vs. Tzeentch (Vilitch)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Spell Resistance on Zhao Ming helps personally. Bring two casters for Mastery of Elemental Winds scaling. <em>Snipe Vilitch fast</em> with Dragon-form dive &mdash; Changing of the Ways gets worse the longer he lives.
+            </p>
+        </div>
+        <div class="card card-iron">
+            <h4>vs. Chaos Warriors / Norsca</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                +15 armour on your line absorbs more axe damage than baseline Cathay. Iron Hail Gunners shred Chaos Warriors; Searing Doom snipes the lord; Ogre Ironguts hold the front while the gunline cooks.
+            </p>
+        </div>
+        <div class="card card-iron">
+            <h4>vs. Dark Elves (Blessed Dread)</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Engage out of Black Ark cannon range. Crane Gunners outrange most Dark Elf crossbows; +15 armour blunts their volume of fire. Watch for Witch Elf shock charges &mdash; halberd Jade Warriors counter.
+            </p>
+        </div>
+        <div class="card card-iron">
+            <h4>vs. Greenskin / Ogre swarms</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">
+                Numbers war &mdash; Grand Cannons, Sky-junks, Nan-Gau Grenadier AoE. Spearmen anvil; Celestial Dragon Guard counter-flank. <em>If you're at war with Goldtooth specifically</em>, expect Ironguts on Stonehorns and bring Grand Cannons for the monsters.
+            </p>
+        </div>
+    </div>
+
+    <h3>Auto-resolve advice</h3>
+    <div class="tip">
+        Zhao Ming's stack <strong>auto-resolves well</strong> against weak-but-numerous foes because the auto-resolver weights both his stats and the +15 armour heavily. <strong>Always manually fight</strong> against magic-heavy stacks (Tzeentch / High Elves), stalking Skaven, and any battle where Zhao Ming is the decisive piece &mdash; the auto-resolver undervalues a one-lord-three-HP-bars solve.
+    </div>
+</section>
+
+<!-- ============================================================ ROSTER -->
+<section class="tab" id="roster">
+    <h2><span class="rune">&#40845;</span>Unit Roster</h2>
+    <p class="lead">
+        Zhao Ming uses the full Cathay roster &mdash; no exclusive units &mdash; but the <em>practical access</em> differs. Ogre Mercenaries are uniquely cheap; Alchemists arrive at silver-skill; +15 armour rebalances which Cathay units are worth fielding. Each unit is aligned <strong>Yin</strong> (typically ranged) or <strong>Yang</strong> (typically melee).
+    </p>
+
+    <h3>Lords</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Zhao Ming, the Iron Dragon</strong></td>
+            <td><span class="role role-hero">Caster LL</span></td>
+            <td>Two forms, dual regen, Master of Alchemy +130% wpn dmg, Warding Iron, Lore of Yang &amp; Metal</td>
+            <td>Single entity; Dragon form attracts AP fire</td>
+            <td>Always &mdash; main army anchor</td>
+        </tr>
+        <tr>
+            <td><strong>Lord (generic)</strong></td>
+            <td><span class="role role-hero">Combat Lord</span></td>
+            <td>Solid duelist; mountable</td>
+            <td>No magic</td>
+            <td>2nd / 3rd army leader; Shang-Yang garrison commander</td>
+        </tr>
+        <tr>
+            <td><strong>Astromancer (Lord)</strong></td>
+            <td><span class="role role-cast">Caster Lord</span></td>
+            <td>Lore of Heavens; long-range damage spells</td>
+            <td>Fragile in melee</td>
+            <td>Lead a 2nd caster-army; embed in Zhao Ming for Mastery scaling</td>
+        </tr>
+        <tr>
+            <td><strong>Dragon-Blooded Shugengan</strong></td>
+            <td><span class="role role-cast">Caster Lord</span></td>
+            <td>Lore of Yin or Lore of Yang specialisation</td>
+            <td>Fragile</td>
+            <td>Match Shugengan lore to army composition</td>
+        </tr>
+    </table>
+
+    <h3>Heroes</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Alchemist</strong></td>
+            <td><span class="role role-cast">Caster Hero</span></td>
+            <td>Lore of Metal; Increase Mobility on campaign; <em>+5 recruit rank</em> in your faction; new Sky Lantern mount and army-buff actions (post-8.0)</td>
+            <td>No melee</td>
+            <td>Always &mdash; embed in Zhao Ming turn 1; recruit more for any army</td>
+        </tr>
+        <tr>
+            <td><strong>Gate Master</strong></td>
+            <td><span class="role role-hero">Combat Hero</span></td>
+            <td>Post-8.0: three specialisation paths (infantry buff, ranged support, self-melee); new <em>Implacable Spirit</em> ranged-stance ability</td>
+            <td>No magic; melee-focused build only</td>
+            <td>Embed in line armies for the buff aura; pick a specialisation per army role</td>
+        </tr>
+        <tr>
+            <td><strong>Astromancer (Hero)</strong></td>
+            <td><span class="role role-cast">Caster Hero</span></td>
+            <td>Cheaper Lore of Heavens hero; post-8.0 caster-buff and magical-creature lines</td>
+            <td>Squishy</td>
+            <td>Mastery-of-Elemental-Winds slot in caster-heavy armies</td>
+        </tr>
+        <tr>
+            <td><strong>Bhashiva (Legendary Hero, free post-8.0)</strong></td>
+            <td><span class="role role-hero">Legendary Hero</span></td>
+            <td>White Tiger flavour; legendary kit; available to every Cathay faction</td>
+            <td>Single entity</td>
+            <td>Embed in your headline army for the unique passives; verify exact kit in-game</td>
+        </tr>
+    </table>
+
+    <h3>Infantry &mdash; Yang anchors</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Peasant Long Spearmen</strong></td>
+            <td><span class="role role-yang">Tier-1 Yang</span></td>
+            <td>Cheap; anti-large; <em>+15 armour from faction effect</em> makes them a real anvil</td>
+            <td>Modest damage</td>
+            <td>Tier-1 anchor; cheap upkeep keeps multiple armies viable</td>
+        </tr>
+        <tr>
+            <td><strong>Jade Warriors (Halberd / Sword)</strong></td>
+            <td><span class="role role-yang">Mid-tier Yang</span></td>
+            <td>Solid armour, halberd variant for anti-large, good melee stats</td>
+            <td>Slow</td>
+            <td>The mid-game frontline core; 2&ndash;3 in your stack</td>
+        </tr>
+        <tr>
+            <td><strong>Celestial Dragon Guard</strong></td>
+            <td><span class="role role-yang">Elite Yang</span></td>
+            <td>Highly-trained elite infantry; high armour, excellent melee stats; shielded</td>
+            <td>Expensive</td>
+            <td>Late-game elite; 1&ndash;2 in your stack for the wings</td>
+        </tr>
+        <tr>
+            <td><strong>Ogre Mercenaries (Bulls / Ironguts)</strong></td>
+            <td><span class="role role-merc">Yang Heavy</span></td>
+            <td><em>&minus;25% upkeep</em> in your faction; high HP; high charge; +15 armour buff applies; brutal in melee</td>
+            <td>Mass-armoured penalty; ammo-light artillery shreds them</td>
+            <td>2&ndash;3 per Zhao Ming stack &mdash; the faction's defining tactical choice</td>
+        </tr>
+    </table>
+
+    <h3>Ranged infantry &mdash; Yin shooters</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Peasant Archers</strong></td>
+            <td><span class="role role-yin">Tier-1 Yin</span></td>
+            <td>Cheap; volume of fire</td>
+            <td>No AP; fragile</td>
+            <td>Early-game backline; replace by tier 3</td>
+        </tr>
+        <tr>
+            <td><strong>Jade Warrior Crossbowmen</strong></td>
+            <td><span class="role role-yin">Mid-tier Yin</span></td>
+            <td>Armoured; AP crossbow damage</td>
+            <td>Slow reload</td>
+            <td>Mid-game ranged core; 1&ndash;2 in your stack</td>
+        </tr>
+        <tr>
+            <td><strong>Crane Gunners</strong></td>
+            <td><span class="role role-yin">Elite Yin Gunpowder</span></td>
+            <td>AP gunpowder; long range; shielded; the faction's signature ranged unit</td>
+            <td>Expensive; ammo limit</td>
+            <td>3 in any serious stack &mdash; the gunline workhorse</td>
+        </tr>
+        <tr>
+            <td><strong>Iron Hail Gunners</strong></td>
+            <td><span class="role role-yin">Heavy Gunpowder</span></td>
+            <td>Multi-shot heavy AP gunpowder; melts armoured infantry at close range</td>
+            <td>Short range; vulnerable in melee</td>
+            <td>1&ndash;2 vs. Chaos Warrior and heavy-infantry matchups</td>
+        </tr>
+        <tr>
+            <td><strong>Nan-Gau Grenadiers</strong></td>
+            <td><span class="role role-yin">AoE Gunpowder</span></td>
+            <td>AoE grenade damage; anti-clump</td>
+            <td>Limited ammo</td>
+            <td>1 vs. infantry-heavy enemies</td>
+        </tr>
+    </table>
+
+    <h3>Cavalry</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Jade Lancers</strong></td>
+            <td><span class="role role-cav">Shock Cav</span></td>
+            <td>Charge bonus; anti-large variant; armoured</td>
+            <td>Low melee defence after charge spent</td>
+            <td>Cycle-charge the flanks; 1&ndash;2 per army</td>
+        </tr>
+        <tr>
+            <td><strong>Great Longma Riders</strong></td>
+            <td><span class="role role-fast">Flying Cav</span></td>
+            <td>Flying mounted cavalry; rare profile in the game; <em>now tier-IV building post-8.0</em></td>
+            <td>Expensive; niche</td>
+            <td>Late-game flanker; bypass terrain entirely; earlier access than before</td>
+        </tr>
+    </table>
+
+    <h3>Flying war machines &amp; artillery</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Sky Lantern</strong></td>
+            <td><span class="role role-fly">Support Flier</span></td>
+            <td><em>Now carries the Eye of the Dragon passive</em> (reload speed + leadership to nearby ranged); cheaper than Sky-junk</td>
+            <td>Lower damage than Sky-junk</td>
+            <td>1&ndash;2 per army; hover near the gunline as a buff platform</td>
+        </tr>
+        <tr>
+            <td><strong>Sky-junk</strong></td>
+            <td><span class="role role-fly">Flying Gunship</span></td>
+            <td>Flying ranged; high damage output</td>
+            <td><em>Eye of the Dragon removed post-8.0</em>; fire damage resisted by Chaos Dwarfs</td>
+            <td>1&ndash;2 in late-game stacks; <strong>use for damage flights, not parking</strong></td>
+        </tr>
+        <tr>
+            <td><strong>Grand Cannon</strong></td>
+            <td><span class="role role-art">Direct-Fire Artillery</span></td>
+            <td>Long-range AP; one-shots monsters; bronze-dragon-shaped</td>
+            <td>Vulnerable to dive cavalry / fliers</td>
+            <td>1&ndash;2 in every army</td>
+        </tr>
+        <tr>
+            <td><strong>Wu-Xing War Compass</strong></td>
+            <td><span class="role role-art">Magical War Machine</span></td>
+            <td>Magical ranged damage; faction flavour</td>
+            <td>Slow; needs protection</td>
+            <td>1 in caster-heavy armies for synergy</td>
+        </tr>
+    </table>
+
+    <h3>Monsters</h3>
+    <table>
+        <tr><th>Unit</th><th>Type</th><th>Strengths</th><th>Weaknesses</th><th>Use case</th></tr>
+        <tr>
+            <td><strong>Terracotta Sentinel</strong></td>
+            <td><span class="role role-mons">Construct Monster</span></td>
+            <td>Massive HP; magical attacks; unbreakable construct</td>
+            <td>Single entity; expensive</td>
+            <td>1 in late-game stacks; soaks artillery</td>
+        </tr>
+        <tr>
+            <td><strong>Jet Lions / Jade Lions / Celestial Lions</strong></td>
+            <td><span class="role role-mons">Single-Entity Monsters</span></td>
+            <td>Single-entity damage dealers; tier-scaling profile</td>
+            <td>Single entities</td>
+            <td>Specialty stacks; less synergistic with Zhao Ming than with Miao Ying (no Earth Blood heal)</td>
+        </tr>
+    </table>
+
+    <div class="tip">
+        <strong>Doomstack note:</strong> a "Zhao Ming brawler stack" is normally 3 Ogre Ironguts, 2 Jade Warriors (Halberds), 1 Celestial Dragon Guard, 3 Crane Gunners, 1 Iron Hail Gunner, 1 Jade Warrior Crossbowmen, 1 Sky Lantern, 1 Sky-junk, 1 Grand Cannon, 1 Terracotta Sentinel, plus Zhao Ming, an Alchemist, an Astromancer, and (post-8.0) Bhashiva. Swap a Sky-junk for a Wu-Xing War Compass against magic-heavy enemies; swap an Ogre Irongut for a second Iron Hail Gunner against Chaos Dwarfs.
+    </div>
+    <div class="tactic">
+        <strong>Zhao Ming-army synergy:</strong> &minus;25% upkeep on Ogre Mercs + +15 armour faction-wide + Yin/Yang reload buff + Mastery of Elemental Winds caster scaling + Warding Iron's near-invulnerability burst + the new (post-8.0) Sky Lantern Eye of the Dragon support. <em>Five</em> distinct sources of buffs stack on the same combined-arms line. The army is objectively cheaper, more durable, and more sustained than in any other Cathay lord's hands.
+    </div>
+</section>
+
+<!-- ============================================================ HEROES -->
+<section class="tab" id="heroes">
+    <h2><span class="rune">&#40845;</span>Heroes &amp; Casters &mdash; Management Guide</h2>
+    <p class="lead">
+        Cathay's hero economy is caster-heavy by design, and Zhao Ming's faction <em>especially</em> rewards it because Alchemists arrive at silver-skill thanks to the +5 recruit rank bonus. Update 8.0 also reworked three of the four hero types &mdash; this section reflects the post-patch state.
+    </p>
+
+    <h3>Hero categories &mdash; what they're for</h3>
+    <div class="mech-grid">
+        <div class="mech">
+            <h4>Alchemist (Lore of Metal) &mdash; your headline hero</h4>
+            <p><strong>+5 recruit rank in your faction</strong>: every Alchemist arrives with silver-level skills already picked. <em>Increase Mobility</em> on the campaign map remains the same opening unlock as it is for Miao Ying.</p>
+            <p style="margin:0"><strong>Post-Update 8.0:</strong> new <em>Sky Lantern mount option</em>, a stronger Enchanted Metallurgy line, and new <em>army-buff actions</em> that add weapon strength or armour to units in the lord's army. The armour buff in particular stacks with your +15 armour faction effect &mdash; <em>your line just keeps getting tougher</em>.</p>
+        </div>
+        <div class="mech">
+            <h4>Gate Master (combat hero, post-8.0 rework)</h4>
+            <p>Three specialisation paths post-rework: <strong>infantry buff</strong>, <strong>ranged support</strong>, or <strong>self-melee duelist</strong>. New ability <em>Implacable Spirit</em> for ranged stance.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> infantry-buff Gate Master in a brawler stack; ranged-support Gate Master in a gunline stack; self-melee Gate Master for solo missions or assassination targets.</p>
+        </div>
+        <div class="mech">
+            <h4>Astromancer (Lore of Heavens, post-8.0 rework)</h4>
+            <p>Long-range damage caster &mdash; lightning, comets, weather. Mastery of Elemental Winds caster slot; second hero in any caster-heavy army.</p>
+            <p style="margin:0"><strong>Post-Update 8.0:</strong> new caster-buff line at level 12; magical-creature specialisation at level 14. <strong>Rule of thumb:</strong> embed in armies that face magic-heavy enemies (Tzeentch / High Elves) or when you want compounded spell damage.</p>
+        </div>
+        <div class="mech">
+            <h4>Dragon-Blooded Shugengan</h4>
+            <p>Specialist caster &mdash; <strong>Lore of Yin</strong> or <strong>Lore of Yang</strong>. Yin emphasises debuffs and ranged support; Yang emphasises melee buffs and damage.</p>
+            <p style="margin:0"><strong>Rule of thumb:</strong> Yang Shugengan in Zhao Ming's brawler stack to amplify the Ogre Mercenary / Jade Warrior melee line; Yin Shugengan in a gunline-focused army.</p>
+        </div>
+    </div>
+
+    <h3>How to manage your hero roster</h3>
+    <ol class="steps">
+        <li><strong>Embed your starting Alchemist in Zhao Ming's army on turn 1.</strong> Increase Mobility is the campaign opening; their army-buff actions stack with your +15 armour effect.</li>
+        <li><strong>Recruit a second caster (Astromancer or Alchemist) by turn 5.</strong> Mastery of Elemental Winds kicks in at +15%; Zhao Ming is already a caster, so the army runs at +15% from the second caster onward.</li>
+        <li><strong>Add a Gate Master in the infantry-buff path</strong> for the brawler stack &mdash; the buff aura layered onto your already armoured line is decisive.</li>
+        <li><strong>Stack 3&ndash;4 casters for major battles.</strong> Zhao Ming + 3 casters runs at +45%, which makes Constellation of the Dragon / Comet of Cassandora / Searing Doom genuinely battle-deciding.</li>
+        <li><strong>Use heroes as campaign-map agents.</strong> Wound Enemy Hero on Vilitch <em>every cooldown</em>; Block Army on a stalking Snikch stack; Embed buffs on a caravan to make it raid-resistant.</li>
+        <li><strong>Don't keep idle heroes in cities for more than 3 turns.</strong> Upkeep adds up; either embed them, send them as agents, or disband.</li>
+        <li><strong>Recruit Bhashiva (Legendary Hero) when she becomes available post-8.0.</strong> Free to all Cathay factions; embed in your headline army.</li>
+    </ol>
+
+    <h3>Skill priorities by hero / lord type</h3>
+    <table>
+        <tr><th>Hero / Lord</th><th>First three picks</th><th>Why</th></tr>
+        <tr>
+            <td><strong>Zhao Ming</strong></td>
+            <td>HP regen passive &rarr; Dragon-form upgrades &rarr; Master of Alchemy / weapon damage</td>
+            <td>Survivability first (compounds with dual regen pools); Dragon spike second; melee killing power third</td>
+        </tr>
+        <tr>
+            <td><strong>Alchemist</strong></td>
+            <td><em>Increase Mobility</em> &rarr; Lore of Metal damage / cooldown &rarr; Enchanted Metallurgy &amp; army-buff actions (post-8.0)</td>
+            <td>Mobility for opening; spells for damage; new army-buff actions stack with +15 armour</td>
+        </tr>
+        <tr>
+            <td><strong>Gate Master</strong></td>
+            <td>Choose specialisation path &rarr; Implacable Spirit (if ranged) &rarr; aura range / strength upgrades</td>
+            <td>The post-rework kit is path-locked; commit early</td>
+        </tr>
+        <tr>
+            <td><strong>Astromancer</strong></td>
+            <td>Lore of Heavens spell discounts &rarr; new caster-buff line at lvl 12 &rarr; winds-of-magic regen</td>
+            <td>Spells are the value; cheaper / more often is the compound buff</td>
+        </tr>
+        <tr>
+            <td><strong>Dragon-Blooded Shugengan</strong></td>
+            <td>Yin or Yang lore mastery (match army) &rarr; spell discounts &rarr; Harmony Amplifier scaling if available</td>
+            <td>Specialise into the lore that matches your stack composition</td>
+        </tr>
+    </table>
+
+    <h3>Common mistakes to avoid</h3>
+    <ul>
+        <li><strong>Skipping the Alchemist's mobility upgrade.</strong> The opening sweep depends on it.</li>
+        <li><strong>Putting all your casters in one army.</strong> Mastery of Elemental Winds caps at +100%; stuffing 8 casters wastes the surplus. Spread them &mdash; one main army at +60%, a second at +30%.</li>
+        <li><strong>Treating Gate Master as a one-build hero.</strong> Post-Update 8.0 the three specialisations are <em>genuinely different roles</em>. Pick deliberately per army.</li>
+        <li><strong>Forgetting Wound Enemy Hero on Vilitch.</strong> Disrupting Changing of the Ways with a hero action is one of the best campaign-map plays.</li>
+        <li><strong>Recruiting Alchemists at default rank elsewhere.</strong> The +5 rank bonus is yours specifically &mdash; your Alchemists are objectively better than any other Cathay player's. Lean into it.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ CARAVANS -->
+<section class="tab" id="caravans">
+    <h2><span class="rune">&#40845;</span>Caravans &amp; the Ivory Road</h2>
+    <p class="lead">
+        Caravans are <em>your</em> mechanic. The Ivory Road was carved through the Warpstone Desert by your alchemists; your faction effect grants <strong>+20% maximum cargo capacity</strong>; the Warpstone Desert Wu-Xing Compass direction was designed for your caravans specifically. <strong>If you don't have a caravan in flight at all times, you are missing the faction's headline economic lever.</strong>
+    </p>
+
+    <h3>How caravans actually work</h3>
+    <ol class="steps">
+        <li><strong>Despatch a caravan</strong> from a Cathay city heading west to a destination of your choice. The caravan is led by a Caravan Master with a small accompanying army.</li>
+        <li><strong>The caravan army costs zero upkeep</strong> in the field &mdash; uniquely.</li>
+        <li><strong>Equip the caravan with sturdy infantry and anti-large units.</strong> Ogre Lord ambushes are the headline threat; Skaven ambushes are the secondary one.</li>
+        <li><strong>Watch for dilemmas en route.</strong> The Ivory Road throws random events that may enhance the rewards, redirect the route, or destroy the convoy. <em>Update 8.0 added more variety</em> to these encounters.</li>
+        <li><strong>Mid-route redirection is allowed.</strong> If a destination becomes hostile, redirect.</li>
+        <li><strong>Arrive at the destination</strong> &rarr; gold payout, plus a magic item on the <em>first</em> visit to a new destination.</li>
+        <li><strong>Defeating an Ogre Lord en route</strong> grants meaningful loot, on top of the destination payout.</li>
+        <li><strong>Run caravans continuously.</strong> One in flight at all times; income compounds.</li>
+    </ol>
+
+    <h3>The headline first-trip destinations</h3>
+    <div class="three-col">
+        <div class="card card-stone">
+            <h4>Drakenhof</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65"><strong>Von Carstein Blade</strong> &mdash; HP regen item. Slots beautifully onto Zhao Ming (on top of his already strong regen) or onto an Ogre Mercenary. <em>The community-consensus first run.</em></p>
+        </div>
+        <div class="card card-stone">
+            <h4>Marienburg</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">Mercantile capital of the Old World &mdash; consistent high payout, first-trip item reward. Safer route than Drakenhof if Vampire territory is dense.</p>
+        </div>
+        <div class="card card-stone">
+            <h4>Karaz-a-Karak</h4>
+            <p style="font-size:.94rem;color:var(--mu);margin:0;line-height:1.65">The Dwarf capital. First-trip item reward; long route but high-yield. <em>Dwarfs are reliable trade partners</em>; the route stays safe long-term.</p>
+        </div>
+    </div>
+
+    <h3>Caravan composition (what to load)</h3>
+    <ul>
+        <li><strong>Sturdy infantry</strong> &mdash; Jade Warriors (Halberd) for the anti-large profile; Peasant Long Spearmen as cheap volume.</li>
+        <li><strong>Anti-large support</strong> &mdash; Jade Lancers cycle-charge Ogre Tyrants; Crane Gunners AP-volley them.</li>
+        <li><strong>One Alchemist or Astromancer embedded</strong> as a hero &mdash; spell support against Ogre Lord ambushes, and the army-buff actions stack with the caravan army's effective combat power.</li>
+        <li><strong>Avoid</strong> low-armour ranged-only loadouts &mdash; they fold to mounted ambush.</li>
+    </ul>
+
+    <h3>The Wu-Xing Compass &mdash; Warpstone Desert direction</h3>
+    <div class="tactic">
+        <strong>Default-rotate to Warpstone Desert whenever you have a caravan in flight.</strong> The direction was reworked in patch 5.04 to grant <em>caravan cargo capacity</em> and <em>recruitment</em> bonuses on top of your +20% faction effect. Stack with the Iron Dragon's Edict on a province mid-build-out and you have the strongest economic / military combined window available to any Cathay faction.
+    </div>
+
+    <h3>Building the magic-item library</h3>
+    <div class="warn">
+        <strong>Prioritise variety on the first run.</strong> The magic-item reward only fires <em>once per destination</em>. Cycle through Drakenhof &rarr; Karaz-a-Karak &rarr; Marienburg &rarr; Altdorf &rarr; Lothern over your first 30 turns to maximise item acquisition. After the library is built, repeated trips are gold-only &mdash; valuable, but not the headline reward.
+    </div>
+
+    <h3>The Goldtooth problem</h3>
+    <p>
+        Goldtooth has a <strong>strong positive diplomatic modifier</strong> with you. <em>This does not stop their armies from raiding your caravans.</em> The fix is composition (anti-large infantry), not diplomacy.
+    </p>
+    <ul>
+        <li><strong>Sign trade with Goldtooth</strong> as soon as available &mdash; gold flow is real.</li>
+        <li><strong>Don't rely on Non-Aggression Pacts</strong> to protect caravans; the AI mercenary armies operate independently of the formal pact.</li>
+        <li><strong>If you must run a caravan through their territory,</strong> stack two Jade Warrior Halberd units and a Crane Gunner. The Ogre Lord will die or break off.</li>
+    </ul>
+
+    <h3>Realm of Chaos caravan quests</h3>
+    <div class="patch">
+        <strong>RoC quest victories</strong> include <em>Iron into Gold</em> (accumulate 500,048 gold; complete 9+ caravans; deliver 13,400 goods; build the Great Embassy at Shang-Yang). The reward is <strong>+60% trade tariff income</strong> and a <strong>doubled caravan capacity</strong> &mdash; on top of your +20% faction effect, your caravan economy becomes a runaway in mid-to-late game. If you're playing RoC, this is the quest line to push.
+    </div>
+</section>
+
+<!-- ============================================================ SETTLEMENTS -->
+<section class="tab" id="settlements">
+    <h2><span class="rune">&#40845;</span>Raze, Sack, or Occupy?</h2>
+    <p class="lead">
+        Cathay plays standard settlement rules &mdash; Loot/Sack/Raze/Occupy. The Western Provinces twist is that <strong>Goldtooth wants Ogre cities</strong> (trade them, don't raze), <strong>Chaos Wastes territory is worthless</strong>, and your three Great Bastion provinces are <em>shared infrastructure</em> &mdash; you don't have to garrison them, but you can't ignore them either.
+    </p>
+
+    <h3>The three actions and what they do</h3>
+    <div class="decision">
+        <div class="choice sack">
+            <h4>Sack</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Beat the garrison, take a one-time gold payout, <strong>do not occupy</strong>, the city stays where it was.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>Modest XP and post-battle income</li>
+                <li>Owner survives; can be re-sacked later</li>
+                <li>Useful for corrupted Chaos cities you don't want to garrison</li>
+            </ul>
+            <div class="verdict">Use vs. distant Chaos / Norscan cities, or to extract wealth from corrupted territory.</div>
+        </div>
+        <div class="choice raze">
+            <h4>Raze</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Burn the settlement to ruins. The province becomes empty.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>Removes corruption from the region</li>
+                <li>Denies the enemy a rebuild target</li>
+                <li>Specifically against Skaven / Vampire ruins, razing cuts the seed</li>
+            </ul>
+            <div class="verdict">Use vs. Chaos Wastes territory and Skaven undercities you cannot garrison.</div>
+        </div>
+        <div class="choice occupy">
+            <h4>Loot &amp; Occupy</h4>
+            <p style="font-size:.94rem;color:var(--mu);line-height:1.65">Sack and take the city in one action. Default for Cathay-suitable terrain.</p>
+            <ul style="font-size:.92rem;line-height:1.6">
+                <li>You now own the settlement &mdash; garrison, building chain, all income</li>
+                <li>Public order takes a hit; standard fixes apply</li>
+                <li>Cathay climate cities become caravan-launch points</li>
+            </ul>
+            <div class="verdict">Default action for any Cathay-climate settlement, especially Western Provinces and Cathay heartland.</div>
+        </div>
+    </div>
+
+    <h3>The decision rule (memorise this)</h3>
+    <div class="tactic">
+        <strong>Climate first, victory targets second, Goldtooth gifts third.</strong>
+        <ul style="margin-top:.5rem">
+            <li>If it's a <strong>Cathay-climate settlement</strong> &rarr; <em>Loot &amp; Occupy</em>. Caravan launch and trade base.</li>
+            <li>If it's a <strong>destruction-target faction's city</strong> (Vilitch, Snikch, Lohkir, Kholek's Heralds) &rarr; do whatever finishes the faction.</li>
+            <li>If it's an <strong>Ogre city you can't garrison</strong> &rarr; <em>trade it to Goldtooth</em> for diplomatic credit instead of razing. The Ogres consume the territory cleanly and you bank the relationship.</li>
+            <li>If it's <strong>Chaos Wastes climate</strong> &rarr; <em>Raze</em>. Always. Worthless to Cathay; burning it cuts seed.</li>
+            <li>If it's a <strong>corrupted Chaos city you can't clean up</strong> &rarr; <em>Sack</em> for the gold, walk away.</li>
+            <li>If it's a <strong>Skaven undercity</strong> &rarr; <em>Raze</em>; they regenerate any rebuild target.</li>
+        </ul>
+    </div>
+
+    <h3>The trade-it-to-Goldtooth rule</h3>
+    <p>
+        Goldtooth gives a strong positive diplomatic modifier and will <em>buy or accept</em> Ogre Kingdom cities you take in the southern mountains. <strong>This is a unique-to-Zhao-Ming play</strong>: instead of razing, instead of garrisoning territory you don't want, hand it over and gain reputation. The Ogres consume the territory clean (no corruption, no Cathay public order penalty), and you bank credit toward a real alliance.
+    </p>
+
+    <h3>Which provinces should you actually keep?</h3>
+    <ul>
+        <li><strong>Warpstone Desert</strong> (your starting region around Qiang and Shang-Yang) &mdash; always; this is the spine of the campaign.</li>
+        <li><strong>Cathay heartland provinces</strong> &mdash; eastward; trade and confederate where possible.</li>
+        <li><strong>Ivory Road waypoints</strong> &mdash; keep the cities that anchor your caravan economy.</li>
+        <li><strong>The three Great Bastion provinces</strong> &mdash; <em>via Miao Ying / vassal / military ally</em> for the long victory. You don't have to own them directly; you do have to ensure they're in Cathay hands.</li>
+        <li><strong>Avoid Chaos Wastes territory.</strong> Climate trap; raze instead.</li>
+        <li><strong>Avoid distant Habitable cities you can't reinforce</strong> &mdash; sack for gold; don't keep.</li>
+        <li><strong>Trade Ogre cities to Goldtooth</strong> rather than holding them.</li>
+    </ul>
+
+    <div class="warn">
+        <strong>Climate trap:</strong> Loot &amp; Occupy a city in <em>Uninhabitable</em> climate and you bleed public order, money, and growth permanently. Read the climate icon before you click. <em>Cathay-suitable climates only &mdash; the desert is your border, not your problem to expand past</em>.
+    </div>
+</section>
+
+<!-- ============================================================ DIPLOMACY / ECONOMY -->
+<section class="tab" id="economy">
+    <h2><span class="rune">&#40845;</span>Diplomacy &amp; Economy</h2>
+    <p class="lead">
+        Cathay has full diplomacy, real trade, and a rich economy fed by the Ivory Road. The Western Provinces specifically benefit from the <strong>+20% caravan cargo</strong> faction effect, the <strong>+5 Alchemist recruit rank</strong>, and a uniquely positive starting modifier with <em>Goldtooth</em> &mdash; though the Ogre raids never quite stop.
+    </p>
+
+    <h3>Diplomacy: actually useful</h3>
+    <ul>
+        <li><strong>Trade with Goldtooth</strong> as soon as it's offered &mdash; gold flow is real, and good relations may eventually turn into a Non-Aggression Pact (though their armies will still raid caravans independent of the pact).</li>
+        <li><strong>Trade with the Northern Provinces (Miao Ying) and Jade Court (Yuan Bo)</strong> as soon as relations allow. Inter-Cathay trade is the strongest commodity flow available to you.</li>
+        <li><strong>Confederation between Cathay siblings is hard.</strong> Roughly a &minus;100 baseline modifier means it's a long, slow process &mdash; don't plan around it; treat any confederation as a bonus.</li>
+        <li><strong>Trade with the Empire / Bretonnia / Dwarfs / High Elves</strong> via the Ivory Road. Their gold flows back to you while you defend Cathay's western edge.</li>
+        <li><strong>Don't ally with Chaos / Skaven / Vampires / Dark Elves.</strong> Reputation hit propagates to every Order partner you also want.</li>
+        <li><strong>Diplomatic traits:</strong> other factions read you as a trade-friendly mercantile power. Order factions like you; Chaos hates you on principle.</li>
+        <li><strong>Trade Ogre cities to Goldtooth</strong> for diplomatic credit (see the Raze / Sack / Occupy tab).</li>
+        <li><strong>Don't waste diplomacy on the four destruction targets.</strong> Vilitch, Snikch, Lohkir, and Kholek's Heralds will fight you anyway &mdash; play them off each other instead.</li>
+    </ul>
+
+    <div class="tip">
+        <strong>Practical rule:</strong> open the diplomacy screen <em>every turn</em>. Look for new trade partners, friendly-territory access offers, and Goldtooth gift opportunities. There is almost always a free move available.
+    </div>
+
+    <h3>Economy: how you actually make money</h3>
+    <p>
+        Cathay's treasury is fed by <strong>caravans, trade, buildings, and battle income</strong>. For Zhao Ming specifically, the order of importance is exaggerated &mdash; caravans dominate.
+    </p>
+
+    <ol class="steps">
+        <li><strong>Ivory Road caravans.</strong> +20% cargo on every run; a single successful caravan covers a fresh army's upkeep. This is your #1 income source by a wide margin.</li>
+        <li><strong>Trade deals.</strong> Bilateral trade with Cathay, Empire, Bretonnia, Dwarfs, High Elves. Five trade partners and you're rich.</li>
+        <li><strong>Building income</strong> &mdash; tier-3+ commodity buildings, ports, and growth chains. Iron Dragon's Edict (construction cost reduction + research) accelerates the build-out.</li>
+        <li><strong>Battle / sack income.</strong> Real but secondary. Don't structure your campaign around it.</li>
+        <li><strong>Wu-Xing Compass economic buffs.</strong> Warpstone Desert for caravans; Celestial Lake for general income. Rotate to match the moment.</li>
+    </ol>
+
+    <h3>Building priorities for the cities you keep</h3>
+    <ul>
+        <li><strong>Tier-up the capital recruitment chain</strong> first &mdash; Crane Gunner / Iron Hail Gunner / Sky Lantern access fast.</li>
+        <li><strong>Caravan infrastructure</strong> in cities with Ivory Road access &mdash; cheaper / faster / safer caravans compound income.</li>
+        <li><strong>Trade resource chains</strong> in interior provinces &mdash; silk, jade, porcelain commodities.</li>
+        <li><strong>Bastion Pagodas</strong> (up to 90% Chaos Wastes attrition immunity at max rank) when planning a northern relief flight.</li>
+        <li><strong>Skip generic income buildings</strong> in favour of higher-yield commodity chains.</li>
+        <li><strong>Use the Iron Dragon's Edict</strong> on whichever province is mid-build-out for the construction discount + research speed.</li>
+    </ul>
+
+    <h3>Cash-flow troubleshooting</h3>
+    <div class="warn">
+        <strong>If your treasury is bleeding red:</strong>
+        <ul style="margin-top:.4rem">
+            <li><em>Run a caravan immediately.</em> Always the most reliable Cathay income source &mdash; especially yours.</li>
+            <li><em>Renegotiate trade deals upward</em> as your trade-good output grows.</li>
+            <li><em>Disband a reserve army</em> &mdash; Cathay recruitment is cheap-but-tier-gated; you can rebuild.</li>
+            <li><em>Sack a southern Chaos / Norscan city</em> &mdash; corrupted, you weren't going to keep it anyway.</li>
+            <li><em>Point the Wu-Xing Compass at Warpstone Desert</em> for the caravan capacity window; <em>or Celestial Lake</em> for the +15% income.</li>
+            <li><em>Toggle Iron Dragon's Edict</em> on your largest construction-active province for the building discount.</li>
+        </ul>
+    </div>
+
+    <h3>Public order &amp; corruption</h3>
+    <ul>
+        <li><strong>Cathay Untainted default + faction corruption suppression</strong> = corruption rarely a problem.</li>
+        <li><strong>Public order in newly-occupied cities</strong> is helped by standard happiness chains and a garrisoned Lord.</li>
+        <li><strong>Harmony tilt</strong> can affect public order indirectly &mdash; balanced Harmony stabilises mood, but a deliberate tilt for recruitment / construction may briefly cost order.</li>
+        <li><strong>If a settlement revolts, retake it the same turn</strong> for free XP, gold, and a clean restart.</li>
+    </ul>
+</section>
+
+<!-- ============================================================ UPDATE 8.0 -->
+<section class="tab" id="patch">
+    <h2><span class="rune">&#40845;</span>Update 8.0 &mdash; What Changed for Cathay</h2>
+    <p class="lead">
+        Released <strong>21 May 2026</strong> alongside the <em>Bhashiva Character Pack</em>. The patch reworked most Cathay systems; older guides written before that date will have stale tech-tree and Sky-junk advice. This tab is the diff &mdash; what changed, what didn't, and how it shifts the Western Provinces playstyle.
+    </p>
+
+    <h3>Tech tree: split into Military and Provinces</h3>
+    <div class="patch">
+        <strong>The monolithic Cathay tech tree is gone.</strong> It now splits into two branches:
+        <ul style="margin-top:.5rem">
+            <li><strong>Military</strong> &mdash; unit and combat enhancements (recruit cost, melee stats, ranged accuracy, charge bonuses, etc.).</li>
+            <li><strong>Provinces</strong> &mdash; provincial management, economy, campaign-map actions (caravan capacity, construction cost, growth, hero recruitment).</li>
+        </ul>
+        CA's stated intent: <em>"no change to the amount of technologies and time to completely research all of them. Many new effects were added to the technologies &mdash; there are no more techs that take several turns to complete yet provide only a single benefit."</em>
+        <br><br>
+        <strong>What this means for Zhao Ming:</strong> rush <em>Provinces</em> first &mdash; the caravan and construction techs scale your economy faster, which funds the Military tree second. The old "tech tree priority list" from pre-8.0 guides is no longer correct.
+    </div>
+
+    <h3>Provincial commandments: the four Dragon Edicts reworked</h3>
+    <div class="patch">
+        <ul style="margin:0">
+            <li><strong>Iron Dragon's Edict (Zhao Ming's):</strong> now grants <em>building construction cost reduction</em> AND <em>increased research speed</em>. The strongest economic Dragon edict in the game; toggle it on whichever province is mid-build-out.</li>
+            <li><strong>Jade Dragon's Edict:</strong> now grants Growth in addition to existing effects.</li>
+            <li><strong>Storm Dragon's Edict:</strong> corruption reduction slightly lowered (still useful, just less dominant).</li>
+            <li><strong>Sea Dragon's Edict:</strong> now increases provincial building income.</li>
+        </ul>
+    </div>
+
+    <h3>Buildings &amp; settlements</h3>
+    <div class="patch">
+        <ul style="margin:0">
+            <li><strong>Longma Paddocks moved from tier V to tier IV</strong> &mdash; Great Longma Riders unlock one settlement-tier earlier. They're now a realistic mid-game cavalry option, not just a late-game flex.</li>
+            <li><strong>Settlement growth increased across Cathay.</strong> Tier-up is faster than pre-patch; account for that when planning your build orders.</li>
+        </ul>
+    </div>
+
+    <h3>Hero reworks</h3>
+    <div class="patch">
+        <ul style="margin:0">
+            <li><strong>Gate Master:</strong> three specialisation paths now &mdash; <em>infantry-buff, ranged support, self-melee</em>. New <em>Implacable Spirit</em> ability (ranged stance) and new army-wide assist actions. Pick the path deliberately per army.</li>
+            <li><strong>Alchemist:</strong> new <em>Sky Lantern mount option</em>; stronger Enchanted Metallurgy line; new <em>army-buff actions</em> that add weapon strength or armour to units in the lord's army. <em>This is huge for Zhao Ming</em> &mdash; the armour buff stacks on top of your +15 armour faction effect.</li>
+            <li><strong>Astromancer:</strong> new caster-buff line at level 12; magical-creature specialisation at level 14.</li>
+        </ul>
+    </div>
+
+    <h3>Units</h3>
+    <div class="patch">
+        <strong>Eye of the Dragon passive moved from Sky-junk to Sky Lantern.</strong> CA's note: <em>"The Eye of the Dragon passive has been removed from the Sky Junk entirely. It now only exists on the Sky Lantern,"</em> with updated reload-speed and leadership buffs to nearby ranged units. <strong>Implication for army composition:</strong> Sky-junks are now <em>pure damage flights</em>; Sky Lanterns are the <em>support platform</em>. Don't park a Sky-junk near your gunline expecting the old buff &mdash; it isn't there anymore.
+    </div>
+
+    <h3>Caravans (Ivory Road)</h3>
+    <div class="patch">
+        <strong>"More variety added to travelling caravan encounters" on the Ivory Road.</strong> The dilemma pool is broader; some new event chains exist. The core mechanic (zero upkeep, first-trip magic items, Ogre Lord loot) is unchanged. Your equipment rule still holds: anti-large infantry + embedded caster.
+    </div>
+
+    <h3>Bhashiva (new Legendary Hero, free)</h3>
+    <div class="patch">
+        <strong>The Bhashiva Character Pack ships as a free Legendary Hero for all Cathay factions</strong>, including yours. The White Tiger flavour translates to a legendary-tier kit; verify exact statline in-game. Embed her in your headline army; she counts as a caster slot for Mastery of Elemental Winds purposes if her kit includes magic (verify in-game).
+    </div>
+
+    <h3>What did NOT change (treat as stable)</h3>
+    <ul>
+        <li><strong>Wu-Xing Compass direction effects</strong> &mdash; Warpstone Desert still favours caravans; Celestial Lake still grants +15% income.</li>
+        <li><strong>Harmony balance percentages</strong> &mdash; balanced harmony still grants +25% income, &minus;25% upkeep.</li>
+        <li><strong>Zhao Ming's faction effects</strong> &mdash; +20% caravan cargo, +15 armour, &minus;25% Ogre Mercenary upkeep, +5 Alchemist recruit rank.</li>
+        <li><strong>Zhao Ming's personal kit</strong> &mdash; Master of Alchemy, Warding Iron, dual regen pools, Lore of Yang &amp; Metal.</li>
+        <li><strong>Base caravan mechanics</strong> &mdash; despatch, dilemmas, first-trip magic items, Ogre Lord loot.</li>
+        <li><strong>Victory conditions</strong> &mdash; short and long campaign objectives unchanged.</li>
+        <li><strong>Starting position</strong> &mdash; Qiang start, Shang-Yang quest battle, Dissenter Lords of Jinshen starting war.</li>
+    </ul>
+
+    <h3>Migrating from a pre-8.0 save</h3>
+    <div class="warn">
+        <strong>If you're loading a pre-8.0 save:</strong> the tech tree will reset to the new split structure; old research progress carries over but the layout is different. Verify your Sky-junks aren't being used as support platforms (they no longer are); recruit a Sky Lantern instead. Re-evaluate Gate Master skill builds &mdash; their kit is genuinely different now.
+    </div>
+
+    <h3>Where to verify</h3>
+    <ul>
+        <li><strong>In-game tooltips</strong> &mdash; authoritative for exact stat numbers, especially for Zhao Ming and the reworked heroes.</li>
+        <li><strong>Total War: Warhammer III Update 8.0 patch notes</strong> on Creative Assembly's community blog.</li>
+        <li><strong>The official Total War: WARHAMMER Wiki</strong> &mdash; updates usually land within a week of a major patch.</li>
+    </ul>
+</section>
+
+<footer>
+    The Western Provinces &mdash; New Player's Guide &middot; Total War: Warhammer III &middot; Reflects Update 8.0 (21 May 2026)
+    <br>Sourced from the official Total War: WARHAMMER Wiki (The Western Provinces, Zhao Ming the Iron Dragon, and Grand Cathay pages), CA's Update 8.0 patch notes, and community guides published after the 8.0 patch.
+</footer>
+
+</main>
+
+<script>
+(function(){
+    const nav = document.getElementById('navBar');
+    const tabs = document.querySelectorAll('.tab');
+    const buttons = nav.querySelectorAll('button');
+
+    nav.addEventListener('click', function(e){
+        const btn = e.target.closest('button[data-tab]');
+        if(!btn) return;
+        const target = btn.dataset.tab;
+        buttons.forEach(b => b.classList.toggle('active', b === btn));
+        tabs.forEach(t => t.classList.toggle('active', t.id === target));
+        window.scrollTo({top:0, behavior:'instant'});
+    });
+
+    const themeBtn = document.getElementById('themeBtn');
+    const stored = localStorage.getItem('western-theme');
+    if(stored === 'light') document.body.classList.add('light');
+    themeBtn.addEventListener('click', function(){
+        document.body.classList.toggle('light');
+        localStorage.setItem('western-theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    });
+})();
+</script>
+</body>
+</html>
