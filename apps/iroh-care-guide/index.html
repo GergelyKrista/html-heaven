@@ -4,436 +4,524 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iroh's Care Guide</title>
+    <meta name="description" content="A warm, detailed care guide for Iroh the Standard Poodle — daily routines, medical care, behaviour and walks.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --warm-cream: #faf6f1;
-            --warm-sand: #f0e6d8;
+            --cream: #faf6f1;
+            --sand: #f0e6d8;
+            --sand-deep: #e7d8c4;
             --terracotta: #c2703b;
             --terracotta-dark: #a85a2a;
-            --forest: #2d4a3e;
+            --forest: #233f33;
             --forest-light: #3d6a54;
             --amber: #d4a03c;
-            --soft-coral: #e8a89a;
-            --text-dark: #2c2c2c;
-            --text-muted: #5a5a5a;
+            --coral: #e08a78;
+            --sky: #5c9dc4;
+            --plum: #8e6aa8;
+            --sage: #5a8f7b;
+            --olive: #8a9a45;
+            --ink: #2a2521;
+            --muted: #6b625a;
             --white: #ffffff;
-            --shadow-soft: 0 4px 20px rgba(45, 74, 62, 0.08);
-            --shadow-medium: 0 8px 30px rgba(45, 74, 62, 0.12);
+            --shadow-soft: 0 2px 8px rgba(45, 74, 62, 0.06), 0 8px 24px rgba(45, 74, 62, 0.07);
+            --shadow-medium: 0 10px 40px rgba(45, 74, 62, 0.13), 0 2px 8px rgba(45, 74, 62, 0.06);
+            --shadow-card: 0 1px 2px rgba(45, 74, 62, 0.05), 0 6px 18px rgba(45, 74, 62, 0.06);
+            --radius: 22px;
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        * { box-sizing: border-box; }
 
-        * {
-            box-sizing: border-box;
-        }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             line-height: 1.7;
             margin: 0;
-            padding: 24px;
-            background: var(--warm-cream);
-            color: var(--text-dark);
+            padding: 32px 24px 64px;
+            color: var(--ink);
             min-height: 100vh;
+            background-color: var(--cream);
+            background-image:
+                radial-gradient(900px 500px at 12% -8%, rgba(212, 160, 60, 0.12), transparent 60%),
+                radial-gradient(800px 600px at 100% 0%, rgba(61, 106, 84, 0.10), transparent 55%),
+                radial-gradient(700px 700px at 50% 120%, rgba(194, 112, 59, 0.08), transparent 60%);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Subtle grain overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.035;
+            mix-blend-mode: multiply;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
         .container {
-            max-width: 720px;
+            max-width: 740px;
             margin: 0 auto;
             background: var(--white);
-            border-radius: 24px;
+            border-radius: var(--radius);
             box-shadow: var(--shadow-medium);
-            overflow: hidden;
+            border: 1px solid rgba(45, 74, 62, 0.06);
         }
 
-        .header {
-            background: linear-gradient(135deg, var(--forest) 0%, var(--forest-light) 100%);
-            color: var(--white);
-            padding: 40px 32px;
-            text-align: center;
+        /* ---------- HERO ---------- */
+        .hero {
             position: relative;
             overflow: hidden;
+            background: linear-gradient(155deg, #1d362b 0%, #2d4a3e 48%, #3d6a54 100%);
+            color: var(--white);
+            padding: 52px 36px 44px;
+            text-align: center;
+            border-radius: var(--radius) var(--radius) 0 0;
         }
 
-        .header::before {
+        .hero::after {
             content: '';
             position: absolute;
-            top: -50%;
-            right: -20%;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            inset: 0;
+            opacity: 0.06;
+            mix-blend-mode: screen;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
             border-radius: 50%;
+            filter: blur(20px);
+            pointer-events: none;
+        }
+        .blob-1 { width: 340px; height: 340px; top: -150px; right: -110px; background: radial-gradient(circle, rgba(212,160,60,0.45), transparent 68%); }
+        .blob-2 { width: 280px; height: 280px; bottom: -150px; left: -90px; background: radial-gradient(circle, rgba(224,138,120,0.35), transparent 70%); }
+
+        .hero-inner { position: relative; z-index: 1; }
+
+        .avatar {
+            width: 92px;
+            height: 92px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            background: radial-gradient(circle at 35% 30%, #fff6e9, #f0e0c8);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.25), inset 0 2px 6px rgba(255,255,255,0.6);
+            border: 3px solid rgba(255,255,255,0.35);
+            line-height: 1;
         }
 
-        .header h1 {
+        .hero h1 {
             font-family: 'Fraunces', Georgia, serif;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 0 0 8px 0;
+            font-size: clamp(2.1rem, 6vw, 2.9rem);
+            font-weight: 600;
+            margin: 0 0 6px;
             letter-spacing: -0.02em;
-            position: relative;
+            line-height: 1.05;
         }
 
-        .header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin: 0;
+        .hero .tagline {
+            font-family: 'Fraunces', Georgia, serif;
+            font-style: italic;
             font-weight: 500;
+            font-size: 1.05rem;
+            opacity: 0.82;
+            margin: 0 0 22px;
         }
 
-        .quick-nav {
-            background: var(--warm-sand);
-            padding: 20px 24px;
+        .stat-chips {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             justify-content: center;
-            border-bottom: 1px solid rgba(45, 74, 62, 0.1);
         }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 15px;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+        .chip .ico { font-size: 1rem; }
+
+        /* ---------- QUICK NAV (sticky) ---------- */
+        .quick-nav {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            justify-content: center;
+            padding: 16px 20px;
+            background: rgba(240, 230, 216, 0.82);
+            backdrop-filter: blur(12px) saturate(140%);
+            -webkit-backdrop-filter: blur(12px) saturate(140%);
+            border-bottom: 1px solid rgba(45, 74, 62, 0.1);
+            transition: box-shadow 0.25s ease;
+        }
+        .quick-nav.stuck { box-shadow: 0 10px 24px -12px rgba(45, 74, 62, 0.35); }
 
         .nav-btn {
             background: var(--white);
             color: var(--forest);
-            padding: 10px 16px;
-            border: 2px solid transparent;
+            padding: 9px 15px;
+            border: 1px solid rgba(45, 74, 62, 0.08);
             border-radius: 100px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13.5px;
             font-weight: 600;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            transition: all 0.2s ease;
+            transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
             box-shadow: var(--shadow-soft);
         }
-
         .nav-btn:hover {
             background: var(--forest);
             color: var(--white);
             transform: translateY(-2px);
             box-shadow: var(--shadow-medium);
         }
+        .nav-btn:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
 
-        .section {
-            border-bottom: 1px solid rgba(45, 74, 62, 0.08);
-        }
-
-        .section:last-of-type {
-            border-bottom: none;
-        }
+        /* ---------- SECTIONS / ACCORDION ---------- */
+        .section { border-bottom: 1px solid rgba(45, 74, 62, 0.08); scroll-margin-top: 84px; }
+        .section:last-of-type { border-bottom: none; }
 
         .section-header {
-            background: var(--white);
-            padding: 20px 28px;
+            background: transparent;
+            padding: 20px 26px;
             cursor: pointer;
             border: none;
             width: 100%;
             text-align: left;
-            font-family: 'Fraunces', Georgia, serif;
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-dark);
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 15px;
             transition: background 0.2s ease;
         }
+        .section-header:hover { background: var(--cream); }
+        .section-header:focus-visible { outline: 3px solid var(--amber); outline-offset: -3px; }
 
-        .section-header:hover {
-            background: var(--warm-cream);
-        }
-
-        .section-header span {
-            width: 28px;
-            height: 28px;
-            background: var(--warm-sand);
-            border-radius: 50%;
+        .sec-icon {
+            flex: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            color: var(--forest);
-            transition: all 0.2s ease;
+            font-size: 1.35rem;
+            line-height: 1;
+            background: color-mix(in srgb, var(--accent, var(--forest)) 16%, white);
+            border: 1px solid color-mix(in srgb, var(--accent, var(--forest)) 26%, white);
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.7);
         }
 
+        .sec-title {
+            flex: 1;
+            font-family: 'Fraunces', Georgia, serif;
+            font-size: 1.28rem;
+            font-weight: 600;
+            color: var(--ink);
+            letter-spacing: -0.01em;
+        }
+
+        .indicator {
+            flex: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--sand);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+        .section-header:hover .indicator { background: var(--sand-deep); }
+
+        .chev {
+            width: 8px;
+            height: 8px;
+            border-right: 2.4px solid var(--forest);
+            border-bottom: 2.4px solid var(--forest);
+            transform: translateY(-2px) rotate(45deg);
+            transition: transform 0.3s ease;
+        }
+        .section-header[aria-expanded="true"] .chev { transform: translateY(2px) rotate(-135deg); }
+
         .section-content {
-            padding: 0 28px;
+            padding: 0 26px;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease, padding 0.4s ease;
         }
-
         .section-content.active {
-            padding: 8px 28px 32px;
-            max-height: 4000px;
+            padding: 4px 26px 30px;
+            max-height: 4500px;
         }
 
-        .info-block, .time-block, .command-block, .warning-block, .behavior-block {
-            padding: 20px 24px;
-            margin: 16px 0;
+        /* ---------- CONTENT BLOCKS ---------- */
+        .block {
+            padding: 20px 22px;
+            margin: 14px 0;
             border-radius: 16px;
-        }
-
-        .time-block {
-            background: linear-gradient(135deg, #fff8e8 0%, #fff3d6 100%);
-            border-left: 4px solid var(--amber);
-        }
-
-        .command-block {
-            background: linear-gradient(135deg, #e8f5e9 0%, #dcedc8 100%);
             border-left: 4px solid var(--forest-light);
+            box-shadow: var(--shadow-card);
         }
+        .time-block { background: linear-gradient(135deg, #fff9ec 0%, #fff2d4 100%); border-left-color: var(--amber); }
+        .command-block { background: linear-gradient(135deg, #ecf6ec 0%, #dcedc8 100%); border-left-color: var(--forest-light); }
+        .warning-block { background: linear-gradient(135deg, #fff1ee 0%, #ffe2dc 100%); border-left-color: var(--terracotta); }
+        .info-block { background: linear-gradient(135deg, #e9f3fb 0%, #e1f1fb 100%); border-left-color: var(--sky); }
+        .behavior-block { background: linear-gradient(135deg, #f4ecf8 0%, #ebe5f5 100%); border-left-color: var(--plum); }
+        .enrich-block { background: linear-gradient(135deg, #eef6ed 0%, #e2f0e8 100%); border-left-color: var(--sage); }
 
-        .warning-block {
-            background: linear-gradient(135deg, #fff0ed 0%, #ffe4df 100%);
-            border-left: 4px solid var(--terracotta);
-        }
-
-        .info-block {
-            background: linear-gradient(135deg, #e3f2fd 0%, #e1f5fe 100%);
-            border-left: 4px solid #5c9dc4;
-        }
-
-        .behavior-block {
-            background: linear-gradient(135deg, #f3e5f5 0%, #ede7f6 100%);
-            border-left: 4px solid #8e6aa8;
-        }
-
-        h3 {
+        .block h3 {
             font-family: 'Fraunces', Georgia, serif;
-            font-size: 1.1rem;
+            font-size: 1.08rem;
             font-weight: 600;
-            margin: 0 0 12px 0;
-            color: var(--text-dark);
+            margin: 0 0 12px;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 9px;
         }
 
-        ul {
-            padding-left: 0;
-            margin: 0;
-            list-style: none;
-        }
-
+        ul { padding-left: 0; margin: 0; list-style: none; }
         li {
-            margin: 10px 0;
+            margin: 9px 0;
             padding-left: 24px;
             position: relative;
-            color: var(--text-muted);
+            color: var(--muted);
         }
-
         li::before {
-            content: '•';
+            content: '';
             position: absolute;
-            left: 8px;
-            color: var(--terracotta);
-            font-weight: bold;
+            left: 6px;
+            top: 11px;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--terracotta);
         }
+        li strong { color: var(--ink); font-weight: 600; }
 
-        li strong {
-            color: var(--text-dark);
-            font-weight: 600;
+        /* Highlight pill for critical inline notes */
+        .pill-note {
+            display: inline-block;
+            background: rgba(194, 112, 59, 0.14);
+            color: var(--terracotta-dark);
+            font-weight: 700;
+            font-size: 0.78rem;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
+            padding: 2px 9px;
+            border-radius: 100px;
+            margin-left: 4px;
         }
 
         .emergency {
             background: linear-gradient(135deg, var(--terracotta) 0%, var(--terracotta-dark) 100%);
             color: var(--white);
-            padding: 24px;
+            padding: 22px 24px;
             border-radius: 16px;
-            margin: 16px 0;
+            margin: 14px 0;
             text-align: center;
             font-weight: 600;
+            box-shadow: 0 10px 26px -10px rgba(168, 90, 42, 0.7);
         }
+        .emergency strong { font-size: 1.15rem; font-family: 'Fraunces', serif; }
+        .emergency a { color: var(--white); text-decoration: underline; text-underline-offset: 3px; }
 
-        .emergency a {
-            color: var(--white);
-            text-decoration: underline;
-            text-underline-offset: 3px;
+        .guide-footer {
+            text-align: center;
+            padding: 26px 24px 30px;
+            color: var(--muted);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(45, 74, 62, 0.08);
         }
+        .guide-footer .heart { color: var(--terracotta); }
 
+        /* ---------- ENTRANCE ANIMATION ---------- */
+        @keyframes riseIn {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .container > * { animation: riseIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+        .hero { animation-delay: 0.02s; }
+        .quick-nav { animation-delay: 0.10s; }
+        .section:nth-of-type(1) { animation-delay: 0.16s; }
+        .section:nth-of-type(2) { animation-delay: 0.20s; }
+        .section:nth-of-type(3) { animation-delay: 0.24s; }
+        .section:nth-of-type(4) { animation-delay: 0.28s; }
+        .section:nth-of-type(5) { animation-delay: 0.32s; }
+
+        /* ---------- RESPONSIVE ---------- */
         @media (max-width: 600px) {
-            body {
-                padding: 12px;
-            }
-
-            .header {
-                padding: 32px 20px;
-            }
-
-            .header h1 {
-                font-size: 2rem;
-            }
-
-            .quick-nav {
-                padding: 16px;
-                gap: 8px;
-            }
-
-            .nav-btn {
-                font-size: 12px;
-                padding: 8px 12px;
-            }
-
+            body { padding: 16px 12px 40px; }
+            .hero { padding: 40px 22px 34px; }
             .section-content {
                 max-height: none !important;
-                padding: 8px 20px 24px !important;
+                padding: 4px 18px 24px !important;
                 overflow: visible !important;
             }
-
-            .section-header {
-                pointer-events: none;
-                background: var(--forest);
-                color: var(--white);
-                padding: 16px 20px;
-            }
-
-            .section-header span {
-                display: none;
-            }
-
-            .info-block, .time-block, .command-block, .warning-block, .behavior-block {
-                padding: 16px 18px;
-                margin: 12px 0;
-            }
+            .section-header { pointer-events: none; }
+            .indicator { display: none; }
+            .quick-nav { padding: 13px 14px; }
+            .nav-btn { font-size: 12px; padding: 8px 12px; }
+            .block { padding: 16px 18px; margin: 12px 0; }
         }
 
         @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-
-            .container {
-                box-shadow: none;
-            }
-
-            .quick-nav {
-                display: none;
-            }
-
+            body { background: white; padding: 0; }
+            body::before { display: none; }
+            .container { box-shadow: none; border: none; }
+            .quick-nav { display: none; }
+            .blob, .hero::after { display: none; }
             .section-content {
                 max-height: none !important;
-                padding: 8px 28px 32px !important;
+                padding: 4px 26px 26px !important;
                 overflow: visible !important;
             }
+            .indicator { display: none; }
+            .section { page-break-inside: avoid; }
+            .container > * { animation: none; }
+        }
 
-            .section-header {
-                background: var(--forest) !important;
-                color: var(--white) !important;
-            }
-
-            .section-header span {
-                display: none;
-            }
-
-            .section {
-                page-break-inside: avoid;
-            }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            * { animation: none !important; transition: none !important; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🐩 Iroh's Care Guide</h1>
-            <p>2-year-old Standard Poodle · 25kg</p>
-        </div>
+    <article class="container">
+        <header class="hero">
+            <div class="blob blob-1"></div>
+            <div class="blob blob-2"></div>
+            <div class="hero-inner">
+                <div class="avatar">🐩</div>
+                <h1>Iroh's Care Guide</h1>
+                <p class="tagline">Everything you need to look after a very good boy</p>
+                <div class="stat-chips">
+                    <span class="chip"><span class="ico">🎂</span><span id="age-chip">Standard Poodle</span></span>
+                    <span class="chip"><span class="ico">⚖️</span>25 kg</span>
+                    <span class="chip"><span class="ico">🐾</span>Standard Poodle</span>
+                </div>
+            </div>
+        </header>
 
-        <div class="quick-nav">
+        <nav class="quick-nav" aria-label="Jump to section">
             <a href="#daily-routine" class="nav-btn">📅 Daily Routine</a>
             <a href="#emergency" class="nav-btn">🚨 Emergency</a>
             <a href="#medical" class="nav-btn">🏥 Medical</a>
-            <a href="#behavior" class="nav-btn">🐕 Behavior</a>
+            <a href="#behavior" class="nav-btn">🐕 Behaviour</a>
             <a href="#outdoor" class="nav-btn">🌳 Outdoor</a>
             <a href="#indoor" class="nav-btn">🏠 Indoor</a>
             <a href="#parks" class="nav-btn">🏞️ Parks</a>
-        </div>
+        </nav>
 
-        <div class="section" id="daily-routine">
-            <button class="section-header" aria-expanded="false" onclick="toggleSection('routine-content')">
-                📅 Daily Routine
-                <span>+</span>
+        <section class="section" id="daily-routine" style="--accent: var(--amber)">
+            <button class="section-header" aria-expanded="false" aria-controls="routine-content" onclick="toggleSection('routine-content')">
+                <span class="sec-icon">📅</span>
+                <span class="sec-title">Daily Routine</span>
+                <span class="indicator"><i class="chev"></i></span>
             </button>
             <div class="section-content" id="routine-content">
-                <div class="info-block">
+                <div class="block info-block">
                     <h3>🍽️ Feeding Summary</h3>
                     <ul>
-                        <li><strong>Per meal:</strong> 3 sections of wet food + add water to the food</li>
+                        <li><strong>Per meal:</strong> 3 sections of wet food + water added + <strong>one small scoop of supplement</strong></li>
                         <li><strong>Meals per day:</strong> 2 (morning + afternoon/evening)</li>
-                        <li><strong>Hydration:</strong> If he hasn't drunk enough, give coconut water before last walk</li>
-                        <li><strong>Rule:</strong> ONLY feed AFTER walks, no play for 40+ mins after eating</li>
+                        <li><strong>Hydration:</strong> If he hasn't drunk enough, give coconut water before the last walk</li>
+                        <li><strong>Rule:</strong> ONLY feed AFTER walks — no play for 40+ mins after eating</li>
                     </ul>
                 </div>
 
-                <div class="time-block">
-                    <h3>🌅 Morning (7:30-8:30am)</h3>
+                <div class="block time-block">
+                    <h3>🌅 Morning (7:30–8:30am)</h3>
                     <ul>
-                        <li>Walk: 30-60 mins, off lead in park</li>
-                        <li>Inhaler: 1 puff, 8-10 breaths</li>
-                        <li>Breakfast: 3 sections of wet food + water added</li>
-                        <li>Say "good morning" when you wake up - he likes this!</li>
-                        <li>He can sleep in easily - no rush</li>
+                        <li>Walk: 30–60 mins, off lead in the park</li>
+                        <li>Inhaler: 1 puff, 8–10 breaths</li>
+                        <li>Breakfast: 3 sections of wet food + water + 1 small scoop of supplement</li>
+                        <li>Say "good morning" when you wake up — he likes this!</li>
+                        <li>He can sleep in easily — no rush</li>
                     </ul>
                 </div>
 
-                <div class="time-block">
-                    <h3>🌞 Lunch (12:00-14:00)</h3>
+                <div class="block time-block">
+                    <h3>🌞 Lunch (12:00–14:00)</h3>
                     <ul>
-                        <li>Walk: 15-30 mins, on lead around block OR off lead in park</li>
+                        <li>Walk: 15–30 mins, on lead around the block OR off lead in the park</li>
                     </ul>
                 </div>
 
-                <div class="time-block">
-                    <h3>🌆 Afternoon (17:00-19:00)</h3>
+                <div class="block time-block">
+                    <h3>🌆 Afternoon (17:00–19:00)</h3>
                     <ul>
-                        <li>Walk: 15-30 mins, on lead around block OR off lead in park</li>
-                        <li>Dinner: 3 sections of wet food + water added</li>
+                        <li>Walk: 15–30 mins, on lead around the block OR off lead in the park</li>
+                        <li>Dinner: 3 sections of wet food + water + 1 small scoop of supplement</li>
                     </ul>
                 </div>
 
-                <div class="time-block">
-                    <h3>🌙 Evening (21:00-22:00)</h3>
+                <div class="block time-block">
+                    <h3>🌙 Evening (21:00–22:00)</h3>
                     <ul>
-                        <li>Final toilet walk: 10 mins - school and back is enough</li>
-                        <li>Inhaler: 1 puff, 8-10 breaths</li>
-                        <li>Sleep in same room with you - he likes company</li>
-                        <li>If leaving door open, close the baby gate</li>
+                        <li>Final toilet walk: 10 mins — school and back is enough</li>
+                        <li>Inhaler: 1 puff, 8–10 breaths</li>
+                        <li>Sleep in the same room with you — he likes company</li>
+                        <li>If leaving the door open, close the baby gate</li>
                     </ul>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section" id="emergency">
-            <button class="section-header" aria-expanded="false" onclick="toggleSection('emergency-content')">
-                🚨 Emergency
-                <span>+</span>
+        <section class="section" id="emergency" style="--accent: var(--terracotta)">
+            <button class="section-header" aria-expanded="false" aria-controls="emergency-content" onclick="toggleSection('emergency-content')">
+                <span class="sec-icon">🚨</span>
+                <span class="sec-title">Emergency</span>
+                <span class="indicator"><i class="chev"></i></span>
             </button>
             <div class="section-content" id="emergency-content">
                 <div class="emergency">
-                    If you need immediate help, call [YOUR PHONE NUMBER]
+                    If you need immediate help, call <strong>[YOUR PHONE NUMBER]</strong>
                 </div>
-                
-                <div class="warning-block">
+
+                <div class="block warning-block">
                     <h3>⚠️ Watch Out For</h3>
                     <ul>
                         <li>Will absolutely murder a squirrel if he catches one</li>
-                        <li>Picks up chicken bones/street food - use "drop it"</li>
+                        <li>Picks up chicken bones / street food — use "drop it"</li>
                         <li>Swallows socks and clothes</li>
                         <li>Gets excited around female dogs, especially in heat</li>
                     </ul>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section" id="medical">
-            <button class="section-header" aria-expanded="false" onclick="toggleSection('medical-content')">
-                🏥 Medical
-                <span>+</span>
+        <section class="section" id="medical" style="--accent: var(--sky)">
+            <button class="section-header" aria-expanded="false" aria-controls="medical-content" onclick="toggleSection('medical-content')">
+                <span class="sec-icon">🏥</span>
+                <span class="sec-title">Medical</span>
+                <span class="indicator"><i class="chev"></i></span>
             </button>
             <div class="section-content" id="medical-content">
                 <div class="emergency">
@@ -443,264 +531,300 @@
                     <a href="https://www.medivetgroup.com/24-hour-emergency-vet/24-hour-camberwell/?utm_source=google&utm_medium=organic&utm_campaign=google_lpm_camberwell">Website</a>
                 </div>
 
-                <div class="warning-block">
+                <div class="block warning-block">
                     <h3>🫁 Asthma Care</h3>
                     <ul>
-                        <li><strong>Has doggy asthma</strong> - needs inhaler twice daily</li>
+                        <li><strong>Has doggy asthma</strong> — needs his inhaler twice daily</li>
                         <li><strong>Watch for coughing</strong> after running or getting too excited</li>
-                        <li><strong>If he starts coughing:</strong> stop activity and give him gentle pets to calm down</li>
+                        <li><strong>If he starts coughing:</strong> stop the activity and give gentle pets to calm him down</li>
                         <li>Let him rest and breathe normally before continuing</li>
                     </ul>
                 </div>
 
-                <div class="info-block">
+                <div class="block info-block">
                     <h3>👁️ Eye Care</h3>
                     <ul>
-                        <li><strong>Eyes can get a bit gunky</strong> - this is normal for him</li>
+                        <li><strong>Eyes can get a bit gunky</strong> — this is normal for him</li>
                         <li><strong>Clean gently with a wet towel</strong> when needed</li>
                         <li>Just wipe away any discharge around the eye area</li>
                     </ul>
                 </div>
 
-                <div class="info-block">
+                <div class="block info-block">
                     <h3>💊 Daily Medical</h3>
                     <ul>
-                        <li>Inhaler: 1 puff, 8-10 breaths, twice daily (morning & evening)</li>
-                        <li>25kg, 2 years old, male poodle</li>
+                        <li>Inhaler: 1 puff, 8–10 breaths, twice daily (morning & evening)</li>
+                        <li>25 kg · <span id="age-medical">male poodle</span></li>
                     </ul>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section" id="behavior">
-            <button class="section-header" aria-expanded="false" onclick="toggleSection('behavior-content')">
-                🐕 Behavior
-                <span>+</span>
+        <section class="section" id="behavior" style="--accent: var(--plum)">
+            <button class="section-header" aria-expanded="false" aria-controls="behavior-content" onclick="toggleSection('behavior-content')">
+                <span class="sec-icon">🐕</span>
+                <span class="sec-title">Behaviour</span>
+                <span class="indicator"><i class="chev"></i></span>
             </button>
             <div class="section-content" id="behavior-content">
-                <div class="behavior-block">
+                <div class="block behavior-block">
                     <h3>🚽 Toilet Habits</h3>
                     <ul>
-                        <li><strong>Frequency:</strong> 2-4 poos per day (completely normal)</li>
-                        <li><strong>Signals:</strong> Licks your elbow and stares when needs toilet</li>
+                        <li><strong>Frequency:</strong> 2–4 poos per day (completely normal)</li>
+                        <li><strong>Signals:</strong> Licks your elbow and stares when he needs the toilet</li>
                         <li>Generally good at holding it, but watch for his signals</li>
                     </ul>
                 </div>
 
-                <div class="behavior-block">
-                    <h3>🎾 Social & Play Behavior</h3>
+                <div class="block behavior-block">
+                    <h3>🎾 Social & Play Behaviour</h3>
                     <ul>
-                        <li><strong>Loves to play with anyone</strong> - very social and friendly</li>
-                        <li><strong>Never tells off other dogs</strong> - very gentle and non-aggressive</li>
+                        <li><strong>Loves to play with anyone</strong> — very social and friendly</li>
+                        <li><strong>Never tells off other dogs</strong> — very gentle and non-aggressive</li>
                         <li>Gets excited around female dogs, especially those in heat</li>
-                        <li>Good with other dogs off-lead but avoid on-lead greetings</li>
+                        <li>Good with other dogs off-lead, but avoid on-lead greetings</li>
                     </ul>
                 </div>
 
-                <div class="behavior-block">
+                <div class="block behavior-block">
                     <h3>🧸 Excitement & Attention-Seeking</h3>
                     <ul>
                         <li><strong>Steals pillows when excited</strong> or wanting attention</li>
-                        <li><strong>Also steals clothing</strong> - keep clothes away as he'll swallow socks!</li>
-                        <li><strong>Gets very excited when you arrive home</strong> or first arrive</li>
-                        <li>If over-excited: put him in hallway until he calms down</li>
-                        <li>Use "Leave it" command when he's being too grabby</li>
+                        <li><strong>Also steals clothing</strong> — keep clothes away as he'll swallow socks!</li>
+                        <li><strong>Gets very excited when you arrive home</strong></li>
+                        <li>If over-excited: put him in the hallway until he calms down</li>
+                        <li>Use "Leave it" when he's being too grabby</li>
                     </ul>
                 </div>
 
-                <div class="warning-block">
-                    <h3>🍽️ CRITICAL: Eating & Exercise Rules</h3>
+                <div class="block warning-block">
+                    <h3>🍽️ Eating & Exercise Rules <span class="pill-note">Critical</span></h3>
                     <ul>
-                        <li><strong>ONLY feed AFTER walks</strong> - never before exercise</li>
-                        <li><strong>NO play for 40+ minutes after eating</strong> - prevents bloat</li>
-                        <li><strong>He might initiate play but should be settled</strong> - redirect to calm activities</li>
-                        <li><strong>Let him rest quietly after meals</strong> - very important!</li>
+                        <li><strong>ONLY feed AFTER walks</strong> — never before exercise</li>
+                        <li><strong>NO play for 40+ minutes after eating</strong> — prevents bloat</li>
+                        <li><strong>He might initiate play but should be settled</strong> — redirect to calm activities</li>
+                        <li><strong>Let him rest quietly after meals</strong> — very important!</li>
                     </ul>
                 </div>
 
-                <div class="behavior-block">
+                <div class="block behavior-block">
                     <h3>🍽️ Eating Habits</h3>
                     <ul>
-                        <li><strong>Not super excited about meals</strong> - this is normal for him</li>
-                        <li><strong>May walk away and come back to finish</strong> - don't worry!</li>
-                        <li><strong>Cheese trick:</strong> Add a tiny bit of cheese to encourage eating</li>
-                        <li>Don't feed from the table - he'll become pushy</li>
+                        <li><strong>Not super excited about meals</strong> — this is normal for him</li>
+                        <li><strong>May walk away and come back to finish</strong> — don't worry!</li>
+                        <li><strong>Cheese trick:</strong> add a tiny bit of cheese to encourage eating</li>
+                        <li>Don't feed from the table — he'll become pushy</li>
                     </ul>
                 </div>
 
-                <div class="command-block">
+                <div class="block command-block">
                     <h3>🗣️ Key Commands</h3>
                     <ul>
-                        <li><strong>"Leave it"</strong> - Most used! For anything, especially when over excited</li>
-                        <li><strong>"Drop it"</strong> - For chicken bones/street finds (he WILL drop it)</li>
-                        <li><strong>"Touch"</strong> - Extend arm down, he'll come boop your hand</li>
-                        <li><strong>"Sit" & "Down"</strong> - He knows these but will listen to you</li>
-                        <li><strong>"Search"</strong> - Use when scattering treats for calming</li>
-                        <li><strong>"Ready"</strong> - Emergency recall: say "ready", pull out tug toy, run in opposite direction</li>
+                        <li><strong>"Leave it"</strong> — Most used! For anything, especially when over-excited</li>
+                        <li><strong>"Drop it"</strong> — For chicken bones / street finds (he WILL drop it)</li>
+                        <li><strong>"Touch"</strong> — Extend your arm down, he'll come boop your hand</li>
+                        <li><strong>"Sit" & "Down"</strong> — He knows these and will listen to you</li>
+                        <li><strong>"Search"</strong> — Use when scattering treats for calming</li>
+                        <li><strong>"Ready"</strong> — Emergency recall: say "ready", pull out the tug toy, run the opposite way</li>
                     </ul>
                 </div>
 
-                <div class="info-block">
+                <div class="block info-block">
                     <h3>🔍 His Signals to You</h3>
                     <ul>
-                        <li><strong>Licks elbow + stares:</strong> Needs toilet OR wants cuddles</li>
-                        <li><strong>Barks at window/balcony:</strong> Say "thank you", close curtains if continues</li>
+                        <li><strong>Licks elbow + stares:</strong> Needs the toilet OR wants cuddles</li>
+                        <li><strong>Barks at window/balcony:</strong> Say "thank you", close the curtains if it continues</li>
                     </ul>
                 </div>
 
-                <div class="info-block">
+                <div class="block info-block">
                     <h3>💡 General Personality</h3>
                     <ul>
                         <li>Generally well-behaved but can be <strong>cheeky and pushy</strong></li>
-                        <li>Takes his time with commands - say them ONCE and be patient</li>
+                        <li>Takes his time with commands — say them ONCE and be patient</li>
                         <li>Likes company and sleeping in the same room as you</li>
                         <li>Enjoys being greeted with "good morning" when you wake up</li>
-                        <li>Can sleep in easily - no rush in the mornings</li>
+                        <li>Can sleep in easily — no rush in the mornings</li>
                     </ul>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section" id="outdoor">
-            <button class="section-header" aria-expanded="false" onclick="toggleSection('outdoor-content')">
-                🌳 Outdoor
-                <span>+</span>
+        <section class="section" id="outdoor" style="--accent: var(--forest-light)">
+            <button class="section-header" aria-expanded="false" aria-controls="outdoor-content" onclick="toggleSection('outdoor-content')">
+                <span class="sec-icon">🌳</span>
+                <span class="sec-title">Outdoor</span>
+                <span class="indicator"><i class="chev"></i></span>
             </button>
             <div class="section-content" id="outdoor-content">
-                <div class="info-block">
-                    <h3>🚶‍♀️ Walking Basics</h3>
+                <div class="block info-block">
+                    <h3>🚶 Walking Basics</h3>
                     <ul>
-                        <li>Use FRONT clip of harness</li>
-                        <li>No on-lead dog greetings - short lead and treats to pass other dogs</li>
-                        <li>Good recall off-lead, backup: say "ready" then pull out tug toy</li>
+                        <li>Use the FRONT clip of the harness</li>
+                        <li>No on-lead dog greetings — short lead and treats to pass other dogs</li>
+                        <li>Good recall off-lead; backup: say "ready" then pull out the tug toy</li>
                         <li><strong>AVOID using the ball</strong></li>
                     </ul>
                 </div>
 
-                <div class="warning-block">
+                <div class="block info-block">
+                    <h3>💧 Hydration on Walks</h3>
+                    <ul>
+                        <li><strong>Take one of his water bottles on every walk</strong></li>
+                        <li><strong>Offer him water every 10–15 minutes</strong>, especially in warm weather or after running</li>
+                        <li>His water bottle is in the cupboard, or there's a collapsible water bowl in his bag</li>
+                        <li><strong>Eats grass when thirsty</strong> — that's your cue to offer water</li>
+                    </ul>
+                </div>
+
+                <div class="block warning-block">
+                    <h3>☀️ Hot Weather <span class="pill-note">Over 20°C</span></h3>
+                    <ul>
+                        <li><strong>Avoid long walks in the sun when it's over 20°C</strong></li>
+                        <li>Keep walks short and stick to shade — go early morning or later evening</li>
+                        <li>Always bring water and offer it often (his asthma makes heat harder on him)</li>
+                        <li>Watch for heavy panting or coughing — stop, rest in the shade, and let him cool down</li>
+                    </ul>
+                </div>
+
+                <div class="block warning-block">
                     <h3>⚠️ Off-Lead Precautions</h3>
                     <ul>
-                        <li><strong>Keep away from dogs on lead</strong> - he licks female pee/dogs</li>
-                        <li><strong>No off-lead near roads</strong> - he chases squirrels intensely</li>
-                        <li>He won't run away but gets very focused on squirrels</li>
-                        <li>With ball: he'll return but hard to get ball from him</li>
-                    </ul>
-                </div>
-
-                <div class="info-block">
-                    <h3>🌱 Walking Notes</h3>
-                    <ul>
-                        <li><strong>Eats grass when thirsty</strong> - give him water</li>
-                        <li>His water bottle is in the cupboard, or there's a collapsible water bowl in his bag</li>
+                        <li><strong>Keep away from dogs on lead</strong> — he licks female pee / dogs</li>
+                        <li><strong>No off-lead near roads</strong> — he chases squirrels intensely</li>
+                        <li>He won't run away, but gets very focused on squirrels</li>
+                        <li>With the ball: he'll return, but it's hard to get the ball from him</li>
                     </ul>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section" id="indoor">
-            <button class="section-header" aria-expanded="false" onclick="toggleSection('indoor-content')">
-                🏠 Indoor
-                <span>+</span>
+        <section class="section" id="indoor" style="--accent: var(--sage)">
+            <button class="section-header" aria-expanded="false" aria-controls="indoor-content" onclick="toggleSection('indoor-content')">
+                <span class="sec-icon">🏠</span>
+                <span class="sec-title">Indoor</span>
+                <span class="indicator"><i class="chev"></i></span>
             </button>
             <div class="section-content" id="indoor-content">
-                <div class="warning-block">
-                    <h3>⚠️ Important Indoor Rules</h3>
+                <div class="block enrich-block">
+                    <h3>🧩 Enrichment Food Bowls</h3>
                     <ul>
-                        <li>Keep clothes away - he'll swallow socks!</li>
-                        <li>Don't feed from the table</li>
-                        <li>If over excited: put in hallway until he calms down</li>
+                        <li><strong>Where they are:</strong> stored above the fridge</li>
+                        <li><strong>How to use them:</strong> put his meal — or a handful of treats — into the slow-feeder / puzzle bowls instead of his normal dish</li>
+                        <li>They slow his eating and give his brain a workout — great for rainy days or for calm time after a walk</li>
+                        <li>Give him space while he works at it, then rinse and pop them back above the fridge</li>
                     </ul>
                 </div>
 
-                <div class="info-block">
-                    <h3>Daily Indoor Care</h3>
+                <div class="block warning-block">
+                    <h3>⚠️ Important Indoor Rules</h3>
                     <ul>
-                        <li>Scatter/hide treats for enrichment</li>
-                        <li>For window barking: say "thank you", close curtains if needed</li>
+                        <li>Keep clothes away — he'll swallow socks!</li>
+                        <li>Don't feed from the table</li>
+                        <li>If over-excited: put him in the hallway until he calms down</li>
+                    </ul>
+                </div>
+
+                <div class="block info-block">
+                    <h3>🏠 Daily Indoor Care</h3>
+                    <ul>
+                        <li>Scatter / hide treats for enrichment</li>
+                        <li>For window barking: say "thank you", close the curtains if needed</li>
                     </ul>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <div class="section" id="parks">
-            <button class="section-header" aria-expanded="false" onclick="toggleSection('parks-content')">
-                🏞️ Parks
-                <span>+</span>
+        <section class="section" id="parks" style="--accent: var(--olive)">
+            <button class="section-header" aria-expanded="false" aria-controls="parks-content" onclick="toggleSection('parks-content')">
+                <span class="sec-icon">🏞️</span>
+                <span class="sec-title">Parks</span>
+                <span class="indicator"><i class="chev"></i></span>
             </button>
             <div class="section-content" id="parks-content">
-                <div class="info-block">
+                <div class="block info-block">
                     <h3>🏞️ Local Parks</h3>
                     <ul>
-                        <li><strong>Myatt's Fields Park:</strong> Main area better than Burgess Park</li>
-                        <li><strong>Myatt's Fields doggy park:</strong> Has reactive dogs - might not be usable</li>
-                        <li><strong>Kennington Park:</strong> Has a great, very big doggy park</li>
-                        <li>Some owners bring dogs in heat - watch for his behavior</li>
+                        <li><strong>Myatt's Fields Park:</strong> main area is better than Burgess Park</li>
+                        <li><strong>Myatt's Fields doggy park:</strong> has reactive dogs — might not be usable</li>
+                        <li><strong>Kennington Park:</strong> has a great, very big doggy park</li>
+                        <li>Some owners bring dogs in heat — watch for his behaviour</li>
                         <li>🍕 Great Neapolitan pizza place near Kennington Park!</li>
                     </ul>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+
+        <footer class="guide-footer">
+            Made with <span class="heart">&hearts;</span> for Iroh · his age updates automatically 🐾
+        </footer>
+    </article>
 
     <script>
+        // ---- Live age from date of birth (October 2023) ----
+        function computeAge() {
+            const birth = new Date(2023, 9, 1); // months are 0-indexed: 9 = October
+            const now = new Date();
+            let months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
+            if (now.getDate() < birth.getDate()) months--;
+            if (months < 0) months = 0;
+            const years = Math.floor(months / 12);
+            const remMonths = months % 12;
+
+            const yStr = years + (years === 1 ? ' year' : ' years');
+            const mStr = remMonths + (remMonths === 1 ? ' month' : ' months');
+            const ageStr = remMonths === 0 ? yStr : yStr + ', ' + mStr;
+
+            const chip = document.getElementById('age-chip');
+            if (chip) chip.textContent = ageStr + ' old';
+
+            const medical = document.getElementById('age-medical');
+            if (medical) medical.textContent = ageStr + ' old · male poodle';
+        }
+        computeAge();
+
+        // ---- Accordion ----
         function toggleSection(contentId) {
             const content = document.getElementById(contentId);
             const header = content.previousElementSibling;
-            const span = header.querySelector('span');
 
             if (content.classList.contains('active')) {
                 content.classList.remove('active');
                 header.setAttribute('aria-expanded', 'false');
-                span.textContent = '+';
             } else {
-                // Close all other sections
-                document.querySelectorAll('.section-content').forEach(section => {
-                    section.classList.remove('active');
-                });
-                document.querySelectorAll('.section-header').forEach(h => {
-                    h.setAttribute('aria-expanded', 'false');
-                });
-                document.querySelectorAll('.section-header span').forEach(s => {
-                    s.textContent = '+';
-                });
-
-                // Open clicked section
+                document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.section-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
                 content.classList.add('active');
                 header.setAttribute('aria-expanded', 'true');
-                span.textContent = '−';
             }
         }
 
-        // Quick navigation
+        // ---- Quick navigation ----
         document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
+            btn.addEventListener('click', function (e) {
                 e.preventDefault();
-                const targetId = this.getAttribute('href').substring(1) + '-content';
+                const sectionId = this.getAttribute('href').substring(1);
+                const targetId = sectionId + '-content';
                 const target = document.getElementById(targetId);
                 if (target) {
-                    // Close all sections first
-                    document.querySelectorAll('.section-content').forEach(section => {
-                        section.classList.remove('active');
-                    });
-                    document.querySelectorAll('.section-header span').forEach(s => {
-                        s.textContent = '+';
-                    });
-                    
-                    // Open target section
+                    document.querySelectorAll('.section-content').forEach(s => s.classList.remove('active'));
+                    document.querySelectorAll('.section-header').forEach(h => h.setAttribute('aria-expanded', 'false'));
                     target.classList.add('active');
-                    target.previousElementSibling.querySelector('span').textContent = '−';
-                    
-                    // Scroll to section
-                    target.parentElement.scrollIntoView({ behavior: 'smooth' });
+                    target.previousElementSibling.setAttribute('aria-expanded', 'true');
+                    document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }
             });
         });
 
-        // Open daily routine by default
+        // ---- Sticky nav shadow on scroll ----
+        const nav = document.querySelector('.quick-nav');
+        const onScroll = () => nav.classList.toggle('stuck', nav.getBoundingClientRect().top <= 0);
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+
+        // ---- Open the daily routine by default ----
         document.getElementById('routine-content').classList.add('active');
-        const defaultHeader = document.querySelector('#daily-routine .section-header');
-        defaultHeader.querySelector('span').textContent = '−';
-        defaultHeader.setAttribute('aria-expanded', 'true');
+        document.querySelector('#daily-routine .section-header').setAttribute('aria-expanded', 'true');
     </script>
 </body>
 </html>
