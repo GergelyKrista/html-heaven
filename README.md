@@ -5,7 +5,7 @@
 **A community-curated showcase of single-file HTML5 apps, built on an open-source codebase.**
 Tiny web apps made by people, running in your browser.
 
-[htmlheaven.com](https://htmlheaven.com) · [Submit an app](https://htmlheaven.com/submit) · [Browse](https://htmlheaven.com/browse)
+[htmlheaven.com](https://htmlheaven.com) · [Submit an app](https://htmlheaven.com/submit) · [Browse](https://htmlheaven.com/browse) · [Skills](https://htmlheaven.com/skills)
 
 </div>
 
@@ -17,11 +17,14 @@ HTML Heaven is a curated catalog of **self-contained HTML5 mini-applications** �
 
 The idea: you've probably prompted ChatGPT or Claude for "a single-file pomodoro in HTML" a dozen times. Those tiny apps are genuinely useful but end up rotting in your `Downloads/` folder. HTML Heaven is a place to put them, and a place to find other people's.
 
+And some of those pages are more than apps: a well-made HTML reference — a cheatsheet, a guide — serves two readers at once. A human opens the URL and sees a styled, visual page; **an LLM reads the same URL and uses it as a skill.** No conversion, no companion format. See [⚡ Skills](#-skills--pages-that-double-as-llm-skills) below.
+
 **The code that runs the site is open-source under MIT.** The catalog itself is community-curated — submissions go through review before they go live, and the admin can remove entries that don't fit. That's the distinction: the tooling is something you can fork, self-host, and inspect; the showcase is a moderated collection rather than a free-for-all.
 
 ## Features
 
 - **Browse** — category pills, tag filters, grid or grouped view, search, sort by newest / A-Z / most liked
+- **⚡ Skills** — reviewed reference pages (cheatsheets, guides) double as LLM skills: agents fetch the raw HTML directly; humans get the same page rendered. Skills home at `/skills`, machine discovery via `/llms.txt` + `/skills/index.json`
 - **Submit flow** — drag & drop an HTML file, fill a title + category + tags, done. Creates a pull request on this repo with the file + metadata
 - **Auto-reviewer** — GitHub Action scans every submission PR for leaked secrets, trackers, cryptominers, external scripts, and phishing patterns. Flags suspicious ones for manual review, blocks PRs with obvious secrets
 - **Social profiles** at `/u/<handle>` — avatar, bio, location, website, GitHub/X/Reddit links, submitted apps, likes received, followers
@@ -29,6 +32,41 @@ The idea: you've probably prompted ChatGPT or Claude for "a single-file pomodoro
 - **Preview modal** — click any card to see the app's details, submitter, and like count before launching
 - **OG / Twitter previews** — sharing a link to the site / an app / a profile generates a custom social card
 - **Auto-deploy** — push to `main`, Cloudflare Pages rebuilds, live in ~90s
+
+## ⚡ Skills — pages that double as LLM skills
+
+The bet: **the future of skills is HTML files.** A single self-contained HTML
+page is the only artifact that serves both audiences with zero conversion —
+no SKILL.md, no manifest format, no export step:
+
+- a **human** opens the URL and sees a cheatsheet, a guide, a reference —
+  visual, styled, appropriate to its topic;
+- an **LLM** fetches the same URL and uses the content as a skill.
+
+*A Java cheatsheet becomes a skill for the LLM but stays a cheatsheet for the user.*
+
+**What makes an app a skill:** a `"skill": true` flag on its reviewed metadata
+— set via a checkbox at submission, confirmed in PR review. The review is the
+trust layer: it checks the page renders well for humans, that **every fact is
+in the bytes of the file** (markup or embedded data — not fetched at runtime),
+and that the description says what the page is useful *for* (that's how agents
+decide to use it).
+
+**How agents find and use skills:**
+
+| Surface | Purpose |
+|---|---|
+| `https://htmlheaven.com/apps/<slug>/index.html` | The skill itself — fetch and read |
+| [`/llms.txt`](https://htmlheaven.com/llms.txt) | LLM-facing site index listing every skill |
+| [`/skills/index.json`](https://htmlheaven.com/skills/index.json) | Machine-readable catalog (title, description, tags, URLs) |
+| [`/skills`](https://htmlheaven.com/skills) | Human-facing skills home |
+
+Try it: tell your agent *"Read
+https://htmlheaven.com/apps/coding-cheatsheet/index.html and use it as a
+reference."* In testing, an agent given that raw file answered reference
+questions with verbatim-correct quotes across 18 languages.
+
+Full rationale and review guidelines: [docs/html-skills-design.md](./docs/html-skills-design.md).
 
 ## How to contribute
 
@@ -140,8 +178,10 @@ html-heaven/
 │   ├── app/                       # Next.js App Router pages
 │   │   ├── page.tsx               # Home
 │   │   ├── browse/
+│   │   ├── skills/                # ⚡ Skills home + index.json catalog route
+│   │   ├── llms.txt/              # LLM-facing site index (route handler)
 │   │   ├── u/[handle]/            # Public profile
-│   │   ├── app/[slug]/            # App detail + iframe player
+│   │   ├── app/[slug]/            # App detail + iframe player + skill ribbon
 │   │   ├── submit/                # Submit form
 │   │   ├── settings/profile/      # Edit own profile
 │   │   └── api/                   # Route handlers
@@ -190,7 +230,14 @@ npm run generate-manifest
 npm run dev           # → http://localhost:3000
 ```
 
-Note that D1-dependent features (likes, comments, profiles) won't work in `npm run dev` without a local D1 binding. Use `npx wrangler pages dev` with a wrangler.toml-configured binding if you want the full experience.
+D1-dependent features (likes, comments, profiles) work in `npm run dev` out of
+the box — `next.config.ts` calls `initOpenNextCloudflareForDev()`, which wires
+up the **local** simulated D1 from `wrangler.toml` (state lives under
+`.wrangler/`, not production). To create the local tables the first time:
+
+```bash
+npx wrangler d1 execute html-heaven-db --local --file=schema.sql
+```
 
 ## Adding an app directly (for maintainers)
 
@@ -211,7 +258,8 @@ cat > apps/my-new-app/app.json << 'EOF'
   "dateAdded": "2026-04-24",
   "featured": false,
   "hostingType": "bundled",
-  "thumbnail": "thumbnail.png"
+  "thumbnail": "thumbnail.png",
+  "skill": false
 }
 EOF
 
@@ -240,7 +288,7 @@ EOF
 npm run generate-manifest
 ```
 
-`generate-manifest` validates both variants and fails the build on bad combinations (external without a URL, non-https URL, bundled without an `index.html`, unknown `hostingType`). Existing entries without a `hostingType` field are treated as `bundled` for backward compat.
+`generate-manifest` validates both variants and fails the build on bad combinations (external without a URL, non-https URL, bundled without an `index.html`, unknown `hostingType`, `skill: true` on an external app — skills must be bundled since agents fetch our hosted file). Existing entries without a `hostingType` field are treated as `bundled`, and missing `skill` as `false`, for backward compat.
 
 ## Security & review posture
 
