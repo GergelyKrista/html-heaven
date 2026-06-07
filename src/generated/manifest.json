@@ -1,17 +1,80 @@
 [
   {
-    "title": "GitLab Values",
-    "slug": "gitlab-values",
-    "description": "Prepping for some interviews",
-    "author": "GergelyKrista",
+    "title": "Total War: Warhammer 3 - Exiles of Khorne guide",
+    "slug": "total-war-warhammer-3-exiles-of-khorne-guide",
+    "description": "This is the synthesis of many guides found online and information from the Total War wiki pages into one coherent guide.",
+    "author": "ambrusorban",
     "tags": [
-      "other",
-      "interview"
+      "games",
+      "strategy",
+      "multiplayer",
+      "single-player",
+      "turnbased",
+      "totalwar",
+      "wargame"
     ],
-    "dateAdded": "2026-04-27",
+    "dateAdded": "2026-05-07",
     "featured": false,
     "hostingType": "bundled",
-    "thumbnail": "thumbnail.png"
+    "thumbnail": "thumbnail.png",
+    "skill": true
+  },
+  {
+    "title": "Total War: Warhammer 3 - Masters of Innovation guide",
+    "slug": "total-war-warhammer-3-masters-of-innovation-guide",
+    "description": "This is the synthesis of many guides found online and information from the Total War wiki pages into one coherent guide.",
+    "author": "ambrusorban",
+    "tags": [
+      "games",
+      "strategy",
+      "multiplayer",
+      "warhammer",
+      "totalwar",
+      "turnbased"
+    ],
+    "dateAdded": "2026-05-07",
+    "featured": false,
+    "hostingType": "bundled",
+    "thumbnail": "thumbnail.png",
+    "skill": true
+  },
+  {
+    "title": "Total War: Warhammer 3 - The Northern Provinces guide",
+    "slug": "total-war-warhammer-3-the-northern-provinces-guide",
+    "description": "This is the synthesis of many guides found online and information from the Total War wiki pages into one coherent guide.",
+    "author": "ambrusorban",
+    "tags": [
+      "games",
+      "strategy",
+      "multiplayer",
+      "totalwar",
+      "warhammer",
+      "turnbased"
+    ],
+    "dateAdded": "2026-05-07",
+    "featured": false,
+    "hostingType": "bundled",
+    "thumbnail": "thumbnail.png",
+    "skill": true
+  },
+  {
+    "title": "Total War: Warhammer 3 - Ursun Revivalists guide",
+    "slug": "total-war-warhammer-3-ursun-revivalists-guide",
+    "description": "This is the synthesis of many guides found online and information from the Total War wiki pages into one coherent guide.",
+    "author": "ambrusorban",
+    "tags": [
+      "games",
+      "strategy",
+      "multiplayer",
+      "warhammer",
+      "totalwar",
+      "turnbased"
+    ],
+    "dateAdded": "2026-05-07",
+    "featured": false,
+    "hostingType": "bundled",
+    "thumbnail": "thumbnail.png",
+    "skill": true
   },
   {
     "title": "Toolbox for Digital Artists",
@@ -79,6 +142,7 @@
     "dateAdded": "2026-04-23",
     "thumbnail": "thumbnail.png",
     "featured": false,
+    "skill": true,
     "hostingType": "bundled"
   },
   {
@@ -97,6 +161,7 @@
     "dateAdded": "2026-04-21",
     "thumbnail": "thumbnail.png",
     "featured": false,
+    "skill": true,
     "hostingType": "bundled"
   },
   {
@@ -126,6 +191,7 @@
     "dateAdded": "2026-04-19",
     "thumbnail": "thumbnail.png",
     "featured": false,
+    "skill": true,
     "hostingType": "bundled"
   },
   {
@@ -139,6 +205,7 @@
     "dateAdded": "2026-04-17",
     "thumbnail": "thumbnail.png",
     "featured": false,
+    "skill": true,
     "hostingType": "bundled"
   },
   {
@@ -165,6 +232,7 @@
     "dateAdded": "2026-04-15",
     "thumbnail": "thumbnail.png",
     "featured": true,
+    "skill": true,
     "hostingType": "bundled"
   },
   {
@@ -220,6 +288,7 @@
     "dateAdded": "2026-04-13",
     "thumbnail": "thumbnail.png",
     "featured": true,
+    "skill": true,
     "hostingType": "bundled"
   },
   {
@@ -283,15 +352,18 @@
   {
     "title": "Coding Cheat Sheet",
     "slug": "coding-cheatsheet",
-    "description": "All-in-one coding reference with syntax highlighting for multiple languages.",
+    "description": "All-in-one coding reference for 18 languages and tools — Python, JavaScript, Java, SQL, Git, Bash, React, Go, C#, C++ and more. Syntax, common patterns, and commands with worked examples. Useful when writing or reviewing code in any of these languages.",
     "author": "Gergely Krista",
     "tags": [
       "education",
-      "tools"
+      "tools",
+      "reference",
+      "cheatsheet"
     ],
     "dateAdded": "2026-02-08",
     "thumbnail": "thumbnail.png",
     "featured": false,
+    "skill": true,
     "hostingType": "bundled"
   },
   {
@@ -306,6 +378,7 @@
     "dateAdded": "2026-01-29",
     "thumbnail": "thumbnail.png",
     "featured": true,
+    "skill": true,
     "hostingType": "bundled"
   }
 ]

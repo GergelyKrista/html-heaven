@@ -14,6 +14,8 @@ interface AppMeta {
   hostingType?: HostingType;
   thumbnail?: string;
   externalUrl?: string;
+  /** Also an LLM skill — see docs/html-skills-design.md. Bundled apps only. */
+  skill?: boolean;
 }
 
 const appsDir = path.join(__dirname, "..", "apps");
@@ -56,6 +58,15 @@ function validate(meta: AppMeta, dir: string): void {
   }
 
   const type = meta.hostingType ?? "bundled";
+
+  if (meta.skill !== undefined && typeof meta.skill !== "boolean") {
+    throw new Error(`${dir}: "skill" must be a boolean when present`);
+  }
+  // Skills are consumed by agents fetching OUR raw HTML — an external app's
+  // content lives on someone else's domain, so it can't carry the flag.
+  if (meta.skill === true && type === "external") {
+    throw new Error(`${dir}: skill apps must be bundled (content must live in the hosted file)`);
+  }
 
   if (type === "external") {
     if (!meta.externalUrl) {
@@ -144,7 +155,8 @@ apps.sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getT
 fs.writeFileSync(manifestPath, JSON.stringify(apps, null, 2));
 const externalCount = apps.filter((a) => a.hostingType === "external").length;
 const bundledCount = apps.length - externalCount;
+const skillCount = apps.filter((a) => a.skill === true).length;
 console.log(
-  `Generated manifest.json with ${apps.length} apps (${bundledCount} bundled, ${externalCount} external)`
+  `Generated manifest.json with ${apps.length} apps (${bundledCount} bundled, ${externalCount} external, ${skillCount} skills)`
 );
 console.log(`Copied bundled app files to public/apps/ (with back badge injected)`);

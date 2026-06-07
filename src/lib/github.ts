@@ -88,6 +88,8 @@ interface SubmissionData {
     description: string;
     author: string;
     tags: string[];
+    /** Also an LLM skill (bundled only) — see docs/html-skills-design.md. */
+    skill?: boolean;
   };
   // Display name shown in the PR body. We deliberately don't take the
   // submitter's email here — the PR is public on a public repo, and
@@ -134,6 +136,11 @@ export async function createSubmissionPR(data: SubmissionData): Promise<string> 
   };
   if (data.hostingType === "bundled") {
     appJsonObj.thumbnail = "thumbnail.png";
+    // Skill flag only ever lands on bundled apps — agents fetch OUR hosted
+    // file. Reviewer confirms the claim in PR review (see skills design §6).
+    if (data.metadata.skill) {
+      appJsonObj.skill = true;
+    }
   } else {
     appJsonObj.externalUrl = data.externalUrl;
   }
@@ -172,6 +179,13 @@ export async function createSubmissionPR(data: SubmissionData): Promise<string> 
     `**Author:** ${data.metadata.author}`,
     `**Submitted by:** ${data.submitterName}`,
     `**Tags:** ${data.metadata.tags.join(", ")}`,
+    ...(data.metadata.skill
+      ? [
+          `**⚡ Skill:** submitter flags this as an LLM skill — review per the`,
+          `skill checklist (content present in the file, description states what`,
+          `it's useful for, accurate enough for agents to act on).`,
+        ]
+      : []),
     "",
     `### Description`,
     data.metadata.description,

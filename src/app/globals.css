@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+/* Keep Tailwind's class scanner away from wrangler's local D1 state — it
+   contains live-locked SQLite files that panic Turbopack on Windows. */
+@source not "../../.wrangler";
+
 @theme inline {
   --color-background: #09090b;
   --color-surface: #111113;

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { AppMeta } from "@/types";
-import { isExternal } from "@/types";
+import { isExternal, isSkill } from "@/types";
 import { FavoriteButton } from "./FavoriteButton";
 import { ShareButton } from "./ShareButton";
 import { DeleteAppMenu } from "./DeleteAppMenu";
@@ -107,6 +107,14 @@ export function AppCard({ app, likeCount }: { app: AppMeta; likeCount?: number }
                 title="Hosted on the submitter's own domain — opens in a new tab"
               >
                 ↗ ext
+              </span>
+            )}
+            {isSkill(app) && (
+              <span
+                className="inline-flex shrink-0 items-center gap-0.5 rounded bg-amber-500/10 px-1 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-amber-400"
+                title="Also an LLM skill — agents can read this page's raw HTML as a reference"
+              >
+                ⚡ skill
               </span>
             )}
           </h3>

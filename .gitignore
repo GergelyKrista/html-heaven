@@ -17,6 +17,11 @@
 /.next/
 /out/
 
+# cloudflare — local dev state (live SQLite files; also keeps Tailwind's
+# project scan out of them, which panics Turbopack on Windows) + build output
+/.wrangler/
+/.open-next/
+
 # production
 /build
 

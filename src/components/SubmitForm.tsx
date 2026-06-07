@@ -17,6 +17,8 @@ export function SubmitForm() {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<CategoryId | "">("");
   const [tags, setTags] = useState<string[]>([]);
+  // "Also an LLM skill" — bundled only; confirmed by the reviewer in the PR.
+  const [skill, setSkill] = useState(false);
   const [customTagInput, setCustomTagInput] = useState("");
   const [error, setError] = useState("");
   const [prUrl, setPrUrl] = useState("");
@@ -155,6 +157,7 @@ export function SubmitForm() {
     formData.append("tags", JSON.stringify(finalTags));
     if (hostingType === "bundled" && htmlFile) {
       formData.append("html", htmlFile);
+      formData.append("skill", String(skill));
     }
     if (hostingType === "external") {
       formData.append("externalUrl", externalUrl.trim());
@@ -461,6 +464,28 @@ export function SubmitForm() {
               </div>
             )}
           </div>
+
+          {hostingType === "bundled" && (
+            <label className="flex cursor-pointer items-start gap-2.5 rounded-lg border border-border bg-surface p-3 transition-colors hover:border-border-light">
+              <input
+                type="checkbox"
+                checked={skill}
+                onChange={(e) => setSkill(e.target.checked)}
+                className="mt-0.5 h-4 w-4 accent-amber-400"
+              />
+              <span>
+                <span className="block text-[13px] font-medium text-foreground">
+                  ⚡ This page is also an LLM skill
+                </span>
+                <span className="mt-0.5 block text-[12px] leading-relaxed text-muted">
+                  Reference content an AI agent can use directly (cheatsheets,
+                  guides, context packs). Make sure the description says what
+                  the page is useful <em>for</em> — that&apos;s how agents decide
+                  to use it. Confirmed during review.
+                </span>
+              </span>
+            </label>
+          )}
 
           {error && <p className="text-[12px] text-red-400">{error}</p>}
           <div className="flex gap-2">

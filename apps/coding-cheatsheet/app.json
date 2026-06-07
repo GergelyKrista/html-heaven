@@ -1,10 +1,11 @@
 {
   "title": "Coding Cheat Sheet",
   "slug": "coding-cheatsheet",
-  "description": "All-in-one coding reference with syntax highlighting for multiple languages.",
+  "description": "All-in-one coding reference for 18 languages and tools — Python, JavaScript, Java, SQL, Git, Bash, React, Go, C#, C++ and more. Syntax, common patterns, and commands with worked examples. Useful when writing or reviewing code in any of these languages.",
   "author": "Gergely Krista",
-  "tags": ["education", "tools"],
+  "tags": ["education", "tools", "reference", "cheatsheet"],
   "dateAdded": "2026-02-08",
   "thumbnail": "thumbnail.png",
-  "featured": false
+  "featured": false,
+  "skill": true
 }
