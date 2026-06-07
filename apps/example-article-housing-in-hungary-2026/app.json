@@ -1,0 +1,19 @@
+{
+  "title": "Example Article - Housing in Hungary 2026",
+  "slug": "example-article-housing-in-hungary-2026",
+  "description": "A showcase for what Claude can do with multiple references. The sources marked 'primary' are the ones which I manually fed to Claude and the 'context' ones are which Claude referenced by itself. I only asked, that the references shouldn't be older than 2025.",
+  "author": "ambrusorban",
+  "tags": [
+    "other",
+    "article",
+    "reference",
+    "analysis",
+    "magazine",
+    "economy",
+    "hungary"
+  ],
+  "dateAdded": "2026-05-27",
+  "featured": false,
+  "hostingType": "bundled",
+  "thumbnail": "thumbnail.png"
+}

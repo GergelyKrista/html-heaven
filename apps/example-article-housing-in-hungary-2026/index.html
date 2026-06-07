@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Locked Out at Home — The Hungarian Housing Crunch, 2026</title>
+<meta name="description" content="A long-read on Hungary's housing market in 2026: Otthon Start, runaway prices, and the generation priced out of ownership.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #f6f1e7;
+    --paper: #fbf7ee;
+    --ink: #15110c;
+    --ink-soft: #3a342a;
+    --muted: #6b6357;
+    --rule: #d9cfba;
+    --accent: #7a1f1f;
+    --accent-soft: #b34141;
+    --gold: #b8862a;
+    --teal: #1f4a4a;
+    --warn: #8a3a00;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Fraunces", Georgia, "Times New Roman", serif;
+    font-size: 18px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* ---------- Layout ---------- */
+  .masthead {
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .masthead-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 18px 32px;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+    font-family: "Inter", system-ui, sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .masthead-brand {
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-transform: none;
+  }
+  .masthead-brand .dot { color: var(--accent); }
+  .masthead-meta { text-transform: none; letter-spacing: 0; }
+
+  .hero {
+    border-bottom: 1px solid var(--rule);
+    padding: 64px 32px 56px;
+    background: linear-gradient(180deg, var(--paper) 0%, var(--bg) 100%);
+  }
+  .hero-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .kicker {
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 18px;
+  }
+  h1.title {
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    font-size: clamp(38px, 6.5vw, 78px);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+    margin: 0 0 24px 0;
+    color: var(--ink);
+  }
+  h1.title em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--accent);
+  }
+  .standfirst {
+    font-family: "Fraunces", serif;
+    font-weight: 400;
+    font-size: clamp(19px, 2.1vw, 24px);
+    line-height: 1.45;
+    color: var(--ink-soft);
+    max-width: 760px;
+    margin: 0 0 32px 0;
+  }
+  .byline {
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+  }
+  .byline strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Article ---------- */
+  article { max-width: 720px; margin: 0 auto; padding: 56px 32px 32px; }
+  article p { margin: 0 0 1.1em; }
+  article p.lede::first-letter {
+    font-family: "Fraunces", serif;
+    font-weight: 900;
+    font-size: 5.2em;
+    float: left;
+    line-height: 0.85;
+    margin: 8px 12px 0 -2px;
+    color: var(--accent);
+  }
+  article h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 800;
+    font-size: clamp(26px, 3.4vw, 36px);
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    margin: 64px 0 18px;
+    padding-top: 28px;
+    border-top: 1px solid var(--rule);
+  }
+  article h2 .num {
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.45em;
+    font-weight: 500;
+    color: var(--accent);
+    vertical-align: middle;
+    margin-right: 12px;
+    letter-spacing: 0.05em;
+  }
+  article h3 {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 22px;
+    margin: 36px 0 12px;
+    color: var(--ink);
+  }
+  article a {
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(122, 31, 31, 0.35);
+  }
+  article a:hover { text-decoration-color: var(--accent); }
+
+  /* ---------- Wider components (break out of column) ---------- */
+  .wide {
+    max-width: 1080px;
+    margin: 40px auto;
+    padding: 0 32px;
+  }
+
+  /* ---------- Stat strip ---------- */
+  .stat-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+    margin: 40px auto;
+    max-width: 1080px;
+  }
+  .stat-cell {
+    padding: 24px 26px;
+    border-right: 1px solid var(--rule);
+  }
+  .stat-cell:last-child { border-right: none; }
+  .stat-cell .label {
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .stat-cell .value {
+    font-family: "Fraunces", serif;
+    font-weight: 800;
+    font-size: 32px;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .stat-cell .value .unit {
+    font-size: 0.55em;
+    font-weight: 500;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .stat-cell .delta {
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 6px;
+  }
+  .delta.up { color: var(--warn); }
+  .delta.down { color: var(--teal); }
+
+  /* ---------- Pull quote ---------- */
+  .pullquote {
+    border-left: 3px solid var(--accent);
+    padding: 4px 0 4px 24px;
+    margin: 36px 0 36px -8px;
+  }
+  .pullquote-text {
+    font-family: "Fraunces", serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 26px;
+    line-height: 1.3;
+    color: var(--ink);
+    margin: 0 0 10px 0;
+  }
+  .pullquote-cite {
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ---------- Callout box ---------- */
+  .callout {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 24px 28px;
+    margin: 32px 0;
+    border-left: 4px solid var(--gold);
+  }
+  .callout-label {
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+
+  /* ---------- Tables ---------- */
+  .table-wrap {
+    margin: 32px auto;
+    max-width: 1080px;
+    padding: 0 32px;
+    overflow-x: auto;
+  }
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "Inter", sans-serif;
+    font-size: 14px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+  }
+  table.data caption {
+    text-align: left;
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--ink);
+    padding: 14px 16px 0;
+    caption-side: top;
+  }
+  table.data thead th {
+    text-align: left;
+    padding: 14px 16px;
+    background: #efe7d5;
+    border-bottom: 1px solid var(--rule);
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  table.data tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+  }
+  table.data tbody tr:last-child td { border-bottom: none; }
+  table.data td.num, table.data th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  table.data tbody tr:hover { background: rgba(184, 134, 42, 0.07); }
+  .source-row {
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 10px 16px 14px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-top: none;
+  }
+
+  /* ---------- Chart container ---------- */
+  .chart-card {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    padding: 28px;
+    margin: 32px auto;
+    max-width: 1080px;
+  }
+  .chart-card h4 {
+    font-family: "Fraunces", serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin: 0 0 4px 0;
+    color: var(--ink);
+  }
+  .chart-card .chart-sub {
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+  .chart-wrap { position: relative; height: 320px; }
+  .chart-source {
+    font-family: "Inter", sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 12px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ---------- Divider ornament ---------- */
+  .ornament {
+    text-align: center;
+    color: var(--rule);
+    font-size: 24px;
+    letter-spacing: 1em;
+    margin: 56px 0;
+  }
+
+  /* ---------- Sources ---------- */
+  .sources {
+    background: var(--paper);
+    border-top: 4px double var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-top: 80px;
+    padding: 56px 32px;
+  }
+  .sources-inner { max-width: 1080px; margin: 0 auto; }
+  .sources h2 {
+    font-family: "Fraunces", serif;
+    font-weight: 800;
+    font-size: 28px;
+    margin: 0 0 28px 0;
+    letter-spacing: -0.01em;
+  }
+  .source-list {
+    font-family: "Inter", sans-serif;
+    font-size: 13px;
+    column-count: 2;
+    column-gap: 40px;
+    line-height: 1.55;
+  }
+  .source-list li {
+    break-inside: avoid;
+    margin-bottom: 10px;
+  }
+  .source-list a { color: var(--accent); text-decoration: none; }
+  .source-list a:hover { text-decoration: underline; }
+  .source-list .src-label {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .src-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 2px 6px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: 1px;
+    text-transform: uppercase;
+  }
+  .src-tag.primary { background: #e8d5c1; color: #6b3a1a; }
+  .src-tag.context { background: #d9e1d4; color: #3a4a2a; }
+
+  /* ---------- Footer ---------- */
+  footer {
+    text-align: center;
+    padding: 36px 32px 56px;
+    font-family: "Inter", sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 720px) {
+    body { font-size: 17px; }
+    article { padding: 40px 22px 24px; }
+    .hero { padding: 44px 22px 40px; }
+    .masthead-inner { padding: 14px 22px; flex-direction: column; align-items: flex-start; gap: 8px; }
+    .stat-cell { border-right: none; border-bottom: 1px solid var(--rule); }
+    .stat-cell:last-child { border-bottom: none; }
+    .source-list { column-count: 1; }
+    article p.lede::first-letter { font-size: 4em; }
+    .wide, .table-wrap, .chart-card, .stat-strip { padding-left: 22px; padding-right: 22px; }
+    .chart-card, .stat-strip { margin-left: 0; margin-right: 0; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="masthead-brand">Otthon<span class="dot">·</span>Review</div>
+    <div class="masthead-meta">Long Read &middot; Housing &amp; Policy &middot; Issue 06 / 2026</div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="kicker">The Housing Issue &middot; Hungary 2026</div>
+    <h1 class="title">Locked out at home: <em>Hungary's housing market in 2026</em></h1>
+    <p class="standfirst">
+      A subsidised 3% mortgage rewrote the rules of Hungarian homeownership overnight — and may have priced an entire generation back out of the very market it was meant to open. A data-led look at what it now costs to buy, borrow, and rent in Budapest and beyond.
+    </p>
+    <div class="byline">
+      <span><strong>Otthon Review staff</strong></span>
+      <span>Published 27 May 2026</span>
+      <span>Reading time: ~14 min</span>
+    </div>
+  </div>
+</section>
+
+<article>
+
+  <p class="lede">
+    For most of the post-2008 decade, Hungarian housing was the quiet anomaly of Central Europe: oversold by 2007, deflated for half a decade, then steadily climbing while wages roughly kept pace. That truce ended in September 2025. With the launch of <strong>Otthon Start</strong> — a state-subsidised mortgage fixed at 3% for up to 25 years — the government did something blunt and consequential. It made debt cheap, and it did so for almost anyone under 40 buying their first home. Six months later, the market is unrecognisable.
+  </p>
+
+  <p>
+    The headline numbers are stark. Average national house prices were running at a projected <strong>28.8% year-on-year</strong> in the fourth quarter of 2025, according to MNB modelling, with Budapest tracking close behind at <strong>27.9%</strong>. Subsidised loans went from 23% of new mortgage origination in October 2025 to <strong>81% by March 2026</strong>. The share of dwellings bought with a loan jumped from 36% to over 60% in the same window. And the average Otthon Start contract — there are already <strong>33,200 of them</strong>, worth more than 1,161 billion forints — is now <strong>35 million HUF</strong>, pushed by buyers straight to the program's ceiling.
+  </p>
+
+  <p>
+    What follows is not a verdict on whether the program was a good idea. It is an attempt to answer a simpler set of questions that anyone in their twenties or thirties in Hungary is now asking out loud: <em>What does it cost? What do I need to earn? Can I actually do this?</em> The arithmetic, when laid out plainly, is unforgiving — but it is also more nuanced than the political slogans on either side suggest.
+  </p>
+
+</article>
+
+<div class="stat-strip">
+  <div class="stat-cell">
+    <div class="label">Avg. Budapest m²</div>
+    <div class="value">1.37<span class="unit">M HUF</span></div>
+    <div class="delta up">+23% YoY (Nov 2025)</div>
+  </div>
+  <div class="stat-cell">
+    <div class="label">Avg. net wage</div>
+    <div class="value">546.0<span class="unit">K HUF</span></div>
+    <div class="delta up">+11.3% YoY (Mar 2026, KSH)</div>
+  </div>
+  <div class="stat-cell">
+    <div class="label">Median net wage</div>
+    <div class="value">432.1<span class="unit">K HUF</span></div>
+    <div class="delta up">+13.2% YoY (Mar 2026, KSH)</div>
+  </div>
+  <div class="stat-cell">
+    <div class="label">Otthon Start rate</div>
+    <div class="value">3.00<span class="unit">%</span></div>
+    <div class="delta">Fixed up to 25 yrs</div>
+  </div>
+  <div class="stat-cell">
+    <div class="label">Market rate (THM)</div>
+    <div class="value">6&ndash;9<span class="unit">%</span></div>
+    <div class="delta">2026 OTP / CIB / MBH</div>
+  </div>
+  <div class="stat-cell">
+    <div class="label">Budapest median rent</div>
+    <div class="value">260<span class="unit">K HUF</span></div>
+    <div class="delta up">+5% YoY (Feb 2026)</div>
+  </div>
+</div>
+
+<article>
+
+  <h2><span class="num">01</span>The 3% pivot</h2>
+
+  <p>
+    The mechanics of Otthon Start matter, because almost every other number in this article flows from them. Launched on 1 September 2025, the program is a first-time-buyer mortgage with a <strong>fixed 3% nominal interest rate</strong> (THM ~3.04%) for the entire loan term — up to 25 years. Unlike older "kamattámogatott" schemes that reset to market rate after a teaser period, there is no reversion. The rate is the rate.
+  </p>
+
+  <p>
+    Eligibility is unusually loose by Hungarian subsidy standards. There is no age cap. Applicants can be single, cohabiting, or married. The binding rule is first-time-buyer status — no current residential property, with carve-outs for fractional inheritance and usufruct cases. A continuous social security record of 1–2 years is required, and any employment gap longer than 30 days can disqualify. There is no statutory income ceiling, but lenders apply their own floors: Raiffeisen, for instance, screens at around <strong>193,000 HUF/month net</strong>.
+  </p>
+
+  <p>
+    The loan caps are where the program starts to bite. The maximum loan is <strong>50 million HUF</strong> over 5–25 years. The property must cost no more than 100 million HUF (apartments) or 150 million HUF (detached houses and farmsteads), and the price per square metre cannot exceed <strong>1.5 million HUF gross</strong>. The minimum own contribution (önerő) is 10%, although in practice banks frequently demand 20–30% — more on that below.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">How big is the gift?</div>
+    <p>
+      For a typical 30 million HUF loan over 20 years, Otthon Start cuts the monthly payment from roughly <strong>223,600 HUF</strong> at a 6.5% market rate to about <strong>166,300 HUF</strong>. Across the life of the loan, that is a saving of <strong>~13.75 million HUF</strong> — roughly 2.4 years of an average net salary. The state is essentially handing over a mid-sized car, paid in monthly instalments.
+    </p>
+  </div>
+
+</article>
+
+<div class="chart-card">
+  <h4>The 3% advantage, sized up</h4>
+  <p class="chart-sub">Monthly payment on a 20-year loan, by loan size — Otthon Start (3%) vs. typical market THM (6.5%).</p>
+  <div class="chart-wrap"><canvas id="paymentChart"></canvas></div>
+  <div class="chart-source">Sources: bank360.hu, biztosdontes.hu, money.hu (May 2026 product sheets); banknavigator.hu sample calculations.</div>
+</div>
+
+<article>
+
+  <p>
+    Otthon Start also stacks with the rest of Hungary's family-policy lattice: <strong>CSOK Plusz</strong> (child-linked subsidised loans up to 50 million HUF for three or more children), <strong>Falusi CSOK</strong> for rural property, and <strong>Babaváró</strong> — the "baby-expectation" loan that can itself be used as own contribution. The sequencing matters: applying in the wrong order can cost a household entitlements, and lenders are now actively coordinating the choreography.
+  </p>
+
+  <p>
+    There is also a fresh, less-discussed layer aimed squarely at public-sector workers. From <strong>1 January 2026</strong>, roughly 440,000 doctors, nurses, teachers, police officers and soldiers became eligible for a <em>net one million forints per year</em> cafeteria-style housing benefit, paid per person — meaning a public-sector couple can receive two million forints annually. Separately, employers can provide under-35 workers with up to <strong>150,000 HUF per month</strong> (1.8 million HUF/year) in housing or mortgage support, taxed on the employer side. Neither replaces a mortgage, but both quietly shift the marginal math — and they arrive at a moment when public-sector gross wages are already growing faster than the private sector (<strong>+11.8% vs +8.4% YoY</strong> in March 2026, per KSH), narrowing a pay gap that has historically pushed Hungary's best-trained workers abroad.
+  </p>
+
+  <h2><span class="num">02</span>What the wall costs</h2>
+
+  <p>
+    Whether 3% money is a lifeline or a sugar rush depends, ultimately, on what it can buy. The answer, in mid-2026, is "less than you think." Property prices have risen so quickly that the program's own price cap is now binding for most of the desirable Budapest stock.
+  </p>
+
+  <p>
+    Duna House places the Budapest average at <strong>1.37 million HUF per square metre</strong> in early 2026, up from 1.29 million in 2025. New-build Budapest stock in Q1 2026 averaged <strong>2.028 million HUF/m²</strong> — fully above the Otthon Start ceiling. District-level variance is enormous: District V's Belváros-Lipótváros runs at <strong>1.75 million HUF/m²</strong>, while District XXIII (Soroksár) still trades near <strong>918,000 HUF/m²</strong>. By November 2025, only <strong>20% of new Budapest stock</strong> and 57% of countryside stock still qualified for the program.
+  </p>
+
+</article>
+
+<div class="table-wrap">
+  <table class="data">
+    <caption>What a 55 m² flat costs in 2026 — and how many years of average net pay it represents</caption>
+    <thead>
+      <tr>
+        <th>City</th>
+        <th class="num">Price / m² (HUF)</th>
+        <th class="num">55 m² flat (HUF)</th>
+        <th class="num">Net monthly salaries</th>
+        <th class="num">Years of net pay</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Budapest (avg.)</td>
+        <td class="num">1,370,000</td>
+        <td class="num">75,350,000</td>
+        <td class="num">137</td>
+        <td class="num">11.4</td>
+      </tr>
+      <tr>
+        <td>Budapest, District V</td>
+        <td class="num">1,754,000</td>
+        <td class="num">96,470,000</td>
+        <td class="num">176</td>
+        <td class="num">14.6</td>
+      </tr>
+      <tr>
+        <td>Budapest, new-build (avg.)</td>
+        <td class="num">2,028,000</td>
+        <td class="num">111,540,000</td>
+        <td class="num">203</td>
+        <td class="num">16.9</td>
+      </tr>
+      <tr>
+        <td>Debrecen</td>
+        <td class="num">1,060,000</td>
+        <td class="num">58,300,000</td>
+        <td class="num">106</td>
+        <td class="num">8.8</td>
+      </tr>
+      <tr>
+        <td>Szeged</td>
+        <td class="num">990,000</td>
+        <td class="num">54,450,000</td>
+        <td class="num">99</td>
+        <td class="num">8.3</td>
+      </tr>
+      <tr>
+        <td>Pécs</td>
+        <td class="num">924,000</td>
+        <td class="num">50,820,000</td>
+        <td class="num">93</td>
+        <td class="num">7.7</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="source-row">
+    Methodology: square-metre prices from Duna House, ingatlan.com, SonarHome and Pénzcentrum's Q1&nbsp;2026 city panel. Net wage baseline is KSH's <em>March 2026</em> average net of 546,000 HUF/month (published 20 May 2026). On the median net wage of 432,100 HUF, every "years of net pay" figure in the right-hand column rises by roughly 26%.
+  </div>
+</div>
+
+<article>
+
+  <div class="pullquote">
+    <p class="pullquote-text">"Nálam az öröklés nem jön szóba, és az, hogy vennék egy lakást, nem hiszem."</p>
+    <p class="pullquote-cite">— 23-year-old student, quoted in Qubit. <em>"Inheritance isn't an option, and I don't expect to buy a flat."</em></p>
+  </div>
+
+  <h2><span class="num">03</span>The mortgage reality</h2>
+
+  <p>
+    Even at 3%, a Hungarian mortgage is not free money. The MNB's macroprudential framework still governs who gets one. From January 2026, the <strong>JTM (jövedelemarányos törlesztőrészlet mutató)</strong> — debt-service-to-income — rules cap monthly repayments as a share of net income, on a sliding scale by both income and rate-fixation period:
+  </p>
+
+</article>
+
+<div class="table-wrap">
+  <table class="data">
+    <caption>JTM ceilings — maximum monthly debt service as a share of net income (MNB, 2026)</caption>
+    <thead>
+      <tr>
+        <th>Net monthly income</th>
+        <th class="num">Fixed &lt; 5 yrs</th>
+        <th class="num">Fixed 5–10 yrs</th>
+        <th class="num">Fixed 10+ yrs</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Below 600&ndash;800K HUF</td>
+        <td class="num">25%</td>
+        <td class="num">35%</td>
+        <td class="num">50%</td>
+      </tr>
+      <tr>
+        <td>800K HUF and above</td>
+        <td class="num">30%</td>
+        <td class="num">40%</td>
+        <td class="num">60%</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="source-row">
+    Sources: bank360.hu, biztosdontes.hu, jelzalog.com (2026 MNB recalibration). The income break is reported variously as 600,000 or 800,000 HUF — the rule itself, not the threshold, is the binding constraint for most applicants.
+  </div>
+</div>
+
+<article>
+
+  <p>
+    Translated into numbers: for an Otthon Start payment of ~166,000 HUF/month on a 30 million HUF loan, the applicant needs roughly <strong>330,000 HUF net per month</strong> to clear the 50% ceiling. Most banks demand a comfortable buffer above that — and the floor for a clean approval is widely cited at around <strong>550,000 HUF</strong> net for a borrower hoping to reach the 50 million HUF cap. That is essentially the new national average net wage; an "average" Hungarian household, in mortgage terms, is now exactly at the bank's margin of comfort.
+  </p>
+
+  <h3>Down payment — the second wall</h3>
+
+  <p>
+    The MNB rule allows mortgages up to 80% loan-to-value, meaning a <strong>20% own contribution minimum</strong>. First-time buyers under 41, and buyers of energy-rated A+ properties, may put down 10%. Otthon Start, similarly, requires 10%. But the legal floor and the practical floor diverge sharply: <em>biztosdontes.hu</em> reports that many lenders still expect <strong>30–40% own contribution</strong> on standard mortgages, treating the 20% rule as a maximum LTV they will offer rather than a target.
+  </p>
+
+  <p>
+    On a 50 million HUF Budapest flat, that is the difference between needing 5 million HUF in cash (10%), 10 million (20%), and 15–20 million (30–40%) — a sum equal to two to three full years of average net wages, before living costs. Acceptable sources of own contribution include savings, lakástakarék (LTP), Falusi CSOK, Babaváró (at 100% of value if drawn 90+ days before purchase, 75% otherwise), and Munkáshitel. Personal loans are explicitly excluded.
+  </p>
+
+</article>
+
+<div class="table-wrap">
+  <table class="data">
+    <caption>What a 20-year, 25 million HUF mortgage costs in 2026</caption>
+    <thead>
+      <tr>
+        <th>Product</th>
+        <th class="num">Nominal rate</th>
+        <th class="num">THM</th>
+        <th class="num">Monthly payment</th>
+        <th class="num">Total repayable</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Gránit Otthon Start</td>
+        <td class="num">2.79%</td>
+        <td class="num">2.85%</td>
+        <td class="num">~115,840 HUF</td>
+        <td class="num">~27.8M HUF</td>
+      </tr>
+      <tr>
+        <td>MagNet Otthon Start</td>
+        <td class="num">2.80%</td>
+        <td class="num">2.87%</td>
+        <td class="num">~115,970 HUF</td>
+        <td class="num">~27.8M HUF</td>
+      </tr>
+      <tr>
+        <td>MBH Otthon Start</td>
+        <td class="num">2.89&ndash;3.00%</td>
+        <td class="num">2.98&ndash;3.10%</td>
+        <td class="num">~117,130 HUF</td>
+        <td class="num">~28.1M HUF</td>
+      </tr>
+      <tr>
+        <td>Market-rate mortgage (typical)</td>
+        <td class="num">5.85%</td>
+        <td class="num">6.10%</td>
+        <td class="num">~178,120 HUF</td>
+        <td class="num">~42.8M HUF</td>
+      </tr>
+      <tr>
+        <td>OTP "1×1" market loan</td>
+        <td class="num">6.79&ndash;7.99%</td>
+        <td class="num">up to 8.66%</td>
+        <td class="num">&gt; 200,000 HUF</td>
+        <td class="num">&gt; 48M HUF</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="source-row">
+    Sources: bank360.hu and biztosdontes.hu lakáshitel-kalkulator (May 2026 product sheets); money.hu cost panel. Total repayable is illustrative and excludes one-off fees, valuation, and insurance.
+  </div>
+</div>
+
+<article>
+
+  <h2><span class="num">04</span>The wage gap</h2>
+
+  <p>
+    For all the price headlines, Hungarian wages have not stood still. KSH's <strong>March 2026 release</strong> (published 20 May 2026) put the average net wage at <strong>546,000 HUF/month</strong>, with the cumulative Q1 2026 figure essentially identical at 546,900 HUF. Nominal growth was a striking <strong>+11.3% YoY</strong> in net terms — outpacing the +9.2% gross rate, because the expanded family tax credit and the maternal income-tax exemption together push more of the gross pay-packet through to take-home. With inflation running at 1.8%, that translates into <strong>real wage growth of +9.3%</strong>, well above the 3–6% range that defined 2025.
+  </p>
+
+  <p>
+    But averages, in a country with sharp earnings dispersion, flatter the picture. The same KSH release reports a <strong>median net wage of 432,100 HUF</strong> — meaning half of all Hungarian employees take home less than that figure each month. The 114,000-forint gap between mean and median is the gravitational signature of a long right tail: a financial and managerial layer in Budapest pulling the average up, behind which sits the wage distribution most young workers actually inhabit. Median pay <em>is</em> growing fast (+13.2% YoY, faster than the mean), but it starts from a much lower base.
+  </p>
+
+  <p>
+    Reframe the affordability question against the median, and the numbers harden considerably. A 55 m² Budapest flat at 75 million HUF is <strong>~174 median net monthly salaries — roughly 14.5 years of unbanked median pay</strong>, against about 11.5 years on the average. A Pécs flat at 51 million HUF is just under 10 years of median pay rather than 7.7 of the mean. The "average Hungarian household" the policy debate references is, statistically, an upper-half household.
+  </p>
+
+  <p>
+    The corollary is that the 3% mortgage, in isolation, lengthens what an average earner can carry — but it does so by stretching debt across longer horizons, not by closing the price-to-income gap. Cheaper money also lifts what bidders can pay, and prices have predictably risen to absorb most of the gain. The MNB itself flagged "<strong>brutális túlárazottság</strong>" — brutal overvaluation — in its spring assessment of the market. Real wages are now climbing fast enough to make some catch-up plausible by 2027–28, but only if property-price growth slows from its current ~28% pace to something closer to the wage trajectory.
+  </p>
+
+  <div class="callout">
+    <div class="callout-label">The "I need to earn" math</div>
+    <p>
+      For a 30 million HUF Otthon Start loan, <strong>~330,000 HUF net/month</strong> clears the 50% JTM ceiling — but lenders look for ~440,000+ HUF for a smooth approval. For a maximum 50 million HUF loan, expect to need <strong>~550,000–600,000 HUF net/month</strong>, plus 5–10 million HUF in own contribution. For two-income households, those numbers halve per partner — which is why the program has overwhelmingly favoured couples over single applicants. The salient comparison: the <em>median</em> Hungarian net wage is 432,100 HUF, sitting just below the comfortable approval band even for the mid-sized loan.
+    </p>
+  </div>
+
+  <h2><span class="num">05</span>Squeezed out: a generation in limbo</h2>
+
+  <p>
+    The longer-arc story is harder to read from any single quarter's numbers. Hungary has one of Europe's highest homeownership rates — <strong>86% versus the EU's 70%</strong> — but that headline conceals a profound generational sorting. Among 18–35 year-olds, ownership collapsed from <strong>83% in 1999 to 66% in 2015</strong>, even as private renting tripled from 10% to 30%. In Budapest, fully <strong>38% of young adults</strong> were already renting privately by 2015. The over-35 cohort barely moved in the same period.
+  </p>
+
+  <p>
+    Sociologists Adrienne Csizmady and Lea Kőszeghy describe young Hungarians as "<strong>kiszorultak a lakáspiacról</strong>" — squeezed out of the housing market. It is not, their interviews emphasise, a preference for renting. Roughly half of those who do buy receive substantial family transfers — covering, on average, about <strong>50% of the purchase price</strong>. The market, in other words, is increasingly priced not for what young people earn but for what their parents can give.
+  </p>
+
+  <div class="pullquote">
+    <p class="pullquote-text">"Nagy szívás az albérlet, kidobott pénz."</p>
+    <p class="pullquote-cite">— Young renter, Budapest. <em>"Renting is a pain — money thrown away."</em></p>
+  </div>
+
+  <p>
+    Eurofound's 2024 data showed Hungarian young adults living with parents into their late twenties, with the country still above the EU average of 26.2 years — but, paradoxically, also recording the <strong>largest EU decline</strong> in parental cohabitation between 2018 and 2023. That decline is most plausibly explained not by independence but by a forced migration into the rental market: out of the family home and into shared flats, not into ownership.
+  </p>
+
+  <p>
+    Otthon Start, in this light, is best understood as a partial answer. MNB and Bankmonitor data confirm that <strong>roughly 80% of applicants are under 40</strong>, with an average age of 34. The first-time-buyer share in Budapest rose from 25% to <strong>40%</strong> in a single year. For this cohort, the program has unambiguously opened a door that had been welded shut. But the door opens onto a market the program itself is making more expensive.
+  </p>
+
+  <h2><span class="num">06</span>The rental trap</h2>
+
+  <p>
+    For those who cannot — or will not — buy, the rental market offers no relief. After a brief 2025 cooling, Budapest rents resumed their climb. The January 2026 average stood at <strong>267,000 HUF per month</strong>; the February median came in at 260,000. District V medians ran above 360,000; District II close behind. The cheapest districts — X, XIX, XXI — still cleared 200,000.
+  </p>
+
+  <p>
+    Set against an average net wage of 548,900 HUF, a typical Budapest rent absorbs <strong>roughly half of one full salary</strong>. For a fresh graduate on a starting wage closer to 350,000–400,000 HUF net, it crosses 60%. In practice, that means almost every young single renter in Budapest is sharing — a flat or a room, often both — and saving meaningfully for an own-contribution deposit is mathematically out of reach without family help.
+  </p>
+
+  <p>
+    Recognising this, Budapest's city hall launched the <em>Együtt könnyebb — Megbízható szobakiadás</em> initiative in March 2026, under the AHA Budapest (Affordable Housing for All) project. The program pairs elderly homeowners with vetted students and young professionals on stable, regulated terms. It is, as Eduline puts it, a tacit admission that "dormitory capacity is far from sufficient" and that "rental prices are skyrocketing." It is also small — a symbol of a policy gap rather than a fix.
+  </p>
+
+  <h2><span class="num">07</span>Where the money goes</h2>
+
+  <p>
+    Hungary spends a great deal on housing — and almost none of it on the people who need it most. Civil-society analysts surveyed by Telex's G7 desk in February 2026 estimate <strong>1,030 billion HUF</strong> in the 2026 budget allocated to housing, excluding tax breaks and a separate 300-billion-forint developer capital programme. Advocates argue for a target of <strong>1.5% of GDP</strong> — roughly 1,436 billion HUF — to bring Hungary in line with peer countries.
+  </p>
+
+  <p>
+    The bigger problem is composition. According to the same analysis, <strong>95% of state housing spending is non-targeted</strong>: it flows to applicants regardless of need. CSOK, Otthon Start, family tax breaks and SZÉP-card housing top-ups disproportionately reach middle and upper-middle households who can already meet down-payment requirements, while excluding renters in housing poverty and households without the social-security records the programs demand. Since 1989, Hungary has spent the equivalent of ~23,000 billion HUF (at 2025 prices) on housing programs, and through that period <strong>2–3 million people</strong> have remained continuously in housing poverty.
+  </p>
+
+  <p>
+    The market response is also lagging the demand response. The government has promised roughly 13,000 new Otthon Start-compatible units (9,200 of them in Budapest) and received more than 40,000 development applications, but meaningful new supply is unlikely to land before <strong>late 2026 through 2028</strong>. The MNB projects only 12,400 completed dwellings for 2025 in total. Subsidising demand into a supply-constrained market is, in textbook terms, exactly how to engineer the price inflation now playing out.
+  </p>
+
+  <h2><span class="num">08</span>The outlook</h2>
+
+  <p>
+    For a young Hungarian thinking about housing in mid-2026, the picture sorts roughly into three tiers. <strong>If you are a public-sector or stable private-sector earner in a couple, in your early thirties, with family help available for the own contribution</strong>, Otthon Start is a real and large transfer of wealth — perhaps the most generous housing subsidy in the country's history, and one that closes most of the price-to-income gap if you act before the program's caps catch up to market reality. <strong>If you are single, on a private-sector wage in the 350,000–500,000 HUF net band, without family equity</strong>, the program is theoretically available but practically out of reach: the 10% own contribution and JTM ceiling will bind before the rate does.
+  </p>
+
+  <p>
+    <strong>If you earn below median, work informally, or rent</strong>, none of this is for you, and Hungary's policy architecture is not currently building anything that will be. The cheap-money pivot has reshaped one tier of the market and left the others to absorb its second-order price effects — higher rents, higher entry prices for the second-time buyer, and a longer wait for the trickle-down of new supply.
+  </p>
+
+  <p>
+    The MNB's spring report uses the phrase <em>brutális túlárazottság</em> — brutal overvaluation — and warns that the rate of price growth is unsustainable. The Otthon Start choreography of subsidised loan + family transfer + price-cap workaround is, by every credible analyst's read, a window that will close. Whether it closes through a soft levelling-off as supply catches up, or a sharper correction when the program's terms are tightened, is the open question of the next twenty-four months.
+  </p>
+
+  <p>
+    For the generation now in its twenties and thirties — the cohort that should be forming households, having children, putting down the kind of roots that housing policy is meant to enable — the verdict is, as it has been for a decade, that the deal on offer is highly conditional. Hungary in 2026 has built a 3% door into homeownership. It just installed it in a wall that keeps getting taller.
+  </p>
+
+</article>
+
+<div class="ornament">&loz; &loz; &loz;</div>
+
+<section class="sources" aria-label="Sources and further reading">
+  <div class="sources-inner">
+    <h2>Sources &amp; further reading</h2>
+    <ol class="source-list">
+      <li><span class="src-tag primary">Primary</span> <a href="https://banknavigator.hu/otthon-start-hitel-2026-minden-amit-a-3-os-tamogatott-lakashitelrol-tudni-kell/" target="_blank" rel="noopener"><span class="src-label">Banknavigator</span> — Otthon Start hitel 2026: minden, amit a 3%-os támogatott lakáshitelről tudni kell</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://www.money.hu/lakashitel" target="_blank" rel="noopener"><span class="src-label">money.hu</span> — Lakáshitel kalkulátor és bank-összehasonlítás</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://bank360.hu/lakashitel-kalkulator" target="_blank" rel="noopener"><span class="src-label">bank360.hu</span> — Lakáshitel kalkulátor (Otthon Start &amp; piaci kamatok)</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://biztosdontes.hu/lakashitel-kalkulator" target="_blank" rel="noopener"><span class="src-label">Biztos Döntés</span> — Lakáshitel kalkulátor</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://biztosdontes.hu/cikkek/lakashitel-onero" target="_blank" rel="noopener"><span class="src-label">Biztos Döntés</span> — Mennyi önerő kell a lakáshitelhez?</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://biztosdontes.hu/cikkek/lakhatasi-tamogatas-fiataloknak-kinek-jar-es-hogyan-igenyelheto" target="_blank" rel="noopener"><span class="src-label">Biztos Döntés</span> — Lakhatási támogatás fiataloknak</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://jelzalog.com/lakashitel/" target="_blank" rel="noopener"><span class="src-label">jelzalog.com</span> — Lakáshitel: önerő, futamidő, JTM</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://www.penzcentrum.hu/hitel/20250801/nem-is-gondolnad-mekkorat-kaszalhatsz-az-egyik-uj-hazai-lakastamogatassal-brutalisan-megeri-1183162" target="_blank" rel="noopener"><span class="src-label">Pénzcentrum</span> — Új közalkalmazotti lakhatási támogatás (2026)</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://okosan.hu/utmutatok/lakashitel-felvetele" target="_blank" rel="noopener"><span class="src-label">okosan.hu</span> — Lakáshitel felvétele: útmutató</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://www.hitel.hu/lakashitel" target="_blank" rel="noopener"><span class="src-label">hitel.hu</span> — Lakáshitel termékek</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://telex.hu/g7/kozelet/2026/02/10/lakhatasi-tamogatas-minimum-civilek-gdp" target="_blank" rel="noopener"><span class="src-label">Telex / G7</span> — Lakhatási támogatás: civilek, GDP, célzottság</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://telex.hu/gazdasag/2026/01/22/otthon-start-lakaspiaci-forgalom-ingatlanpiac-eurostat-otp" target="_blank" rel="noopener"><span class="src-label">Telex Gazdaság</span> — Otthon Start és a lakáspiaci forgalom</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://telex.hu/g7/adat/2025/12/19/otthon-start-lakasepites-lakas-ingatlan-lakaskinalat" target="_blank" rel="noopener"><span class="src-label">Telex / G7</span> — Otthon Start, lakásépítés és kínálat</a></li>
+      <li><span class="src-tag context">Context</span> <a href="https://qubit.hu/2022/08/04/egyre-tobben-elnek-alberletekben-de-ezt-a-magyar-fiatalok-nem-a-szabdsagot-keresve-es-jokedvukben-teszik" target="_blank" rel="noopener"><span class="src-label">Qubit (2022)</span> — Fiatalok és az albérletpiac (Csizmady &amp; Kőszeghy)</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://eduline.hu/campus-life/20260311_lakhatas-egyetemista-palyakezdo-kiado-szoba-budapest-kezdemenyezes" target="_blank" rel="noopener"><span class="src-label">Eduline</span> — Egyetemista lakhatás Budapesten: AHA-kezdeményezés</a></li>
+      <li><span class="src-tag context">Context</span> <a href="https://www.mnb.hu/kiadvanyok/jelentesek/lakaspiaci-jelentes/lakaspiaci-jelentes-2026-majus" target="_blank" rel="noopener"><span class="src-label">MNB</span> — Lakáspiaci jelentés, 2026. május</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://www.ksh.hu/gyorstajekoztatok/ker/ker2603.html" target="_blank" rel="noopener"><span class="src-label">KSH</span> — Keresetek, 2026. március (közzétéve 2026.05.20)</a></li>
+      <li><span class="src-tag primary">Primary</span> <a href="https://telex.hu/gazdasag/2026/05/20/keresetek-fizetes-atlagkereset" target="_blank" rel="noopener"><span class="src-label">Telex Gazdaság</span> — Átlagkereset és reálbér 2026. március</a></li>
+      <li><span class="src-tag context">Context</span> <a href="https://www.ksh.hu/gyorstajekoztatok/ker/ker2512.html" target="_blank" rel="noopener"><span class="src-label">KSH</span> — Keresetek, 2025. december</a></li>
+      <li><span class="src-tag context">Context</span> <a href="https://hvg.hu/gazdasag/20260220_548-900-forint-volt-a-netto-atlagfizetes-decemberben" target="_blank" rel="noopener"><span class="src-label">HVG</span> — 548 900 forint volt a nettó átlagfizetés decemberben</a></li>
+      <li><span class="src-tag context">Context</span> <a href="https://www.portfolio.hu/ingatlan/20260122/megdobbento-valtozas-magyarorszagon-csokkent-a-leginkabb-a-szulokkel-elo-fiatalok-aranya-az-eu-ban-812770" target="_blank" rel="noopener"><span class="src-label">Portfolio</span> — Szülőkkel élő fiatalok aránya csökken</a></li>
+      <li><span class="src-tag context">Context</span> <a href="https://www.penzcentrum.hu/otthon/20260225/lakaspiac-2026-mutatjuk-mely-varosokban-a-legmodernebb-es-hol-a-legelavultabb-a-kinalat-1194264" target="_blank" rel="noopener"><span class="src-label">Pénzcentrum</span> — Lakáspiac 2026: városonkénti négyzetméterárak</a></li>
+      <li><span class="src-tag context">Context</span> <a href="https://privatbankar.hu/cikkek/ingatlan/brutalis-tularazottsag-van-a-lakaspiacon-itt-az-mnb-friss-elemzese.html" target="_blank" rel="noopener"><span class="src-label">Privátbankár</span> — MNB: brutális túlárazottság a lakáspiacon</a></li>
+      <li><span class="src-tag context">Context</span> <a href="https://bankmonitor.hu/mediatar/cikk/otthon-start-mekkora-jovedelemmel-es-hitelosszeggel-igenyelnek-a-magyarok/" target="_blank" rel="noopener"><span class="src-label">Bankmonitor</span> — Otthon Start: jövedelem és hitelösszeg statisztikák</a></li>
+      <li><span class="src-tag context">Context</span> <a href="https://hellomagyar.hu/2026/01/14/alberlet-arak-inkabb-dragultak/" target="_blank" rel="noopener"><span class="src-label">Helló Magyar</span> — Albérletárak januárban tovább drágultak</a></li>
+      <li><span class="src-tag context">Context</span> <a href="https://www.alberlettippek.hu/blog/2026-januari-budapesti-alberletpiaci-jelentes" target="_blank" rel="noopener"><span class="src-label">Albérlettippek</span> — Budapesti albérletpiaci jelentés, 2026. január</a></li>
+    </ol>
+  </div>
+</section>
+
+<footer>
+  Otthon Review &middot; HTML long-read &middot; All currency figures in HUF unless otherwise stated &middot; Compiled 27 May 2026
+</footer>
+
+<script>
+(() => {
+  const ctx = document.getElementById('paymentChart');
+  if (!ctx || typeof Chart === 'undefined') {
+    if (ctx) {
+      const fallback = document.createElement('div');
+      fallback.style.cssText = 'padding:24px;font-family:Inter,sans-serif;font-size:14px;color:#6b6357;text-align:center;';
+      fallback.textContent = 'Chart could not be rendered. Please check your network connection.';
+      ctx.replaceWith(fallback);
+    }
+    return;
+  }
+
+  // Monthly payments calculated on a 20-year (240-month) annuity, in HUF.
+  // Otthon Start rate: 3.00%, market rate: 6.50% — sample sizes from research.
+  const loanSizes = [15, 20, 25, 30, 40, 50]; // millions HUF
+  const monthlyAt = (rate, principalMillions) => {
+    const r = rate / 12;
+    const n = 240;
+    const P = principalMillions * 1_000_000;
+    return P * r / (1 - Math.pow(1 + r, -n));
+  };
+  const startPayments = loanSizes.map(s => Math.round(monthlyAt(0.03, s)));
+  const marketPayments = loanSizes.map(s => Math.round(monthlyAt(0.065, s)));
+
+  const formatHuf = v => {
+    if (v >= 1_000_000) return (v / 1_000_000).toFixed(2) + ' M';
+    return Math.round(v / 1000) + ' K';
+  };
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: loanSizes.map(s => s + ' M HUF'),
+      datasets: [
+        {
+          label: 'Otthon Start (3.00%)',
+          data: startPayments,
+          backgroundColor: '#7a1f1f',
+          borderRadius: 2,
+          borderSkipped: false,
+        },
+        {
+          label: 'Market rate (6.50%)',
+          data: marketPayments,
+          backgroundColor: '#b8862a',
+          borderRadius: 2,
+          borderSkipped: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          position: 'top',
+          align: 'end',
+          labels: {
+            font: { family: 'Inter, sans-serif', size: 12, weight: '500' },
+            color: '#15110c',
+            usePointStyle: true,
+            pointStyle: 'rect',
+            boxWidth: 12,
+            boxHeight: 12,
+            padding: 16,
+          },
+        },
+        tooltip: {
+          backgroundColor: '#15110c',
+          titleFont: { family: 'Inter, sans-serif', size: 12, weight: '600' },
+          bodyFont: { family: 'Inter, sans-serif', size: 13 },
+          padding: 12,
+          callbacks: {
+            label: (item) => `${item.dataset.label}: ${item.parsed.y.toLocaleString('hu-HU')} HUF / mo`,
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: {
+            font: { family: 'Inter, sans-serif', size: 12 },
+            color: '#3a342a',
+          },
+          title: {
+            display: true,
+            text: 'Loan size',
+            font: { family: 'Inter, sans-serif', size: 11, weight: '600' },
+            color: '#6b6357',
+          },
+        },
+        y: {
+          grid: { color: '#d9cfba' },
+          ticks: {
+            font: { family: 'Inter, sans-serif', size: 12 },
+            color: '#3a342a',
+            callback: v => formatHuf(v) + ' HUF',
+          },
+          title: {
+            display: true,
+            text: 'Monthly payment',
+            font: { family: 'Inter, sans-serif', size: 11, weight: '600' },
+            color: '#6b6357',
+          },
+        },
+      },
+    },
+  });
+})();
+</script>
+
+</body>
+</html>
