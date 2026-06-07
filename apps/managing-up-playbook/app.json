@@ -3,8 +3,11 @@
   "slug": "managing-up-playbook",
   "description": "Historical wisdom for managing up — strategies and principles from history's greatest advisors.",
   "author": "Gergely Krista",
-  "tags": ["education"],
+  "tags": [
+    "education"
+  ],
   "dateAdded": "2026-04-15",
   "thumbnail": "thumbnail.png",
-  "featured": true
+  "featured": true,
+  "skill": true
 }

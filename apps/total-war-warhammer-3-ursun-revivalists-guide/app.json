@@ -14,5 +14,6 @@
   "dateAdded": "2026-05-07",
   "featured": false,
   "hostingType": "bundled",
-  "thumbnail": "thumbnail.png"
+  "thumbnail": "thumbnail.png",
+  "skill": true
 }

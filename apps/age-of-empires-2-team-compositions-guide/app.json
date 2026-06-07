@@ -8,5 +8,6 @@
   ],
   "dateAdded": "2026-04-17",
   "thumbnail": "thumbnail.png",
-  "featured": false
+  "featured": false,
+  "skill": true
 }

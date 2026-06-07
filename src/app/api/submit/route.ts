@@ -52,6 +52,9 @@ export async function POST(request: NextRequest) {
     const title = ((formData.get("title") as string) || "").trim();
     const description = ((formData.get("description") as string) || "").trim();
     const category = ((formData.get("category") as string) || "").trim();
+    // Skill flag: only bundled apps qualify (agents fetch our hosted file).
+    // The reviewer confirms the claim in PR review.
+    const skill = hostingType === "bundled" && formData.get("skill") === "true";
 
     if (hostingType !== "bundled" && hostingType !== "external") {
       return NextResponse.json(
@@ -198,6 +201,7 @@ export async function POST(request: NextRequest) {
         description,
         author: session.user.name || "Anonymous",
         tags,
+        skill,
       },
       submitterName: session.user.name || "Anonymous",
     });

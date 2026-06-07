@@ -11,5 +11,6 @@
   ],
   "dateAdded": "2026-04-23",
   "thumbnail": "thumbnail.png",
-  "featured": false
+  "featured": false,
+  "skill": true
 }

@@ -20,11 +20,25 @@ export interface AppMeta {
 
   /** External apps: full https URL the launcher opens in a new tab. */
   externalUrl?: string;
+
+  /**
+   * This app is also an LLM skill: its raw HTML, fetched directly, serves
+   * as a reference an agent can apply. Declared at submission, confirmed
+   * in PR review (the review IS the metadata's trust layer). Bundled apps
+   * only — the content must live in the file we host.
+   * See docs/html-skills-design.md.
+   */
+  skill?: boolean;
 }
 
 /** Type-narrowing helper — defaults missing hostingType to "bundled". */
 export function isExternal(app: AppMeta): boolean {
   return app.hostingType === "external";
+}
+
+/** True if this app is flagged as an LLM skill. */
+export function isSkill(app: AppMeta): boolean {
+  return app.skill === true;
 }
 
 export interface Comment {

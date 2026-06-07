@@ -10,6 +10,8 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { LikeButton } from "@/components/LikeButton";
 import { ShareButton } from "@/components/ShareButton";
 import { CommentsSection } from "@/components/CommentsSection";
+import { SkillRibbon } from "@/components/SkillRibbon";
+import { isSkill } from "@/types";
 
 export function generateStaticParams() {
   // Build-time: use all apps. Runtime filter still applies.
@@ -143,6 +145,8 @@ export default async function AppPage({
                 </span>
               ))}
             </div>
+
+            {isSkill(app) && <SkillRibbon slug={app.slug} />}
 
             <div className="flex flex-wrap gap-2">
               <FavoriteButton slug={app.slug} />
