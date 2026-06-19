@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unreal Engine 5.8 + Claude Code (MCP) — Setup Guide</title>
+<style>
+  :root{
+    --bg:#0e1116; --bg2:#161b22; --bg3:#1c232d; --line:#2a323d;
+    --txt:#e6edf3; --muted:#9aa7b4; --accent:#4ea3ff; --accent2:#7ee787;
+    --warn:#f0b429; --bad:#ff6b6b; --good:#3fb950;
+    --code:#0b0f14; --radius:12px;
+    --mono:'SF Mono',ui-monospace,'Cascadia Code',Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:var(--sans);line-height:1.6;font-size:16px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* layout */
+  .wrap{display:flex;max-width:1400px;margin:0 auto}
+  nav.side{position:sticky;top:0;align-self:flex-start;height:100vh;overflow-y:auto;
+    width:280px;flex:0 0 280px;padding:28px 18px;border-right:1px solid var(--line);background:var(--bg2)}
+  main{flex:1;min-width:0;padding:48px 56px 120px;max-width:900px}
+  @media(max-width:880px){
+    nav.side{display:none}
+    main{padding:32px 20px 80px}
+  }
+
+  /* sidebar */
+  .brand{font-weight:700;font-size:15px;letter-spacing:.3px;margin-bottom:4px}
+  .brand .dot{color:var(--accent)}
+  .brand-sub{color:var(--muted);font-size:12px;margin-bottom:24px}
+  nav.side a{display:block;color:var(--muted);padding:7px 12px;border-radius:8px;font-size:14px;margin:2px 0;border-left:2px solid transparent}
+  nav.side a:hover{color:var(--txt);background:var(--bg3);text-decoration:none}
+  nav.side a.active{color:var(--txt);background:var(--bg3);border-left-color:var(--accent)}
+  nav.side .num{display:inline-block;width:20px;color:var(--accent);font-family:var(--mono);font-size:12px}
+
+  /* hero */
+  .hero{margin-bottom:40px}
+  .badge{display:inline-block;background:var(--bg3);border:1px solid var(--line);color:var(--accent2);
+    padding:4px 12px;border-radius:999px;font-size:12px;font-family:var(--mono);margin-bottom:16px}
+  h1{font-size:34px;line-height:1.2;margin:0 0 12px}
+  .lede{color:var(--muted);font-size:18px;margin:0}
+
+  /* sections */
+  section{margin:0 0 48px;scroll-margin-top:24px}
+  h2{font-size:24px;margin:48px 0 16px;padding-top:8px;border-top:1px solid var(--line)}
+  h2 .n{color:var(--accent);font-family:var(--mono);font-size:18px;margin-right:10px}
+  h3{font-size:18px;margin:28px 0 10px}
+  p{margin:12px 0}
+
+  /* callouts */
+  .callout{border-radius:var(--radius);padding:16px 18px;margin:20px 0;border:1px solid var(--line);background:var(--bg2);
+    display:flex;gap:14px;align-items:flex-start}
+  .callout .ico{font-size:20px;line-height:1.4;flex:0 0 auto}
+  .callout.key{border-color:#3a4a2a;background:#161d12}
+  .callout.key .ico{color:var(--accent2)}
+  .callout.warn{border-color:#4a3c1a;background:#1d180c}
+  .callout.warn .ico{color:var(--warn)}
+  .callout.info{border-color:#1f3a52;background:#0f1a24}
+  .callout strong{color:var(--txt)}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:15px;background:var(--bg2);border-radius:var(--radius);overflow:hidden}
+  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:var(--bg3);font-size:13px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  td code{white-space:nowrap}
+
+  /* code */
+  .code{position:relative;margin:16px 0}
+  pre{background:var(--code);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 18px;overflow-x:auto;margin:0;font-family:var(--mono);font-size:13.5px;line-height:1.6}
+  code{font-family:var(--mono);font-size:.92em;background:var(--bg3);padding:2px 6px;border-radius:5px;color:#cdd9e5}
+  pre code{background:none;padding:0;color:#cdd9e5}
+  .copy{position:absolute;top:10px;right:10px;background:var(--bg3);border:1px solid var(--line);color:var(--muted);
+    font-family:var(--sans);font-size:12px;padding:5px 10px;border-radius:7px;cursor:pointer;transition:.15s}
+  .copy:hover{color:var(--txt);border-color:var(--accent)}
+  .copy.done{color:var(--good);border-color:var(--good)}
+
+  /* steps list */
+  ol.steps{counter-reset:s;list-style:none;padding:0;margin:16px 0}
+  ol.steps>li{position:relative;padding:4px 0 16px 44px;margin:0}
+  ol.steps>li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:2px;
+    width:28px;height:28px;border-radius:50%;background:var(--bg3);border:1px solid var(--line);
+    color:var(--accent);font-family:var(--mono);font-size:14px;display:flex;align-items:center;justify-content:center}
+
+  /* screenshots */
+  figure{margin:20px 0}
+  figure img{width:100%;border:1px solid var(--line);border-radius:var(--radius);display:block;background:#000}
+  figcaption{color:var(--muted);font-size:13px;margin-top:8px;text-align:center}
+
+  ul{margin:12px 0;padding-left:22px}
+  li{margin:6px 0}
+
+  .pill{font-family:var(--mono);font-size:12px;padding:2px 8px;border-radius:6px}
+  .pill.ok{background:#11261a;color:var(--good);border:1px solid #1d4029}
+  .pill.no{background:#2a1414;color:var(--bad);border:1px solid #4a1f1f}
+
+  .diagram{background:var(--code);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.5;color:#9fb1c4}
+
+  footer{border-top:1px solid var(--line);margin-top:64px;padding-top:24px;color:var(--muted);font-size:13px}
+  kbd{font-family:var(--mono);background:var(--bg3);border:1px solid var(--line);border-bottom-width:2px;
+    border-radius:5px;padding:1px 6px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="side">
+    <div class="brand">Unreal MCP <span class="dot">×</span> Claude Code</div>
+    <div class="brand-sub">UE 5.8 setup guide</div>
+    <a href="#prereq"><span class="num">0</span>Prerequisites</a>
+    <a href="#plugins"><span class="num">1</span>Enable plugins</a>
+    <a href="#server"><span class="num">2</span>MCP server settings</a>
+    <a href="#client"><span class="num">3</span>Client config (.mcp.json)</a>
+    <a href="#start"><span class="num">4</span>Start &amp; verify</a>
+    <a href="#claude"><span class="num">5</span>Restart Claude Code</a>
+    <a href="#tools"><span class="num">6</span>Verify the tools</a>
+    <a href="#trouble"><span class="num">★</span>Troubleshooting</a>
+    <a href="#how"><span class="num">▥</span>How it fits together</a>
+  </nav>
+
+  <main>
+    <div class="hero">
+      <div class="badge">Unreal Engine 5.8 · experimental MCP</div>
+      <h1>Wire Claude Code to the Unreal Editor</h1>
+      <p class="lede">Get Claude Code driving the Unreal Editor through the built-in
+      Model Context Protocol (MCP) server — with the full set of editor toolsets
+      exposed. Written from a real, working setup, gotchas included.</p>
+    </div>
+
+    <div class="callout key">
+      <span class="ico">⭐</span>
+      <div><strong>The thing everyone gets stuck on:</strong> enabling the
+      <em>Unreal MCP</em> plugin alone only gives you <strong>one</strong> toolset
+      (<code>AgentSkillToolset</code>). The actual editor toolsets are
+      <strong>separate plugins</strong> — enable <strong>“All Toolsets”</strong> to get them all.</div>
+    </div>
+
+    <section id="prereq">
+      <h2><span class="n">0</span>Prerequisites</h2>
+      <ul>
+        <li><strong>Unreal Engine 5.8</strong> — the MCP plugins are experimental and ship with 5.8.</li>
+        <li>A UE project (C++ <em>or</em> Blueprint-only both work).</li>
+        <li><strong>Claude Code</strong> installed and runnable from a terminal.</li>
+        <li>(Optional) Git + Git LFS if you want source control for the project.</li>
+      </ul>
+    </section>
+
+    <section id="plugins">
+      <h2><span class="n">1</span>Enable the plugins</h2>
+      <p>In the editor: <code>Edit → Plugins</code>. Enable each of these, then
+      <strong>restart the editor when prompted</strong>.</p>
+      <table>
+        <tr><th>Plugin</th><th>Why</th></tr>
+        <tr><td><strong>Unreal MCP</strong></td><td>The MCP server itself (Anthropic MCP implementation for UE).</td></tr>
+        <tr><td><strong>Toolset Registry</strong></td><td>Auto-enabled as a dependency of Unreal MCP.</td></tr>
+        <tr><td><strong>All Toolsets</strong> ⭐</td><td><strong>The key one.</strong> Aggregator that pulls in every editor toolset (Scene / Actor / Blueprint / Material / PCG / Niagara / UMG / BehaviorTree / …). Without it you only get skill management.</td></tr>
+        <tr><td><strong>Python Editor Script Plugin</strong></td><td>The editor toolsets are authored in Python; Python must be loaded.</td></tr>
+      </table>
+
+      <figure>
+        <img src="images/plugins-mcp.png" alt="Plugins window searching mcp">
+        <figcaption>Plugins window — searching “mcp” shows <em>Unreal MCP</em> and <em>MCP Client Toolset</em>.</figcaption>
+      </figure>
+
+      <div class="callout info">
+        <span class="ico">ℹ️</span>
+        <div><strong>“MCP Client Toolset”</strong> is the <em>opposite direction</em> (lets UE act as a client to
+        other MCP servers). You don’t need it here; harmless if left on.</div>
+      </div>
+      <div class="callout warn">
+        <span class="ico">⚠️</span>
+        <div>Enabling <strong>All Toolsets</strong> may pop a dialog: <em>“Asset Manager settings do not include an
+        entry for assets of type GameFeatureData… Add entry?”</em> — click <strong>Yes</strong>. It’s harmless
+        (a Game Features toolset wiring itself in).</div>
+      </div>
+      <p>After enabling, <strong>restart the editor</strong> so the Python modules load.</p>
+    </section>
+
+    <section id="server">
+      <h2><span class="n">2</span>Configure the MCP server</h2>
+      <p><code>Edit → Editor Preferences → General → Model Context Protocol</code>:</p>
+      <table>
+        <tr><th>Setting</th><th>Value</th></tr>
+        <tr><td><strong>Server Url Path</strong></td><td><code>/mcp</code></td></tr>
+        <tr><td><strong>Server Port Number</strong></td><td><code>8000</code> (default) — or pick your own, e.g. <code>8137</code>, if 8000 is in use</td></tr>
+        <tr><td><strong>Auto Start Server</strong></td><td><span class="pill ok">ON</span> — binds the server on editor launch</td></tr>
+        <tr><td><strong>Enable Tool Search</strong></td><td><span class="pill ok">ON</span> — required; this is how Claude discovers the tools</td></tr>
+      </table>
+
+      <figure>
+        <img src="images/mcp-settings.png" alt="Model Context Protocol settings page">
+        <figcaption>Editor Preferences → Model Context Protocol.</figcaption>
+      </figure>
+
+      <div class="callout warn">
+        <span class="ico">⚠️</span>
+        <div>If you change the port, <strong>remember the number</strong> — it must match the client config in the next step.</div>
+      </div>
+    </section>
+
+    <section id="client">
+      <h2><span class="n">3</span>Point Claude Code at the server</h2>
+      <p>In your <strong>project root</strong> (next to the <code>.uproject</code>), create a file named <code>.mcp.json</code>:</p>
+      <div class="code">
+        <button class="copy">Copy</button>
+        <pre><code>{
+  "mcpServers": {
+    "unreal-mcp": {
+      "type": "http",
+      "url": "http://127.0.0.1:8000/mcp"
+    }
+  }
+}</code></pre>
+      </div>
+      <ul>
+        <li>If you changed the port in Step 2, change <code>8000</code> here to match (e.g. <code>8137</code>).</li>
+        <li>If you already have other MCP servers in this file, <strong>merge</strong> this <code>unreal-mcp</code> entry into the existing <code>mcpServers</code> object — don’t overwrite it.</li>
+      </ul>
+      <div class="callout info">
+        <span class="ico">💡</span>
+        <div>The editor can generate this for you — open the console (<kbd>`</kbd>), set the dropdown to <strong>Cmd</strong>, and run:
+        <div class="code" style="margin-top:8px"><button class="copy">Copy</button><pre><code>ModelContextProtocol.GenerateClientConfig ClaudeCode</code></pre></div></div>
+      </div>
+    </section>
+
+    <section id="start">
+      <h2><span class="n">4</span>Start the server &amp; verify it’s live</h2>
+      <ol class="steps">
+        <li>The server auto-starts if <strong>Auto Start Server</strong> is on. To start it manually, open the console (<kbd>`</kbd>), set the dropdown to <strong>Cmd</strong>, and run:
+          <div class="code" style="margin-top:8px"><button class="copy">Copy</button><pre><code>ModelContextProtocol.StartServer</code></pre></div>
+          <figure>
+            <img src="images/console-cmd-dropdown.png" alt="Console dropdown set to Cmd">
+            <figcaption>Set the console dropdown to <strong>Cmd</strong> (not Python) to run MCP console commands.</figcaption>
+          </figure>
+        </li>
+        <li>From a terminal, confirm the port is responding:
+          <div class="code" style="margin-top:8px"><button class="copy">Copy</button><pre><code>curl -sS http://127.0.0.1:8000/mcp</code></pre></div>
+          <ul>
+            <li><span class="pill ok">✓</span> A response (even <strong>HTTP 405 Method Not Allowed</strong>) means the server is up and speaking MCP. 405 is expected for a plain GET.</li>
+            <li><span class="pill no">✕</span> “Could not connect” means the server isn’t running — re-check Steps 1–2.</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+
+    <section id="claude">
+      <h2><span class="n">5</span>Start (or restart) Claude Code — order matters</h2>
+      <div class="callout key">
+        <span class="ico">🔑</span>
+        <div>Bring the editor server up <strong>FIRST</strong>, then start Claude Code. Claude reads the MCP server
+        list at launch; if the port wasn’t live when it started, it won’t connect.</div>
+      </div>
+      <p>Correct order:</p>
+      <ol class="steps">
+        <li>Editor open, plugins enabled, server live on the port (verified in Step 4).</li>
+        <li><code>.mcp.json</code> present and pointing at the right port.</li>
+        <li><strong>Then</strong> start / restart Claude Code from the project root.</li>
+      </ol>
+      <p>If you edit <code>.mcp.json</code> or only just started the editor server, <strong>restart Claude Code</strong> so it reloads.</p>
+    </section>
+
+    <section id="tools">
+      <h2><span class="n">6</span>Verify Claude can see the tools</h2>
+      <p>Claude should now have these MCP meta-tools: <code>list_toolsets</code>, <code>describe_toolset</code>, <code>call_tool</code>.</p>
+      <p>Ask Claude to <strong>list the toolsets</strong>. A fully-working setup returns <strong>~50 toolsets</strong>, including:</p>
+      <ul>
+        <li><code>editor_toolset.toolsets.scene.SceneTools</code> — place/remove actors, levels, camera</li>
+        <li><code>editor_toolset.toolsets.actor.ActorTools</code>, <code>...blueprint.BlueprintTools</code>, <code>...object.ObjectTools</code></li>
+        <li><code>...material.MaterialTools</code> / <code>material_instance</code></li>
+        <li><code>BehaviorTreeTools</code>, <code>NiagaraToolsets</code>, <code>UMGToolSet</code>, <code>PCGToolset</code>, <code>AutomationTestToolset</code>, and more.</li>
+      </ul>
+      <div class="callout warn">
+        <span class="ico">⚠️</span>
+        <div>If you see <strong>only <code>AgentSkillToolset</code></strong>, the feature toolsets aren’t loaded — go back to Step 1,
+        make sure <strong>All Toolsets</strong> is enabled, and restart the editor. Then in the Cmd console run:
+        <div class="code" style="margin-top:8px"><button class="copy">Copy</button><pre><code>ModelContextProtocol.RefreshTools</code></pre></div>
+        and re-check.</div>
+      </div>
+    </section>
+
+    <section id="trouble">
+      <h2><span class="n">★</span>Troubleshooting cheat-sheet</h2>
+      <table>
+        <tr><th>Symptom</th><th>Fix</th></tr>
+        <tr><td>Only <code>AgentSkillToolset</code> shows up</td><td>Enable <strong>All Toolsets</strong> + restart editor; run <code>ModelContextProtocol.RefreshTools</code>. This is the #1 issue.</td></tr>
+        <tr><td>Claude sees no MCP tools at all</td><td>Server not live when Claude started, or <code>.mcp.json</code> wrong/missing. Verify with <code>curl</code> (Step 4), fix config, restart Claude <em>after</em> server is up.</td></tr>
+        <tr><td><code>curl</code> says “Could not connect”</td><td>Server not running — <code>ModelContextProtocol.StartServer</code> in Cmd console; confirm Auto Start Server is on; check the port matches <code>.mcp.json</code>.</td></tr>
+        <tr><td>Port 8000 already in use</td><td>Pick another port in Editor Preferences (e.g. <code>8137</code>) <strong>and</strong> update <code>.mcp.json</code> to match. They must be identical.</td></tr>
+        <tr><td>“Add GameFeatureData entry?” dialog</td><td>Click <strong>Yes</strong> — harmless, from the Game Features toolset.</td></tr>
+        <tr><td>Console command does nothing</td><td>Make sure the console dropdown is set to <strong>Cmd</strong>, not <strong>Python</strong>.</td></tr>
+        <tr><td>Changed a setting/plugin, no effect</td><td>Plugin/port changes need an <strong>editor restart</strong>; client config changes need a <strong>Claude Code restart</strong>.</td></tr>
+      </table>
+    </section>
+
+    <section id="how">
+      <h2><span class="n">▥</span>How it fits together</h2>
+      <div class="diagram"><pre style="background:none;border:none;padding:0;color:inherit">Claude Code  --(.mcp.json: http://127.0.0.1:&lt;port&gt;/mcp)--&gt;  Unreal MCP server
+                                                              (inside UE Editor)
+                                                                    |
+                                                          Toolset Registry
+                                                                    |
+                        +-------------------+---------------------+--------+
+                   AgentSkillToolset   EditorToolset (Scene/Actor/   ...~50 toolsets
+                   (native, always)    Blueprint/Material/Object)    via All Toolsets
+                                       (Python)</pre></div>
+      <ul>
+        <li><strong>Tool Search mode</strong> (on by default) keeps <code>tools/list</code> small: Claude gets the 3 discovery meta-tools and pulls specific tool schemas on demand. Leave it on.</li>
+        <li>Toolsets are discovered at editor <strong>startup</strong> (and on <code>RefreshTools</code>), so plugin changes need a restart to register.</li>
+      </ul>
+    </section>
+
+    <footer>
+      Setup verified on <strong>UE 5.8</strong> with Claude Code. The single most common fix when a teammate is stuck:
+      <strong>enable All Toolsets, restart the editor, restart Claude.</strong>
+    </footer>
+  </main>
+</div>
+
+<script>
+  // copy buttons
+  document.querySelectorAll('.copy').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var code=btn.parentElement.querySelector('code');
+      var text=code.innerText;
+      navigator.clipboard.writeText(text).then(function(){
+        var old=btn.textContent;btn.textContent='Copied!';btn.classList.add('done');
+        setTimeout(function(){btn.textContent=old;btn.classList.remove('done');},1400);
+      }).catch(function(){
+        // fallback
+        var r=document.createRange();r.selectNode(code);
+        var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+        try{document.execCommand('copy');btn.textContent='Copied!';btn.classList.add('done');
+          setTimeout(function(){btn.textContent='Copy';btn.classList.remove('done');},1400);}catch(e){}
+        s.removeAllRanges();
+      });
+    });
+  });
+
+  // scrollspy: highlight active nav link
+  var links=Array.prototype.slice.call(document.querySelectorAll('nav.side a'));
+  var sections=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  function onScroll(){
+    var y=window.scrollY+120;var idx=0;
+    for(var i=0;i<sections.length;i++){ if(sections[i] && sections[i].offsetTop<=y) idx=i; }
+    links.forEach(function(l){l.classList.remove('active')});
+    if(links[idx]) links[idx].classList.add('active');
+  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+</script>
+</body>
+</html>
