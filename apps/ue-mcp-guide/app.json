@@ -1,0 +1,14 @@
+{
+  "title": "UE-MCP-guide",
+  "slug": "ue-mcp-guide",
+  "description": "A guide to setup the mcp server the 5.8 unreal enine",
+  "author": "GergelyKrista",
+  "tags": [
+    "tools",
+    "mcp-setup"
+  ],
+  "dateAdded": "2026-06-19",
+  "featured": false,
+  "hostingType": "bundled",
+  "thumbnail": "thumbnail.png"
+}
