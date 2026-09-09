@@ -1,0 +1,15 @@
+{
+  "title": "Wardogs - Fieldcard",
+  "slug": "wardogs-fieldcard",
+  "description": "A one-page WARDOGS field card for launch day: every default keybind (KB/M + controller) on an interactive keyboard, a breakdown of the six roles and how each one pays, and a new-player guide to the cash economy, Hot Zone, and FOBs.",
+  "author": "GergelyKrista",
+  "tags": [
+    "games",
+    "wardogs",
+    "fps"
+  ],
+  "dateAdded": "2026-09-09",
+  "featured": false,
+  "hostingType": "bundled",
+  "thumbnail": "thumbnail.png"
+}
