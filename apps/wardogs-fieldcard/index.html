@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WARDOGS Field Card — roles, keybinds, new player guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;900&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+:root{
+  --od:#262B21;        /* olive drab base */
+  --od-2:#2F3529;      /* raised panel */
+  --od-3:#3A4132;      /* hover / key face */
+  --line:#4A5240;
+  --khaki:#E6DEC6;     /* ink */
+  --khaki-2:#B8B098;   /* secondary ink */
+  --tan:#D2B071;       /* accent */
+  --tan-deep:#A98747;
+  --lonestar:#5C9BD6;
+  --valkyra:#D9534F;
+  --manticore:#6FAF5E;
+  --hot:#E0893A;
+  --radius:4px;
+  --rail:220px;
+  font-size:16px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--od);color:var(--khaki);font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+body{background-image:
+  linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+  background-size:24px 24px}
+a{color:var(--tan)}
+h1,h2,h3{font-family:"Big Shoulders Display","Arial Narrow",Impact,"Helvetica Neue",sans-serif;line-height:1;margin:0;letter-spacing:.01em}
+h1{font-size:clamp(3rem,7vw,5.6rem);font-weight:900}
+h2{font-size:2.4rem;font-weight:700;margin:0 0 .9rem}
+h3{font-size:1.5rem;font-weight:700;color:var(--tan)}
+p{margin:.35rem 0 .8rem;max-width:68ch}
+kbd,.key{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:600;font-size:.82em;background:var(--od-3);color:var(--khaki);border:1px solid var(--line);border-bottom-width:3px;border-radius:3px;padding:.05em .45em;white-space:nowrap}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--tan);outline-offset:2px}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:var(--rail) 1fr;min-height:100vh}
+.rail{position:sticky;top:0;height:100vh;border-right:1px solid var(--line);background:var(--od);padding:1.4rem 1rem;display:flex;flex-direction:column;gap:1.4rem}
+.brand{font-family:"Big Shoulders Display","Arial Narrow",Impact,"Helvetica Neue",sans-serif;font-weight:900;font-size:2rem;line-height:.9;color:var(--khaki)}
+.brand small{display:block;font-family:"IBM Plex Sans";font-weight:500;font-size:.75rem;color:var(--khaki-2);letter-spacing:.02em;margin-top:.5rem}
+.stamp{display:inline-block;margin-top:.7rem;border:2px solid var(--tan);color:var(--tan);font-family:"Big Shoulders Display";font-weight:700;font-size:.95rem;padding:.15rem .5rem;transform:rotate(-2deg);letter-spacing:.06em}
+nav.tabs{display:flex;flex-direction:column;gap:.25rem}
+nav.tabs button{display:flex;align-items:center;gap:.6rem;text-align:left;background:none;border:0;border-left:3px solid transparent;padding:.55rem .7rem;border-radius:0 var(--radius) var(--radius) 0;color:var(--khaki-2);cursor:pointer;font-weight:500}
+nav.tabs button:hover{background:var(--od-2);color:var(--khaki)}
+nav.tabs button[aria-selected="true"]{color:var(--khaki);border-left-color:var(--tan);background:var(--od-2)}
+nav.tabs button .n{font-family:"IBM Plex Mono";font-size:.72rem;color:var(--tan-deep);width:1.3rem}
+.rail .foot{margin-top:auto;font-size:.75rem;color:var(--khaki-2);line-height:1.4}
+main{padding:2.2rem clamp(1.2rem,4vw,3.5rem) 4rem;max-width:1180px}
+section.panel{display:none}
+section.panel.active{display:block}
+
+/* ---------- hero ---------- */
+.hero{display:grid;grid-template-columns:1.2fr 1fr;gap:2rem;align-items:end;margin-bottom:2.4rem;border-bottom:1px solid var(--line);padding-bottom:1.8rem}
+.hero h1{color:var(--khaki)}
+.hero h1 span{display:block;color:var(--tan);font-size:.42em;font-weight:700;letter-spacing:.04em;margin-top:.2em}
+.hero .lede{font-size:1.05rem;color:var(--khaki-2);max-width:52ch}
+.factions{display:grid;gap:.5rem}
+.faction{display:grid;grid-template-columns:auto 1fr;gap:.8rem;align-items:center;background:var(--od-2);border:1px solid var(--line);border-radius:var(--radius);padding:.6rem .8rem}
+.faction i{width:.9rem;height:2rem;border-radius:2px;display:block}
+.faction b{font-family:"Big Shoulders Display";font-size:1.3rem;font-weight:700;letter-spacing:.03em}
+.faction span{font-size:.82rem;color:var(--khaki-2)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.6rem;margin:0 0 2rem}
+.fact{border-top:2px solid var(--tan);padding:.6rem .2rem 0}
+.fact b{display:block;font-family:"Big Shoulders Display";font-size:2rem;font-weight:700;line-height:1}
+.fact span{font-size:.8rem;color:var(--khaki-2)}
+
+/* ---------- generic content ---------- */
+.grid{display:grid;gap:1rem}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.box{background:var(--od-2);border:1px solid var(--line);border-radius:var(--radius);padding:1rem 1.1rem}
+.box h3{margin-bottom:.4rem}
+.box ul{margin:.3rem 0 0;padding-left:1.1rem}
+.box li{margin:.25rem 0}
+.callout{border-left:4px solid var(--hot);background:rgba(224,137,58,.08);padding:.7rem 1rem;border-radius:0 var(--radius) var(--radius) 0;margin:1rem 0}
+.callout.tan{border-left-color:var(--tan);background:rgba(210,176,113,.07)}
+.muted{color:var(--khaki-2)}
+.small{font-size:.85rem}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:.5rem .6rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--tan);font-weight:600;font-size:.8rem;letter-spacing:.02em}
+tr:last-child td{border-bottom:0}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:grid;gap:.7rem}
+.steps li{counter-increment:s;position:relative;padding-left:2.6rem;min-height:1.8rem}
+.steps li::before{content:counter(s);position:absolute;left:0;top:-.1rem;font-family:"Big Shoulders Display";font-size:1.8rem;font-weight:900;color:var(--tan);line-height:1}
+.steps li b{display:block}
+.check{list-style:none;padding:0;margin:0;display:grid;gap:.4rem}
+.check label{display:flex;gap:.7rem;align-items:flex-start;cursor:pointer;background:var(--od-2);border:1px solid var(--line);padding:.6rem .8rem;border-radius:var(--radius)}
+.check input{accent-color:var(--tan);margin-top:.25rem;width:1rem;height:1rem;flex:0 0 auto}
+.check input:checked + span{color:var(--khaki-2);text-decoration:line-through}
+.progress{height:6px;background:var(--od-3);border-radius:3px;overflow:hidden;margin:.6rem 0 1rem}
+.progress i{display:block;height:100%;background:var(--tan);width:0;transition:width .25s}
+
+/* ---------- roles ---------- */
+.rolepicker{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1.2rem}
+.rolepicker button{background:var(--od-2);border:1px solid var(--line);border-radius:999px;padding:.4rem .9rem;cursor:pointer;color:var(--khaki-2);font-weight:500}
+.rolepicker button[aria-pressed="true"]{background:var(--tan);color:#1E2118;border-color:var(--tan);font-weight:600}
+.role{display:grid;grid-template-columns:1.3fr 1fr;gap:1.2rem}
+.role .head{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;gap:1rem;border-bottom:1px solid var(--line);padding-bottom:.6rem;margin-bottom:.2rem}
+.role .head h3{font-size:2.6rem;color:var(--khaki)}
+.role .head .tag{color:var(--tan);font-weight:600}
+.role .head .fit{margin-left:auto;font-size:.85rem;color:var(--khaki-2)}
+.paylist li{display:flex;justify-content:space-between;gap:1rem}
+.paylist li span:last-child{color:var(--tan);white-space:nowrap}
+.keys{display:flex;flex-wrap:wrap;gap:.35rem .5rem;margin-top:.4rem}
+.keys span{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;color:var(--khaki-2)}
+
+/* ---------- keybinds ---------- */
+.kbtoolbar{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-bottom:1rem}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.seg button{background:var(--od-2);border:0;border-right:1px solid var(--line);padding:.45rem .8rem;cursor:pointer;color:var(--khaki-2);font-weight:500}
+.seg button:last-child{border-right:0}
+.seg button[aria-pressed="true"]{background:var(--tan);color:#1E2118;font-weight:600}
+.search{flex:1 1 220px;display:flex;align-items:center;gap:.5rem;background:var(--od-2);border:1px solid var(--line);border-radius:var(--radius);padding:.35rem .7rem}
+.search input{flex:1;background:none;border:0;color:var(--khaki);font:inherit;outline:none}
+.search input::placeholder{color:var(--khaki-2)}
+.kb{background:var(--od-2);border:1px solid var(--line);border-radius:6px;padding:.8rem;overflow-x:auto;margin-bottom:1rem}
+.kb-rows{display:grid;gap:.3rem;min-width:820px}
+.kb-row{display:flex;gap:.3rem}
+.k{--w:1;flex:0 0 calc(var(--w) * 46px + (var(--w) - 1) * .3rem);height:44px;background:var(--od-3);border:1px solid var(--line);border-bottom-width:3px;border-radius:4px;display:flex;flex-direction:column;justify-content:space-between;padding:3px 5px;font-family:"IBM Plex Mono";font-size:.72rem;font-weight:600;color:var(--khaki-2);position:relative;cursor:default;transition:background .12s,transform .08s}
+.k .lab{font-size:.6rem;font-weight:500;color:var(--tan);line-height:1.05;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:"IBM Plex Sans"}
+.k.bound{background:#4B5540;color:var(--khaki);border-color:#5E6A50}
+.k.pressed,.k:hover{background:var(--tan);color:#1E2118;transform:translateY(1px);border-bottom-width:1px}
+.k.pressed .lab,.k:hover .lab{color:#1E2118}
+.k.match{box-shadow:0 0 0 2px var(--hot) inset}
+.k.gap{visibility:hidden}
+.kb-legend{display:flex;flex-wrap:wrap;gap:1rem;font-size:.8rem;color:var(--khaki-2);align-items:center;margin-top:.6rem}
+.kb-legend i{display:inline-block;width:.9rem;height:.9rem;border-radius:2px;vertical-align:-2px;margin-right:.3rem}
+.tip{position:fixed;z-index:20;background:#15180F;border:1px solid var(--tan);border-radius:var(--radius);padding:.5rem .7rem;font-size:.8rem;pointer-events:none;max-width:260px;display:none}
+.tip b{display:block;color:var(--tan);font-family:"IBM Plex Mono";margin-bottom:.2rem}
+.tip div{display:flex;justify-content:space-between;gap:.8rem}
+.tip div span:first-child{color:var(--khaki-2)}
+.bindgroups{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.9rem}
+.bindgroup{background:var(--od-2);border:1px solid var(--line);border-radius:var(--radius);padding:.7rem .9rem}
+.bindgroup h3{font-size:1.25rem;margin-bottom:.3rem}
+.bindgroup table td:last-child{text-align:right;white-space:nowrap}
+.bindgroup tr.hl td{background:rgba(224,137,58,.12)}
+.controllergrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:.9rem}
+
+/* ---------- economy ---------- */
+.zone{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;align-items:center}
+.zone svg{width:100%;max-width:420px;display:block;margin:0 auto}
+.weight td:first-child{font-weight:600}
+
+/* ---------- print / responsive / motion ---------- */
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr}
+  .rail{position:sticky;top:0;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:.8rem 1rem;gap:.7rem;z-index:10}
+  .brand{font-size:1.5rem}.brand small,.stamp,.rail .foot{display:none}
+  nav.tabs{flex-direction:row;overflow-x:auto;gap:.2rem;-webkit-overflow-scrolling:touch}
+  nav.tabs button{border-left:0;border-bottom:3px solid transparent;border-radius:0;padding:.45rem .6rem;white-space:nowrap}
+  nav.tabs button[aria-selected="true"]{border-bottom-color:var(--tan);background:none}
+  nav.tabs button .n{display:none}
+  .hero,.role,.zone{grid-template-columns:1fr}
+  main{padding:1.4rem 1rem 3rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{.rail{display:none}.shell{display:block}section.panel{display:block!important;page-break-before:always}body{background:#fff;color:#111}.box,.bindgroup,.kb,.faction{background:#fff;border-color:#999}}
+</style>
+</head>
+<body>
+<noscript><p style="padding:2rem;font-family:sans-serif;background:#fff;color:#111">This field card needs JavaScript enabled to render the keyboard and role panels.</p></noscript>
+<div class="shell">
+  <aside class="rail">
+    <div>
+      <div class="brand">WARDOGS<br>FIELD CARD<small>Roles · keybinds · first-match guide<br>Early Access on Steam, 10 Sep 2026</small></div>
+      <span class="stamp">PRE-LAUNCH DRAFT</span>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button role="tab" aria-selected="true" data-tab="start"><span class="n">01</span>Start here</button>
+      <button role="tab" aria-selected="false" data-tab="roles"><span class="n">02</span>Roles</button>
+      <button role="tab" aria-selected="false" data-tab="keys"><span class="n">03</span>Keybinds</button>
+      <button role="tab" aria-selected="false" data-tab="economy"><span class="n">04</span>Cash &amp; objectives</button>
+      <button role="tab" aria-selected="false" data-tab="loadout"><span class="n">05</span>Loadout &amp; weight</button>
+      <button role="tab" aria-selected="false" data-tab="fob"><span class="n">06</span>FOBs &amp; logistics</button>
+      <button role="tab" aria-selected="false" data-tab="settings"><span class="n">07</span>Settings</button>
+      <button role="tab" aria-selected="false" data-tab="sources"><span class="n">08</span>Sources</button>
+    </nav>
+    <div class="foot">Compiled 9 Sep 2026 from beta and playtest builds. Defaults can shift at launch — verify in Settings › Controls.<br><br>Press any key with the Keybinds tab open to look it up.</div>
+  </aside>
+
+  <main id="main">
+    <!-- ============ 01 START HERE ============ -->
+    <section class="panel active" id="tab-start">
+      <div class="hero">
+        <div>
+          <h1>Get paid,<br>stay in the zone.<span>The whole game in one sentence</span></h1>
+          <p class="lede">100 players, three teams, one Control Zone. Every 30 seconds the team with the most players inside scores a point; first to 100 wins. You buy your kit each life with cash you keep between matches — so every death costs real money, and every revive, lift, delivery or spot earns it back.</p>
+        </div>
+        <div class="factions" aria-label="The three factions">
+          <div class="faction"><i style="background:var(--lonestar)"></i><div><b>LONESTAR</b><br><span>Blue. Pick the same faction as your friends before joining.</span></div></div>
+          <div class="faction"><i style="background:var(--valkyra)"></i><div><b>VALKYRA</b><br><span>Red. Factions are purely cosmetic in the beta builds.</span></div></div>
+          <div class="faction"><i style="background:var(--manticore)"></i><div><b>MANTICORE</b><br><span>Green. Three-way fights mean the leader gets ganged up on.</span></div></div>
+        </div>
+      </div>
+
+      <div class="facts">
+        <div class="fact"><b>$10,000</b><span>starting bankroll, persists between matches</span></div>
+        <div class="fact"><b>2×2 km</b><span>randomised Control Zone on a huge map</span></div>
+        <div class="fact"><b>×2</b><span>cash and player-count inside the Hot Zone</span></div>
+        <div class="fact"><b>0 classes</b><span>your gear defines your role, not a picker</span></div>
+        <div class="fact"><b>No squad spawn</b><span>getting bodies to the zone is a job</span></div>
+      </div>
+
+      <div class="grid two">
+        <div class="box">
+          <h3>Your first three lives</h3>
+          <ol class="steps">
+            <li><b>Take the free starter kit, not a $4,000 rifle.</b> You can go negative. A cheap life you survive beats a rich one you lose in ninety seconds. Rebuy your last loadout with one button when you die.</li>
+            <li><b>Spend five minutes in the Firing Range.</b> Bind lean, sprint and hold-breath somewhere comfortable, set helicopter mouse control, then leave. (See Settings.)</li>
+            <li><b>Find a ride at spawn.</b> There's no squad spawning and the map is enormous. Hop in anyone's truck or Littlebird heading to the zone — tip the driver with <kbd>F1</kbd> when you arrive.</li>
+            <li><b>Stand in the Control Zone. That's the whole objective.</b> Occupying pays cash on its own. If the Hot Zone is safe, stand in that instead: you count as two players and earn double.</li>
+            <li><b>Carry bandages and use them on other people.</b> Healing and reviving pay reliably, don't need unlocks, and level your Medic track toward the defibrillator (Medic level 9).</li>
+            <li><b>Ping everything.</b> Middle mouse. Spotting enemies pays and levels Recon. Voice: <kbd>J</kbd> squad, <kbd>K</kbd> proximity.</li>
+          </ol>
+        </div>
+        <div>
+          <div class="box" style="margin-bottom:1rem">
+            <h3>Session checklist</h3>
+            <div class="progress"><i id="prog"></i></div>
+            <ul class="check" id="checklist">
+              <li><label><input type="checkbox"><span>Same faction as my friends, same Steam region and voice channel</span></label></li>
+              <li><label><input type="checkbox"><span>Settings › Controls: helicopter mouse control on, lean on toggle</span></label></li>
+              <li><label><input type="checkbox"><span>Bought a cheap loadout under Medium weight</span></label></li>
+              <li><label><input type="checkbox"><span>Bandages in a quick slot (4–0)</span></label></li>
+              <li><label><input type="checkbox"><span>Know where the Control Zone and Hot Zone are on <kbd>M</kbd></span></label></li>
+              <li><label><input type="checkbox"><span>Got a ride to the zone instead of walking</span></label></li>
+              <li><label><input type="checkbox"><span>Ended the match with more cash than I started</span></label></li>
+            </ul>
+          </div>
+          <div class="callout">
+            <b>Rule of thumb from the beta:</b> if you can't afford to lose it twice, don't buy it. Tanks, top-tier rifles and fast healing items are where new players bleed money. Vehicles and heavy kit are for once you've banked a cushion.
+          </div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:2rem">How a match actually flows</h2>
+      <div class="grid three">
+        <div class="box"><h3>Spawn &amp; buy</h3><p class="small">Vendor tabs: Weapons, Equipment (incl. Building), Logistics, Vehicles. Slot <kbd>1</kbd> primary, <kbd>2</kbd> sidearm, <kbd>3</kbd> specialist item; <kbd>4</kbd>–<kbd>0</kbd> quick slots from your tac-vest.</p></div>
+        <div class="box"><h3>Travel</h3><p class="small">Drivers and pilots get paid per passenger they drop in the zone. Littlebirds are the fast taxi; trucks carry pallets for FOBs. Parachute: <kbd>Space</kbd> deploy, <kbd>C</kbd> cut.</p></div>
+        <div class="box"><h3>Fight for ticks</h3><p class="small">Bodies in the zone every 30 s. The Hot Zone drifts slowly inside it; whoever holds it is usually winning the tick. Expect tanks, helis, mortars and medics chain-reviving.</p></div>
+        <div class="box"><h3>Pull the Hot Zone</h3><p class="small">2–5 drill towers each hide one digit of a code. Enter the full code to drag the Hot Zone to a tower. Or build a fuelled Drill Rig at your FOB and drag it to you.</p></div>
+        <div class="box"><h3>Bank it</h3><p class="small">Profit carries over. Losses do too. Periodic wipes reset economy and progression, so nobody stays untouchably rich.</p></div>
+        <div class="box"><h3>Level tracks</h3><p class="small">Six progression tracks (Assault, Medic, Recon, Support, Driver, Pilot) level from what you do. Levelling unlocks the right to <em>buy</em> gear — nothing is free.</p></div>
+      </div>
+    </section>
+
+    <!-- ============ 02 ROLES ============ -->
+    <section class="panel" id="tab-roles">
+      <h2>Roles are what you carry, not what you picked</h2>
+      <p>There is no class screen. Six progression tracks level from your actions, and any loadout can mix tools from all of them — a sniper can carry a defib, a driver can run an LMG. Pick a job for this life, buy for that job, and don't buy for jobs you're not doing.</p>
+      <div class="rolepicker" id="rolepicker" role="tablist" aria-label="Choose a role"></div>
+      <div id="roleview"></div>
+      <div class="callout tan" style="margin-top:1.4rem"><b>Squad shape that worked in the beta:</b> one medic, one driver or pilot who keeps a return route open, one logistics/builder, and the rest infantry holding the zone. A squad farming cash far from the objective can be rich and still lose.</div>
+    </section>
+
+    <!-- ============ 03 KEYBINDS ============ -->
+    <section class="panel" id="tab-keys">
+      <h2>Default keybinds</h2>
+      <p>Hover a key to see everything it does across contexts. Press a key on your keyboard to find it. Pick a context to light up what's bound there. Keyboard and mouse defaults from the pre-launch build; controller layouts below.</p>
+      <div class="kbtoolbar">
+        <div class="seg" id="ctxseg" role="group" aria-label="Context">
+          <button aria-pressed="true" data-ctx="infantry">Infantry</button>
+          <button aria-pressed="false" data-ctx="ground">Ground vehicle</button>
+          <button aria-pressed="false" data-ctx="rotary">Helicopter</button>
+          <button aria-pressed="false" data-ctx="build">Build tool</button>
+          <button aria-pressed="false" data-ctx="ui">UI &amp; comms</button>
+        </div>
+        <label class="search"><span aria-hidden="true">⌕</span><input id="kbsearch" type="search" placeholder="Search actions — e.g. lean, parachute, seat" aria-label="Search keybinds"></label>
+      </div>
+      <div class="kb" aria-label="Keyboard map">
+        <div class="kb-rows" id="kbrows"></div>
+        <div class="kb-legend">
+          <span><i style="background:#4B5540;border:1px solid #5E6A50"></i>Bound in this context</span>
+          <span><i style="background:var(--tan)"></i>Hover / pressed</span>
+          <span><i style="border:2px solid var(--hot)"></i>Search match</span>
+          <span class="muted" id="kbstatus"></span>
+        </div>
+      </div>
+      <div class="bindgroups" id="bindgroups"></div>
+
+      <h2 style="margin-top:2.2rem">Controller (Xbox / PlayStation)</h2>
+      <p class="small muted">Xbox names shown; PlayStation maps LB/RB/LT/RT → L1/R1/L2/R2, A/B/X/Y → Cross/Circle/Square/Triangle, View/Menu → Create/Options. Controller support is present but the developer hasn't published a final layout.</p>
+      <div class="controllergrid" id="controllergrid"></div>
+    </section>
+
+    <!-- ============ 04 CASH & OBJECTIVES ============ -->
+    <section class="panel" id="tab-economy">
+      <h2>Cash is the scoreboard that follows you home</h2>
+      <div class="zone">
+        <div>
+          <svg viewBox="0 0 420 300" role="img" aria-label="Diagram of the map, Control Zone, Hot Zone, towers and a FOB">
+            <defs><pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#3A4132" stroke-width="1"/></pattern></defs>
+            <rect x="10" y="10" width="400" height="280" fill="url(#g)" stroke="#4A5240"/>
+            <text x="18" y="28" fill="#B8B098" font-size="11" font-family="IBM Plex Sans">Map (huge — vehicles matter)</text>
+            <rect x="120" y="70" width="190" height="170" fill="rgba(210,176,113,.10)" stroke="#D2B071" stroke-dasharray="6 4"/>
+            <text x="126" y="88" fill="#D2B071" font-size="12" font-weight="600" font-family="IBM Plex Sans">Control Zone · 1 tick / 30 s</text>
+            <circle cx="205" cy="165" r="34" fill="rgba(224,137,58,.25)" stroke="#E0893A" stroke-width="2"/>
+            <text x="205" y="162" fill="#E6DEC6" font-size="11" text-anchor="middle" font-weight="600" font-family="IBM Plex Sans">Hot Zone</text>
+            <text x="205" y="176" fill="#E0893A" font-size="10" text-anchor="middle" font-family="IBM Plex Sans">×2 count · ×2 cash</text>
+            <path d="M239 165 q30 -10 55 20" fill="none" stroke="#E0893A" stroke-width="1.5" marker-end="url(#a)"/>
+            <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#E0893A"/></marker></defs>
+            <text x="290" y="200" fill="#B8B098" font-size="9" font-family="IBM Plex Sans">drifts slowly</text>
+            <g fill="#6FAF5E"><rect x="40" y="50" width="12" height="26"/><rect x="350" y="240" width="12" height="26"/><rect x="60" y="230" width="12" height="26"/><rect x="340" y="40" width="12" height="26"/></g>
+            <text x="56" y="62" fill="#6FAF5E" font-size="10" font-family="IBM Plex Sans">Drill tower · 1 code digit</text>
+            <text x="56" y="253" fill="#6FAF5E" font-size="10" font-family="IBM Plex Sans">Tower</text>
+            <rect x="335" y="130" width="34" height="26" fill="#5C9BD6" opacity=".7"/>
+            <text x="352" y="172" fill="#5C9BD6" font-size="10" text-anchor="middle" font-family="IBM Plex Sans">Your FOB + Drill Rig</text>
+            <text x="352" y="184" fill="#B8B098" font-size="9" text-anchor="middle" font-family="IBM Plex Sans">fuel it → pulls Hot Zone</text>
+            <rect x="22" y="255" width="40" height="22" fill="#D9534F" opacity=".5"/><text x="42" y="288" fill="#D9534F" font-size="9" text-anchor="middle" font-family="IBM Plex Sans">Enemy base</text>
+          </svg>
+        </div>
+        <div>
+          <h3>Hot Zone maths</h3>
+          <p class="small">Red has 20 in the Control Zone, you have 17. Normally Red takes the tick. But four of your 17 are in the Hot Zone, so they count as 8 — your total is 21 and you score. That's why it's the bloodiest 50 metres on the map.</p>
+          <h3>Tower codes</h3>
+          <p class="small">Each tower holds one digit. Share them in team chat with position — post <em>XX5</em> if you learned the third digit is 5 — so the team can fill in the blanks. Entering the full code pulls the Hot Zone to that tower. Tower-hopping by Littlebird is a legitimate full-match job.</p>
+          <h3>Drill Rig</h3>
+          <p class="small">Build one at a FOB, keep it fuelled, and the Hot Zone comes to you. Then everyone comes to you too, so fortify first: anti-air, HESCO, mortars, a repair station, a vehicle parked behind the wall for spawns.</p>
+        </div>
+      </div>
+
+      <h2 style="margin-top:2rem">What pays</h2>
+      <div class="grid two">
+        <div class="box">
+          <h3>Every earning action</h3>
+          <table>
+            <tr><th>Action</th><th>Notes</th></tr>
+            <tr><td>Kill / assist</td><td>The obvious one. Not the reliable one.</td></tr>
+            <tr><td>Spot enemies</td><td>Middle-mouse ping. Free money, levels Recon.</td></tr>
+            <tr><td>Revive / heal</td><td>Most consistent earner in the game. Medics rarely go broke.</td></tr>
+            <tr><td>Transport into the zone</td><td>Per passenger, by ground or air.</td></tr>
+            <tr><td>Occupy the objective</td><td>Just being in the Control Zone pays.</td></tr>
+            <tr><td>Anything in the Hot Zone</td><td>Double.</td></tr>
+            <tr><td>Destroy vehicles</td><td>A full transport heli is a jackpot.</td></tr>
+            <tr><td>Build useful fortifications</td><td>Sandbags nobody uses don't pay much.</td></tr>
+            <tr><td>Resupply / deliver supplies</td><td>Loading and unloading pallets at a FOB.</td></tr>
+            <tr><td>Sell items</td><td>Buy a supply drop, stock it, set your own price.</td></tr>
+            <tr><td>Tips</td><td>Players can tip whoever revived or lifted them (<kbd>F1</kbd>).</td></tr>
+          </table>
+        </div>
+        <div>
+          <div class="box" style="margin-bottom:1rem">
+            <h3>What costs</h3>
+            <ul>
+              <li><b>Every life.</b> You rebuy your kit when you die. Expensive kit → expensive death.</li>
+              <li><b>Vehicles.</b> A lost tank or heli is the single biggest way to go negative.</li>
+              <li><b>Consumables.</b> Faster healing items, weapon mods, extra mags all add up.</li>
+              <li><b>Weight.</b> Not cash, but heavy kit slows you and worsens sway — see Loadout.</li>
+            </ul>
+          </div>
+          <div class="box">
+            <h3>Safe income loop for a new player</h3>
+            <ol class="steps">
+              <li><b>Cheap kit + bandages.</b></li>
+              <li><b>Ride to the zone.</b> Tip the driver.</li>
+              <li><b>Stand in the Hot Zone when it's yours, the Control Zone when it isn't.</b></li>
+              <li><b>Ping, heal, revive.</b> Loot better guns off the dead if you're broke.</li>
+              <li><b>Bank a cushion, then buy the toy.</b></li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 05 LOADOUT & WEIGHT ============ -->
+    <section class="panel" id="tab-loadout">
+      <h2>Slots, backpacks, and why heavy kit loses gunfights</h2>
+      <div class="grid two">
+        <div class="box">
+          <h3>Equipment slots</h3>
+          <table>
+            <tr><th>Key</th><th>Slot</th><th>What goes there</th></tr>
+            <tr><td><kbd>1</kbd></td><td>Primary</td><td>AR, SMG, shotgun, LMG, marksman, sniper, or bow</td></tr>
+            <tr><td><kbd>2</kbd></td><td>Sidearm</td><td>Backup pistol — cheap is fine</td></tr>
+            <tr><td><kbd>3</kbd></td><td>Specialist item</td><td>Launcher, AA, defibrillator, rangefinder, breaching / engineering tools</td></tr>
+            <tr><td><kbd>4</kbd>–<kbd>0</kbd></td><td>Quick slots</td><td>Carried items from your tac-vest: bandages, grenades, explosives, tools</td></tr>
+            <tr><td>—</td><td>Gear</td><td>Helmet, armour, tac-vest, backpack, traversal (parachute)</td></tr>
+          </table>
+          <p class="small muted" style="margin-top:.6rem">Backpack = how much you carry (grid inventory — a 2×1 magazine eats two squares). Tac-vest = how fast you reach it. A special rig lets you carry two primaries.</p>
+        </div>
+        <div class="box">
+          <h3>Weight classes</h3>
+          <table class="weight">
+            <tr><th>Class</th><th>Penalties</th></tr>
+            <tr><td>Lightest</td><td>None</td></tr>
+            <tr><td>Light</td><td>−5% speed, −5% jump, −14% stamina regen</td></tr>
+            <tr><td>Medium</td><td>−12% speed, −10% jump, −35% stamina regen, +5% ADS time</td></tr>
+            <tr><td>Heavy</td><td>−19% speed, −14% jump, +14% ADS time, +50% lean time, tactical sprint disabled</td></tr>
+          </table>
+          <p class="small muted" style="margin-top:.6rem">Heavier kits also add aim sway. Logistics drivers who barely shoot shouldn't wear the heaviest armour — it just raises the cost of the death.</p>
+        </div>
+      </div>
+      <h2 style="margin-top:2rem">Buy for the job</h2>
+      <div class="grid three">
+        <div class="box"><h3>Going into the zone</h3><p class="small">Rifle, sidearm, armour, ammo, a grenade or two, bandages. Add a defib if you have it — reviving in the Hot Zone is double pay.</p></div>
+        <div class="box"><h3>Running towers</h3><p class="small">Light kit, SMG or carbine, a rangefinder, something to clear a room. Speed matters more than plates.</p></div>
+        <div class="box"><h3>Driving supplies</h3><p class="small">Cheap gun, minimal armour, wrench. Spend the money on the truck and pallets, not on a kit you'll lose to a mine.</p></div>
+        <div class="box"><h3>Flying</h3><p class="small">Almost nothing on your body. The helicopter is the loadout. Bring flares (<kbd>V</kbd>) and know where the AA is.</p></div>
+        <div class="box"><h3>Anti-vehicle</h3><p class="small">Launcher in slot 3, spare rockets in the backpack. A packed heli or tank kill is a huge payout — position near vehicle lanes into the zone.</p></div>
+        <div class="box"><h3>Broke</h3><p class="small">Free starter kit. Loot dead players' weapons. Ping, heal, stand in the zone. You'll be positive again within a match.</p></div>
+      </div>
+    </section>
+
+    <!-- ============ 06 FOBs & LOGISTICS ============ -->
+    <section class="panel" id="tab-fob">
+      <h2>FOBs: a crate you buy, place, and keep feeding</h2>
+      <p>A Forward Operating Base defines a build radius (blue square), stores four supply types, and lets teammates build inside it. It is not a spawn flag — but a vehicle parked behind its walls is, effectively. A fresh FOB in the beta started with roughly 1,250 Supply / 100 Fuel / 100 Ammo / 100 Parts, plus a small and medium hammer, wrenches, signal grenades and bandages.</p>
+      <div class="grid two">
+        <div class="box">
+          <h3>Build one</h3>
+          <ol class="steps">
+            <li><b>Buy the FOB</b> from the vendor (Equipment › Building), plus the hammer tier you need.</li>
+            <li><b>Buy supplies</b> — Ammo, Building, Fuel, Mechanical — and pallets from the Logistics tab. A truck or heli carries them; your backpack can't.</li>
+            <li><b>Place the FOB first</b>, then bring pallets inside the blue build radius. Deploy pallets while moving with <kbd>G</kbd>.</li>
+            <li><b>Unload supplies into the FOB by hand.</b> A crate sitting next to it does nothing. Interact with <kbd>F</kbd>.</li>
+            <li><b>Build:</b> hold the hammer, place, rotate <kbd>R</kbd>, snap toggle <kbd>B</kbd>, dismantle <kbd>V</kbd>. Strike each yellow X with the matching hammer.</li>
+            <li><b>Keep it fed.</b> Nothing restocks itself. Send the next pallet for whatever you're about to spend.</li>
+          </ol>
+        </div>
+        <div>
+          <div class="box" style="margin-bottom:1rem">
+            <h3>Four supplies, four jobs</h3>
+            <table>
+              <tr><th>Supply</th><th>Feeds</th></tr>
+              <tr><td>Building</td><td>HESCO, gates, bunkers, towers, sandbags, everything structural</td></tr>
+              <tr><td>Fuel</td><td>The Drill Rig, refuel stations, vehicle support</td></tr>
+              <tr><td>Ammo</td><td>Mortars, CIWS, Talon / Stingray anti-air</td></tr>
+              <tr><td>Mechanical (Parts)</td><td>Repair stations, drones, vehicle repairs</td></tr>
+            </table>
+          </div>
+          <div class="box">
+            <h3>Hammers gate the menu</h3>
+            <ul>
+              <li><b>Small</b> — sandbags, barriers, barbed wire, hedgehogs, recon tents (these few also work without a FOB).</li>
+              <li><b>Medium</b> — the above plus HESCO and larger structures.</li>
+              <li><b>Large (tier 3)</b> — anti-air, mortars, kamikaze drones, Drill Rig.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="callout" style="margin-top:1.2rem"><b>An enemy FOB dies to one IED.</b> If you're building, hide it behind terrain and defend it; if you're not, a cheap explosive on an unguarded enemy FOB is one of the best trades in the game.</div>
+
+      <h2 style="margin-top:2rem">Vehicles seen in the beta</h2>
+      <div class="grid three">
+        <div class="box"><h3>Littlebird</h3><p class="small">Light helicopter. The zone taxi and tower-hopper. Cheap enough to be everywhere, fragile enough to die to a rifle. Pilot track.</p></div>
+        <div class="box"><h3>Transport heli</h3><p class="small">Bigger, carries a squad and supply cases. Full of passengers it is also the single richest kill on the map — fly around the AA.</p></div>
+        <div class="box"><h3>Ural / cargo trucks</h3><p class="small">Pallet haulers. The logistics backbone: one Ural load can stand up a basic FOB. Driver track.</p></div>
+        <div class="box"><h3>Pickup / buggy</h3><p class="small">Fast, cheap, unarmoured. Best cash-per-passenger ratio for a new driver.</p></div>
+        <div class="box"><h3>MRAP / APC</h3><p class="small">Armoured transport. Survives mines and small arms; a mobile spawn behind a FOB wall.</p></div>
+        <div class="box"><h3>Tank</h3><p class="small">Expensive, decisive, and a magnet for every launcher on three teams. Not a first-week purchase.</p></div>
+      </div>
+      <p class="small muted" style="margin-top:.8rem">Vehicle keys: <kbd>F</kbd> enter/exit · <kbd>9</kbd>/<kbd>0</kbd> seats · <kbd>L</kbd> lock · <kbd>V</kbd> flares · <kbd>B</kbd> buy ammo · <kbd>G</kbd> drop supply crate · <kbd>H</kbd> horn · <kbd>Alt</kbd> free look · <kbd>C</kbd> camera.</p>
+    </section>
+
+    <!-- ============ 07 SETTINGS ============ -->
+    <section class="panel" id="tab-settings">
+      <h2>Settings worth changing before your first match</h2>
+      <div class="grid two">
+        <div class="box">
+          <h3>Rebinds that beta players converged on</h3>
+          <table>
+            <tr><th>Action</th><th>Suggested</th><th>Why</th></tr>
+            <tr><td>Lean left / right</td><td><kbd>E</kbd> / <kbd>Q</kbd> (swapped)</td><td>Frees A and D so you can strafe while leaning</td></tr>
+            <tr><td>Sprint</td><td><kbd>Caps Lock</kbd></td><td>Keeps Shift free for helicopter collective</td></tr>
+            <tr><td>Focus / hold breath</td><td>Mouse thumb button</td><td>Reachable mid-aim</td></tr>
+            <tr><td>Melee</td><td>Second thumb button</td><td>Faster than reaching for <kbd>V</kbd></td></tr>
+            <tr><td>Collective raise / lower</td><td><kbd>Space</kbd> / <kbd>Shift</kbd></td><td>Intuitive climb and descend</td></tr>
+            <tr><td>Yaw left / right</td><td><kbd>A</kbd> / <kbd>D</kbd></td><td>Mouse handles pitch and roll</td></tr>
+          </table>
+        </div>
+        <div class="box">
+          <h3>Controls › Settings</h3>
+          <table>
+            <tr><th>Setting</th><th>Value</th></tr>
+            <tr><td>Rotary Vehicle Mouse Control</td><td>Enabled</td></tr>
+            <tr><td>Heli mouse swipe left/right</td><td>Roll</td></tr>
+            <tr><td>Heli mouse swipe up/down</td><td>Pitch</td></tr>
+            <tr><td>Invert Y — Air vehicle</td><td>Enabled (pull back = nose up)</td></tr>
+            <tr><td>Invert Y — Infantry</td><td>Disabled</td></tr>
+            <tr><td>Heli pitch / roll sensitivity</td><td>~60–65% to start; tune in the Firing Range</td></tr>
+            <tr><td>Mouse acceleration</td><td>Off</td></tr>
+            <tr><td>Sensitivity scaling</td><td>Relative, 100% monitor match, instant transition</td></tr>
+          </table>
+        </div>
+        <div class="box">
+          <h3>Action behaviours</h3>
+          <table>
+            <tr><th>Action</th><th>Hold / Toggle</th></tr>
+            <tr><td>ADS, slow walk</td><td>Hold</td></tr>
+            <tr><td>Steady aim, crouch, prone, lean, sprint</td><td>Toggle</td></tr>
+            <tr><td>Bipod deployment</td><td>Automatic</td></tr>
+          </table>
+          <p class="small muted" style="margin-top:.6rem">Holding a lean while strafing, aiming and firing is a lot of fingers otherwise.</p>
+        </div>
+        <div class="box">
+          <h3>If a keybind keeps disappearing</h3>
+          <p class="small">A known playtest issue. Check Settings › Controls › Keybindings for Move Forward/Back, Sprint, Focus, Jump, Deploy Parachute and Primary Fire. If it recurs, fully close the game and relaunch.</p>
+          <h3 style="margin-top:.8rem">Performance targets (developer)</h3>
+          <p class="small">RTX 3070 / RX 6700 XT-class GPUs were quoted for 4K Medium at 60+ FPS upscaled. Visibility settings matter more than pretty ones on a 2×2 km battlefield.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 08 SOURCES ============ -->
+    <section class="panel" id="tab-sources">
+      <h2>Where this came from</h2>
+      <p>WARDOGS launches in Early Access on 10 September 2026 (Steam, PC only, developed by BULKHEAD, published with Team17). Everything here was compiled the day before launch from the developer's beta and playtest builds, so keybind defaults and prices may shift on day one. Treat this as a briefing, not scripture.</p>
+      <div class="box">
+        <ul>
+          <li><a href="https://bulkhead.com/games/wardogs">BULKHEAD — Wardogs game page</a></li>
+          <li><a href="https://store.steampowered.com/app/1867240/WARDOGS/">Steam store page</a></li>
+          <li><a href="https://www.bisecthosting.com/blog/wardogs-controls-guide-all-pc-controller-key-bindings">BisectHosting — full PC and controller key bindings (5 Sep 2026)</a></li>
+          <li><a href="https://keyboardcontrols.com/shortcuts/games/wardogs/">KeyboardControls — keybind cross-check</a></li>
+          <li><a href="https://allthings.how/wardogs-beta-best-settings-for-max-fps-and-visibility/">AllThings.How — beta settings and rebinds</a></li>
+          <li><a href="https://steamcommunity.com/app/1867240/discussions/0/588436698284822212/">Steam community — keybind and helicopter controls FAQ</a></li>
+          <li><a href="https://skycoach.gg/blog/wardogs/articles/wardogs-beginners-guide">Skycoach — beginner's guide, economy, slots, weight classes</a></li>
+          <li><a href="https://skycoach.gg/blog/wardogs/articles/building-guide">Skycoach — building guide</a></li>
+          <li><a href="https://allthings.how/wardogs-how-to-build-a-fob-forward-operating-base/">AllThings.How — building a FOB</a></li>
+          <li><a href="https://dq7reimagined.com/wardogs/fob/">FOB placement, starting stock, Ural first-load</a></li>
+          <li><a href="https://www.wardogswiki.com/en/guides/wardogs-squad-guide">Wardogs Wiki — squad roles</a></li>
+          <li><a href="https://www.wardogsplaytest.wiki/guide/wardogs-classes">Wardogs playtest wiki — progression tracks</a></li>
+        </ul>
+      </div>
+      <p class="small muted" style="margin-top:1rem">Found a default that changed at launch? Everything in the Keybinds tab lives in one JavaScript object at the bottom of this file — edit it and reload.</p>
+    </section>
+
+  </main>
+</div>
+<div class="tip" id="tip"></div>
+<script>
+/* ================= ROLES ================= */
+const ROLES = [
+ { id:'assault', name:'Assault', tag:'Frontline infantry', fit:'You like gunfights and holding ground.',
+   does:'Fight enemy infantry inside the Control Zone and, when it is safe, inside the Hot Zone. Bodies in the zone are the only thing that scores; you are the body.',
+   buy:['Assault rifle or SMG, cheap sidearm','Armour and helmet — stay at Light/Medium weight','Ammo, one or two grenades, bandages','Defibrillator in slot 3 once unlocked'],
+   pay:[['Kills and assists','variable'],['Occupying the Control Zone','steady'],['Anything in the Hot Zone','double'],['Reviving squadmates','steady']],
+   tips:['Never fight the leading team alone — in a three-way, the leader gets ganged up on. Let the other two bleed each other.','Lean (Q/E) and steady aim (Shift) matter: this is hardcore gunplay, not arcade.','Loot better guns from the dead when broke; it costs nothing.'],
+   keys:[['Lean','Q / E'],['Hold breath','Shift'],['Fire mode','B'],['Sights','Z'],['Zeroing','PgUp / PgDn'],['Bipod','G'],['Melee','V']] },
+ { id:'medic', name:'Medic', tag:'The most reliable earner', fit:'You want a positive balance every match.',
+   does:'Keep the push alive. Every revive saves the team the cash and time of a respawn, and pays you directly — plus tips. Reviving in the Hot Zone pays double.',
+   buy:['Bandages and medkits in quick slots (4–0)','Defibrillator — unlocked at Medic level 9 by healing/reviving with bandages first','Smoke grenades to cover revives','SMG: light, cheap, levels the Medic track'],
+   pay:[['Revive','high, steady'],['Heal','steady'],['Tips from the revived','bonus'],['Hot Zone revives','double']],
+   tips:['Reactive medic (respond to downs) is safe; proactive medic (push with the front and pre-heal) earns more; hybrid earned most in the beta.','Smoke first, then revive. A medic who dies on the body is two respawns.','Stay near a FOB or vehicle spawn: that is where the bodies fall.'],
+   keys:[['Use item','LMB'],['Quick slots','4–0'],['Interact / revive','F'],['Holster','X'],['Squad voice','J']] },
+ { id:'recon', name:'Recon', tag:'Information and tower codes', fit:'You would rather see the fight than be in it.',
+   does:'Spot enemies, watch approach routes, call vehicle lanes, and run drill towers for code digits that let the team drag the Hot Zone.',
+   buy:['Marksman or sniper rifle, or a bow','Rangefinder, spotting equipment, ghillie','Claymores for your back','Light weight — you move a lot'],
+   pay:[['Spotting enemies','steady, every ping'],['Assists on what you mark','steady'],['Tower codes (indirect)','wins ticks']],
+   tips:['Ping is the highest earning-to-risk action in the game. Middle mouse, constantly.','Post tower digits with position: "XX5" tells the team both the number and where it goes.','Relocate after every few shots. Marksmen on ridgelines are predictable and mortars exist.'],
+   keys:[['Ping','MMB'],['Ping wheel','hold MMB'],['Zeroing','PgUp / PgDn'],['Steady aim','Shift'],['Tactical map','M'],['Chat','Enter']] },
+ { id:'support', name:'Support', tag:'Builder · Engineer · Logistics', fit:'You like making the team stronger than yourself.',
+   does:'Three jobs share one track: build and fortify (hammer), repair vehicles and demolish enemy works (wrench, explosives), and haul the four supply types to FOBs.',
+   buy:['Small / medium / large hammer depending on what you plan to place','Wrench for repairs, IED or C4 for enemy FOBs','LMG or shotgun for holding the wall','Pallets from the Logistics tab if hauling'],
+   pay:[['Useful fortifications','steady'],['Repairs (saves vehicle cost)','steady'],['Loading / unloading supplies','steady'],['Resupplying teammates','steady'],['Selling stocked supply drops','your price']],
+   tips:['Place the FOB first, then unload supplies into it by hand. A pallet next to it does nothing.','Pack the truck for the first working version of the base, not every future structure.','One IED kills an unguarded FOB. Yours and theirs.'],
+   keys:[['Build / place','LMB'],['Rotate','R'],['Snap','B'],['Dismantle','V'],['Deploy crate','G'],['Buy ammo at vehicle','B'],['Interact','F']] },
+ { id:'driver', name:'Driver', tag:'Ground transport and logistics', fit:'You are calm under fire and know the map.',
+   does:'Move bodies from spawn to the zone (paid per passenger), haul pallets to FOBs, and keep a return route open so the squad can rearm.',
+   buy:['Pickup or buggy to start: cheap, fast, best cash per passenger','Ural for pallets, MRAP/APC for armoured drops','Cheap personal kit — you barely shoot','Wrench so you can fix your own ride'],
+   pay:[['Passengers dropped in the zone','per head'],['Supply delivery','steady'],['Tips','bonus'],['Vehicle kills from a gunner seat','variable']],
+   tips:['Park behind a FOB wall: a vehicle behind cover becomes the team\'s forward spawn.','Lock the vehicle (L) if you leave it, and horn (H) at spawn to collect a full load before leaving.','Learn one safe route into the zone and one out. Mines live on the obvious road.'],
+   keys:[['Enter / exit','F'],['Handbrake','Space'],['Reverse','R'],['Seats','9 / 0'],['Lock','L'],['Horn','H'],['Free look','Alt'],['Camera','C']] },
+ { id:'pilot', name:'Pilot', tag:'Littlebird and transport helicopters', fit:'You will practise in the Firing Range first.',
+   does:'The fastest way to put bodies in the zone and the only way to hop towers quickly. A packed heli you lose is also the richest kill in the game — for the other team.',
+   buy:['A Littlebird until you can land it every time','Almost nothing on your body; the aircraft is the loadout','Countermeasures; know where the AA sites are','Radio cassettes and larger supply cases unlock with the Pilot track'],
+   pay:[['Passengers dropped in the zone','per head'],['Airborne supply delivery','steady'],['Air kills','variable'],['Tips','bonus']],
+   tips:['Turn on Rotary Vehicle Mouse Control and invert Y for air. Rebind collective to Space/Shift and yaw to A/D — the mouse does pitch and roll.','Start pitch/roll sensitivity around 60–65% and tune in the Firing Range before carrying anyone.','Flares (V) on the first tone, not the second. Fly the terrain, not the straight line.'],
+   keys:[['Collective','Shift / Ctrl'],['Cyclic','W A S D'],['Yaw','Q / E'],['Flares','V'],['Cycle weapons','Z'],['Free look','Alt'],['Seats','9 / 0']] },
+];
+
+/* ================= KEYBINDS ================= */
+/* key ids match the keyboard renderer below */
+const BINDS = {
+ infantry: { title:'Infantry', groups:[
+  ['Movement',[['Move forward','W'],['Move back','S'],['Strafe left','A'],['Strafe right','D'],['Sprint','LShift'],['Slow walk','Alt'],['Jump','Space'],['Crouch','C'],['Prone','Ctrl'],['Lean left','Q'],['Lean right','E']]],
+  ['Weapon & items',[['Primary use / fire','LMB'],['Secondary use / ADS','RMB'],['Focus / hold breath','LShift'],['Melee bash','V'],['Reload','R'],['Cycle fire mode','B'],['Cycle sights','Z'],['Mount / fold bipod','G'],['Increase zeroing','PgUp'],['Decrease zeroing','PgDn'],['Inspect','I'],['Holster item','X'],['Next / previous slot','Scroll']]],
+  ['Slots',[['Primary weapon','1'],['Sidearm','2'],['Specialist item','3'],['Equipment wheel','4'],['Quick slots','4 5 6 7 8 9 0']]],
+  ['Traversal & interact',[['Deploy parachute','Space'],['Cut parachute','C'],['Interact','F']]],
+ ]},
+ ground: { title:'Ground vehicle', groups:[
+  ['Driving',[['Throttle','W'],['Brake','S'],['Steer left','A'],['Steer right','D'],['Handbrake','Space'],['Gear shift reverse','R']]],
+  ['All vehicles',[['Enter / exit','F'],['Next seat','0'],['Previous seat','9'],['Lock / unlock','L'],['Countermeasure / flares','V'],['Buy ammo / supplies','B'],['Deploy supply crate','G'],['Horn','H']]],
+  ['Vehicle weapons',[['Fire','LMB'],['Cycle weapons','Z'],['Cycle fire mode','B'],['Eject from projectile','C'],['Weapon pitch up / down','W S'],['Weapon yaw left / right','A D']]],
+  ['Camera',[['Toggle free look','Alt'],['Toggle camera mode','C'],['Left view','Left'],['Right view','Right'],['Rear view','Down'],['Zoom in','PgUp'],['Zoom out','PgDn']]],
+ ]},
+ rotary: { title:'Helicopter', groups:[
+  ['Flight',[['Collective raise (climb)','LShift'],['Collective lower (descend)','Ctrl'],['Cyclic forward','W'],['Cyclic back','S'],['Cyclic right','D'],['Cyclic left','A'],['Yaw left','Q'],['Yaw right','E']]],
+  ['All vehicles',[['Enter / exit','F'],['Next seat','0'],['Previous seat','9'],['Lock / unlock','L'],['Countermeasure / flares','V'],['Buy ammo / supplies','B'],['Deploy supply crate','G'],['Horn','H']]],
+  ['Weapons',[['Fire','LMB'],['Cycle weapons','Z'],['Cycle fire mode','B'],['Eject from projectile (missile cam)','C']]],
+  ['Camera',[['Toggle free look','Alt'],['Toggle camera mode','C'],['Left / right / rear view','Left Right Down'],['Zoom','PgUp PgDn']]],
+ ]},
+ build: { title:'Build tool', groups:[
+  ['Build tool',[['Place buildable','LMB'],['Rotate buildable','R'],['Toggle snapping','B'],['Dismantle','V'],['Interact with FOB','F'],['Deploy supply crate (vehicle)','G']]],
+ ]},
+ ui: { title:'UI & comms', groups:[
+  ['Communication',[['Push-to-talk (squad)','J'],['Push-to-talk (proximity)','K'],['Toggle voice (scoreboard)','U'],['Ping','MMB'],['Ping wheel (hold)','MMB'],['Tip / bribe','F1'],['Reject tip','F2'],['Chat','Enter']]],
+  ['UI',[['Pause menu','Esc'],['Inventory','Tab'],['Give up (when downed)','F'],['Toggle vault','V'],['Tactical map','M'],['Recentre tactical map','X'],['Zoom minimap in','['],['Zoom minimap out',']']]],
+  ['Active reload',[['Up','Up'],['Down','Down'],['Left','Left'],['Right','Right']]],
+ ]},
+};
+
+const CONTROLLER = [
+ ['Infantry',[['Primary use / fire','RT'],['Secondary use / ADS','LT'],['Lean left','LB'],['Lean right / melee','RB'],['Jump','A'],['Crouch / prone','B'],['Interact / reload','X'],['Next weapon','Y'],['Fire mode / zeroing','D-Up'],['Next item','D-Right'],['Toggle voice','D-Down'],['Sprint / hold breath','L3'],['Ping / ping wheel','R3'],['Inventory / map','View'],['Pause','Menu']]],
+ ['Ground vehicle',[['Throttle','RT'],['Brake','LT'],['Steer','Left stick'],['Free look camera','Right stick'],['Handbrake','A'],['Next seat','B'],['Interact','X'],['Free look toggle','D-Left'],['Camera mode','D-Right'],['Toggle voice','D-Down'],['Horn','L3'],['Ping','R3']]],
+ ['Helicopter',[['Collective raise / fire','RT'],['Collective lower','LT'],['Cyclic','Left stick'],['Pedals / free look','Right stick'],['Countermeasure','D-Up'],['Free look toggle','D-Left'],['Camera mode','D-Right'],['Next seat','B'],['Interact','X'],['Horn','L3'],['Ping','R3']]],
+];
+
+/* ================= KEYBOARD LAYOUT ================= */
+const LAYOUT = [
+ [['Esc',1],['gap',.5],['F1',1],['F2',1],['F3',1],['F4',1],['gap',.5],['F5',1],['F6',1],['F7',1],['F8',1],['gap',.5],['F9',1],['F10',1],['F11',1],['F12',1],['gap',.6],['LMB',1.2],['MMB',1.2],['RMB',1.2]],
+ [['`',1],['1',1],['2',1],['3',1],['4',1],['5',1],['6',1],['7',1],['8',1],['9',1],['0',1],['-',1],['=',1],['Bksp',2],['gap',.6],['PgUp',1.2],['Scroll',2.4]],
+ [['Tab',1.5],['Q',1],['W',1],['E',1],['R',1],['T',1],['Y',1],['U',1],['I',1],['O',1],['P',1],['[',1],[']',1],['\\',1.5],['gap',.6],['PgDn',1.2]],
+ [['Caps',1.8],['A',1],['S',1],['D',1],['F',1],['G',1],['H',1],['J',1],['K',1],['L',1],[';',1],["'",1],['Enter',2.2]],
+ [['LShift',2.3],['Z',1],['X',1],['C',1],['V',1],['B',1],['N',1],['M',1],[',',1],['.',1],['/',1],['RShift',2.7],['gap',1.9],['Up',1]],
+ [['Ctrl',1.5],['Win',1.2],['Alt',1.2],['Space',6.5],['Alt',1.2],['Ctrl',1.5],['gap',1.4],['Left',1],['Down',1],['Right',1]],
+];
+const KEYALIAS = {'LShift':'Shift','RShift':'Shift','Bksp':'Backspace','Caps':'CapsLock','Win':'Meta','PgUp':'PageUp','PgDn':'PageDown','Esc':'Escape','Up':'ArrowUp','Down':'ArrowDown','Left':'ArrowLeft','Right':'ArrowRight','Ctrl':'Control','Space':' '};
+
+/* ================= HELPERS ================= */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+function splitKeys(k){ return k.split(' ').filter(Boolean); }
+/* index: keyId -> [{ctx,action}] */
+const INDEX={};
+for(const [ctx,c] of Object.entries(BINDS)) for(const [,rows] of c.groups) for(const [action,keys] of rows) for(const k of splitKeys(keys)){ (INDEX[k]=INDEX[k]||[]).push({ctx:c.title,ctxId:ctx,action}); }
+
+/* ================= TABS ================= */
+$$('nav.tabs button').forEach(b=>b.addEventListener('click',()=>{
+  $$('nav.tabs button').forEach(x=>x.setAttribute('aria-selected',x===b));
+  $$('section.panel').forEach(p=>p.classList.toggle('active',p.id==='tab-'+b.dataset.tab));
+  try{history.replaceState(null,'','#'+b.dataset.tab);}catch(_){} window.scrollTo({top:0});
+}));
+if(location.hash){ const b=$(`nav.tabs button[data-tab="${location.hash.slice(1)}"]`); if(b) b.click(); }
+
+/* ================= CHECKLIST ================= */
+const boxes=$$('#checklist input');
+const upd=()=>{ $('#prog').style.width=(100*boxes.filter(b=>b.checked).length/boxes.length)+'%'; };
+boxes.forEach(b=>b.addEventListener('change',upd));
+
+/* ================= ROLES ================= */
+const rp=$('#rolepicker'), rv=$('#roleview');
+ROLES.forEach((r,i)=>{ const b=document.createElement('button'); b.textContent=r.name; b.setAttribute('aria-pressed',i===0); b.dataset.id=r.id; b.addEventListener('click',()=>showRole(r.id)); rp.appendChild(b); });
+function showRole(id){
+  const r=ROLES.find(x=>x.id===id);
+  $$('#rolepicker button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===id));
+  rv.innerHTML=`<div class="role">
+    <div class="head"><h3>${r.name}</h3><span class="tag">${r.tag}</span><span class="fit">${r.fit}</span></div>
+    <div>
+      <p>${r.does}</p>
+      <div class="box"><h3>Buy for this life</h3><ul>${r.buy.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+      <div class="box" style="margin-top:1rem"><h3>Field notes</h3><ul>${r.tips.map(x=>`<li>${x}</li>`).join('')}</ul></div>
+    </div>
+    <div>
+      <div class="box"><h3>How it pays</h3><ul class="paylist">${r.pay.map(([a,b])=>`<li><span>${a}</span><span>${b}</span></li>`).join('')}</ul></div>
+      <div class="box" style="margin-top:1rem"><h3>Keys you'll live on</h3><div class="keys">${r.keys.map(([a,k])=>`<span>${a} <kbd>${k}</kbd></span>`).join('')}</div></div>
+    </div></div>`;
+}
+showRole('assault');
+
+/* ================= KEYBOARD ================= */
+let ctx='infantry', query='';
+const rows=$('#kbrows');
+LAYOUT.forEach(row=>{ const d=document.createElement('div'); d.className='kb-row';
+  row.forEach(([id,w])=>{ const k=document.createElement('div'); k.className='k'+(id==='gap'?' gap':''); k.style.setProperty('--w',w); k.dataset.key=id; k.innerHTML=`<span>${id==='gap'?'':id}</span><span class="lab"></span>`; d.appendChild(k); });
+  rows.appendChild(d); });
+function paint(){
+  const q=query.trim().toLowerCase();
+  let n=0;
+  $$('.k').forEach(k=>{
+    const id=k.dataset.key, list=(INDEX[id]||[]);
+    const inCtx=list.filter(x=>x.ctxId===ctx);
+    k.classList.toggle('bound',inCtx.length>0);
+    k.querySelector('.lab').textContent=inCtx[0]?inCtx[0].action:'';
+    const m=q && list.some(x=>x.action.toLowerCase().includes(q));
+    k.classList.toggle('match',!!m); if(m) n++;
+  });
+  $('#kbstatus').textContent=q?`${n} key${n===1?'':'s'} match "${query}"`:'';
+  /* groups */
+  const g=$('#bindgroups'); g.innerHTML='';
+  BINDS[ctx].groups.forEach(([name,list])=>{
+    const rowsHtml=list.map(([a,k])=>{ const hl=q&&a.toLowerCase().includes(q); return `<tr class="${hl?'hl':''}"><td>${a}</td><td>${splitKeys(k).map(x=>`<kbd>${x}</kbd>`).join(' ')}</td></tr>`; }).join('');
+    g.insertAdjacentHTML('beforeend',`<div class="bindgroup"><h3>${name}</h3><table>${rowsHtml}</table></div>`);
+  });
+}
+$$('#ctxseg button').forEach(b=>b.addEventListener('click',()=>{ ctx=b.dataset.ctx; $$('#ctxseg button').forEach(x=>x.setAttribute('aria-pressed',x===b)); paint(); }));
+$('#kbsearch').addEventListener('input',e=>{ query=e.target.value; paint(); });
+paint();
+
+/* tooltip */
+const tip=$('#tip');
+rows.addEventListener('mouseover',e=>{ const k=e.target.closest('.k'); if(!k||k.classList.contains('gap')) return; showTip(k); });
+rows.addEventListener('mousemove',e=>{ tip.style.left=Math.min(e.clientX+14,innerWidth-280)+'px'; tip.style.top=(e.clientY+14)+'px'; });
+rows.addEventListener('mouseleave',()=>tip.style.display='none');
+function showTip(k){
+  const id=k.dataset.key, list=INDEX[id]||[];
+  tip.innerHTML=`<b>${id}</b>`+(list.length?list.map(x=>`<div><span>${x.ctx}</span><span>${x.action}</span></div>`).join(''):'<div><span>Unbound by default</span></div>');
+  tip.style.display='block';
+}
+/* physical key lookup */
+let lastPressed=null;
+document.addEventListener('keydown',e=>{
+  if(!$('#tab-keys').classList.contains('active')) return;
+  if(e.target&&e.target.closest&&e.target.closest('input,textarea')) return;
+  const id=Object.keys(KEYALIAS).find(a=>KEYALIAS[a]===e.key)||(e.key.length===1?e.key.toUpperCase():e.key);
+  const el=$$('.k').find(k=>k.dataset.key===id);
+  if(!el) return;
+  e.preventDefault();
+  if(lastPressed) lastPressed.classList.remove('pressed');
+  el.classList.add('pressed'); lastPressed=el; showTip(el);
+  const r=el.getBoundingClientRect(); tip.style.left=Math.min(r.left,innerWidth-280)+'px'; tip.style.top=(r.bottom+8)+'px';
+});
+document.addEventListener('keyup',()=>{ setTimeout(()=>{ if(lastPressed){lastPressed.classList.remove('pressed');} tip.style.display='none'; },700); });
+
+/* controller */
+$('#controllergrid').innerHTML=CONTROLLER.map(([name,list])=>`<div class="bindgroup"><h3>${name}</h3><table>${list.map(([a,k])=>`<tr><td>${a}</td><td><kbd>${k}</kbd></td></tr>`).join('')}</table></div>`).join('');
+</script>
+
+</body>
+</html>
